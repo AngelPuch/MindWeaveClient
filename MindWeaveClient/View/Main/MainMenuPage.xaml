@@ -1,0 +1,81 @@
+﻿<Page x:Class="MindWeaveClient.View.Main.MainMenuPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="1280"
+      Title="MainMenuPage">
+
+    <Page.Resources>
+        <Style x:Key="ProfileButtonStyle" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="0,15,0,0"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <TextBlock Text="{x:Static language:Lang.GlobalLbGameName}" 
+                   Foreground="#2c3e50"
+                   FontSize="80"
+                   FontWeight="ExtraBold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Margin="0,60,0,0">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="5" Opacity="0.4"/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <StackPanel HorizontalAlignment="Right" 
+                    VerticalAlignment="Center" 
+                    Margin="0,0,50,0"
+                    Width="200">
+
+            <Ellipse Width="150" Height="150" Stroke="{StaticResource PrimaryColor}" StrokeThickness="4">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding PlayerAvatarPath}" Stretch="UniformToFill"/>
+                </Ellipse.Fill>
+                <Ellipse.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="3" Opacity="0.5"/>
+                </Ellipse.Effect>
+            </Ellipse>
+
+            <TextBlock Text="{Binding PlayerUsername}"
+                       Foreground="{StaticResource TextColor}"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,15,0,0"/>
+
+            <Button x:Name="btnProfile" 
+                    Content="{x:Static language:Lang.MainMenuBtnProfile}" 
+                    Command="{Binding ProfileCommand}"
+                    Style="{StaticResource ProfileButtonStyle}"/>
+        </StackPanel>
+
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0">
+            <Button x:Name="btnPlay" 
+                    Content="{x:Static language:Lang.GlobalBtnPlay}" 
+                    Command="{Binding PlayCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}" />
+
+            <Button x:Name="btnSocial" 
+                    Content="{x:Static language:Lang.GlobalCommonSocial}" 
+                    Command="{Binding SocialCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}" />
+
+            <Button x:Name="btnSettings" 
+                    Content="{x:Static language:Lang.GlobalCommonSettings}" 
+                    Command="{Binding SettingsCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Page>
