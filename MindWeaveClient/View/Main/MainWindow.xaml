@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="Mind Weave" Height="720" Width="1280">
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+        
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

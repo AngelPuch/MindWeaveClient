@@ -223,6 +223,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Code sent successfully.
+        /// </summary>
+        public static string InfoMsgBodyCodeSent {
+            get {
+                return ResourceManager.GetString("InfoMsgBodyCodeSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Success.
+        /// </summary>
+        public static string InfoMsgTitleSuccess {
+            get {
+                return ResourceManager.GetString("InfoMsgTitleSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Score:.
         /// </summary>
         public static string InGameLbScore {
@@ -300,6 +318,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string LobbyLbWaiting {
             get {
                 return ResourceManager.GetString("LobbyLbWaiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Search friends!.
+        /// </summary>
+        public static string LobbyTxtSearchFriends {
+            get {
+                return ResourceManager.GetString("LobbyTxtSearchFriends", resourceCulture);
             }
         }
         

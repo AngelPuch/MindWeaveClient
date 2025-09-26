@@ -342,4 +342,13 @@
   <data name="GlobalTxtNewPassword" xml:space="preserve">
     <value>New password</value>
   </data>
+  <data name="InfoMsgTitleSuccess" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="InfoMsgBodyCodeSent" xml:space="preserve">
+    <value>Code sent successfully</value>
+  </data>
+  <data name="LobbyTxtSearchFriends" xml:space="preserve">
+    <value>Search friends!</value>
+  </data>
 </root>
