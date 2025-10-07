@@ -22,7 +22,7 @@ namespace MindWeaveClient.View.Authentication
         public AuthenticationWindow()
         {
             InitializeComponent();
-            AuthenticationFrame.Navigate(new CreateAccountPage());
+            AuthenticationFrame.Navigate(new PasswordRecoveryPage());
         }
     }
 }
