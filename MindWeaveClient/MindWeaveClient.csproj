@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,11 +57,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Connected Services\AuthenticationService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Properties\Langs\Lang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
+    <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
@@ -71,6 +83,9 @@
     </Compile>
     <Compile Include="View\Authentication\PasswordRecoveryPage.xaml.cs">
       <DependentUpon>PasswordRecoveryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Authentication\VerificationPage.xaml.cs">
+      <DependentUpon>VerificationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Game\GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
@@ -125,6 +140,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Authentication\PasswordRecoveryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Authentication\VerificationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,6 +203,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Connected Services\AuthenticationService\MindWeaveClient.AuthenticationService.OperationResultDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\AuthenticationService\MindWeaveServer.Contracts.DataContracts.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\AuthenticationService\service.wsdl" />
+    <None Include="Connected Services\AuthenticationService\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\AuthenticationService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -200,6 +232,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\AuthenticationService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\AuthenticationService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\AuthenticationService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\AuthenticationService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
