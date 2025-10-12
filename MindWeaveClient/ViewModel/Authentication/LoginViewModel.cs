@@ -11,50 +11,47 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class LoginViewModel : BaseViewModel
     {
-        private string _email;
-        private string _password;
+        private string emailValue;
+        private string passwordValue;
         private readonly Action<Page> _navigateTo;
 
-        // Propiedades públicas en PascalCase para eliminar advertencias del IDE
         public string email
         {
-            get => _email;
-            set { _email = value; OnPropertyChanged(); OnCanExecuteChanged(LoginCommand); }
+            get => emailValue;
+            set { emailValue = value; OnPropertyChanged(); }
         }
 
         public string password
         {
-            get => _password;
-            set { _password = value; OnPropertyChanged(); OnCanExecuteChanged(LoginCommand); }
+            get => passwordValue;
+            set { passwordValue = value; OnPropertyChanged(); }
         }
 
         // Comandos públicos en PascalCase
-        public ICommand LoginCommand { get; }
-        public ICommand SignUpCommand { get; }
-        public ICommand ForgotPasswordCommand { get; }
-        public ICommand GuestLoginCommand { get; }
+        public ICommand loginCommand { get; }
+        public ICommand signUpCommand { get; }
+        public ICommand forgotPasswordCommand { get; }
+        public ICommand guestLoginCommand { get; }
 
         public LoginViewModel(Action<Page> navigateAction)
         {
             _navigateTo = navigateAction;
-            LoginCommand = new RelayCommand(async (param) => await ExecuteLoginAsync(), (param) => CanExecuteLogin());
-            SignUpCommand = new RelayCommand((param) => ExecuteGoToSignUp());
-            ForgotPasswordCommand = new RelayCommand((param) => ExecuteGoToForgotPassword());
-            GuestLoginCommand = new RelayCommand((param) => ExecuteGuestLogin());
+            loginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
+            signUpCommand = new RelayCommand((param) => executeGoToSignUp());
+            forgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
+            guestLoginCommand = new RelayCommand((param) => executeGuestLogin());
         }
 
-        private bool CanExecuteLogin()
+        private bool canExecuteLogin()
         {
             return !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(password);
         }
 
-        private async Task ExecuteLoginAsync()
+        private async Task executeLoginAsync()
         {
             try
             {
                 var client = new AuthenticationManagerClient();
-
-                // Creando el DTO con la propiedad 'email' que ahora espera el servidor
                 var loginCredentials = new LoginDto
                 {
                     email = this.email,
@@ -83,17 +80,17 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        private void ExecuteGoToSignUp()
+        private void executeGoToSignUp()
         {
             _navigateTo(new CreateAccountPage());
         }
 
-        private void ExecuteGoToForgotPassword()
+        private void executeGoToForgotPassword()
         {
             MessageBox.Show("Forgot Password functionality not implemented yet.", "Info");
         }
 
-        private void ExecuteGuestLogin()
+        private void executeGuestLogin()
         {
             MessageBox.Show("Guest Login functionality not implemented yet.", "Info");
         }

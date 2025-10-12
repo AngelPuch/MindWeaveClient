@@ -23,7 +23,7 @@ namespace MindWeaveClient.View.Main
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new SocialPage());
+            MainFrame.Navigate(new MainMenuPage());
         }
     }
 }
