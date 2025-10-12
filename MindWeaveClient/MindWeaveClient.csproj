@@ -69,6 +69,7 @@
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
+    <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />

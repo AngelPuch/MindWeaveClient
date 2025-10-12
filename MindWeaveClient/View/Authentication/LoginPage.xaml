@@ -4,51 +4,28 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
-      mc:Ignorable="d" 
+      xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"  mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="760"
       Title="LoginPage">
     <Grid>
-
-        <Border Width="400"
-                Height="550"
-                Background="#CCFFFFFF" 
-                CornerRadius="25"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center">
+        <Border Width="400" Height="550" Background="#CCFFFFFF" CornerRadius="25" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Border.Effect>
                 <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="30" Opacity="0.6"/>
             </Border.Effect>
-
             <StackPanel VerticalAlignment="Center" Margin="40">
                 <TextBlock Text="{x:Static language:Lang.GlobalLbGameName}" Foreground="#2c3e50" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,25"/>
 
                 <TextBlock Text="{x:Static language:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,0,0,5"/>
-                <TextBox x:Name="txtEmail" Text="{Binding Email}" Style="{StaticResource AuthInputBoxStyle}"/>
+                <TextBox x:Name="txtEmail" Text="{Binding email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                 <TextBlock Text="{x:Static language:Lang.LogInLbPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                <PasswordBox x:Name="pbPassword" />
+                <PasswordBox x:Name="pbPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Button x:Name="btnLogin" 
-                        Command="{Binding LoginCommand}"
-                        Content="{x:Static language:Lang.LogInBtnLogin}" 
-                        Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,0"/>
-
-                <Button x:Name="btnForgotPassword"
-                        Command="{Binding ForgotPasswordCommand}"
-                        Content="{x:Static language:Lang.LogInBtnRecover}"
-                        Style="{StaticResource LinkButtonStyle}"/>
-
+                <Button x:Name="btnLogin" Command="{Binding loginCommand}" Content="{x:Static language:Lang.LogInBtnLogin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,0"/>
+                <Button x:Name="btnForgotPassword" Command="{Binding forgotPasswordCommand}" Content="{x:Static language:Lang.LogInBtnRecover}" Style="{StaticResource LinkButtonStyle}"/>
                 <StackPanel Margin="0,25,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="btnSignUp"
-                            Command="{Binding SignUpCommand}"
-                            Content="{x:Static language:Lang.GlobalBtnSignUp}"
-                            Style="{StaticResource SecondaryButtonStyle}" Width="140"
-                            Margin="0,0,10,0"/>
-
-                    <Button x:Name="btnGuestLogin"
-                            Command="{Binding GuestLoginCommand}"
-                            Content="{x:Static language:Lang.LoginBtnGuest}"
-                            Style="{StaticResource SecondaryButtonStyle}" Width="140"/>
+                    <Button x:Name="btnSignUp" Command="{Binding signUpCommand}" Content="{x:Static language:Lang.GlobalBtnSignUp}" Style="{StaticResource SecondaryButtonStyle}" Width="140" Margin="0,0,10,0"/>
+                    <Button x:Name="btnGuestLogin" Command="{Binding guestLoginCommand}" Content="{x:Static language:Lang.LoginBtnGuest}" Style="{StaticResource SecondaryButtonStyle}" Width="140"/>
                 </StackPanel>
             </StackPanel>
         </Border>
