@@ -70,7 +70,7 @@
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                     <RadioButton x:Name="rbFriendsList" GroupName="SocialTabs" Content="{x:Static language:Lang.SocialBtnFriendsList}" Style="{StaticResource TabButtonStyle}" IsChecked="True"/>
-                    <RadioButton x:Name="rbAddFriend" GroupName="SocialTabs" Content="{x:Static language:Lang.GlobalBtnAddFriend}" Style="{StaticResource TabButtonStyle}"/>
+                    <RadioButton x:Name="rbAddFriend" GroupName="SocialTabs" Content="{x:Static language:Lang.GlobalBtnAddFriend}" Style="{StaticResource TabButtonStyle}" Checked="rbAddFriend_Checked"/>
                     <RadioButton x:Name="rbRequests" GroupName="SocialTabs" Content="{x:Static language:Lang.SocialBtnRequests}" Style="{StaticResource TabButtonStyle}"/>
                 </StackPanel>
 

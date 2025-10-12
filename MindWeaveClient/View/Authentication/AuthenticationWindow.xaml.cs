@@ -24,5 +24,6 @@ namespace MindWeaveClient.View.Authentication
             InitializeComponent();
             AuthenticationFrame.Navigate(new CreateAccountPage());
         }
+
     }
 }

@@ -24,5 +24,10 @@ namespace MindWeaveClient.View.Main
         {
             InitializeComponent();
         }
+
+        private void rbAddFriend_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
