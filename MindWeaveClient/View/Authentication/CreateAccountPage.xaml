@@ -46,7 +46,7 @@
                     <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#2c3e50" Margin="0,15,0,5"/>
                     <DatePicker x:Name="dpBirthDate" 
                                 SelectedDate="{Binding BirthDate}"
-                                Style="{StaticResource AuthInputBoxStyle}"/>
+                                Style="{StaticResource AuthDatePickerStyle}"/>
 
                     <TextBlock Text="{x:Static language:Lang.SignUpLbGender}" Foreground="#2c3e50" Margin="0,15,0,5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
@@ -60,7 +60,7 @@
                     <TextBox x:Name="txtEmail" Text="{Binding Email}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalTxtNewPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <PasswordBox x:Name="pbPassword" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <PasswordBox x:Name="pbPassword" />
 
                     <Button x:Name="btnSignUp" 
                             Command="{Binding SignUpCommand}"

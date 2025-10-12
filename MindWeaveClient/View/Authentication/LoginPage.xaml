@@ -26,7 +26,7 @@
                 <TextBox x:Name="txtEmail" Text="{Binding Email}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                 <TextBlock Text="{x:Static language:Lang.LogInLbPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                <PasswordBox x:Name="pbPassword" Style="{StaticResource AuthInputBoxStyle}"/>
+                <PasswordBox x:Name="pbPassword" />
 
                 <Button x:Name="btnLogin" 
                         Command="{Binding LoginCommand}"

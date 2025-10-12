@@ -71,7 +71,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="AuthInputBoxStyle" TargetType="{x:Type Control}">
+    <Style x:Key="AuthInputBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Height" Value="45"/>
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Background" Value="#22FFFFFF"/>
@@ -81,7 +81,29 @@
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Control}">
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border" CornerRadius="10" 
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer x:Name="PART_ContentHost"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="PasswordBox">
+        <Setter Property="Height" Value="45"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Background" Value="#22FFFFFF"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type PasswordBox}">
                     <Border x:Name="border" CornerRadius="10" 
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -101,6 +123,16 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="Margin" Value="0,15,0,0"/>
         <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <Style x:Key="AuthDatePickerStyle" TargetType="{x:Type DatePicker}">
+        <Setter Property="Height" Value="45"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Background" Value="#22FFFFFF"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontSize" Value="16"/>
     </Style>
 
 </ResourceDictionary>
