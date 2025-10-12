@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
+      xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="760"
       Title="CreateAccountPage">
@@ -32,44 +33,44 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="0,0,5,0">
                             <TextBlock Text="{x:Static language:Lang.GlobalLbFirstName}" Foreground="#2c3e50" Margin="0,0,0,5" />
-                            <TextBox x:Name="txtFirstName" Text="{Binding FirstName}" Style="{StaticResource AuthInputBoxStyle}"/>
+                            <TextBox x:Name="txtFirstName" Text="{Binding firstName}" Style="{StaticResource AuthInputBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="5,0,0,0">
                             <TextBlock Text="{x:Static language:Lang.GlobalLbLastName}" Foreground="#2c3e50" Margin="0,0,0,5" />
-                            <TextBox x:Name="txtLastName" Text="{Binding LastName}" Style="{StaticResource AuthInputBoxStyle}"/>
+                            <TextBox x:Name="txtLastName" Text="{Binding lastName}" Style="{StaticResource AuthInputBoxStyle}"/>
                         </StackPanel>
                     </Grid>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbUsername}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <TextBox x:Name="txtUsername" Text="{Binding Username}" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBox x:Name="txtUsername" Text="{Binding username}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#2c3e50" Margin="0,15,0,5"/>
                     <DatePicker x:Name="dpBirthDate" 
-                                SelectedDate="{Binding BirthDate}"
+                                SelectedDate="{Binding birthDate}"
                                 Style="{StaticResource AuthDatePickerStyle}"/>
 
                     <TextBlock Text="{x:Static language:Lang.SignUpLbGender}" Foreground="#2c3e50" Margin="0,15,0,5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
-                        <RadioButton x:Name="rbFemale" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbFemale}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsFemale}"/>
-                        <RadioButton x:Name="rbMale" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbMale}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsMale}"/>
-                        <RadioButton x:Name="rbOther" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbOther}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsOther}"/>
-                        <RadioButton x:Name="rbPreferNotToSay" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbNoSay}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsPreferNotToSay}"/>
+                        <RadioButton x:Name="rbFemale" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbFemale}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding isFemale}"/>
+                        <RadioButton x:Name="rbMale" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbMale}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding isMale}"/>
+                        <RadioButton x:Name="rbOther" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbOther}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding isOther}"/>
+                        <RadioButton x:Name="rbPreferNotToSay" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbNoSay}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding isPreferNotToSay}"/>
                     </StackPanel>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <TextBox x:Name="txtEmail" Text="{Binding Email}" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBox x:Name="txtEmail" Text="{Binding email}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalTxtNewPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <PasswordBox x:Name="pbPassword" />
+                    <PasswordBox x:Name="pbPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Button x:Name="btnSignUp" 
-                            Command="{Binding SignUpCommand}"
+                            Command="{Binding signUpCommand}"
                             Content="{x:Static language:Lang.GlobalBtnSignUp}" 
                             Style="{StaticResource PrimaryButtonStyle}"
                             Margin="0,30,0,0"/>
 
                     <Button x:Name="btnGoToLogin"
-                            Command="{Binding GoToLoginCommand}"
+                            Command="{Binding goToLoginCommand}"
                             Content="{x:Static language:Lang.SignUpLbAlreadyAccount}"
                             Style="{StaticResource LinkButtonStyle}"/>
 

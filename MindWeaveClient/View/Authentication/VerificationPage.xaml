@@ -18,11 +18,11 @@
                 <TextBlock Text="{x:Static language:Lang.VerificationAccountLbTitle}" Foreground="#2c3e50" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15" TextWrapping="Wrap" TextAlignment="Center"/>
                 <TextBlock Text="{x:Static language:Lang.VerificationAccountLbInstructions}" Foreground="#2c3e50" TextWrapping="Wrap" Margin="0,0,0,25" TextAlignment="Center"/>
 
-                <TextBox Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" MaxLength="6" FontSize="24" TextAlignment="Center"/>
+                <TextBox Text="{Binding verificationCode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" MaxLength="6" FontSize="24" TextAlignment="Center"/>
 
-                <Button Command="{Binding VerifyCommand}" Content="{x:Static language:Lang.VerificationAccountBtnVerify}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" />
+                <Button Command="{Binding verifyCommand}" Content="{x:Static language:Lang.VerificationAccountBtnVerify}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" />
 
-                <Button Command="{Binding GoBackCommand}" Content="{x:Static language:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
+                <Button Command="{Binding goBackCommand}" Content="{x:Static language:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
             </StackPanel>
         </Border>
     </Grid>
