@@ -10,8 +10,8 @@ namespace MindWeaveClient.View.Authentication
     {
         public CreateAccountPage()
         {
+            InitializeComponent(); // Agrega esta línea
             this.DataContext = new CreateAccountViewModel(page => this.NavigationService?.Navigate(page));
-
         }
     }
 }

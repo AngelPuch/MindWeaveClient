@@ -24,7 +24,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         public VerificationViewModel(string email, Action<Page> navigateTo, Action navigateBack)
         {
-            email = email;
+            this.email = email;
             this.navigateTo = navigateTo;
             this.navigateBack = navigateBack;
             verifyCommand = new RelayCommand(async (param) => await executeVerify());
