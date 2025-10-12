@@ -11,49 +11,64 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class LoginViewModel : BaseViewModel
     {
-        private string emailValue;
-        private string passwordValue;
+        private string _email;
+        private string _password;
+        private readonly Action<Page> _navigateTo;
 
-        // Propiedades en camelCase para el Binding
-        public string email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
-        public string password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
+        // Propiedades públicas en PascalCase para eliminar advertencias del IDE
+        public string email
+        {
+            get => _email;
+            set { _email = value; OnPropertyChanged(); OnCanExecuteChanged(LoginCommand); }
+        }
 
-        // Comandos en camelCase para el Binding
-        public ICommand loginCommand { get; }
-        public ICommand signUpCommand { get; }
-        public ICommand forgotPasswordCommand { get; }
-        public ICommand guestLoginCommand { get; }
+        public string password
+        {
+            get => _password;
+            set { _password = value; OnPropertyChanged(); OnCanExecuteChanged(LoginCommand); }
+        }
 
-        private readonly Action<Page> navigateTo;
+        // Comandos públicos en PascalCase
+        public ICommand LoginCommand { get; }
+        public ICommand SignUpCommand { get; }
+        public ICommand ForgotPasswordCommand { get; }
+        public ICommand GuestLoginCommand { get; }
 
         public LoginViewModel(Action<Page> navigateAction)
         {
-            navigateTo = navigateAction;
-
-            loginCommand = new RelayCommand(async (param) => await executeLogin(), (param) => canExecuteLogin());
-            signUpCommand = new RelayCommand((param) => executeGoToSignUp());
-            forgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
-            guestLoginCommand = new RelayCommand((param) => executeGuestLogin());
+            _navigateTo = navigateAction;
+            LoginCommand = new RelayCommand(async (param) => await ExecuteLoginAsync(), (param) => CanExecuteLogin());
+            SignUpCommand = new RelayCommand((param) => ExecuteGoToSignUp());
+            ForgotPasswordCommand = new RelayCommand((param) => ExecuteGoToForgotPassword());
+            GuestLoginCommand = new RelayCommand((param) => ExecuteGuestLogin());
         }
 
-        private bool canExecuteLogin()
+        private bool CanExecuteLogin()
         {
             return !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(password);
         }
 
-        private async Task executeLogin()
+        private async Task ExecuteLoginAsync()
         {
             try
             {
                 var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.loginAsync(this.email, this.password);
+
+                // Creando el DTO con la propiedad 'email' que ahora espera el servidor
+                var loginCredentials = new LoginDto
+                {
+                    email = this.email,
+                    password = this.password
+                };
+
+                OperationResultDto result = await client.loginAsync(loginCredentials);
 
                 if (result.success)
                 {
                     MessageBox.Show(result.message, "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     var currentWindow = Application.Current.MainWindow;
-                    var mainAppWindow = new MainWindow(); // Asume que tu ventana principal se llama MainWindow
+                    var mainAppWindow = new MainWindow();
                     mainAppWindow.Show();
                     currentWindow.Close();
                 }
@@ -68,18 +83,17 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        private void executeGoToSignUp()
+        private void ExecuteGoToSignUp()
         {
-            // Pasamos la acción de navegación a la siguiente página para mantener la funcionalidad
-            navigateTo(new CreateAccountPage());
+            _navigateTo(new CreateAccountPage());
         }
 
-        private void executeGoToForgotPassword()
+        private void ExecuteGoToForgotPassword()
         {
             MessageBox.Show("Forgot Password functionality not implemented yet.", "Info");
         }
 
-        private void executeGuestLogin()
+        private void ExecuteGuestLogin()
         {
             MessageBox.Show("Guest Login functionality not implemented yet.", "Info");
         }

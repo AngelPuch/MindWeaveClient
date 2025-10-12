@@ -15,6 +15,68 @@ namespace MindWeaveClient.AuthenticationService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LoginDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.A" +
+        "uthentication")]
+    [System.SerializableAttribute()]
+    public partial class LoginDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string emailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string passwordField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string email {
+            get {
+                return this.emailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.emailField, value) != true)) {
+                    this.emailField = value;
+                    this.RaisePropertyChanged("email");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string password {
+            get {
+                return this.passwordField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.passwordField, value) != true)) {
+                    this.passwordField = value;
+                    this.RaisePropertyChanged("password");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
     [System.SerializableAttribute()]
     public partial class OperationResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -220,10 +282,10 @@ namespace MindWeaveClient.AuthenticationService {
     public interface IAuthenticationManager {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/login", ReplyAction="http://tempuri.org/IAuthenticationManager/loginResponse")]
-        MindWeaveClient.AuthenticationService.OperationResultDto login(string username, string password);
+        MindWeaveClient.AuthenticationService.OperationResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/login", ReplyAction="http://tempuri.org/IAuthenticationManager/loginResponse")]
-        System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> loginAsync(string username, string password);
+        System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/register", ReplyAction="http://tempuri.org/IAuthenticationManager/registerResponse")]
         MindWeaveClient.AuthenticationService.OperationResultDto register(MindWeaveClient.AuthenticationService.UserProfileDto userProfile, string password);
@@ -283,12 +345,12 @@ namespace MindWeaveClient.AuthenticationService {
                 base(binding, remoteAddress) {
         }
         
-        public MindWeaveClient.AuthenticationService.OperationResultDto login(string username, string password) {
-            return base.Channel.login(username, password);
+        public MindWeaveClient.AuthenticationService.OperationResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials) {
+            return base.Channel.login(loginCredentials);
         }
         
-        public System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> loginAsync(string username, string password) {
-            return base.Channel.loginAsync(username, password);
+        public System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials) {
+            return base.Channel.loginAsync(loginCredentials);
         }
         
         public MindWeaveClient.AuthenticationService.OperationResultDto register(MindWeaveClient.AuthenticationService.UserProfileDto userProfile, string password) {
