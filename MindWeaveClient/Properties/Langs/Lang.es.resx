@@ -351,4 +351,13 @@
   <data name="LobbyTxtSearchFriends" xml:space="preserve">
     <value>¡Busca amigos!</value>
   </data>
+  <data name="VerificationAccountLbTitle" xml:space="preserve">
+    <value>Verifica tu cuenta</value>
+  </data>
+  <data name="VerificationAccountLbInstructions" xml:space="preserve">
+    <value>Te hemos enviado un código de 6 dígitos a tu correo electrónico. Introdúcelo a continuación para activar tu cuenta.</value>
+  </data>
+  <data name="VerificationAccountBtnVerify" xml:space="preserve">
+    <value>Verificar cuenta</value>
+  </data>
 </root>

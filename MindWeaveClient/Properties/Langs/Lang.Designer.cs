@@ -761,5 +761,32 @@ namespace MindWeaveClient.Properties.Langs {
                 return ResourceManager.GetString("SocialLbSentRequests", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Verify Account.
+        /// </summary>
+        public static string VerificationAccountBtnVerify {
+            get {
+                return ResourceManager.GetString("VerificationAccountBtnVerify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a We&apos;ve sent a 6-digit code to your email. Please enter it below to activate your account..
+        /// </summary>
+        public static string VerificationAccountLbInstructions {
+            get {
+                return ResourceManager.GetString("VerificationAccountLbInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Verify Your Account.
+        /// </summary>
+        public static string VerificationAccountLbTitle {
+            get {
+                return ResourceManager.GetString("VerificationAccountLbTitle", resourceCulture);
+            }
+        }
     }
 }
