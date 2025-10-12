@@ -360,4 +360,10 @@
   <data name="VerificationAccountBtnVerify" xml:space="preserve">
     <value>Verify Account</value>
   </data>
+  <data name="VerificationCodeResend" xml:space="preserve">
+    <value>¿No recibiste el código? Reenviar</value>
+  </data>
+  <data name="VerificationCodeInvalidFormat" xml:space="preserve">
+    <value>El código de verificación solo debe contener 6 números.</value>
+  </data>
 </root>

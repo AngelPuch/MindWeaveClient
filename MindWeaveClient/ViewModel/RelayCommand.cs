@@ -29,5 +29,10 @@ namespace MindWeaveClient.ViewModel
         {
             execute(parameter);
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

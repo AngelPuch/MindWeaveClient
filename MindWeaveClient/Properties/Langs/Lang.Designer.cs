@@ -788,5 +788,23 @@ namespace MindWeaveClient.Properties.Langs {
                 return ResourceManager.GetString("VerificationAccountLbTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El código de verificación solo debe contener 6 números..
+        /// </summary>
+        public static string VerificationCodeInvalidFormat {
+            get {
+                return ResourceManager.GetString("VerificationCodeInvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ¿No recibiste el código? Reenviar.
+        /// </summary>
+        public static string VerificationCodeResend {
+            get {
+                return ResourceManager.GetString("VerificationCodeResend", resourceCulture);
+            }
+        }
     }
 }

@@ -18,9 +18,16 @@
                 <TextBlock Text="{x:Static language:Lang.VerificationAccountLbTitle}" Foreground="#2c3e50" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15" TextWrapping="Wrap" TextAlignment="Center"/>
                 <TextBlock Text="{x:Static language:Lang.VerificationAccountLbInstructions}" Foreground="#2c3e50" TextWrapping="Wrap" Margin="0,0,0,25" TextAlignment="Center"/>
 
-                <TextBox Text="{Binding verificationCode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" MaxLength="6" FontSize="24" TextAlignment="Center"/>
+                <TextBox Text="{Binding verificationCode, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource AuthInputBoxStyle}" 
+                         MaxLength="6" 
+                         FontSize="24" 
+                         TextAlignment="Center"
+                         PreviewTextInput="CodeTextBox_PreviewTextInput"/>
 
                 <Button Command="{Binding verifyCommand}" Content="{x:Static language:Lang.VerificationAccountBtnVerify}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" />
+
+                <Button Content="{x:Static language:Lang.VerificationCodeResend}" Style="{StaticResource LinkButtonStyle}" Command="{Binding resendCodeCommand}"/>
 
                 <Button Command="{Binding goBackCommand}" Content="{x:Static language:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
             </StackPanel>

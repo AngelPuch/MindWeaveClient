@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,5 +31,13 @@ namespace MindWeaveClient.View.Authentication
                 () => { if (this.NavigationService.CanGoBack) this.NavigationService.GoBack(); }
             );
         }
+
+        private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+"); // Solo permite números
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+
     }
 }

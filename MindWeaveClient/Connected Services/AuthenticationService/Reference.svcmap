@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="0529da3a-8fd5-4f05-bb8e-4a695c13490a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="03f8f03c-3254-4092-a7e5-73f380f5e92e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,11 +22,11 @@
     <MetadataSource Address="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="4298482e-229b-4e72-b0de-27dc9d1c20ba" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="844e52d3-36c3-47a8-9a2d-ad3a53c8a6d0" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="8d24780f-a807-4410-b8a7-7fd94d3de9a7" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Authentication.xsd" MetadataType="Schema" ID="385b6476-84a0-4c96-a7f9-da1824f00667" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="423d81f9-b64f-4095-b28d-d0e637584765" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="7e090fa2-216a-4ef4-b423-d1634c708f24" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="225c4982-bd1a-4ec2-89d8-8c92c580fd4e" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="7ba48562-94ac-471d-aa2a-9c3addfdf670" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Authentication.xsd" MetadataType="Schema" ID="8b4813d8-1b60-4e33-afcc-b7c2db4bfabd" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="016fcb47-4582-4f37-a34e-bb84c64e23cf" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/AuthenticationManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
