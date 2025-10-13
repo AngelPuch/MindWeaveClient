@@ -27,6 +27,7 @@
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="e98dde3a-2ef7-4d99-9fad-16f1e3577983" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Stats.xsd" MetadataType="Schema" ID="c2f339b4-d9db-42ac-9167-8ab081436214" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="bc64b9ef-8711-4a6b-998a-dadafbf507a4" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Profile.xsd" MetadataType="Schema" ID="9c2cdf9c-5e71-4b98-a8a4-6386e15185b8" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

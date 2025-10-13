@@ -78,6 +78,7 @@
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\Main\EditProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
@@ -231,6 +232,12 @@
     </None>
     <None Include="Connected Services\ProfileService\MindWeaveClient.ProfileService.UserProfileDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ProfileService\MindWeaveClient.ProfileService.UserProfileForEditDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Profile.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Stats.xsd">
       <SubType>Designer</SubType>

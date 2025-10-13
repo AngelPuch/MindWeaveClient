@@ -11,12 +11,7 @@ namespace MindWeaveClient.View.Main
         public ProfilePage()
         {
             InitializeComponent();
-            DataContext = new ProfileViewModel(() => {
-                if (NavigationService.CanGoBack)
-                {
-                    NavigationService.GoBack();
-                }
-            });
+           
         }
     }
 }

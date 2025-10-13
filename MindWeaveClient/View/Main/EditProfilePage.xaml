@@ -13,29 +13,26 @@
             <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>
         </Grid.Background>
 
-        <Border Background="#CCFFFFFF" 
-                CornerRadius="25"
-                HorizontalAlignment="Center"
+        <Border Background="#D8FFFFFF" 
+                CornerRadius="20" 
+                HorizontalAlignment="Center" 
                 VerticalAlignment="Center"
-                Width="800">
+                MaxWidth="800"
+                Padding="40">
             <Border.Effect>
-                <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="30" Opacity="0.5"/>
+                <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="30" Opacity="0.3"/>
             </Border.Effect>
 
-            <Grid Margin="40">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{x:Static language:Lang.GlobalCommonEditProfile}" 
-                           Grid.Row="0"
-                           FontSize="36" 
-                           FontWeight="Bold" 
-                           Foreground="#2c3e50" 
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,25"/>
+                <TextBlock Grid.Row="0" Text="{x:Static language:Lang.GlobalCommonEditProfile}" 
+                           Foreground="#2c3e50" FontSize="32" FontWeight="Bold"
+                           HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -43,61 +40,46 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Margin="0,0,40,0" VerticalAlignment="Top">
-                        <Grid Width="200" Height="200">
-                            <Border CornerRadius="100" BorderBrush="{StaticResource PrimaryColor}" BorderThickness="4">
-                                <Ellipse>
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding AvatarSource}" Stretch="UniformToFill"/>
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                            </Border>
-                            <Button HorizontalAlignment="Right" VerticalAlignment="Top" 
-                                    Width="40" Height="40" Cursor="Hand" ToolTip="Cambiar avatar">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Grid>
-                                            <Ellipse Fill="{StaticResource SecondaryColor}"/>
-                                            <TextBlock Text="✏️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </Grid>
-
-                        <TextBlock Text="{x:Static language:Lang.GlobalLbUsername}" Foreground="#2c3e50" Margin="0,20,0,5"/>
-                        <TextBox Text="{Binding username}" d:Text="Hyelo" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,50,0">
+                        <Border Width="180" Height="180" CornerRadius="90" 
+            BorderBrush="{StaticResource PrimaryColor}" BorderThickness="4">
+                            <Ellipse>
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding avatarSource}" Stretch="UniformToFill"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Border>
+                        <Button Command="{Binding changeAvatarCommand}" Content="{x:Static language:Lang.EditProfileBtnChangeAvatar}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,20,0,10" Width="180" Height="40"/>
+                        <Button Command="{Binding changePasswordCommand}" Content="{x:Static language:Lang.EditProfileBtnChangePassword}" Style="{StaticResource SecondaryButtonStyle}" Width="180" Height="40"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="{x:Static language:Lang.GlobalLbFirstName}" Foreground="#2c3e50" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding FirstName}" d:Text="Aldo Antonio" Style="{StaticResource AuthInputBoxStyle}"/>
+                        <TextBlock Text="{x:Static language:Lang.GlobalLbFirstName}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
+                        <TextBox Text="{Binding firstName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="{x:Static language:Lang.GlobalLbLastName}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                        <TextBox Text="{Binding LastName}" d:Text="Campos" Style="{StaticResource AuthInputBoxStyle}"/>
+                        <TextBlock Text="{x:Static language:Lang.GlobalLbLastName}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
+                        <TextBox Text="{Binding lastName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                        <DatePicker SelectedDate="{Binding BirthDate}" Style="{StaticResource AuthDatePickerStyle}"/>
+                        <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
+                        <DatePicker SelectedDate="{Binding dateOfBirth}" Style="{StaticResource AuthDatePickerStyle}" Margin="0,0,0,15"/>
 
-                        <Button Content="{x:Static language:Lang.EditProfileBtnChangePassword}" 
-                                Command="{Binding ChangePasswordCommand}"
-                                Style="{StaticResource SecondaryButtonStyle}"
-                                Margin="0,20,0,0"
-                                HorizontalAlignment="Stretch" Width="Auto"/>
+                        <TextBlock Text="{x:Static language:Lang.GlobalLbGender}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
+                        <ComboBox ItemsSource="{Binding genders}" 
+                                  SelectedItem="{Binding selectedGender}"
+                                  DisplayMemberPath="name"
+                                  Height="45" Padding="10,5" Background="#22FFFFFF" BorderBrush="{StaticResource PrimaryColor}" BorderThickness="2" FontSize="16"
+                                  Margin="0,0,0,25"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="2" Margin="0,30,0,0">
-                    <Button Content="{x:Static language:Lang.GlobalBtnCancel}" 
-                            Command="{Binding CancelCommand}"
-                            Style="{StaticResource SecondaryButtonStyle}" 
-                            HorizontalAlignment="Left"
-                            Width="180"/>
-                    <Button Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" 
-                            Command="{Binding SaveChangesCommand}"
-                            Style="{StaticResource PrimaryButtonStyle}" 
-                            HorizontalAlignment="Right"
-                            Width="180"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Command="{Binding cancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Grid.Column="1" Command="{Binding saveChangesCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0" Click="Button_Click"/>
                 </Grid>
             </Grid>
         </Border>

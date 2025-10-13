@@ -6,6 +6,7 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Profile" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IProfileManager_getPlayerProfileView_InputMessage">
@@ -32,6 +33,12 @@
   <wsdl:message name="IProfileManager_changePassword_OutputMessage">
     <wsdl:part name="parameters" element="tns:changePasswordResponse" />
   </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileForEdit_InputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerProfileForEdit" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileForEdit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerProfileForEditResponse" />
+  </wsdl:message>
   <wsdl:portType name="IProfileManager">
     <wsdl:operation name="getPlayerProfileView">
       <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileView" message="tns:IProfileManager_getPlayerProfileView_InputMessage" />
@@ -48,6 +55,10 @@
     <wsdl:operation name="changePassword">
       <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/changePassword" message="tns:IProfileManager_changePassword_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/changePasswordResponse" message="tns:IProfileManager_changePassword_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getPlayerProfileForEdit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit" message="tns:IProfileManager_getPlayerProfileForEdit_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse" message="tns:IProfileManager_getPlayerProfileForEdit_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IProfileManager" type="tns:IProfileManager">
@@ -81,6 +92,15 @@
     </wsdl:operation>
     <wsdl:operation name="changePassword">
       <soap:operation soapAction="http://tempuri.org/IProfileManager/changePassword" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPlayerProfileForEdit">
+      <soap:operation soapAction="http://tempuri.org/IProfileManager/getPlayerProfileForEdit" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

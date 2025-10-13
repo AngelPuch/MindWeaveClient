@@ -2,6 +2,7 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Profile" />
   <xs:element name="getPlayerProfileView">
     <xs:complexType>
       <xs:sequence>
@@ -34,7 +35,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="newProfileDtoData" nillable="true" type="q3:UserProfileDto" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Profile" minOccurs="0" name="updatedProfileData" nillable="true" type="q3:UserProfileForEditDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -58,6 +59,20 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="changePasswordResult" nillable="true" type="q5:OperationResultDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getPlayerProfileForEdit">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getPlayerProfileForEditResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Profile" minOccurs="0" name="getPlayerProfileForEditResult" nillable="true" type="q6:UserProfileForEditDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

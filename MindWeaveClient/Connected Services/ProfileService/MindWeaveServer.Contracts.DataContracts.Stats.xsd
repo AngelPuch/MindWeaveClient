@@ -5,6 +5,10 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="achievements" nillable="true" type="tns:ArrayOfAchievementDto" />
       <xs:element minOccurs="0" name="avatarPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="dateOfBirth" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="firstName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="gender" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="lastName" nillable="true" type="xs:string" />
       <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="stats" nillable="true" type="q1:PlayerStatsDto" />
       <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
     </xs:sequence>

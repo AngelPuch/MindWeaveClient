@@ -147,9 +147,6 @@
   <data name="GlobalBtnSignUp" xml:space="preserve">
     <value>Registrarse</value>
   </data>
-  <data name="SignUpLbGender" xml:space="preserve">
-    <value>Género</value>
-  </data>
   <data name="SignUpLbNewAccount" xml:space="preserve">
     <value>Crear una cuenta</value>
   </data>
@@ -365,5 +362,23 @@
   </data>
   <data name="VerificationCodeInvalidFormat" xml:space="preserve">
     <value>The verification code must contain 6 digits only.</value>
+  </data>
+  <data name="ErrorFailedToLoadProfile" xml:space="preserve">
+    <value>Failed to load profile data</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ProfileLbPersonalInfo" xml:space="preserve">
+    <value>Información Personal</value>
+  </data>
+  <data name="GlobalLbGender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="EditProfileTitle" xml:space="preserve">
+    <value>Editar Perfil</value>
+  </data>
+  <data name="EditProfileBtnChangeAvatar" xml:space="preserve">
+    <value>Cambiar Avatar</value>
   </data>
 </root>

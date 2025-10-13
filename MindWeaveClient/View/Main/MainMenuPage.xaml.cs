@@ -12,7 +12,7 @@ namespace MindWeaveClient.View.Main
         public MainMenuPage(Action<Page> navigateTo)
         {
             InitializeComponent();
-            DataContext = new MainMenuViewModel(navigateTo);
+            DataContext = new MainMenuViewModel(navigateTo, this);
         }
     }
 }

@@ -61,6 +61,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Change Avatar.
+        /// </summary>
+        public static string EditProfileBtnChangeAvatar {
+            get {
+                return ResourceManager.GetString("EditProfileBtnChangeAvatar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Change password.
         /// </summary>
         public static string EditProfileBtnChangePassword {
@@ -75,6 +84,33 @@ namespace MindWeaveClient.Properties.Langs {
         public static string EditProfileBtnSaveChanges {
             get {
                 return ResourceManager.GetString("EditProfileBtnSaveChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Edit Profile.
+        /// </summary>
+        public static string EditProfileTitle {
+            get {
+                return ResourceManager.GetString("EditProfileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error al cargar los datos del perfil.
+        /// </summary>
+        public static string ErrorFailedToLoadProfile {
+            get {
+                return ResourceManager.GetString("ErrorFailedToLoadProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error.
+        /// </summary>
+        public static string ErrorTitle {
+            get {
+                return ResourceManager.GetString("ErrorTitle", resourceCulture);
             }
         }
         
@@ -183,6 +219,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string GlobalLbGameName {
             get {
                 return ResourceManager.GetString("GlobalLbGameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Género.
+        /// </summary>
+        public static string GlobalLbGender {
+            get {
+                return ResourceManager.GetString("GlobalLbGender", resourceCulture);
             }
         }
         
@@ -475,6 +520,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Personal Information.
+        /// </summary>
+        public static string ProfileLbPersonalInfo {
+            get {
+                return ResourceManager.GetString("ProfileLbPersonalInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Puzzles completed:.
         /// </summary>
         public static string ProfileLbPuzzlesCompleted {
@@ -615,15 +669,6 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SignUpLbAlreadyAccount {
             get {
                 return ResourceManager.GetString("SignUpLbAlreadyAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Gender.
-        /// </summary>
-        public static string SignUpLbGender {
-            get {
-                return ResourceManager.GetString("SignUpLbGender", resourceCulture);
             }
         }
         
