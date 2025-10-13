@@ -81,6 +81,7 @@
     <Compile Include="ViewModel\Main\EditProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
+    <Compile Include="ViewModel\Main\SelectAvatarViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
@@ -114,6 +115,9 @@
     </Compile>
     <Compile Include="View\Main\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Main\SelectAvatarPage.xaml.cs">
+      <DependentUpon>SelectAvatarPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Main\SocialPage.xaml.cs">
       <DependentUpon>SocialPage.xaml</DependentUpon>
@@ -170,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Main\ProfilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Main\SelectAvatarPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

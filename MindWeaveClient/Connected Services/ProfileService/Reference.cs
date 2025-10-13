@@ -749,6 +749,12 @@ namespace MindWeaveClient.ProfileService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.UserProfileForEditDto> getPlayerProfileForEditAsync(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateAvatarPath", ReplyAction="http://tempuri.org/IProfileManager/updateAvatarPathResponse")]
+        MindWeaveClient.ProfileService.OperationResultDto updateAvatarPath(string username, string newAvatarPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateAvatarPath", ReplyAction="http://tempuri.org/IProfileManager/updateAvatarPathResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateAvatarPathAsync(string username, string newAvatarPath);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -816,6 +822,14 @@ namespace MindWeaveClient.ProfileService {
         
         public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.UserProfileForEditDto> getPlayerProfileForEditAsync(string username) {
             return base.Channel.getPlayerProfileForEditAsync(username);
+        }
+        
+        public MindWeaveClient.ProfileService.OperationResultDto updateAvatarPath(string username, string newAvatarPath) {
+            return base.Channel.updateAvatarPath(username, newAvatarPath);
+        }
+        
+        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateAvatarPathAsync(string username, string newAvatarPath) {
+            return base.Channel.updateAvatarPathAsync(username, newAvatarPath);
         }
     }
 }

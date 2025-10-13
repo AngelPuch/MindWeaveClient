@@ -565,6 +565,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Select your Avatar!.
+        /// </summary>
+        public static string SelectAvatarTitle {
+            get {
+                return ResourceManager.GetString("SelectAvatarTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a CREDITS.
         /// </summary>
         public static string SettingsBtnCredits {

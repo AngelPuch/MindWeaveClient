@@ -15,6 +15,7 @@ namespace MindWeaveClient.ViewModel.Main
     public class EditProfileViewModel : BaseViewModel
     {
         private readonly Action navigateBack;
+        private readonly Action navigateToSelectAvatar; 
 
         // --- Backing Fields (con 'Value' al final) ---
         private string firstNameValue;
@@ -38,16 +39,17 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand changeAvatarCommand { get; }
         public ICommand changePasswordCommand { get; }
 
-        public EditProfileViewModel(Action navigateBack)
+        public EditProfileViewModel(Action navigateBack, Action navigateToSelectAvatar)
         {
             this.navigateBack = navigateBack;
+            this.navigateToSelectAvatar = navigateToSelectAvatar;
+
             cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke());
 
-            // --- LÍNEA MODIFICADA ---
-            // Ahora el comando llama a nuestro método asíncrono 'saveChanges'
             saveChangesCommand = new RelayCommand(async p => await saveChanges(), p => canSaveChanges());
 
-            changeAvatarCommand = new RelayCommand(p => MessageBox.Show("Change avatar not implemented yet."));
+            changeAvatarCommand = new RelayCommand(p => this.navigateToSelectAvatar?.Invoke());
+
             changePasswordCommand = new RelayCommand(p => MessageBox.Show("Change password not implemented yet."));
 
             genders = new ObservableCollection<GenderDto>();
@@ -56,14 +58,11 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async void loadEditableData()
         {
-            // ... (este método se queda igual) ...
             try
             {
                 avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
                 var client = new ProfileManagerClient();
-                // --- ¡IMPORTANTE! ---
-                // Si aquí te da error, es porque falta actualizar la referencia del servicio por última vez
-                // para que el cliente reconozca el UserProfileForEditDto que creamos.
+     
                 var profileData = await client.getPlayerProfileForEditAsync(SessionService.username);
                 if (profileData != null)
                 {
@@ -86,7 +85,6 @@ namespace MindWeaveClient.ViewModel.Main
             return !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName) && selectedGender != null;
         }
 
-        // --- MÉTODO NUEVO PARA GUARDAR ---
         private async Task saveChanges()
         {
             var updatedProfile = new UserProfileForEditDto

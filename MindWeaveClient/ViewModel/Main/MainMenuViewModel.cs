@@ -1,6 +1,9 @@
-﻿using MindWeaveClient.Services;
+﻿// MindWeaveClient/ViewModel/Main/MainMenuViewModel.cs
+
+using MindWeaveClient.Services;
 using MindWeaveClient.View.Main;
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -8,14 +11,12 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class MainMenuViewModel : BaseViewModel
     {
-        private readonly Action<Page> _navigateTo;
-        private readonly Page _mainMenuPage;
+        private readonly Action<Page> navigateTo;
+        private readonly Page mainMenuPage;
 
-        // --- Propiedades públicas en camelCase ---
         public string playerUsername { get; }
         public string playerAvatarPath { get; }
 
-        // --- Comandos públicos en camelCase ---
         public ICommand profileCommand { get; }
         public ICommand playCommand { get; }
         public ICommand socialCommand { get; }
@@ -23,8 +24,8 @@ namespace MindWeaveClient.ViewModel.Main
 
         public MainMenuViewModel(Action<Page> navigateTo, Page mainMenuPage)
         {
-            _navigateTo = navigateTo;
-            _mainMenuPage = mainMenuPage;
+            this.navigateTo = navigateTo;
+            this.mainMenuPage = mainMenuPage;
 
             playerUsername = SessionService.username;
             playerAvatarPath = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
@@ -33,24 +34,37 @@ namespace MindWeaveClient.ViewModel.Main
             // TO-DO: Implementar otros comandos
         }
 
-        // --- Métodos privados en camelCase ---
         private void executeGoToProfile()
         {
             var profilePage = new ProfilePage();
+            // Le pasamos al ProfileViewModel las dos instrucciones que necesita
             profilePage.DataContext = new ProfileViewModel(
-                () => _navigateTo(_mainMenuPage),
-                () => executeGoToEditProfile()
+                () => navigateTo(mainMenuPage),      // 1. Para volver al menú
+                () => executeGoToEditProfile()       // 2. Para ir a editar
             );
-            _navigateTo(profilePage);
+            navigateTo(profilePage);
         }
 
         private void executeGoToEditProfile()
         {
             var editProfilePage = new EditProfilePage();
+            // Ahora le pasamos al EditProfileViewModel las DOS instrucciones que pide
             editProfilePage.DataContext = new EditProfileViewModel(
-                () => executeGoToProfile()
+                () => executeGoToProfile(),          // 1. Para cancelar y volver al perfil
+                () => executeGoToSelectAvatar()      // 2. Para cambiar el avatar
             );
-            _navigateTo(editProfilePage);
+            navigateTo(editProfilePage);
         }
+
+        private void executeGoToSelectAvatar()
+        {
+            var selectAvatarPage = new SelectAvatarPage(); // <-- Aún no hemos creado este archivo XAML
+                                                           // Creamos el ViewModel de la galería y le pasamos la instrucción para volver a la página de edición
+            selectAvatarPage.DataContext = new SelectAvatarViewModel(
+                () => executeGoToEditProfile()
+            );
+            navigateTo(selectAvatarPage);
+        }
+
     }
 }

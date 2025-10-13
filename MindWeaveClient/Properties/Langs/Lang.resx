@@ -381,4 +381,7 @@
   <data name="EditProfileBtnChangeAvatar" xml:space="preserve">
     <value>Change Avatar</value>
   </data>
+  <data name="SelectAvatarTitle" xml:space="preserve">
+    <value>Select your Avatar!</value>
+  </data>
 </root>

@@ -39,6 +39,12 @@
   <wsdl:message name="IProfileManager_getPlayerProfileForEdit_OutputMessage">
     <wsdl:part name="parameters" element="tns:getPlayerProfileForEditResponse" />
   </wsdl:message>
+  <wsdl:message name="IProfileManager_updateAvatarPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:updateAvatarPath" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateAvatarPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:updateAvatarPathResponse" />
+  </wsdl:message>
   <wsdl:portType name="IProfileManager">
     <wsdl:operation name="getPlayerProfileView">
       <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileView" message="tns:IProfileManager_getPlayerProfileView_InputMessage" />
@@ -59,6 +65,10 @@
     <wsdl:operation name="getPlayerProfileForEdit">
       <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit" message="tns:IProfileManager_getPlayerProfileForEdit_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse" message="tns:IProfileManager_getPlayerProfileForEdit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="updateAvatarPath">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/updateAvatarPath" message="tns:IProfileManager_updateAvatarPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/updateAvatarPathResponse" message="tns:IProfileManager_updateAvatarPath_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IProfileManager" type="tns:IProfileManager">
@@ -101,6 +111,15 @@
     </wsdl:operation>
     <wsdl:operation name="getPlayerProfileForEdit">
       <soap:operation soapAction="http://tempuri.org/IProfileManager/getPlayerProfileForEdit" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateAvatarPath">
+      <soap:operation soapAction="http://tempuri.org/IProfileManager/updateAvatarPath" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
