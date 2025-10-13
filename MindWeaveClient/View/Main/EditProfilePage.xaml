@@ -66,7 +66,7 @@
                         </Grid>
 
                         <TextBlock Text="{x:Static language:Lang.GlobalLbUsername}" Foreground="#2c3e50" Margin="0,20,0,5"/>
-                        <TextBox Text="{Binding Username}" d:Text="Hyelo" Style="{StaticResource AuthInputBoxStyle}"/>
+                        <TextBox Text="{Binding username}" d:Text="Hyelo" Style="{StaticResource AuthInputBoxStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
@@ -77,7 +77,7 @@
                         <TextBox Text="{Binding LastName}" d:Text="Campos" Style="{StaticResource AuthInputBoxStyle}"/>
 
                         <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                        <DatePicker SelectedDate="{Binding BirthDate}" Style="{StaticResource AuthInputBoxStyle}"/>
+                        <DatePicker SelectedDate="{Binding BirthDate}" Style="{StaticResource AuthDatePickerStyle}"/>
 
                         <Button Content="{x:Static language:Lang.EditProfileBtnChangePassword}" 
                                 Command="{Binding ChangePasswordCommand}"

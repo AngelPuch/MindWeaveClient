@@ -22,7 +22,7 @@
 
             <TextBlock x:Name="lblWelcomeMessage"
                        Grid.Row="0"
-                       Text="{Binding WelcomeMessage}"
+                       Text="{Binding welcomeMessage}"
                        d:Text="¡HOLA, HYELO!"
                        Foreground="#2c3e50" 
                        FontSize="48" 
@@ -48,12 +48,12 @@
                         </Border.Effect>
                         <Ellipse>
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding AvatarSource}" Stretch="UniformToFill"/>
+                                <ImageBrush ImageSource="{Binding avatarSource}" Stretch="UniformToFill"/>
                             </Ellipse.Fill>
                         </Ellipse>
                     </Border>
                     <TextBlock x:Name="lblUsername" 
-                               Text="{Binding Username}"
+                               Text="{Binding username}"
                                d:Text="Hyelo"
                                Foreground="#2c3e50" 
                                FontSize="32" 
@@ -82,16 +82,16 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbPuzzlesCompleted}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PuzzlesCompleted}" d:Text="125" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding puzzlesCompleted}" d:Text="125" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbPuzzlesWon}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PuzzlesWon}" d:Text="20" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding puzzlesWon}" d:Text="20" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
 
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbTotalPlaytime}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalPlaytime}" d:Text="45H 40m" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding totalPlaytime}" d:Text="45H 40m" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbHighestScore}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HighestScore}" d:Text="1,000 pts" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding highestScore}" d:Text="1,000 pts" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -102,7 +102,7 @@
                         </Border.Effect>
                         <StackPanel>
                             <TextBlock Text="{x:Static language:Lang.ProfileLbAchievements}" Foreground="#2c3e50" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
-                            <ItemsControl x:Name="icAchievements" ItemsSource="{Binding Achievements}">
+                            <ItemsControl x:Name="icAchievements" ItemsSource="{Binding achievements}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel/>
@@ -121,14 +121,14 @@
 
             <Grid Grid.Row="2" Margin="0,20,0,0">
                 <Button x:Name="btnBack" 
-                        Command="{Binding BackCommand}"
+                        Command="{Binding backCommand}"
                         Content="{x:Static language:Lang.GlobalBtnBack}" 
                         Style="{StaticResource SecondaryButtonStyle}"
                         HorizontalAlignment="Left"
                         Width="180"/>
 
                 <Button x:Name="btnEditProfile" 
-                        Command="{Binding EditProfileCommand}"
+                        Command="{Binding editProfileCommand}"
                         Content="{x:Static language:Lang.GlobalCommonEditProfile}" 
                         Style="{StaticResource PrimaryButtonStyle}"
                         HorizontalAlignment="Right"

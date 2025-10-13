@@ -208,7 +208,7 @@
     <value>Puntuación:</value>
   </data>
   <data name="ProfileLbHi" xml:space="preserve">
-    <value>¡HOLA!</value>
+    <value>¡HOLA, </value>
   </data>
   <data name="ProfileLbStats" xml:space="preserve">
     <value>Estadísticas y progreso</value>

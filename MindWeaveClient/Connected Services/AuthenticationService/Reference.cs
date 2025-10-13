@@ -77,6 +77,84 @@ namespace MindWeaveClient.AuthenticationService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LoginResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.A" +
+        "uthentication")]
+    [System.SerializableAttribute()]
+    public partial class LoginResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string avatarPathField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.AuthenticationService.OperationResultDto operationResultField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string usernameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string avatarPath {
+            get {
+                return this.avatarPathField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
+                    this.avatarPathField = value;
+                    this.RaisePropertyChanged("avatarPath");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.AuthenticationService.OperationResultDto operationResult {
+            get {
+                return this.operationResultField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.operationResultField, value) != true)) {
+                    this.operationResultField = value;
+                    this.RaisePropertyChanged("operationResult");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string username {
+            get {
+                return this.usernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
+                    this.usernameField = value;
+                    this.RaisePropertyChanged("username");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
     [System.SerializableAttribute()]
     public partial class OperationResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -282,10 +360,10 @@ namespace MindWeaveClient.AuthenticationService {
     public interface IAuthenticationManager {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/login", ReplyAction="http://tempuri.org/IAuthenticationManager/loginResponse")]
-        MindWeaveClient.AuthenticationService.OperationResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
+        MindWeaveClient.AuthenticationService.LoginResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/login", ReplyAction="http://tempuri.org/IAuthenticationManager/loginResponse")]
-        System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
+        System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.LoginResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/register", ReplyAction="http://tempuri.org/IAuthenticationManager/registerResponse")]
         MindWeaveClient.AuthenticationService.OperationResultDto register(MindWeaveClient.AuthenticationService.UserProfileDto userProfile, string password);
@@ -345,11 +423,11 @@ namespace MindWeaveClient.AuthenticationService {
                 base(binding, remoteAddress) {
         }
         
-        public MindWeaveClient.AuthenticationService.OperationResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials) {
+        public MindWeaveClient.AuthenticationService.LoginResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials) {
             return base.Channel.login(loginCredentials);
         }
         
-        public System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials) {
+        public System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.LoginResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials) {
             return base.Channel.loginAsync(loginCredentials);
         }
         

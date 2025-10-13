@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="d9ed8e21-06d9-4ec8-94f3-d834b4c428bf" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="2cb52064-d8ae-477b-a2fa-6c73cf796112" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="0d1f293e-e9e0-4929-ba6a-9d1572b4e83a" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="e98dde3a-2ef7-4d99-9fad-16f1e3577983" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Stats.xsd" MetadataType="Schema" ID="c2f339b4-d9db-42ac-9167-8ab081436214" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="bc64b9ef-8711-4a6b-998a-dadafbf507a4" SourceId="1" SourceUrl="http://localhost:8733/Design_Time_Addresses/MindWeaveServer/Services/ProfileManagerService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

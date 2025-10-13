@@ -6,7 +6,6 @@ namespace MindWeaveClient.View.Authentication
 {
     public partial class LoginPage : Page
     {
-        // El constructor que recibe la acción de navegación es clave
         public LoginPage()
         {
             InitializeComponent();

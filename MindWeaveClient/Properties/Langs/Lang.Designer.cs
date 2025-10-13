@@ -457,7 +457,7 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ¡HI!.
+        ///   Busca una cadena traducida similar a ¡HI, .
         /// </summary>
         public static string ProfileLbHi {
             get {

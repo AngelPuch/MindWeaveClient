@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MindWeaveClient.Services;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -13,7 +14,7 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private string emailValue;
         private string passwordValue;
-        private readonly Action<Page> _navigateTo;
+        private readonly Action<Page> navigateTo;
 
         public string email
         {
@@ -35,7 +36,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         public LoginViewModel(Action<Page> navigateAction)
         {
-            _navigateTo = navigateAction;
+            navigateTo = navigateAction;
             loginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
             signUpCommand = new RelayCommand((param) => executeGoToSignUp());
             forgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
@@ -58,20 +59,22 @@ namespace MindWeaveClient.ViewModel.Authentication
                     password = this.password
                 };
 
-                OperationResultDto result = await client.loginAsync(loginCredentials);
+                LoginResultDto result = await client.loginAsync(loginCredentials);
 
-                if (result.success)
+                if (result.operationResult.success)
                 {
-                    MessageBox.Show(result.message, "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                    SessionService.setSession(result.username, result.avatarPath);
+
+                    MessageBox.Show(result.operationResult.message, "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     var currentWindow = Application.Current.MainWindow;
                     var mainAppWindow = new MainWindow();
                     mainAppWindow.Show();
-                    currentWindow.Close();
+                    currentWindow?.Close();
                 }
                 else
                 {
-                    MessageBox.Show(result.message, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(result.operationResult.message, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
@@ -82,7 +85,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoToSignUp()
         {
-            _navigateTo(new CreateAccountPage());
+            navigateTo(new CreateAccountPage());
         }
 
         private void executeGoToForgotPassword()

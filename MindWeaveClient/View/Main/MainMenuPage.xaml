@@ -18,10 +18,7 @@
     </Page.Resources>
 
     <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>
-        </Grid.Background>
-
+        
         <TextBlock Text="{x:Static language:Lang.GlobalLbGameName}" 
                    Foreground="#2c3e50"
                    FontSize="80"
@@ -41,14 +38,14 @@
 
             <Ellipse Width="150" Height="150" Stroke="{StaticResource PrimaryColor}" StrokeThickness="4">
                 <Ellipse.Fill>
-                    <ImageBrush ImageSource="{Binding PlayerAvatarPath}" Stretch="UniformToFill"/>
+                    <ImageBrush ImageSource="{Binding playerAvatarPath}" Stretch="UniformToFill"/>
                 </Ellipse.Fill>
                 <Ellipse.Effect>
                     <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="3" Opacity="0.5"/>
                 </Ellipse.Effect>
             </Ellipse>
 
-            <TextBlock Text="{Binding PlayerUsername}"
+            <TextBlock Text="{Binding playerUsername}"
                        Foreground="{StaticResource TextColor}"
                        FontSize="24"
                        FontWeight="Bold"
@@ -57,24 +54,24 @@
 
             <Button x:Name="btnProfile" 
                     Content="{x:Static language:Lang.MainMenuBtnProfile}" 
-                    Command="{Binding ProfileCommand}"
+                    Command="{Binding profileCommand}"
                     Style="{StaticResource ProfileButtonStyle}"/>
         </StackPanel>
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0">
             <Button x:Name="btnPlay" 
                     Content="{x:Static language:Lang.GlobalBtnPlay}" 
-                    Command="{Binding PlayCommand}"
+                    Command="{Binding playCommand}"
                     Style="{StaticResource PrimaryButtonStyle}" />
 
             <Button x:Name="btnSocial" 
                     Content="{x:Static language:Lang.GlobalCommonSocial}" 
-                    Command="{Binding SocialCommand}"
+                    Command="{Binding socialCommand}"
                     Style="{StaticResource SecondaryButtonStyle}" />
 
             <Button x:Name="btnSettings" 
                     Content="{x:Static language:Lang.GlobalCommonSettings}" 
-                    Command="{Binding SettingsCommand}"
+                    Command="{Binding settingsCommand}"
                     Style="{StaticResource SecondaryButtonStyle}"/>
         </StackPanel>
     </Grid>

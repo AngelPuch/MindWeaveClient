@@ -84,7 +84,7 @@
                                         <Grid>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                 <Ellipse Width="30" Height="30" Fill="Gray"/>
-                                                <TextBlock Text="{Binding Username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                                 <Ellipse x:Name="statusIndicator" Width="12" Height="12" Fill="Green"/>
@@ -144,7 +144,7 @@
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                     <Ellipse Width="30" Height="30" Fill="Gray"/>
-                                                    <TextBlock Text="{Binding Username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                    <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                                 </StackPanel>
                                                 <Button Content="{x:Static language:Lang.GlobalBtnAddFriend}" Style="{StaticResource PrimaryButtonStyle}" Height="35" Width="120" Margin="0" HorizontalAlignment="Right"/>
                                             </Grid>
@@ -165,7 +165,7 @@
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                     <Ellipse Width="30" Height="30" Fill="Gray"/>
-                                                    <TextBlock Text="{Binding Username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                    <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button Content="{x:Static language:Lang.SocialBtnAccept}" Style="{StaticResource PrimaryButtonStyle}" Height="35" Width="100" Margin="0,0,10,0"/>
@@ -185,7 +185,7 @@
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                     <Ellipse Width="30" Height="30" Fill="Gray"/>
-                                                    <TextBlock Text="{Binding Username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                    <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                                 </StackPanel>
                                                 <Button Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Height="35" Width="120" Margin="0" HorizontalAlignment="Right"/>
                                             </Grid>

@@ -208,7 +208,7 @@
     <value>Score:</value>
   </data>
   <data name="ProfileLbHi" xml:space="preserve">
-    <value>¡HI!</value>
+    <value>¡HI, </value>
   </data>
   <data name="ProfileLbStats" xml:space="preserve">
     <value>Stats &amp; progression</value>
