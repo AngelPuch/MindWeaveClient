@@ -311,5 +311,20 @@
   <ItemGroup>
     <Resource Include="Resources\Images\Avatar\default_avatar.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\alien_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\ball_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\goblin_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\pirat_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\robot_avatar.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

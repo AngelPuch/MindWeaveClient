@@ -27,7 +27,7 @@
 
                 <Button Command="{Binding verifyCommand}" Content="{x:Static language:Lang.VerificationAccountBtnVerify}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" />
 
-                <Button Content="{x:Static language:Lang.VerificationCodeResend}" Style="{StaticResource LinkButtonStyle}" Command="{Binding resendCodeCommand}"/>
+                <Button Content="{x:Static language:Lang.VerificationCodeResend}" Style="{StaticResource LinkButtonStyle}" Command="{Binding resendCodeCommand}" Click="Button_Click"/>
 
                 <Button Command="{Binding goBackCommand}" Content="{x:Static language:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
             </StackPanel>

@@ -358,13 +358,13 @@
     <value>Verificar cuenta</value>
   </data>
   <data name="VerificationCodeResend" xml:space="preserve">
-    <value>Didn't receive the code? Resend</value>
+    <value>¿No recibiste el código? Reenviar.</value>
   </data>
   <data name="VerificationCodeInvalidFormat" xml:space="preserve">
-    <value>The verification code must contain 6 digits only.</value>
+    <value>El código de verificación solo debe contener 6 dígitos.</value>
   </data>
   <data name="ErrorFailedToLoadProfile" xml:space="preserve">
-    <value>Failed to load profile data</value>
+    <value>Error al cargar los datos.</value>
   </data>
   <data name="ErrorTitle" xml:space="preserve">
     <value>Error</value>
@@ -373,7 +373,7 @@
     <value>Información Personal</value>
   </data>
   <data name="GlobalLbGender" xml:space="preserve">
-    <value>Gender</value>
+    <value>Género</value>
   </data>
   <data name="EditProfileTitle" xml:space="preserve">
     <value>Editar Perfil</value>

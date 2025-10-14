@@ -38,6 +38,9 @@ namespace MindWeaveClient.View.Authentication
             e.Handled = regex.IsMatch(e.Text);
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
     }
 }

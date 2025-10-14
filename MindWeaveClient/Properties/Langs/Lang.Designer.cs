@@ -223,7 +223,7 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Género.
+        ///   Busca una cadena traducida similar a Gender.
         /// </summary>
         public static string GlobalLbGender {
             get {
@@ -844,7 +844,7 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a El código de verificación solo debe contener 6 números..
+        ///   Busca una cadena traducida similar a The verification code must contain 6 digits only..
         /// </summary>
         public static string VerificationCodeInvalidFormat {
             get {
@@ -853,7 +853,7 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ¿No recibiste el código? Reenviar.
+        ///   Busca una cadena traducida similar a Didn&apos;t receive the code? Resend.
         /// </summary>
         public static string VerificationCodeResend {
             get {
