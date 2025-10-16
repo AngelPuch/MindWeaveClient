@@ -377,6 +377,12 @@ namespace MindWeaveClient.AuthenticationService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/verifyAccount", ReplyAction="http://tempuri.org/IAuthenticationManager/verifyAccountResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> verifyAccountAsync(string email, string code);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/resendVerificationCode", ReplyAction="http://tempuri.org/IAuthenticationManager/resendVerificationCodeResponse")]
+        MindWeaveClient.AuthenticationService.OperationResultDto resendVerificationCode(string email);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/resendVerificationCode", ReplyAction="http://tempuri.org/IAuthenticationManager/resendVerificationCodeResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> resendVerificationCodeAsync(string email);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCode", ReplyAction="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCodeResponse")]
         MindWeaveClient.AuthenticationService.OperationResultDto sendPasswordRecoveryCode(string email);
         
@@ -445,6 +451,14 @@ namespace MindWeaveClient.AuthenticationService {
         
         public System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> verifyAccountAsync(string email, string code) {
             return base.Channel.verifyAccountAsync(email, code);
+        }
+        
+        public MindWeaveClient.AuthenticationService.OperationResultDto resendVerificationCode(string email) {
+            return base.Channel.resendVerificationCode(email);
+        }
+        
+        public System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> resendVerificationCodeAsync(string email) {
+            return base.Channel.resendVerificationCodeAsync(email);
         }
         
         public MindWeaveClient.AuthenticationService.OperationResultDto sendPasswordRecoveryCode(string email) {

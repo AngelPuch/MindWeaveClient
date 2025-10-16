@@ -46,7 +46,7 @@
             </Ellipse>
 
             <TextBlock Text="{Binding playerUsername}"
-                       Foreground="{StaticResource TextColor}"
+                       Foreground="#2c3e50"
                        FontSize="24"
                        FontWeight="Bold"
                        HorizontalAlignment="Center"

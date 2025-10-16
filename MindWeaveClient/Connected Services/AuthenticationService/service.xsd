@@ -46,6 +46,20 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="resendVerificationCode">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="email" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="resendVerificationCodeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="resendVerificationCodeResult" nillable="true" type="q6:OperationResultDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="sendPasswordRecoveryCode">
     <xs:complexType>
       <xs:sequence>
@@ -56,7 +70,7 @@
   <xs:element name="sendPasswordRecoveryCodeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="sendPasswordRecoveryCodeResult" nillable="true" type="q6:OperationResultDto" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="sendPasswordRecoveryCodeResult" nillable="true" type="q7:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -72,7 +86,7 @@
   <xs:element name="resetPasswordWithCodeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="resetPasswordWithCodeResult" nillable="true" type="q7:OperationResultDto" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="resetPasswordWithCodeResult" nillable="true" type="q8:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

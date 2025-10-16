@@ -42,7 +42,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             verifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
             goBackCommand = new RelayCommand((param) => executeGoBack());
-            resendCodeCommand = new RelayCommand((param) => executeResendCode());
+            resendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
         }
 
         private bool canExecuteVerify()
@@ -87,10 +87,28 @@ namespace MindWeaveClient.ViewModel.Authentication
             this.navigateBack?.Invoke();
         }
 
-        private void executeResendCode()
+        private async Task executeResendCodeAsync()
         {
-            // Lógica para reenviar el código (actualmente un placeholder).
-            MessageBox.Show("Funcionalidad de reenviar código no implementada.", "Información");
+            try
+            {
+                var client = new AuthenticationManagerClient();
+                // Llamamos al nuevo método del servicio que actualizaste
+                OperationResultDto result = await client.resendVerificationCodeAsync(email);
+
+                if (result.success)
+                {
+                    // Usamos la clave de recurso que añadiremos en el siguiente paso
+                    MessageBox.Show("Código enviado con éxito", "Envio exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show(result.message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error de conexión: {ex.Message}", "Error de Conexión", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
