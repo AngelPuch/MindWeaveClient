@@ -384,4 +384,7 @@
   <data name="SelectAvatarTitle" xml:space="preserve">
     <value>¡Selecciona tu Avatar!</value>
   </data>
+  <data name="LoginAccountNotVerified" xml:space="preserve">
+    <value>Cuenta no verificada</value>
+  </data>
 </root>

@@ -92,6 +92,9 @@ namespace MindWeaveClient.AuthenticationService {
         private MindWeaveClient.AuthenticationService.OperationResultDto operationResultField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string resultCodeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string usernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -126,6 +129,19 @@ namespace MindWeaveClient.AuthenticationService {
                 if ((object.ReferenceEquals(this.operationResultField, value) != true)) {
                     this.operationResultField = value;
                     this.RaisePropertyChanged("operationResult");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string resultCode {
+            get {
+                return this.resultCodeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.resultCodeField, value) != true)) {
+                    this.resultCodeField = value;
+                    this.RaisePropertyChanged("resultCode");
                 }
             }
         }

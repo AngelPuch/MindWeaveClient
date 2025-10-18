@@ -376,6 +376,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Account not verified.
+        /// </summary>
+        public static string LoginAccountNotVerified {
+            get {
+                return ResourceManager.GetString("LoginAccountNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Play as guest.
         /// </summary>
         public static string LoginBtnGuest {

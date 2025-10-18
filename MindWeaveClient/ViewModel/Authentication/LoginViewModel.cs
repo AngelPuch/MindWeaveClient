@@ -15,6 +15,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private string emailValue;
         private string passwordValue;
         private readonly Action<Page> navigateTo;
+        private bool showUnverifiedControlsValue = false;
 
         public string email
         {
@@ -27,12 +28,18 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => passwordValue;
             set { passwordValue = value; OnPropertyChanged(); }
         }
+        public bool showUnverifiedControls
+        {
+            get => showUnverifiedControlsValue;
+            set { showUnverifiedControlsValue = value; OnPropertyChanged(); }
+        }
 
         // Comandos públicos en PascalCase
         public ICommand loginCommand { get; }
         public ICommand signUpCommand { get; }
         public ICommand forgotPasswordCommand { get; }
         public ICommand guestLoginCommand { get; }
+        public ICommand resendVerificationCommand { get; }
 
         public LoginViewModel(Action<Page> navigateAction)
         {
@@ -41,6 +48,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             signUpCommand = new RelayCommand((param) => executeGoToSignUp());
             forgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
             guestLoginCommand = new RelayCommand((param) => executeGuestLogin());
+            resendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
         }
 
         private bool canExecuteLogin()
@@ -74,12 +82,41 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    MessageBox.Show(result.operationResult.message, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (result.resultCode == "ACCOUNT_NOT_VERIFIED")
+                    {
+                        showUnverifiedControls = true; // Mostramos los controles de reenvío
+                    }
+                    else
+                    {
+                        MessageBox.Show(result.operationResult.message, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while connecting to the server: {ex.Message}", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private async Task executeResendVerificationAsync()
+        {
+            try
+            {
+                var client = new AuthenticationManagerClient();
+                OperationResultDto result = await client.resendVerificationCodeAsync(this.email);
+
+                if (result.success)
+                {
+                    MessageBox.Show(Properties.Langs.Lang.InfoMsgBodyCodeSent, Properties.Langs.Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+                    navigateTo(new VerificationPage(this.email));
+                }
+                else
+                {
+                    MessageBox.Show(result.message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
