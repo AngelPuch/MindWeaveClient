@@ -67,6 +67,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\SocialManagerService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Helpers\SelectedItemToBooleanConverter.cs" />
@@ -76,6 +81,8 @@
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\SessionService.cs" />
+    <Compile Include="Services\SocialCallbackHandler.cs" />
+    <Compile Include="Services\SocialServiceClientManager.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
@@ -84,6 +91,7 @@
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\SelectAvatarViewModel.cs" />
+    <Compile Include="ViewModel\Main\SocialViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
@@ -263,6 +271,31 @@
     <None Include="Connected Services\ProfileService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendRequestInfoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.OperationResultDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.PlayerSearchResultDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\SocialManagerService\service.wsdl" />
+    <None Include="Connected Services\SocialManagerService\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\SocialManagerService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -286,6 +319,7 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\AuthenticationService\" />
     <WCFMetadataStorage Include="Connected Services\ProfileService\" />
+    <WCFMetadataStorage Include="Connected Services\SocialManagerService\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\AuthenticationService\configuration91.svcinfo" />
@@ -328,6 +362,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Avatar\robot_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\SocialManagerService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\SocialManagerService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\SocialManagerService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

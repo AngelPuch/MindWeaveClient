@@ -6,6 +6,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -31,6 +32,7 @@ namespace MindWeaveClient.ViewModel.Main
             playerAvatarPath = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
             profileCommand = new RelayCommand(p => executeGoToProfile());
+            socialCommand = new RelayCommand(p => executeGoToSocial());
             // TO-DO: Implementar otros comandos
         }
 
@@ -43,6 +45,10 @@ namespace MindWeaveClient.ViewModel.Main
                 () => executeGoToEditProfile()       // 2. Para ir a editar
             );
             navigateTo(profilePage);
+        }
+
+        private void executeGoToSocial() {
+            navigateTo(new SocialPage());
         }
 
         private void executeGoToEditProfile()

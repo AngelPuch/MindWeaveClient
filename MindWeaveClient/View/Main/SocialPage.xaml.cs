@@ -1,33 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using MindWeaveClient.ViewModel.Main; // Namespace del ViewModel
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Input; // Para KeyEventArgs
 
 namespace MindWeaveClient.View.Main
 {
-    /// <summary>
-    /// Lógica de interacción para SocialPage.xaml
-    /// </summary>
     public partial class SocialPage : Page
     {
+        private SocialViewModel _viewModel;
+
         public SocialPage()
         {
             InitializeComponent();
+            // Crear e asignar el ViewModel. Pasar la acción de navegación hacia atrás.
+            _viewModel = new SocialViewModel(() => NavigationService?.GoBack());
+            DataContext = _viewModel;
+
+            // Suscribirse al evento Unloaded para limpiar recursos
+            Unloaded += SocialPage_Unloaded;
         }
 
-        private void rbAddFriend_Checked(object sender, RoutedEventArgs e)
+        private void SocialPage_Unloaded(object sender, System.Windows.RoutedEventArgs e)
         {
+            // Limpiar suscripciones de callback cuando la página se descarga
+            _viewModel?.Cleanup();
+            // Eliminar suscripción al evento Unloaded para evitar fugas de memoria
+            Unloaded -= SocialPage_Unloaded;
+        }
 
+        // Permite buscar presionando Enter en el TextBox de búsqueda
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && _viewModel.SearchCommand.CanExecute(null))
+            {
+                _viewModel.SearchCommand.Execute(null);
+            }
         }
     }
 }
