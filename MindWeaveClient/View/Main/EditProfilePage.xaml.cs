@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MindWeaveClient.ViewModel.Main;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,21 @@ namespace MindWeaveClient.View.Main
         public EditProfilePage()
         {
             InitializeComponent();
+            this.Loaded += EditProfilePage_Loaded;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
 
+        private void EditProfilePage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Cuando la página se carga (o se vuelve a mostrar),
+            // le decimos al ViewModel que refresque sus datos.
+            if (this.DataContext is EditProfileViewModel vm)
+            {
+                // Podrías crear un método RefreshData() en el ViewModel
+                // o simplemente volver a llamar loadEditableData si es seguro hacerlo.
+                // Por ahora, solo actualizaremos el avatar que es lo que cambió.
+                vm.RefreshAvatar(); // Necesitas añadir este método al ViewModel
+            }
         }
     }
 }

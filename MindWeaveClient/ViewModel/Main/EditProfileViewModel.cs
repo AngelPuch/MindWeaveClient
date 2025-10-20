@@ -118,5 +118,11 @@ namespace MindWeaveClient.ViewModel.Main
                 MessageBox.Show(ex.Message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        public void RefreshAvatar()
+        {
+            // Vuelve a leer la ruta del avatar desde el servicio de sesión
+            avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+        }
     }
 }

@@ -79,7 +79,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Grid.Column="0" Command="{Binding cancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"/>
-                    <Button Grid.Column="1" Command="{Binding saveChangesCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0" Click="Button_Click"/>
+                    <Button Grid.Column="1" Command="{Binding saveChangesCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"/>
                 </Grid>
             </Grid>
         </Border>
