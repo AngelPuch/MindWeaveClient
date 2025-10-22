@@ -62,6 +62,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\MatchmakingService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\ProfileService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -72,14 +77,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\DifficultyIndexConverter.cs" />
     <Compile Include="Helpers\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Helpers\SelectedItemToBooleanConverter.cs" />
+    <Compile Include="Helpers\StringToVisibilityConverter.cs" />
     <Compile Include="Properties\Langs\Lang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\MatchmakingCallbackHandler.cs" />
+    <Compile Include="Services\MatchmakingServiceClientManager.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Services\SocialCallbackHandler.cs" />
     <Compile Include="Services\SocialServiceClientManager.cs" />
@@ -87,6 +96,7 @@
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\Game\LobbyViewModel.cs" />
     <Compile Include="ViewModel\Main\EditProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
@@ -243,6 +253,25 @@
     <None Include="Connected Services\AuthenticationService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\MatchmakingService\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.LobbyCreationResultDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MatchmakingService\service.wsdl" />
+    <None Include="Connected Services\MatchmakingService\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MatchmakingService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Connected Services\ProfileService\MindWeaveClient.ProfileService.OperationResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -336,6 +365,7 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\AuthenticationService\" />
+    <WCFMetadataStorage Include="Connected Services\MatchmakingService\" />
     <WCFMetadataStorage Include="Connected Services\ProfileService\" />
     <WCFMetadataStorage Include="Connected Services\SocialManagerService\" />
   </ItemGroup>
@@ -371,6 +401,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\SocialManagerService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\MatchmakingService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\MatchmakingService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\MatchmakingService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
