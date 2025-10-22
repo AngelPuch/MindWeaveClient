@@ -223,6 +223,9 @@ namespace MindWeaveClient.SocialManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string avatarPathField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime requestDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -235,6 +238,19 @@ namespace MindWeaveClient.SocialManagerService {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string avatarPath {
+            get {
+                return this.avatarPathField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
+                    this.avatarPathField = value;
+                    this.RaisePropertyChanged("avatarPath");
+                }
             }
         }
         

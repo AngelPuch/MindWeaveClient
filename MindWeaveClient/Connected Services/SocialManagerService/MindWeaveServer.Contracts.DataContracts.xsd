@@ -29,6 +29,7 @@
   <xs:element name="ArrayOfFriendRequestInfoDto" nillable="true" type="tns:ArrayOfFriendRequestInfoDto" />
   <xs:complexType name="FriendRequestInfoDto">
     <xs:sequence>
+      <xs:element minOccurs="0" name="avatarPath" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="requestDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="requesterUsername" nillable="true" type="xs:string" />
     </xs:sequence>

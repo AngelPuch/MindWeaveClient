@@ -56,6 +56,7 @@ namespace MindWeaveClient.ViewModel.Main
             get => _isBusy;
             set { _isBusy = value; OnPropertyChanged(); }
         }
+        public string playerAvatarPath { get; private set; }
 
         // --- Comandos ---
         public ICommand LoadFriendsListCommand { get; }
