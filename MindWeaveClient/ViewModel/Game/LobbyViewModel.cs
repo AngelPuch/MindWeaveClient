@@ -71,31 +71,34 @@ namespace MindWeaveClient.ViewModel.Game // Podrías crear un subnamespace 'Game
         // --- Constructor ---
         public LobbyViewModel(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
         {
-            if (initialState == null)
-            {
-                // Manejar error o volver atrás si el estado inicial es nulo
-                MessageBox.Show("Error: Invalid lobby state received.", "Lobby Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                navigateBackAction?.Invoke();
-                return; // Salir del constructor
-            }
-
             this.navigateTo = navigateToAction;
             this.navigateBack = navigateBackAction;
 
-            // Inicializar propiedades con el estado recibido
-            updateState(initialState); // Usamos un método para reutilizar la lógica
-
-            // Definir Comandos
+            // Definir Comandos (se pueden definir antes de tener estado)
             leaveLobbyCommand = new RelayCommand(executeLeaveLobby, param => !isBusy);
+            // CanExecute para startGame dependerá del estado, se actualizará después
             startGameCommand = new RelayCommand(executeStartGame, param => isHost && !isBusy /*&& players.Count > 1*/ );
             inviteFriendCommand = new RelayCommand(p => MessageBox.Show("Invite friend TBD"), param => isHost && !isBusy);
-            // kickPlayerCommand ya estaba bien, pero lo revisamos para consistencia:
             kickPlayerCommand = new RelayCommand(p => MessageBox.Show("Kick player TBD"), p => isHost && !isBusy && p is string target && target != hostUsername);
             uploadImageCommand = new RelayCommand(p => MessageBox.Show("Upload image TBD"), param => isHost && !isBusy);
             changeSettingsCommand = new RelayCommand(p => MessageBox.Show("Change settings TBD"), param => isHost && !isBusy);
 
-            // Suscribirse a los callbacks del servicio de Matchmaking
+            // Suscribirse a los callbacks PRIMERO
             subscribeToCallbacks();
+
+            // Si recibimos un estado inicial (desde createLobby), lo aplicamos.
+            // Si es null (desde joinLobby), esperamos el primer callback.
+            if (initialState != null)
+            {
+                updateState(initialState);
+            }
+            else
+            {
+                // Podríamos mostrar un estado "Connecting..." o "Waiting for state..."
+                lobbyCode = "Joining..."; // Mensaje temporal
+                hostUsername = "Loading...";
+                // La lista de jugadores estará vacía hasta el primer updateState
+            }
         }
 
         // --- Lógica de Comandos ---
@@ -181,7 +184,7 @@ namespace MindWeaveClient.ViewModel.Game // Podrías crear un subnamespace 'Game
         private void handleLobbyStateUpdate(LobbyStateDto newState)
         {
             // Asegurarse de que la actualización es para *este* lobby
-            if (newState != null && newState.lobbyId == this.lobbyCode)
+            if (newState != null && (this.lobbyCode == "Joining..." || newState.lobbyId == this.lobbyCode)) // Acepta si estamos esperando o si coincide el código
             {
                 // Actualizar en el hilo de la UI
                 Application.Current.Dispatcher.Invoke(() =>

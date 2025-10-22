@@ -1,15 +1,15 @@
-﻿// MindWeaveClient/ViewModel/Main/MainMenuViewModel.cs
-
-using MindWeaveClient.MatchmakingService;
+﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Services;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
+using MindWeaveClient.ViewModel.Game;
 using System;
+using System.Linq; // Necesario para OfType<MainWindow>()
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -19,77 +19,105 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly Page mainMenuPage;
 
         public string playerUsername { get; }
-        public string playerAvatarPath { get; }
+        public string playerAvatarPath { get; } // Verifica este binding en XAML
 
+        // --- Comandos ---
         public ICommand profileCommand { get; }
-        public ICommand playCommand { get; }
+        // *** RENOMBRADO AQUÍ ***
+        public ICommand createLobbyCommand { get; } // Antes era playCommand
         public ICommand socialCommand { get; }
         public ICommand settingsCommand { get; }
+        public ICommand joinLobbyCommand { get; } // Verifica este binding en XAML
 
+        // --- Propiedades Join Lobby ---
+        private string joinLobbyCodeValue = string.Empty;
+        public string joinLobbyCode // Verifica este binding en XAML
+        {
+            get => joinLobbyCodeValue;
+            set
+            {
+                joinLobbyCodeValue = value?.ToUpper().Trim() ?? string.Empty;
+                if (joinLobbyCodeValue.Length > 6) { joinLobbyCodeValue = joinLobbyCodeValue.Substring(0, 6); }
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(canJoinLobby));
+                ((RelayCommand)joinLobbyCommand).RaiseCanExecuteChanged();
+            }
+        }
+        public bool canJoinLobby => !isBusy && !string.IsNullOrWhiteSpace(joinLobbyCode) && joinLobbyCode.Length == 6; // Verifica este binding en XAML
+
+        // --- Estado Busy ---
         private bool isBusyValue;
         public bool isBusy
         {
             get => isBusyValue;
-            set { isBusyValue = value; OnPropertyChanged(); ((RelayCommand)playCommand).RaiseCanExecuteChanged(); /* Actualiza CanExecute */ }
+            set
+            {
+                isBusyValue = value;
+                OnPropertyChanged();
+                // Actualizar CanExecute de AMBOS comandos
+                ((RelayCommand)createLobbyCommand).RaiseCanExecuteChanged(); // Usa el nuevo nombre
+                ((RelayCommand)joinLobbyCommand).RaiseCanExecuteChanged();
+                OnPropertyChanged(nameof(canJoinLobby));
+            }
         }
+
+        // Proxy (sin cambios)
         private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.Instance.Proxy;
+
         public MainMenuViewModel(Action<Page> navigateTo, Page mainMenuPage)
         {
             this.navigateTo = navigateTo;
             this.mainMenuPage = mainMenuPage;
 
             playerUsername = SessionService.username;
+            // Asegúrate que SessionService.avatarPath tenga un valor o el default
             playerAvatarPath = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
             profileCommand = new RelayCommand(p => executeGoToProfile());
+            // *** USA EL NUEVO NOMBRE AQUÍ ***
+            createLobbyCommand = new RelayCommand(async p => await executeCreateLobbyAsync(), p => !isBusy); // Antes era playCommand -> executePlayAsync
             socialCommand = new RelayCommand(p => executeGoToSocial());
-            settingsCommand = new RelayCommand(p => { /* TODO: Implementar */ MessageBox.Show("Settings not implemented yet."); });
-            // TO-DO: Implementar otros comandos
+            settingsCommand = new RelayCommand(p => { /* TODO: */ MessageBox.Show("Settings not implemented yet."); });
+            joinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => canJoinLobby);
+
+            // Log inicial para verificar el avatarPath
+            Console.WriteLine($"MainMenuViewModel Initialized. Avatar Path: {playerAvatarPath}");
         }
 
-        private async Task executePlayAsync()
+        // *** RENOMBRADO AQUÍ ***
+        private async Task executeCreateLobbyAsync() // Antes era executePlayAsync
         {
             isBusy = true;
             try
             {
-                // 1. Asegurar la conexión usando el gestor
                 if (!MatchmakingServiceClientManager.Instance.EnsureConnected())
                 {
                     MessageBox.Show("Could not connect to the matchmaking service.", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
-                    return; // Salir si no se puede conectar
+                    return;
                 }
 
-                // 2. Definir configuraciones (igual que antes)
-                var defaultSettings = new LobbySettingsDto
-                {
-                    difficultyId = 1,
-                    preloadedPuzzleId = 1
-                };
-
-                // 3. Llamar al método del servicio WCF usando el proxy del gestor
+                var defaultSettings = new LobbySettingsDto { difficultyId = 1, preloadedPuzzleId = 3 }; // TODO: Ajustar defaults
                 LobbyCreationResultDto result = await matchmakingProxy.createLobbyAsync(SessionService.username, defaultSettings);
 
-                // 4. Procesar resultado (igual que antes)
                 if (result.success)
                 {
-                    MessageBox.Show($"Lobby created! Code: {result.lobbyCode}", "Success", MessageBoxButton.OK, MessageBoxImage.Information); // TODO: Lang
-
-                    // Navegar a LobbyPage
+                    // MessageBox.Show($"Lobby created! Code: {result.lobbyCode}", "Success", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
                     var lobbyPage = new LobbyPage();
-                    // TODO: Crear LobbyViewModel y pasar result.initialLobbyState
-                    // lobbyPage.DataContext = new LobbyViewModel(result.initialLobbyState, navigateTo); // Pasar acción de navegación si es necesario
+                    lobbyPage.DataContext = new LobbyViewModel(
+                        result.initialLobbyState,
+                        navigateTo,
+                        () => navigateTo(mainMenuPage)
+                    );
                     navigateTo(lobbyPage);
                 }
                 else
                 {
                     MessageBox.Show($"Failed to create lobby: {result.message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
                 }
-                // NOTA: No cerramos el proxy aquí, el gestor maneja su ciclo de vida.
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
-                // Considerar desconectar/reconectar en caso de error grave
                 MatchmakingServiceClientManager.Instance.Disconnect();
             }
             finally
@@ -97,6 +125,38 @@ namespace MindWeaveClient.ViewModel.Main
                 isBusy = false;
             }
         }
+        private async Task executeJoinLobbyAsync()
+        {
+            if (!canJoinLobby) return;
+            if (!Regex.IsMatch(joinLobbyCode, "^[A-Z0-9]{6}$")) { /*...*/ return; }
+
+            isBusy = true;
+            try
+            {
+                if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) { /*...*/ return; }
+
+                matchmakingProxy.joinLobby(SessionService.username, joinLobbyCode);
+                // MessageBox.Show($"Attempting to join lobby {joinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
+
+                var lobbyPage = new LobbyPage();
+                lobbyPage.DataContext = new LobbyViewModel(
+                    null, // Estado inicial nulo al unirse
+                    navigateTo,
+                    () => navigateTo(mainMenuPage)
+                );
+                navigateTo(lobbyPage);
+            }
+            catch (Exception ex) // Captura general, considera específicas
+            {
+                MessageBox.Show($"An error occurred while joining lobby: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
+                MatchmakingServiceClientManager.Instance.Disconnect();
+            }
+            finally
+            {
+                isBusy = false;
+            }
+        }
+        
 
         private void executeGoToProfile()
         {
@@ -126,7 +186,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void executeGoToSelectAvatar()
         {
-            var selectAvatarPage = new SelectAvatarPage(); // <-- Aún no hemos creado este archivo XAML
+            var selectAvatarPage = new SelectAvatarPage();
                                                            // Creamos el ViewModel de la galería y le pasamos la instrucción para volver a la página de edición
             selectAvatarPage.DataContext = new SelectAvatarViewModel(
                 () => executeGoToEditProfile()

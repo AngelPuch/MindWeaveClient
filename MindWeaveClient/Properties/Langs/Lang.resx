@@ -387,4 +387,13 @@
   <data name="LoginAccountNotVerified" xml:space="preserve">
     <value>Account not verified</value>
   </data>
+  <data name="MainMenuBtnCreateLobby" xml:space="preserve">
+    <value>Create Lobby</value>
+  </data>
+  <data name="MainMenuLbJoinCodePrompt" xml:space="preserve">
+    <value>Join Lobby by Code:</value>
+  </data>
+  <data name="MainMenuBtnJoin" xml:space="preserve">
+    <value>Join</value>
+  </data>
 </root>

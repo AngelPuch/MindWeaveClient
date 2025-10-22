@@ -421,11 +421,38 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Create Lobby.
+        /// </summary>
+        public static string MainMenuBtnCreateLobby {
+            get {
+                return ResourceManager.GetString("MainMenuBtnCreateLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Join.
+        /// </summary>
+        public static string MainMenuBtnJoin {
+            get {
+                return ResourceManager.GetString("MainMenuBtnJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a PROFILE.
         /// </summary>
         public static string MainMenuBtnProfile {
             get {
                 return ResourceManager.GetString("MainMenuBtnProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Join Lobby by Code:.
+        /// </summary>
+        public static string MainMenuLbJoinCodePrompt {
+            get {
+                return ResourceManager.GetString("MainMenuLbJoinCodePrompt", resourceCulture);
             }
         }
         
