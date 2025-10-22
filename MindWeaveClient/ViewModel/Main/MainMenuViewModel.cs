@@ -84,8 +84,7 @@ namespace MindWeaveClient.ViewModel.Main
             Console.WriteLine($"MainMenuViewModel Initialized. Avatar Path: {playerAvatarPath}");
         }
 
-        // *** RENOMBRADO AQUÍ ***
-        private async Task executeCreateLobbyAsync() // Antes era executePlayAsync
+        private async Task executeCreateLobbyAsync() 
         {
             isBusy = true;
             try
@@ -101,7 +100,7 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.success)
                 {
-                    // MessageBox.Show($"Lobby created! Code: {result.lobbyCode}", "Success", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
+                    MessageBox.Show($"Lobby created! Code: {result.lobbyCode}", "Success", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
                     var lobbyPage = new LobbyPage();
                     lobbyPage.DataContext = new LobbyViewModel(
                         result.initialLobbyState,
@@ -136,7 +135,7 @@ namespace MindWeaveClient.ViewModel.Main
                 if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) { /*...*/ return; }
 
                 matchmakingProxy.joinLobby(SessionService.username, joinLobbyCode);
-                // MessageBox.Show($"Attempting to join lobby {joinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
+                MessageBox.Show($"Attempting to join lobby {joinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
 
                 var lobbyPage = new LobbyPage();
                 lobbyPage.DataContext = new LobbyViewModel(
