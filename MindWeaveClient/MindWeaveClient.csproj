@@ -317,6 +317,24 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\default_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\alien_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\ball_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\goblin_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\pirat_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Avatar\robot_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\AuthenticationService\" />
     <WCFMetadataStorage Include="Connected Services\ProfileService\" />
     <WCFMetadataStorage Include="Connected Services\SocialManagerService\" />
@@ -344,24 +362,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Avatar\default_avatar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Avatar\alien_avatar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Avatar\ball_avatar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Avatar\goblin_avatar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Avatar\pirat_avatar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Avatar\robot_avatar.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\SocialManagerService\configuration91.svcinfo" />
