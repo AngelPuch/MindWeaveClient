@@ -324,6 +324,12 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/kickPlayer")]
         System.Threading.Tasks.Task kickPlayerAsync(string hostUsername, string playerToKickUsername, string lobbyId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/changeDifficulty")]
+        void changeDifficulty(string hostUsername, string lobbyId, int newDifficultyId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/changeDifficulty")]
+        System.Threading.Tasks.Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -419,6 +425,14 @@ namespace MindWeaveClient.MatchmakingService {
         
         public System.Threading.Tasks.Task kickPlayerAsync(string hostUsername, string playerToKickUsername, string lobbyId) {
             return base.Channel.kickPlayerAsync(hostUsername, playerToKickUsername, lobbyId);
+        }
+        
+        public void changeDifficulty(string hostUsername, string lobbyId, int newDifficultyId) {
+            base.Channel.changeDifficulty(hostUsername, lobbyId, newDifficultyId);
+        }
+        
+        public System.Threading.Tasks.Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId) {
+            return base.Channel.changeDifficultyAsync(hostUsername, lobbyId, newDifficultyId);
         }
     }
 }

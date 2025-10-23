@@ -5,7 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Main"
+      xmlns:local_vm="clr-namespace:MindWeaveClient.ViewModel.Main"
       mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance Type=vm:SocialViewModel, IsDesignTimeCreatable=False}"
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="SocialPage">
 
@@ -54,7 +56,7 @@
                             <Setter Property="Fill" Value="Gray"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding isOnline}" Value="True">
-                                    <Setter Property="Fill" Value="Green"/>
+                                    <Setter Property="Fill" Value="LimeGreen"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -68,7 +70,7 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding isOnline}" Value="True">
                                     <Setter Property="Text" Value="{x:Static language:Lang.SocialLbOnline}"/>
-                                    <Setter Property="Foreground" Value="#27ae60"/>
+                                    <Setter Property="Foreground" Value="LimeGreen"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -112,7 +114,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding IsFriendsListChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl ItemsSource="{Binding FriendsList}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate DataType="{x:Type local_vm:FriendDtoDisplay}">
                                     <Border Style="{StaticResource SocialListItemStyle}">
                                         <Grid>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -215,14 +217,13 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-
                         </StackPanel>
                     </ScrollViewer>
 
                     <Border Background="#88000000" CornerRadius="10"
                             Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
                             HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20">
-                        <TextBlock Text="Loading..." Foreground="White" FontSize="16"/>
+                        <TextBlock Text="{x:Static language:Lang.GlobalProcessing}" Foreground="White" FontSize="16"/>
                     </Border>
 
                 </Grid>

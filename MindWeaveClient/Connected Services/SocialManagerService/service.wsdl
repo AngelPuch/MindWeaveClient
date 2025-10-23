@@ -41,6 +41,12 @@
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" />
     </xsd:schema>
   </wsdl:types>
+  <wsdl:message name="ISocialManager_connect_InputMessage">
+    <wsdl:part name="parameters" element="tns:connect" />
+  </wsdl:message>
+  <wsdl:message name="ISocialManager_disconnect_InputMessage">
+    <wsdl:part name="parameters" element="tns:disconnect" />
+  </wsdl:message>
   <wsdl:message name="ISocialManager_searchPlayers_InputMessage">
     <wsdl:part name="parameters" element="tns:searchPlayers" />
   </wsdl:message>
@@ -86,38 +92,44 @@
   <wsdl:message name="ISocialManager_notifyFriendStatusChanged_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:notifyFriendStatusChanged" />
   </wsdl:message>
-  <wsdl:portType name="ISocialManager">
-    <wsdl:operation name="searchPlayers">
+  <wsdl:portType msc:usingSession="true" name="ISocialManager">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="connect">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/connect" message="tns:ISocialManager_connect_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="disconnect">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/disconnect" message="tns:ISocialManager_disconnect_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="searchPlayers">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/searchPlayers" message="tns:ISocialManager_searchPlayers_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/searchPlayersResponse" message="tns:ISocialManager_searchPlayers_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="sendFriendRequest">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="sendFriendRequest">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/sendFriendRequest" message="tns:ISocialManager_sendFriendRequest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/sendFriendRequestResponse" message="tns:ISocialManager_sendFriendRequest_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="respondToFriendRequest">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="respondToFriendRequest">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/respondToFriendRequest" message="tns:ISocialManager_respondToFriendRequest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/respondToFriendRequestResponse" message="tns:ISocialManager_respondToFriendRequest_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="removeFriend">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="removeFriend">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/removeFriend" message="tns:ISocialManager_removeFriend_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/removeFriendResponse" message="tns:ISocialManager_removeFriend_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="getFriendsList">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getFriendsList">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/getFriendsList" message="tns:ISocialManager_getFriendsList_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/getFriendsListResponse" message="tns:ISocialManager_getFriendsList_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="getFriendRequests">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getFriendRequests">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/getFriendRequests" message="tns:ISocialManager_getFriendRequests_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/getFriendRequestsResponse" message="tns:ISocialManager_getFriendRequests_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="notifyFriendRequest">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="notifyFriendRequest">
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/notifyFriendRequest" message="tns:ISocialManager_notifyFriendRequest_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation name="notifyFriendResponse">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="notifyFriendResponse">
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/notifyFriendResponse" message="tns:ISocialManager_notifyFriendResponse_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation name="notifyFriendStatusChanged">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="notifyFriendStatusChanged">
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/notifyFriendStatusChanged" message="tns:ISocialManager_notifyFriendStatusChanged_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
@@ -125,6 +137,18 @@
     <wsp:PolicyReference URI="#NetTcpBinding_ISocialManager_policy">
     </wsp:PolicyReference>
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="connect">
+      <soap12:operation soapAction="http://tempuri.org/ISocialManager/connect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="disconnect">
+      <soap12:operation soapAction="http://tempuri.org/ISocialManager/disconnect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
     <wsdl:operation name="searchPlayers">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/searchPlayers" style="document" />
       <wsdl:input>

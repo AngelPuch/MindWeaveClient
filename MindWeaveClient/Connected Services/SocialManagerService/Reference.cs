@@ -291,8 +291,20 @@ namespace MindWeaveClient.SocialManagerService {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SocialManagerService.ISocialManager", CallbackContract=typeof(MindWeaveClient.SocialManagerService.ISocialManagerCallback))]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SocialManagerService.ISocialManager", CallbackContract=typeof(MindWeaveClient.SocialManagerService.ISocialManagerCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface ISocialManager {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ISocialManager/connect")]
+        void connect(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ISocialManager/connect")]
+        System.Threading.Tasks.Task connectAsync(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ISocialManager/disconnect")]
+        void disconnect(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ISocialManager/disconnect")]
+        System.Threading.Tasks.Task disconnectAsync(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISocialManager/searchPlayers", ReplyAction="http://tempuri.org/ISocialManager/searchPlayersResponse")]
         MindWeaveClient.SocialManagerService.PlayerSearchResultDto[] searchPlayers(string requesterUsername, string query);
@@ -370,6 +382,22 @@ namespace MindWeaveClient.SocialManagerService {
         
         public SocialManagerClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(callbackInstance, binding, remoteAddress) {
+        }
+        
+        public void connect(string username) {
+            base.Channel.connect(username);
+        }
+        
+        public System.Threading.Tasks.Task connectAsync(string username) {
+            return base.Channel.connectAsync(username);
+        }
+        
+        public void disconnect(string username) {
+            base.Channel.disconnect(username);
+        }
+        
+        public System.Threading.Tasks.Task disconnectAsync(string username) {
+            return base.Channel.disconnectAsync(username);
         }
         
         public MindWeaveClient.SocialManagerService.PlayerSearchResultDto[] searchPlayers(string requesterUsername, string query) {

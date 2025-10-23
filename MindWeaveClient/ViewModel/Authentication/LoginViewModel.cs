@@ -73,6 +73,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     SessionService.setSession(result.username, result.avatarPath);
 
+                    bool socialConnected = SocialServiceClientManager.Instance.Connect(result.username);
+                    if (!socialConnected)
+                    {
+                        // Opcional: Informar al usuario si la conexión social falló,
+                        // aunque podría continuar sin ella si es aceptable.
+                        MessageBox.Show("Could not connect to social features.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+
                     MessageBox.Show(result.operationResult.message, "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     var currentWindow = Application.Current.MainWindow;

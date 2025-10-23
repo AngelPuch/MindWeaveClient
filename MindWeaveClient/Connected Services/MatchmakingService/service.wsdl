@@ -63,6 +63,9 @@
   <wsdl:message name="IMatchmakingManager_kickPlayer_InputMessage">
     <wsdl:part name="parameters" element="tns:kickPlayer" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_changeDifficulty_InputMessage">
+    <wsdl:part name="parameters" element="tns:changeDifficulty" />
+  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_receiveLobbyInvite_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:receiveLobbyInvite" />
   </wsdl:message>
@@ -97,6 +100,9 @@
     </wsdl:operation>
     <wsdl:operation name="kickPlayer">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/kickPlayer" message="tns:IMatchmakingManager_kickPlayer_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="changeDifficulty">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/changeDifficulty" message="tns:IMatchmakingManager_changeDifficulty_InputMessage" />
     </wsdl:operation>
     <wsdl:operation name="receiveLobbyInvite">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/receiveLobbyInvite" message="tns:IMatchmakingManager_receiveLobbyInvite_OutputCallbackMessage" />
@@ -153,6 +159,12 @@
     </wsdl:operation>
     <wsdl:operation name="kickPlayer">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/kickPlayer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="changeDifficulty">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/changeDifficulty" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
