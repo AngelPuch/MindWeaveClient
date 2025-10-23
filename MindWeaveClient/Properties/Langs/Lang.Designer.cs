@@ -61,6 +61,42 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Cannot connect...service..
+        /// </summary>
+        public static string CannotConnectMatchmaking {
+            get {
+                return ResourceManager.GetString("CannotConnectMatchmaking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Easy (25 Pcs).
+        /// </summary>
+        public static string DifficultyOptEasy {
+            get {
+                return ResourceManager.GetString("DifficultyOptEasy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Hard (100 Pcs).
+        /// </summary>
+        public static string DifficultyOptHard {
+            get {
+                return ResourceManager.GetString("DifficultyOptHard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Medium (50 Pcs).
+        /// </summary>
+        public static string DifficultyOptMedium {
+            get {
+                return ResourceManager.GetString("DifficultyOptMedium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Change Avatar.
         /// </summary>
         public static string EditProfileBtnChangeAvatar {
@@ -106,11 +142,38 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error loading puzzles.
+        /// </summary>
+        public static string ErrorLoadingPuzzles {
+            get {
+                return ResourceManager.GetString("ErrorLoadingPuzzles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error.
         /// </summary>
         public static string ErrorTitle {
             get {
                 return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error uploading image.
+        /// </summary>
+        public static string ErrorUploadingImage {
+            get {
+                return ResourceManager.GetString("ErrorUploadingImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to create lobby..
+        /// </summary>
+        public static string FailedToCreateLobby {
+            get {
+                return ResourceManager.GetString("FailedToCreateLobby", resourceCulture);
             }
         }
         
@@ -264,6 +327,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string GlobalLbUsername {
             get {
                 return ResourceManager.GetString("GlobalLbUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Processing....
+        /// </summary>
+        public static string GlobalProcessing {
+            get {
+                return ResourceManager.GetString("GlobalProcessing", resourceCulture);
             }
         }
         
@@ -628,6 +700,51 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Create Lobby.
+        /// </summary>
+        public static string SelectionPuzzleCreateLobbyBtn {
+            get {
+                return ResourceManager.GetString("SelectionPuzzleCreateLobbyBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Select Puzzle &amp; Difficulty.
+        /// </summary>
+        public static string SelectionPuzzleHeader {
+            get {
+                return ResourceManager.GetString("SelectionPuzzleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Select Puzzle.
+        /// </summary>
+        public static string SelectionPuzzleTitle {
+            get {
+                return ResourceManager.GetString("SelectionPuzzleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Upload Your Image.
+        /// </summary>
+        public static string SelectionPuzzleUploadImageBtn {
+            get {
+                return ResourceManager.GetString("SelectionPuzzleUploadImageBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Select Puzzle Image.
+        /// </summary>
+        public static string SelectPuzzleImageTitle {
+            get {
+                return ResourceManager.GetString("SelectPuzzleImageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a CREDITS.
         /// </summary>
         public static string SettingsBtnCredits {
@@ -867,6 +984,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SocialLbSentRequests {
             get {
                 return ResourceManager.GetString("SocialLbSentRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Upload Failed.
+        /// </summary>
+        public static string UploadFailed {
+            get {
+                return ResourceManager.GetString("UploadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Upload successful!.
+        /// </summary>
+        public static string UploadSuccessful {
+            get {
+                return ResourceManager.GetString("UploadSuccessful", resourceCulture);
             }
         }
         

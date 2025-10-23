@@ -72,6 +72,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\PuzzleManagerService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\SocialManagerService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -102,6 +107,7 @@
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\SelectAvatarViewModel.cs" />
+    <Compile Include="ViewModel\Main\SelectionPuzzleViewModel.cs" />
     <Compile Include="ViewModel\Main\SocialViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
@@ -139,6 +145,9 @@
     </Compile>
     <Compile Include="View\Main\SelectAvatarPage.xaml.cs">
       <DependentUpon>SelectAvatarPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Main\SelectionPuzzlePage.xaml.cs">
+      <DependentUpon>SelectionPuzzlePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Main\SocialPage.xaml.cs">
       <DependentUpon>SocialPage.xaml</DependentUpon>
@@ -199,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Main\SelectAvatarPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Main\SelectionPuzzlePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -301,6 +314,22 @@
     <None Include="Connected Services\ProfileService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.PuzzleInfoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.UploadResultDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\PuzzleManagerService\service.wsdl" />
+    <None Include="Connected Services\PuzzleManagerService\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\PuzzleManagerService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -368,6 +397,7 @@
     <WCFMetadataStorage Include="Connected Services\AuthenticationService\" />
     <WCFMetadataStorage Include="Connected Services\MatchmakingService\" />
     <WCFMetadataStorage Include="Connected Services\ProfileService\" />
+    <WCFMetadataStorage Include="Connected Services\PuzzleManagerService\" />
     <WCFMetadataStorage Include="Connected Services\SocialManagerService\" />
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +447,27 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PuzzleManagerService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PuzzleManagerService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PuzzleManagerService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Puzzles\puzzleDefault3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Puzzles\puzzleDefault2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Puzzles\puzzleDefault.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

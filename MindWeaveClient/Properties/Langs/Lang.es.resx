@@ -405,4 +405,49 @@
   <data name="GlobalVerificationInvalidOrExpiredCode" xml:space="preserve">
     <value>Código de verificación inválido o expirado.</value>
   </data>
+  <data name="SelectionPuzzleTitle" xml:space="preserve">
+    <value>Seleccionar Puzzle</value>
+  </data>
+  <data name="SelectionPuzzleHeader" xml:space="preserve">
+    <value>Selecciona Puzzle y Dificultad</value>
+  </data>
+  <data name="SelectionPuzzleUploadImageBtn" xml:space="preserve">
+    <value>Sube tu propia imagen</value>
+  </data>
+  <data name="SelectionPuzzleCreateLobbyBtn" xml:space="preserve">
+    <value>Crear Sala</value>
+  </data>
+  <data name="DifficultyOptEasy" xml:space="preserve">
+    <value>Fácil (25 Pzs)</value>
+  </data>
+  <data name="DifficultyOptMedium" xml:space="preserve">
+    <value>Medio (50 Pzs)</value>
+  </data>
+  <data name="DifficultyOptHard" xml:space="preserve">
+    <value>Difícil (100 Pzs)</value>
+  </data>
+  <data name="GlobalProcessing" xml:space="preserve">
+    <value>Procesando...</value>
+  </data>
+  <data name="ErrorLoadingPuzzles" xml:space="preserve">
+    <value>Error al cargar puzzles</value>
+  </data>
+  <data name="ErrorUploadingImage" xml:space="preserve">
+    <value>Error al subir imagen</value>
+  </data>
+  <data name="UploadSuccessful" xml:space="preserve">
+    <value>¡Imagen subida con éxito!</value>
+  </data>
+  <data name="UploadFailed" xml:space="preserve">
+    <value>Falló la subida</value>
+  </data>
+  <data name="CannotConnectMatchmaking" xml:space="preserve">
+    <value>No se pudo conectar...</value>
+  </data>
+  <data name="FailedToCreateLobby" xml:space="preserve">
+    <value>Error al crear la sala.</value>
+  </data>
+  <data name="SelectPuzzleImageTitle" xml:space="preserve">
+    <value>Selecciona Imagen del Puzzle</value>
+  </data>
 </root>

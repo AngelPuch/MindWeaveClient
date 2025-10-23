@@ -75,7 +75,7 @@ namespace MindWeaveClient.ViewModel.Main
 
             profileCommand = new RelayCommand(p => executeGoToProfile());
             // *** USA EL NUEVO NOMBRE AQUÍ ***
-            createLobbyCommand = new RelayCommand(async p => await executeCreateLobbyAsync(), p => !isBusy); // Antes era playCommand -> executePlayAsync
+            createLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !isBusy); // Llama al método correcto
             socialCommand = new RelayCommand(p => executeGoToSocial());
             settingsCommand = new RelayCommand(p => { /* TODO: */ MessageBox.Show("Settings not implemented yet."); });
             joinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => canJoinLobby);
@@ -83,46 +83,15 @@ namespace MindWeaveClient.ViewModel.Main
             // Log inicial para verificar el avatarPath
             Console.WriteLine($"MainMenuViewModel Initialized. Avatar Path: {playerAvatarPath}");
         }
-
-        private async Task executeCreateLobbyAsync() 
+        private void executeGoToPuzzleSelection()
         {
-            isBusy = true;
-            try
-            {
-                if (!MatchmakingServiceClientManager.Instance.EnsureConnected())
-                {
-                    MessageBox.Show("Could not connect to the matchmaking service.", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
-                    return;
-                }
-
-                var defaultSettings = new LobbySettingsDto { difficultyId = 1, preloadedPuzzleId = 3 }; // TODO: Ajustar defaults
-                LobbyCreationResultDto result = await matchmakingProxy.createLobbyAsync(SessionService.username, defaultSettings);
-
-                if (result.success)
-                {
-                    MessageBox.Show($"Lobby created! Code: {result.lobbyCode}", "Success", MessageBoxButton.OK, MessageBoxImage.Information); // Opcional
-                    var lobbyPage = new LobbyPage();
-                    lobbyPage.DataContext = new LobbyViewModel(
-                        result.initialLobbyState,
-                        navigateTo,
-                        () => navigateTo(mainMenuPage)
-                    );
-                    navigateTo(lobbyPage);
-                }
-                else
-                {
-                    MessageBox.Show($"Failed to create lobby: {result.message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
-                MatchmakingServiceClientManager.Instance.Disconnect();
-            }
-            finally
-            {
-                isBusy = false;
-            }
+            // Navega a la página de selección de puzzles
+            var selectionPage = new SelectionPuzzlePage(); // Asegúrate que el using esté arriba
+            selectionPage.DataContext = new SelectionPuzzleViewModel(
+                navigateTo,             // Acción para navegar hacia adelante (al Lobby)
+                () => navigateTo(mainMenuPage) // Acción para cancelar (volver al menú)
+            );
+            navigateTo(selectionPage);
         }
         private async Task executeJoinLobbyAsync()
         {
