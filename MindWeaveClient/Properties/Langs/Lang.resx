@@ -396,4 +396,13 @@
   <data name="MainMenuBtnJoin" xml:space="preserve">
     <value>Join</value>
   </data>
+  <data name="ValidationPasswordsDoNotMatch" xml:space="preserve">
+    <value>The passwords do not match.</value>
+  </data>
+  <data name="GlobalErrorAllFieldsRequired" xml:space="preserve">
+    <value>All fields are required.</value>
+  </data>
+  <data name="GlobalVerificationInvalidOrExpiredCode" xml:space="preserve">
+    <value>Invalid or expired verification code.</value>
+  </data>
 </root>

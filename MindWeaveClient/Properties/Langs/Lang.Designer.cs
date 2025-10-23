@@ -187,6 +187,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a All fields are required..
+        /// </summary>
+        public static string GlobalErrorAllFieldsRequired {
+            get {
+                return ResourceManager.GetString("GlobalErrorAllFieldsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Date of birth.
         /// </summary>
         public static string GlobalLbBirth {
@@ -264,6 +273,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string GlobalTxtNewPassword {
             get {
                 return ResourceManager.GetString("GlobalTxtNewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invalid or expired verification code..
+        /// </summary>
+        public static string GlobalVerificationInvalidOrExpiredCode {
+            get {
+                return ResourceManager.GetString("GlobalVerificationInvalidOrExpiredCode", resourceCulture);
             }
         }
         
@@ -849,6 +867,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SocialLbSentRequests {
             get {
                 return ResourceManager.GetString("SocialLbSentRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The passwords do not match..
+        /// </summary>
+        public static string ValidationPasswordsDoNotMatch {
+            get {
+                return ResourceManager.GetString("ValidationPasswordsDoNotMatch", resourceCulture);
             }
         }
         

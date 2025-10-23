@@ -94,6 +94,7 @@
     <Compile Include="Services\SocialServiceClientManager.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
+    <Compile Include="ViewModel\Authentication\PasswordRecoveryViewModel.cs" />
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\Game\LobbyViewModel.cs" />

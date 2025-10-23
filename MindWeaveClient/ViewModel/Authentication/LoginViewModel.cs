@@ -127,7 +127,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoToForgotPassword()
         {
-            MessageBox.Show("Forgot Password functionality not implemented yet.", "Info");
+            navigateTo(new PasswordRecoveryPage());
         }
 
         private void executeGuestLogin()
