@@ -1,4 +1,5 @@
 ﻿// MindWeaveClient/ViewModel/Game/LobbyViewModel.cs
+using MindWeaveClient.ChatManagerService;
 using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs; // Para Lang
 using MindWeaveClient.Services;
@@ -9,7 +10,9 @@ using MindWeaveClient.ViewModel.Main; // *** Necesario para FriendDtoDisplay ***
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,12 +21,18 @@ using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Game
 {
+
+    
     public class LobbyViewModel : BaseViewModel
     {
         // --- Managers y Proxies ---
         private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.Instance.Proxy;
         private MatchmakingCallbackHandler matchmakingCallbackHandler => MatchmakingServiceClientManager.Instance.CallbackHandler;
-        private SocialManagerClient socialProxy => SocialServiceClientManager.Instance.Proxy; // *** Proxy Social ***
+        private SocialManagerClient socialProxy => SocialServiceClientManager.Instance.Proxy;
+        // *** ELIMINADOS DUPLICADOS ***
+        private ChatManagerClient chatProxy => ChatServiceClientManager.Instance.Proxy;
+        private ChatCallbackHandler chatCallbackHandler => ChatServiceClientManager.Instance.CallbackHandler;
+
 
         // --- Navegación ---
         private readonly Action<Page> navigateTo;
@@ -32,33 +41,33 @@ namespace MindWeaveClient.ViewModel.Game
         // --- Propiedades del Lobby ---
         private string lobbyCodeValue;
         public string lobbyCode { get => lobbyCodeValue; set { lobbyCodeValue = value; OnPropertyChanged(); } }
-
         private string hostUsernameValue;
         public string hostUsername { get => hostUsernameValue; set { hostUsernameValue = value; OnPropertyChanged(); OnPropertyChanged(nameof(isHost)); } }
-
         public ObservableCollection<string> players { get; } = new ObservableCollection<string>();
-
         private LobbySettingsDto currentSettingsValue;
         public LobbySettingsDto currentSettings { get => currentSettingsValue; set { currentSettingsValue = value; OnPropertyChanged(); } }
-
         public bool isHost => hostUsernameValue == SessionService.username;
-
         private bool isBusyValue;
-        public bool isBusy { get => isBusyValue; set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } } // Llama a helper
-
-        // *** NUEVO: Lista de Amigos Online para Invitar ***
+        public bool isBusy { get => isBusyValue; set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
         public ObservableCollection<FriendDtoDisplay> onlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
 
-
+        // --- Chat Properties ---
+        public ObservableCollection<ChatMessageDisplayViewModel> chatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
+        private string currentChatMessageValue = string.Empty;
+        public string currentChatMessage
+        {
+            get => currentChatMessageValue;
+            set { currentChatMessageValue = value; OnPropertyChanged(); ((RelayCommand)sendMessageCommand).RaiseCanExecuteChanged(); }
+        }
         // --- Comandos ---
         public ICommand leaveLobbyCommand { get; }
         public ICommand startGameCommand { get; }
-        public ICommand inviteFriendCommand { get; } // *** Ahora con lógica ***
+        public ICommand inviteFriendCommand { get; }
         public ICommand kickPlayerCommand { get; }
         public ICommand uploadImageCommand { get; }
         public ICommand changeSettingsCommand { get; }
-        public ICommand refreshFriendsCommand { get; } // *** NUEVO: Para recargar amigos ***
-
+        public ICommand refreshFriendsCommand { get; }
+        public ICommand sendMessageCommand { get; }
 
         public LobbyViewModel(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
         {
@@ -73,18 +82,115 @@ namespace MindWeaveClient.ViewModel.Game
             uploadImageCommand = new RelayCommand(p => MessageBox.Show("Upload image TBD"), param => isHost && !isBusy);
             changeSettingsCommand = new RelayCommand(p => MessageBox.Show("Change settings TBD"), param => isHost && !isBusy);
             refreshFriendsCommand = new RelayCommand(async p => await loadOnlineFriendsAsync(), p => isHost && !isBusy); // *** Comando Refresh ***
-
+            sendMessageCommand = new RelayCommand(executeSendMessage, canExecuteSendMessage);
 
             subscribeToCallbacks();
 
-            if (initialState != null) { updateState(initialState); }
+            if (initialState != null) {
+                connectToChat(initialState.lobbyId);
+                updateState(initialState);
+            }
             else { lobbyCode = "Joining..."; hostUsername = "Loading..."; }
 
             // Cargar amigos si somos el host
             if (isHost) { refreshFriendsCommand.Execute(null); }
+            Debug.WriteLine($"LobbyViewModel initialized. Initial State Null: {initialState == null}");
+
         }
 
         // --- Lógica de Comandos ---
+        private void connectToChat(string lobbyIdToConnect)
+        {
+            Debug.WriteLine($"Attempting to connect to chat for lobby {lobbyIdToConnect}...");
+            if (ChatServiceClientManager.Instance.Connect(SessionService.username, lobbyIdToConnect))
+            {
+                Debug.WriteLine($"Chat connected successfully for lobby {lobbyIdToConnect}. Subscribing...");
+                subscribeToChatCallbacks(); // Subscribe specifically to chat messages
+            }
+            else
+            {
+                Debug.WriteLine($"Failed to connect to chat service for lobby {lobbyIdToConnect}.");
+                MessageBox.Show("Could not connect to lobby chat.", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void disconnectFromChat()
+        {
+            Debug.WriteLine("Disconnecting from chat service...");
+            unsubscribeFromChatCallbacks();
+            ChatServiceClientManager.Instance.Disconnect();
+        }
+
+        private void subscribeToChatCallbacks()
+        {
+            if (chatCallbackHandler != null)
+            {
+                chatCallbackHandler.LobbyMessageReceived -= handleLobbyMessageReceived; // Prevent duplicates
+                chatCallbackHandler.LobbyMessageReceived += handleLobbyMessageReceived;
+                Debug.WriteLine("Subscribed to LobbyMessageReceived.");
+            }
+            else
+            {
+                Debug.WriteLine("ERROR: Cannot subscribe to chat callbacks, handler is null.");
+            }
+        }
+
+        private void unsubscribeFromChatCallbacks()
+        {
+            if (chatCallbackHandler != null)
+            {
+                chatCallbackHandler.LobbyMessageReceived -= handleLobbyMessageReceived;
+                Debug.WriteLine("Unsubscribed from LobbyMessageReceived.");
+            }
+        }
+
+        private void handleLobbyMessageReceived(ChatMessageDto messageDto)
+        {
+            // Ensure this runs on the UI thread
+            Application.Current?.Dispatcher?.Invoke(() =>
+            {
+                chatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
+                // Optional: Auto-scroll to the bottom
+                Debug.WriteLine($"Added message from {messageDto.senderUsername} to UI collection.");
+            });
+        }
+
+
+        private bool canExecuteSendMessage(object parameter)
+        {
+            return !string.IsNullOrWhiteSpace(currentChatMessage) && ChatServiceClientManager.Instance.IsConnected();
+        }
+
+        private void executeSendMessage(object parameter)
+        {
+            if (!canExecuteSendMessage(parameter)) return;
+
+            string messageToSend = currentChatMessage;
+            currentChatMessage = string.Empty; // Clear input immediately
+
+            try
+            {
+                // Call WCF service (OneWay)
+                chatProxy.sendLobbyMessageAsync(SessionService.username, lobbyCode, messageToSend);
+                Debug.WriteLine($"Sent message: '{messageToSend}'");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error sending chat message: {ex.Message}");
+                // Optionally add message back to input or show error
+                // currentChatMessage = messageToSend; // Put message back if send failed?
+                MessageBox.Show($"Failed to send message: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                // Consider attempting to reconnect chat if channel faulted
+                if (chatProxy.State == CommunicationState.Faulted)
+                {
+                    disconnectFromChat();
+                    connectToChat(lobbyCode);
+                }
+            }
+        }
+
+
+
 
         private void executeLeaveLobby(object parameter)
         {
@@ -100,7 +206,7 @@ namespace MindWeaveClient.ViewModel.Game
             finally { isBusy = false; }
         }
 
-        private void executeStartGame(object parameter)
+        private async void executeStartGame(object parameter)
         {
             // *** VALIDACIÓN: Asegurar 4 jugadores ***
             if (!isHost || players.Count < 4) // Cambiar a == 4 si es estricto
@@ -193,32 +299,44 @@ namespace MindWeaveClient.ViewModel.Game
         {
             if (matchmakingCallbackHandler != null)
             {
-                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate;
+                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate; // Prevent duplicates
                 matchmakingCallbackHandler.MatchFound -= handleMatchFound;
                 matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby;
-                // No necesitamos InviteReceived aquí, se maneja globalmente
 
                 matchmakingCallbackHandler.LobbyStateUpdated += handleLobbyStateUpdate;
                 matchmakingCallbackHandler.MatchFound += handleMatchFound;
                 matchmakingCallbackHandler.KickedFromLobby += handleKickedFromLobby;
+                Debug.WriteLine("Subscribed to Matchmaking callbacks.");
             }
+            else { Debug.WriteLine("ERROR: Matchmaking callback handler is null."); }
+            // Chat subscription moved to connectToChat
         }
 
-        private void unsubscribeFromCallbacks()
+        private void unsubscribeFromCallbacks() // *** CORRECTED LOGIC ***
         {
             if (matchmakingCallbackHandler != null)
             {
-                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate;
-                matchmakingCallbackHandler.MatchFound -= handleMatchFound;
-                matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby;
+                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate; // Use -=
+                matchmakingCallbackHandler.MatchFound -= handleMatchFound;             // Use -=
+                matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby;     // Use -=
+                Debug.WriteLine("Unsubscribed from Matchmaking callbacks.");
             }
+            unsubscribeFromChatCallbacks(); // Separate call
         }
 
         private void handleLobbyStateUpdate(LobbyStateDto newState)
         {
             if (newState != null && (string.IsNullOrEmpty(this.lobbyCode) || this.lobbyCode == "Joining..." || newState.lobbyId == this.lobbyCode))
             {
+                bool isInitialJoin = string.IsNullOrEmpty(this.lobbyCode) || this.lobbyCode == "Joining...";
                 Application.Current.Dispatcher.Invoke(() => updateState(newState));
+
+                // If this is the first state update after joining, connect to chat
+                if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
+                {
+                    Debug.WriteLine($"Initial lobby state received ({newState.lobbyId}). Connecting to chat.");
+                    connectToChat(newState.lobbyId);
+                }
             }
         }
 
@@ -303,8 +421,9 @@ namespace MindWeaveClient.ViewModel.Game
         // --- Limpieza ---
         public void cleanup()
         {
-            // (Sin cambios)
+            Debug.WriteLine("LobbyViewModel Cleanup called.");
             unsubscribeFromCallbacks();
+            disconnectFromChat();
         }
     }
 }

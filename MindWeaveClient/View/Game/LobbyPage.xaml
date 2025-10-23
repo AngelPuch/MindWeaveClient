@@ -6,17 +6,24 @@
       xmlns:local="clr-namespace:MindWeaveClient.View.Game"
       xmlns:lang="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Game"
-      xmlns:main_vm="clr-namespace:MindWeaveClient.ViewModel.Main" xmlns:helpers="clr-namespace:MindWeaveClient.Helpers" mc:Ignorable="d"
+      xmlns:main_vm="clr-namespace:MindWeaveClient.ViewModel.Main"
+      xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"
+      xmlns:services="clr-namespace:MindWeaveClient.Services" mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type=vm:LobbyViewModel, IsDesignTimeCreatable=False}"
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="LobbyPage">
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <helpers:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
+
         <helpers:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
         <helpers:DifficultyIndexConverter x:Key="DifficultyIndexConverter"/>
-        <helpers:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
         <helpers:KickButtonVisibilityConverter x:Key="KickButtonVisibilityConverter"/>
+        <helpers:EqualityToVisibilityConverter x:Key="EqualityToVisibilityConverter"/>
+        <helpers:StringEqualityConverter x:Key="StringEqualityConverter"/>
+        <helpers:StringEqualityToVisibilityConverterInverted x:Key="StringEqualityToVisibilityConverterInverted"/>
+        <helpers:InverseBoolConverter x:Key="InverseBoolConverter"/>
 
         <Style TargetType="TabItem">
             <Setter Property="Template">
@@ -36,7 +43,6 @@
             <Setter Property="Foreground" Value="#2c3e50"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-
         <Style x:Key="PlayerListItemStyle" TargetType="Grid">
             <Setter Property="Margin" Value="0,5"/>
         </Style>
@@ -48,7 +54,6 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <TextBlock Grid.Column="0" Text="👑" ToolTip="Host" FontSize="16" VerticalAlignment="Center" Margin="0,0,5,0">
                     <TextBlock.Visibility>
                         <MultiBinding Converter="{StaticResource StringToVisibilityConverter}">
@@ -57,14 +62,12 @@
                         </MultiBinding>
                     </TextBlock.Visibility>
                 </TextBlock>
-
                 <TextBlock Grid.Column="1" Text="{Binding}" Foreground="#2c3e50" VerticalAlignment="Center" Margin="5,0"/>
-
                 <Button Grid.Column="2" Content="Kick" ToolTip="Kick Player"
-                        Style="{StaticResource SecondaryButtonStyle}" Background="OrangeRed"
-                        Height="25" Width="50" FontSize="10" Padding="0" Margin="5,0,0,0"
-                        Command="{Binding DataContext.kickPlayerCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                        CommandParameter="{Binding}">
+                         Style="{StaticResource SecondaryButtonStyle}" Background="OrangeRed"
+                         Height="25" Width="50" FontSize="10" Padding="0" Margin="5,0,0,0"
+                         Command="{Binding DataContext.kickPlayerCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                         CommandParameter="{Binding}">
                     <Button.Visibility>
                         <MultiBinding Converter="{StaticResource KickButtonVisibilityConverter}">
                             <Binding Path="DataContext.isHost" RelativeSource="{RelativeSource AncestorType=Page}"/>
@@ -75,7 +78,6 @@
                 </Button>
             </Grid>
         </DataTemplate>
-
         <DataTemplate x:Key="OnlineFriendInviteTemplate">
             <Border Background="#19000000" CornerRadius="5" Padding="8" Margin="0,3">
                 <Grid>
@@ -84,21 +86,17 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <Ellipse Grid.Column="0" Width="25" Height="25">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding avatarPath}" Stretch="UniformToFill"/>
                         </Ellipse.Fill>
                     </Ellipse>
-
                     <TextBlock Grid.Column="1" Text="{Binding username}" VerticalAlignment="Center" Margin="8,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
-
                     <Button Grid.Column="2" Content="Invite" ToolTip="Invite to Lobby"
-                            Style="{StaticResource PrimaryButtonStyle}" Height="28" Width="60" FontSize="10" Padding="0" Margin="0"
-                            Command="{Binding DataContext.inviteFriendCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                            CommandParameter="{Binding}"
-                            IsEnabled="{Binding DataContext.isHost, RelativeSource={RelativeSource AncestorType=Page}}">
-                    </Button>
+                             Style="{StaticResource PrimaryButtonStyle}" Height="28" Width="60" FontSize="10" Padding="0" Margin="0"
+                             Command="{Binding DataContext.inviteFriendCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                             CommandParameter="{Binding}"
+                             IsEnabled="{Binding DataContext.isHost, RelativeSource={RelativeSource AncestorType=Page}}"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -126,11 +124,7 @@
                     <Border Background="#88FFFFFF" BorderBrush="#2c3e50" BorderThickness="1" CornerRadius="10" MinHeight="400" VerticalAlignment="Stretch">
                         <TextBlock Text="[Image Preview Area]" Foreground="Gray" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <Button Content="{x:Static lang:Lang.LobbyBtnUploadImage}"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Margin="0,15,0,0" Width="Auto" Height="40"
-                            Command="{Binding uploadImageCommand}"
-                            IsEnabled="{Binding isHost}"/>
+                    <Button Content="{x:Static lang:Lang.LobbyBtnUploadImage}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,15,0,0" Width="Auto" Height="40" Command="{Binding uploadImageCommand}" IsEnabled="{Binding isHost}"/>
                 </StackPanel>
 
                 <Grid Grid.Column="1" Margin="20,0">
@@ -141,7 +135,6 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <TextBlock Grid.Row="0" Text="{x:Static lang:Lang.LobbyLbTitle}" Foreground="#2c3e50" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10">
                         <TextBlock Text="Code:" Foreground="#2c3e50" FontSize="16" VerticalAlignment="Center" Margin="0,0,5,0"/>
@@ -149,8 +142,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="0,10,0,0">
                         <TextBlock Text="{x:Static lang:Lang.LobbyLbDifficulty}" Foreground="#2c3e50" FontWeight="Bold"/>
-                        <ComboBox SelectedIndex="{Binding currentSettings.difficultyId, Converter={StaticResource DifficultyIndexConverter}, Mode=TwoWay}"
-                                  Padding="5" Margin="0,5,0,0" IsEnabled="{Binding isHost}">
+                        <ComboBox SelectedIndex="{Binding currentSettings.difficultyId, Converter={StaticResource DifficultyIndexConverter}, Mode=TwoWay}" Padding="5" Margin="0,5,0,0" IsEnabled="{Binding isHost}">
                             <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptEasy}" Tag="1"/>
                             <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptMedium}" Tag="2"/>
                             <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptHard}" Tag="3"/>
@@ -164,16 +156,13 @@
                             </ScrollViewer>
                         </StackPanel>
                     </Border>
-                    <Button Grid.Row="4" Content="{x:Static lang:Lang.GlobalBtnPlay}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" Height="50" FontSize="20"
-                            Command="{Binding startGameCommand}"
-                            Visibility="{Binding isHost, Converter={StaticResource BoolToVis}}"/>
-                    <Button Grid.Row="4" Content="Leave Lobby" Style="{StaticResource SecondaryButtonStyle}" Background="DarkRed" Margin="0,15,0,0" Height="50" FontSize="20"
-                            Command="{Binding leaveLobbyCommand}"
-                            Visibility="{Binding isHost, Converter={StaticResource InverseBoolToVis}}"/>
+                    <Button Grid.Row="4" Content="{x:Static lang:Lang.GlobalBtnPlay}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" Height="50" FontSize="20" Command="{Binding startGameCommand}" Visibility="{Binding isHost, Converter={StaticResource BoolToVis}}"/>
+                    <Button Grid.Row="4" Content="Leave Lobby" Style="{StaticResource SecondaryButtonStyle}" Background="DarkRed" Margin="0,15,0,0" Height="50" FontSize="20" Command="{Binding leaveLobbyCommand}" Visibility="{Binding isHost, Converter={StaticResource InverseBoolToVis}}"/>
                 </Grid>
 
                 <Border Grid.Column="2" Background="#88FFFFFF" BorderBrush="#2c3e50" BorderThickness="1" CornerRadius="10" Margin="20,0,0,0">
                     <TabControl Background="Transparent" BorderThickness="0">
+
                         <TabItem Header="{x:Static lang:Lang.LobbyBtnInvite}" IsEnabled="{Binding isHost}">
                             <Grid Margin="15">
                                 <Grid.RowDefinitions>
@@ -181,36 +170,74 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-
                                 <TextBlock Grid.Row="0" Text="Invite Online Friends:" FontWeight="SemiBold" Foreground="#2c3e50"/>
-
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,10">
-                                    <ItemsControl ItemsSource="{Binding onlineFriends}"
-                                                  ItemTemplate="{StaticResource OnlineFriendInviteTemplate}"/>
+                                    <ItemsControl ItemsSource="{Binding onlineFriends}" ItemTemplate="{StaticResource OnlineFriendInviteTemplate}"/>
                                 </ScrollViewer>
-
-                                <Button Grid.Row="2" Content="Refresh List" ToolTip="Refresh online friends"
-                                        Style="{StaticResource SecondaryButtonStyle}" Height="30" FontSize="12" Padding="5,0"
-                                        Command="{Binding refreshFriendsCommand}"/>
+                                <Button Grid.Row="2" Content="Refresh List" ToolTip="Refresh online friends" Style="{StaticResource SecondaryButtonStyle}" Height="30" FontSize="12" Padding="5,0" Command="{Binding refreshFriendsCommand}"/>
                             </Grid>
                         </TabItem>
+
                         <TabItem Header="{x:Static lang:Lang.LobbyLbChat}">
                             <Grid Margin="15">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#44FFFFFF" Text="[Chat Area - TBD]"/>
+
+                                <ScrollViewer Grid.Row="0" x:Name="ChatScrollViewer" VerticalScrollBarVisibility="Auto" Background="#44FFFFFF">
+                                    <ItemsControl ItemsSource="{Binding chatMessages}">
+                                        <ItemsControl.ItemTemplate>
+
+
+                                            <DataTemplate DataType="{x:Type vm:ChatMessageDisplayViewModel}">
+                                                <Border Background="#22000000" CornerRadius="5" Padding="8,5" Margin="5" HorizontalAlignment="{Binding alignment}" MaxWidth="300">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding senderUsername}" FontWeight="Bold" Foreground="#1A5276" Visibility="{Binding alignment, ConverterParameter=Left, Converter={StaticResource EqualityToVisibilityConverter}}"/>
+                                                        <TextBlock Text="{Binding content}" TextWrapping="Wrap" Foreground="#34495E" Margin="0,2,0,2"/>
+
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
+                                                            <TextBlock Text="{Binding timestamp, StringFormat='{}{0:HH:mm}'}"
+                                                                FontSize="10" Foreground="Gray" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <Button Content="🚩" ToolTip="Report Message"
+                                                            Command="{Binding reportMessageCommand}"
+                                                            Style="{StaticResource SecondaryButtonStyle}"
+                                                            Background="Transparent" BorderThickness="0"
+                                                            Foreground="OrangeRed" Padding="0"
+                                                            FontSize="10" Cursor="Hand"
+                                                            Width="16" Height="16"
+                                                            Visibility="{Binding alignment, ConverterParameter=Left, Converter={StaticResource EqualityToVisibilityConverter}}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+
+
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
                                 <Grid Grid.Row="1" Margin="0,10,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" Text="Type a message..."/>
-                                    <Button Grid.Column="1" Content="Send" Margin="5,0,0,0" Style="{StaticResource SecondaryButtonStyle}" Height="Auto" Width="Auto"/>
+
+                                    <TextBox Grid.Column="0" x:Name="chatInputTextBox" Text="{Binding currentChatMessage, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource AuthInputBoxStyle}" Height="35" VerticalContentAlignment="Center"
+                                             MaxLength="200"
+                                             AcceptsReturn="False">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding sendMessageCommand}"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+                                    <Button Grid.Column="1" Content="Send" Margin="5,0,0,0"
+                                            Style="{StaticResource PrimaryButtonStyle}" Height="35" Width="60"
+                                            Command="{Binding sendMessageCommand}"/>
                                 </Grid>
                             </Grid>
                         </TabItem>
+
                     </TabControl>
                 </Border>
             </Grid>
