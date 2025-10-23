@@ -335,9 +335,6 @@ namespace MindWeaveClient.MatchmakingService {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IMatchmakingManagerCallback {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/receiveLobbyInvite")]
-        void receiveLobbyInvite(string fromUsername, string lobbyId);
-        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/updateLobbyState")]
         void updateLobbyState(MindWeaveClient.MatchmakingService.LobbyStateDto lobbyStateDto);
         

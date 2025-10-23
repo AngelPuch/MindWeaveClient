@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="Helpers\DifficultyIndexConverter.cs" />
     <Compile Include="Helpers\InverseBooleanToVisibilityConverter.cs" />
+    <Compile Include="Helpers\KickButtonVisibilityConverter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Helpers\SelectedItemToBooleanConverter.cs" />
     <Compile Include="Helpers\StringToVisibilityConverter.cs" />

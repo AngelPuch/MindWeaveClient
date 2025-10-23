@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:MindWeaveClient.View.Game"
       xmlns:lang="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Game"
-      xmlns:helpers="clr-namespace:MindWeaveClient.Helpers" mc:Ignorable="d"
+      xmlns:main_vm="clr-namespace:MindWeaveClient.ViewModel.Main" xmlns:helpers="clr-namespace:MindWeaveClient.Helpers" mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type=vm:LobbyViewModel, IsDesignTimeCreatable=False}"
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="LobbyPage">
@@ -16,6 +16,7 @@
         <helpers:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
         <helpers:DifficultyIndexConverter x:Key="DifficultyIndexConverter"/>
         <helpers:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
+        <helpers:KickButtonVisibilityConverter x:Key="KickButtonVisibilityConverter"/>
 
         <Style TargetType="TabItem">
             <Setter Property="Template">
@@ -47,8 +48,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="1" Text="{Binding}" Foreground="#2c3e50" VerticalAlignment="Center" Margin="5,0"/>
-                <TextBlock Grid.Column="2" Text="👑" ToolTip="Host" FontSize="16" VerticalAlignment="Center" Margin="5,0,10,0">
+
+                <TextBlock Grid.Column="0" Text="👑" ToolTip="Host" FontSize="16" VerticalAlignment="Center" Margin="0,0,5,0">
                     <TextBlock.Visibility>
                         <MultiBinding Converter="{StaticResource StringToVisibilityConverter}">
                             <Binding Path="DataContext.hostUsername" RelativeSource="{RelativeSource AncestorType=Page}"/>
@@ -56,7 +57,50 @@
                         </MultiBinding>
                     </TextBlock.Visibility>
                 </TextBlock>
+
+                <TextBlock Grid.Column="1" Text="{Binding}" Foreground="#2c3e50" VerticalAlignment="Center" Margin="5,0"/>
+
+                <Button Grid.Column="2" Content="Kick" ToolTip="Kick Player"
+                        Style="{StaticResource SecondaryButtonStyle}" Background="OrangeRed"
+                        Height="25" Width="50" FontSize="10" Padding="0" Margin="5,0,0,0"
+                        Command="{Binding DataContext.kickPlayerCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                        CommandParameter="{Binding}">
+                    <Button.Visibility>
+                        <MultiBinding Converter="{StaticResource KickButtonVisibilityConverter}">
+                            <Binding Path="DataContext.isHost" RelativeSource="{RelativeSource AncestorType=Page}"/>
+                            <Binding/>
+                            <Binding Path="DataContext.hostUsername" RelativeSource="{RelativeSource AncestorType=Page}"/>
+                        </MultiBinding>
+                    </Button.Visibility>
+                </Button>
             </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OnlineFriendInviteTemplate">
+            <Border Background="#19000000" CornerRadius="5" Padding="8" Margin="0,3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Ellipse Grid.Column="0" Width="25" Height="25">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding avatarPath}" Stretch="UniformToFill"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                    <TextBlock Grid.Column="1" Text="{Binding username}" VerticalAlignment="Center" Margin="8,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+
+                    <Button Grid.Column="2" Content="Invite" ToolTip="Invite to Lobby"
+                            Style="{StaticResource PrimaryButtonStyle}" Height="28" Width="60" FontSize="10" Padding="0" Margin="0"
+                            Command="{Binding DataContext.inviteFriendCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                            CommandParameter="{Binding}"
+                            IsEnabled="{Binding DataContext.isHost, RelativeSource={RelativeSource AncestorType=Page}}">
+                    </Button>
+                </Grid>
+            </Border>
         </DataTemplate>
 
     </Page.Resources>
@@ -97,6 +141,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+
                     <TextBlock Grid.Row="0" Text="{x:Static lang:Lang.LobbyLbTitle}" Foreground="#2c3e50" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10">
                         <TextBlock Text="Code:" Foreground="#2c3e50" FontSize="16" VerticalAlignment="Center" Margin="0,0,5,0"/>
@@ -104,10 +149,11 @@
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="0,10,0,0">
                         <TextBlock Text="{x:Static lang:Lang.LobbyLbDifficulty}" Foreground="#2c3e50" FontWeight="Bold"/>
-                        <ComboBox SelectedIndex="{Binding currentSettings.difficultyId, Converter={StaticResource DifficultyIndexConverter}}" Padding="5" Margin="0,5,0,0" IsEnabled="{Binding isHost}">
-                            <ComboBoxItem Content="Easy (25 Pcs)" Tag="1"/>
-                            <ComboBoxItem Content="Medium (50 Pcs)" Tag="2"/>
-                            <ComboBoxItem Content="Hard (100 Pcs)" Tag="3"/>
+                        <ComboBox SelectedIndex="{Binding currentSettings.difficultyId, Converter={StaticResource DifficultyIndexConverter}, Mode=TwoWay}"
+                                  Padding="5" Margin="0,5,0,0" IsEnabled="{Binding isHost}">
+                            <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptEasy}" Tag="1"/>
+                            <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptMedium}" Tag="2"/>
+                            <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptHard}" Tag="3"/>
                         </ComboBox>
                     </StackPanel>
                     <Border Grid.Row="3" Background="#88FFFFFF" BorderBrush="#2c3e50" BorderThickness="1" CornerRadius="10" Padding="15" Margin="0,15,0,0">
@@ -118,22 +164,35 @@
                             </ScrollViewer>
                         </StackPanel>
                     </Border>
-                    <Button Grid.Row="4" Content="{x:Static lang:Lang.GlobalBtnPlay}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" Height="50" FontSize="20" Command="{Binding startGameCommand}" Visibility="{Binding isHost, Converter={StaticResource BoolToVis}}"/>
-                    <Button Grid.Row="4" Content="Leave Lobby" Style="{StaticResource SecondaryButtonStyle}" Background="DarkRed" Margin="0,15,0,0" Height="50" FontSize="20" Command="{Binding leaveLobbyCommand}" Visibility="{Binding isHost, Converter={StaticResource InverseBoolToVis}}"/>
+                    <Button Grid.Row="4" Content="{x:Static lang:Lang.GlobalBtnPlay}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" Height="50" FontSize="20"
+                            Command="{Binding startGameCommand}"
+                            Visibility="{Binding isHost, Converter={StaticResource BoolToVis}}"/>
+                    <Button Grid.Row="4" Content="Leave Lobby" Style="{StaticResource SecondaryButtonStyle}" Background="DarkRed" Margin="0,15,0,0" Height="50" FontSize="20"
+                            Command="{Binding leaveLobbyCommand}"
+                            Visibility="{Binding isHost, Converter={StaticResource InverseBoolToVis}}"/>
                 </Grid>
 
                 <Border Grid.Column="2" Background="#88FFFFFF" BorderBrush="#2c3e50" BorderThickness="1" CornerRadius="10" Margin="20,0,0,0">
                     <TabControl Background="Transparent" BorderThickness="0">
                         <TabItem Header="{x:Static lang:Lang.LobbyBtnInvite}" IsEnabled="{Binding isHost}">
-                            <StackPanel Margin="15">
-                                <TextBlock Text="Invite Friends:" FontWeight="SemiBold"/>
-                                <TextBox Text="{x:Static lang:Lang.LobbyTxtSearchFriends}" Padding="5" Margin="0,10,0,0"/>
-                                <ListBox Background="Transparent" BorderThickness="0" Foreground="#2c3e50" Margin="0,10,0,0">
-                                    <ListBoxItem Content="Friend1 (Online)"/>
-                                    <ListBoxItem Content="Friend2 (Online)"/>
-                                </ListBox>
-                                <Button Content="Invite Selected" Style="{StaticResource SecondaryButtonStyle}" Height="35" Margin="0,10,0,0"/>
-                            </StackPanel>
+                            <Grid Margin="15">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="Invite Online Friends:" FontWeight="SemiBold" Foreground="#2c3e50"/>
+
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,10">
+                                    <ItemsControl ItemsSource="{Binding onlineFriends}"
+                                                  ItemTemplate="{StaticResource OnlineFriendInviteTemplate}"/>
+                                </ScrollViewer>
+
+                                <Button Grid.Row="2" Content="Refresh List" ToolTip="Refresh online friends"
+                                        Style="{StaticResource SecondaryButtonStyle}" Height="30" FontSize="12" Padding="5,0"
+                                        Command="{Binding refreshFriendsCommand}"/>
+                            </Grid>
                         </TabItem>
                         <TabItem Header="{x:Static lang:Lang.LobbyLbChat}">
                             <Grid Margin="15">
@@ -141,7 +200,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#44FFFFFF" Text="Hyelo: Subscribe to Hyelo!"/>
+                                <TextBox Grid.Row="0" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#44FFFFFF" Text="[Chat Area - TBD]"/>
                                 <Grid Grid.Row="1" Margin="0,10,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -160,7 +219,7 @@
         <Border Background="#88000000" CornerRadius="10"
                 Visibility="{Binding isBusy, Converter={StaticResource BoolToVis}}"
                 HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20">
-            <TextBlock Text="Processing..." Foreground="White" FontSize="16"/>
+            <TextBlock Text="{x:Static lang:Lang.GlobalProcessing}" Foreground="White" FontSize="16"/>
         </Border>
     </Grid>
 </Page>

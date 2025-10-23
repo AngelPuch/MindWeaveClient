@@ -92,6 +92,9 @@
   <wsdl:message name="ISocialManager_notifyFriendStatusChanged_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:notifyFriendStatusChanged" />
   </wsdl:message>
+  <wsdl:message name="ISocialManager_notifyLobbyInvite_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:notifyLobbyInvite" />
+  </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="ISocialManager">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="connect">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/connect" message="tns:ISocialManager_connect_InputMessage" />
@@ -131,6 +134,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="notifyFriendStatusChanged">
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/notifyFriendStatusChanged" message="tns:ISocialManager_notifyFriendStatusChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="notifyLobbyInvite">
+      <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/notifyLobbyInvite" message="tns:ISocialManager_notifyLobbyInvite_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_ISocialManager" type="tns:ISocialManager">
@@ -217,6 +223,12 @@
     </wsdl:operation>
     <wsdl:operation name="notifyFriendStatusChanged">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/notifyFriendStatusChanged" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="notifyLobbyInvite">
+      <soap12:operation soapAction="http://tempuri.org/ISocialManager/notifyLobbyInvite" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

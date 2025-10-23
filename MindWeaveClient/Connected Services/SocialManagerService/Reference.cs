@@ -354,6 +354,9 @@ namespace MindWeaveClient.SocialManagerService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ISocialManager/notifyFriendStatusChanged")]
         void notifyFriendStatusChanged(string friendUsername, bool isOnline);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ISocialManager/notifyLobbyInvite")]
+        void notifyLobbyInvite(string fromUsername, string lobbyId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

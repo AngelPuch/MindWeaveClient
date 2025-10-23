@@ -66,9 +66,6 @@
   <wsdl:message name="IMatchmakingManager_changeDifficulty_InputMessage">
     <wsdl:part name="parameters" element="tns:changeDifficulty" />
   </wsdl:message>
-  <wsdl:message name="IMatchmakingManager_receiveLobbyInvite_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:receiveLobbyInvite" />
-  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_updateLobbyState_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:updateLobbyState" />
   </wsdl:message>
@@ -103,9 +100,6 @@
     </wsdl:operation>
     <wsdl:operation name="changeDifficulty">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/changeDifficulty" message="tns:IMatchmakingManager_changeDifficulty_InputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="receiveLobbyInvite">
-      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/receiveLobbyInvite" message="tns:IMatchmakingManager_receiveLobbyInvite_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/updateLobbyState" message="tns:IMatchmakingManager_updateLobbyState_OutputCallbackMessage" />
@@ -168,12 +162,6 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
-    </wsdl:operation>
-    <wsdl:operation name="receiveLobbyInvite">
-      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/receiveLobbyInvite" style="document" />
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/updateLobbyState" style="document" />

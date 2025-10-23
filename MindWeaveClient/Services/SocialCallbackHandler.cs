@@ -13,16 +13,15 @@ namespace MindWeaveClient.Services
         public event Action<string, bool> FriendResponseReceived;
         public event Action<string, bool> FriendStatusChanged;
         // Agrega más eventos si defines más callbacks (ej. FriendRemoved)
+        public event Action<string, string> LobbyInviteReceived;
 
         public void notifyFriendRequest(string fromUsername)
         {
             Debug.WriteLine($"Callback: Friend request received from {fromUsername}");
-            // Invocar el evento para que el ViewModel reaccione
-            Application.Current.Dispatcher.Invoke(() => // Asegurar ejecución en hilo de UI
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 FriendRequestReceived?.Invoke(fromUsername);
-                // Opcional: Mostrar una notificación simple
-                MessageBox.Show($"New friend request from: {fromUsername}", "Friend Request", MessageBoxButton.OK, MessageBoxImage.Information);
+                // La notificación visual ahora se maneja globalmente o en SocialViewModel
             });
         }
 
@@ -32,8 +31,7 @@ namespace MindWeaveClient.Services
             Application.Current.Dispatcher.Invoke(() =>
             {
                 FriendResponseReceived?.Invoke(fromUsername, accepted);
-                string message = accepted ? $"{fromUsername} accepted your friend request!" : $"{fromUsername} declined your friend request.";
-                MessageBox.Show(message, "Friend Request Response", MessageBoxButton.OK, MessageBoxImage.Information);
+                // La notificación visual ahora se maneja globalmente o en SocialViewModel
             });
         }
 
@@ -43,6 +41,17 @@ namespace MindWeaveClient.Services
             Application.Current.Dispatcher.Invoke(() =>
             {
                 FriendStatusChanged?.Invoke(friendUsername, isOnline);
+            });
+        }
+
+        public void notifyLobbyInvite(string fromUsername, string lobbyId)
+        {
+            Debug.WriteLine($"Callback: Lobby invite received from {fromUsername} for lobby {lobbyId}");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Dispara el evento para que App.xaml.cs (o el manejador global) lo capture
+                LobbyInviteReceived?.Invoke(fromUsername, lobbyId);
+                // Ya no mostramos un MessageBox aquí, se hace globalmente.
             });
         }
 
