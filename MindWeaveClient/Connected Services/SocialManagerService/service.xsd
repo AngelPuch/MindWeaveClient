@@ -87,7 +87,7 @@
   <xs:element name="getFriendsListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="getFriendsListResult" nillable="true" type="q5:ArrayOfFriendDto" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Social" minOccurs="0" name="getFriendsListResult" nillable="true" type="q5:ArrayOfFriendDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -101,7 +101,7 @@
   <xs:element name="getFriendRequestsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="getFriendRequestsResult" nillable="true" type="q6:ArrayOfFriendRequestInfoDto" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Social" minOccurs="0" name="getFriendRequestsResult" nillable="true" type="q6:ArrayOfFriendRequestInfoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
