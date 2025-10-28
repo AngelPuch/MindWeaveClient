@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using MindWeaveClient.ViewModel.Main;
+using System.Windows;
 
 namespace MindWeaveClient.View.Settings
 {
@@ -10,19 +11,8 @@ namespace MindWeaveClient.View.Settings
         public SettingsWindow()
         {
             InitializeComponent();
+            this.DataContext = new SettingsViewModel(this);
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-          
-            this.DialogResult = true; 
-            this.Close();
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false; 
-            this.Close();
-        }
     }
 }

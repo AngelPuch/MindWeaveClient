@@ -25,7 +25,7 @@
     <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="ab3f11ae-ec78-4879-845b-d96bb38acd43" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/mex" />
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="6421edd9-f2a2-4daf-87cb-ff385f78ad42" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="6216853b-5bdb-451a-a585-3aea210a8f86" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="25843f46-f4f8-4235-8a0e-482e3c649b82" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Chat.xsd" MetadataType="Schema" ID="25fa31e8-6030-4b81-b7db-3a0bda10e67e" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

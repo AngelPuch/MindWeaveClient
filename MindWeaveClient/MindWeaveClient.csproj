@@ -109,6 +109,7 @@
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Services\SocialCallbackHandler.cs" />
     <Compile Include="Services\SocialServiceClientManager.cs" />
+    <Compile Include="Utilities\AudioManager.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
     <Compile Include="ViewModel\Authentication\PasswordRecoveryViewModel.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\SelectAvatarViewModel.cs" />
     <Compile Include="ViewModel\Main\SelectionPuzzleViewModel.cs" />
+    <Compile Include="ViewModel\Main\SettingsViewModel.cs" />
     <Compile Include="ViewModel\Main\SocialViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
@@ -270,7 +272,7 @@
     <None Include="Connected Services\AuthenticationService\MindWeaveServer.Contracts.DataContracts.Authentication.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\AuthenticationService\MindWeaveServer.Contracts.DataContracts.xsd">
+    <None Include="Connected Services\AuthenticationService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\AuthenticationService\service.wsdl" />
@@ -280,7 +282,7 @@
     <None Include="Connected Services\AuthenticationService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
+    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ChatManagerService\service.wsdl" />
@@ -299,7 +301,7 @@
     <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MatchmakingService\service.wsdl" />
@@ -315,19 +317,16 @@
     <None Include="Connected Services\ProfileService\MindWeaveClient.ProfileService.PlayerProfileViewDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\ProfileService\MindWeaveClient.ProfileService.UserProfileDto.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Connected Services\ProfileService\MindWeaveClient.ProfileService.UserProfileForEditDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Profile.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Stats.xsd">
+    <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.xsd">
+    <None Include="Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Stats.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ProfileService\service.wsdl" />
@@ -342,6 +341,9 @@
     </None>
     <None Include="Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.UploadResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
       <SubType>Designer</SubType>
@@ -365,10 +367,10 @@
     <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.PlayerSearchResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social.xsd">
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\SocialManagerService\service.wsdl" />
@@ -504,6 +506,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Audio\audio_background.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

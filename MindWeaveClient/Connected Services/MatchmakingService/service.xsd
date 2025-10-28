@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:element name="createLobby">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="hostUsername" nillable="true" type="xs:string" />
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="settingsDto" nillable="true" type="q1:LobbySettingsDto" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" minOccurs="0" name="settingsDto" nillable="true" type="q1:LobbySettingsDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -72,7 +71,7 @@
   <xs:element name="updateLobbyState">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="lobbyStateDto" nillable="true" type="q3:LobbyStateDto" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" minOccurs="0" name="lobbyStateDto" nillable="true" type="q3:LobbyStateDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -34,5 +34,29 @@ namespace MindWeaveClient.Properties {
                 this["languageCode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public double MusicVolumeSetting {
+            get {
+                return ((double)(this["MusicVolumeSetting"]));
+            }
+            set {
+                this["MusicVolumeSetting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public double SoundEffectsVolumeSetting {
+            get {
+                return ((double)(this["SoundEffectsVolumeSetting"]));
+            }
+            set {
+                this["SoundEffectsVolumeSetting"] = value;
+            }
+        }
     }
 }

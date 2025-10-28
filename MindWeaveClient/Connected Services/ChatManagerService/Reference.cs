@@ -15,7 +15,8 @@ namespace MindWeaveClient.ChatManagerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ChatMessageDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ChatMessageDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.C" +
+        "hat")]
     [System.SerializableAttribute()]
     public partial class ChatMessageDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         

@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MindWeaveClient.View.Settings"
         xmlns:lang="clr-namespace:MindWeaveClient.Properties.Langs"
+        xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Main"
         mc:Ignorable="d"
-        Title="{x:Static lang:Lang.GlobalCommonSettings}" Height="600" Width="450"
+        d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel, IsDesignTimeCreatable=False}"
+        Title="{x:Static lang:Lang.GlobalCommonSettings}" Height="500" Width="400"
         WindowStartupLocation="CenterScreen"
         WindowStyle="ToolWindow" ResizeMode="NoResize">
 
@@ -26,9 +28,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="GroupBox">
                         <StackPanel>
-                            <TextBlock Text="{TemplateBinding Header}" 
-                                       Foreground="LightGray" 
-                                       FontSize="14" 
+                            <TextBlock Text="{TemplateBinding Header}"
+                                       Foreground="LightGray"
+                                       FontSize="14"
                                        FontWeight="Bold"
                                        TextDecorations="Underline"
                                        Margin="0,0,0,8"/>
@@ -47,30 +49,145 @@
             <Setter Property="FontSize" Value="16"/>
         </Style>
 
-        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+        <Style TargetType="ComboBoxItem">
             <Setter Property="Background" Value="#3C4A61"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
-            <Setter Property="BorderBrush" Value="#5A5A5A"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#5A6A81"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <Style x:Key="SwitchToggleButton" TargetType="ToggleButton">
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="25"/>
-            <Setter Property="Cursor" Value="Hand"/>
+        <Style x:Key="ComboBoxToggleButtonStyle" TargetType="ToggleButton">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="border" CornerRadius="12" Background="#5A5A5A">
-                            <Ellipse x:Name="dot" Fill="White" HorizontalAlignment="Left" Width="20" Height="20" Margin="2"/>
-                        </Border>
+                        <Grid>
+                            <Border x:Name="border" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
+                            <Path x:Name="arrow" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              Data="M 0 0 L 4 4 L 8 0 Z"/>
+                        </Grid>
                         <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#5A6A81"/>
+                            </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryColor}"/>
-                                <Setter TargetName="dot" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="border" Property="Background" Value="#5A6A81"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#3C4A61"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#5A5A5A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="MainBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter Grid.Column="0"
+                                                Margin="{TemplateBinding Padding}"
+                                                Content="{TemplateBinding SelectionBoxItem}"
+                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                TextElement.Foreground="{TemplateBinding Foreground}"/>
+                                <ToggleButton Grid.Column="1"
+                                              Width="30"
+                                              Style="{StaticResource ComboBoxToggleButtonStyle}"
+                                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </Grid>
+
+                            <Popup x:Name="PART_Popup"
+                               IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
+                                <Border x:Name="PopupBorder"
+                                    Background="#3C4A61" BorderBrush="#5A5A5A"
+                                    BorderThickness="1"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="MainBorder" Property="BorderBrush" Value="#8899BB"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernSliderThumb" TargetType="Thumb">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Ellipse Fill="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border Background="{TemplateBinding Background}" Height="6" CornerRadius="3"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernSlider" TargetType="Slider">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Border x:Name="TrackBackground" Background="#5A5A5A" Height="6" CornerRadius="3" VerticalAlignment="Center"/>
+                            <Track x:Name="PART_Track">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource SliderRepeatButton}" Background="{StaticResource PrimaryColor}" Command="Slider.DecreaseLarge"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource SliderRepeatButton}" Background="Transparent" Command="Slider.IncreaseLarge"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ModernSliderThumb}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -86,7 +203,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -94,13 +210,12 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Lang.SettingsLbMusic}" Style="{StaticResource LabelTextBlock}"/>
-                    <ToggleButton Grid.Row="0" Grid.Column="1" IsChecked="True" Style="{StaticResource SwitchToggleButton}"/>
+                    <Slider Grid.Row="0" Grid.Column="1" Width="150" Minimum="0" Maximum="100"
+                            Value="{Binding musicVolume, Mode=TwoWay}" Style="{StaticResource ModernSlider}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static lang:Lang.SettingsLbSoundEffects}" Style="{StaticResource LabelTextBlock}" Margin="0,15,0,15"/>
-                    <ToggleButton Grid.Row="1" Grid.Column="1" IsChecked="True" Style="{StaticResource SwitchToggleButton}"/>
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static lang:Lang.SettingsLbVibration}" Style="{StaticResource LabelTextBlock}"/>
-                    <ToggleButton Grid.Row="2" Grid.Column="1" IsChecked="False" Style="{StaticResource SwitchToggleButton}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static lang:Lang.SettingsLbSoundEffects}" Style="{StaticResource LabelTextBlock}" Margin="0,15,0,0"/>
+                    <Slider Grid.Row="1" Grid.Column="1" Width="150" Minimum="0" Maximum="100"
+                            Value="{Binding soundEffectsVolume, Mode=TwoWay}" Margin="0,15,0,0" Style="{StaticResource ModernSlider}"/>
                 </Grid>
             </GroupBox>
 
@@ -112,14 +227,14 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{x:Static lang:Lang.SettingsLbLanguage}" Style="{StaticResource LabelTextBlock}"/>
-                        <ComboBox Grid.Column="1" SelectedIndex="0" Width="120" Style="{StaticResource ModernComboBox}">
-                            <ComboBoxItem Content="{x:Static lang:Lang.SettingsOptEnglish}"/>
-                            <ComboBoxItem Content="{x:Static lang:Lang.SettingsOptSpanish}"/>
-                        </ComboBox>
+                        <ComboBox Grid.Column="1" Width="120" Style="{StaticResource ModernComboBox}"
+                                  ItemsSource="{Binding availableLanguages}"
+                                  SelectedItem="{Binding selectedLanguage, Mode=TwoWay}"/>
                     </Grid>
 
-                    <Button Content="{x:Static lang:Lang.SettingsBtnCredits}" Style="{StaticResource SecondaryButtonStyle}" Width="Auto" Height="Auto" Margin="0,5,0,5"/>
-                    <Button Content="{x:Static lang:Lang.SettingsBtnReloadProgress}" Style="{StaticResource SecondaryButtonStyle}" Width="Auto" Height="Auto" Margin="0,5,0,5" Background="#C75252"/>
+                    <Button Content="{x:Static lang:Lang.SettingsBtnCredits}" Style="{StaticResource SecondaryButtonStyle}"
+                            Command="{Binding showCreditsCommand}"
+                            Width="Auto" Height="40" Margin="0,5,0,5"/>
                 </StackPanel>
             </GroupBox>
 
@@ -128,8 +243,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="{x:Static lang:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Width="Auto" Height="40" Margin="0,0,5,0" Click="CancelButton_Click"/>
-                <Button Grid.Column="1" Content="{x:Static lang:Lang.SettingsBtnSaveExit}" Style="{StaticResource PrimaryButtonStyle}" Width="Auto" Height="40" Margin="5,0,0,0" Click="SaveButton_Click"/>
+                <Button Grid.Column="0" Content="{x:Static lang:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}"
+                        Command="{Binding cancelCommand}"
+                        Width="Auto" Height="40" Margin="0,0,5,0" />
+                <Button Grid.Column="1" Content="{x:Static lang:Lang.SettingsBtnSaveExit}" Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding saveCommand}"
+                        Width="Auto" Height="40" Margin="5,0,0,0" />
             </Grid>
         </StackPanel>
     </Grid>

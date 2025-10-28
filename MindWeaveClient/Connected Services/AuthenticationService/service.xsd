@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Authentication" />
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
   <xs:element name="login">
     <xs:complexType>
       <xs:sequence>
@@ -19,7 +19,7 @@
   <xs:element name="register">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="userProfile" nillable="true" type="q3:UserProfileDto" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Authentication" minOccurs="0" name="userProfile" nillable="true" type="q3:UserProfileDto" />
         <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -27,7 +27,7 @@
   <xs:element name="registerResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="registerResult" nillable="true" type="q4:OperationResultDto" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="registerResult" nillable="true" type="q4:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -42,7 +42,7 @@
   <xs:element name="verifyAccountResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="verifyAccountResult" nillable="true" type="q5:OperationResultDto" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="verifyAccountResult" nillable="true" type="q5:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -56,7 +56,7 @@
   <xs:element name="resendVerificationCodeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="resendVerificationCodeResult" nillable="true" type="q6:OperationResultDto" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="resendVerificationCodeResult" nillable="true" type="q6:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -70,7 +70,7 @@
   <xs:element name="sendPasswordRecoveryCodeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="sendPasswordRecoveryCodeResult" nillable="true" type="q7:OperationResultDto" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="sendPasswordRecoveryCodeResult" nillable="true" type="q7:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -86,7 +86,7 @@
   <xs:element name="resetPasswordWithCodeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" minOccurs="0" name="resetPasswordWithCodeResult" nillable="true" type="q8:OperationResultDto" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="resetPasswordWithCodeResult" nillable="true" type="q8:OperationResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -173,7 +173,8 @@ namespace MindWeaveClient.ProfileService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PlayerStatsDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PlayerStatsDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "tats")]
     [System.SerializableAttribute()]
     public partial class PlayerStatsDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -328,147 +329,6 @@ namespace MindWeaveClient.ProfileService {
                 if ((object.ReferenceEquals(this.nameField, value) != true)) {
                     this.nameField = value;
                     this.RaisePropertyChanged("name");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UserProfileDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
-    [System.SerializableAttribute()]
-    public partial class UserProfileDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] avatarField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime dateOfBirthField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string emailField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string firstNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int genderIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lastNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string usernameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] avatar {
-            get {
-                return this.avatarField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.avatarField, value) != true)) {
-                    this.avatarField = value;
-                    this.RaisePropertyChanged("avatar");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime dateOfBirth {
-            get {
-                return this.dateOfBirthField;
-            }
-            set {
-                if ((this.dateOfBirthField.Equals(value) != true)) {
-                    this.dateOfBirthField = value;
-                    this.RaisePropertyChanged("dateOfBirth");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string email {
-            get {
-                return this.emailField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.emailField, value) != true)) {
-                    this.emailField = value;
-                    this.RaisePropertyChanged("email");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string firstName {
-            get {
-                return this.firstNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.firstNameField, value) != true)) {
-                    this.firstNameField = value;
-                    this.RaisePropertyChanged("firstName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int genderId {
-            get {
-                return this.genderIdField;
-            }
-            set {
-                if ((this.genderIdField.Equals(value) != true)) {
-                    this.genderIdField = value;
-                    this.RaisePropertyChanged("genderId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lastName {
-            get {
-                return this.lastNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.lastNameField, value) != true)) {
-                    this.lastNameField = value;
-                    this.RaisePropertyChanged("lastName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string username {
-            get {
-                return this.usernameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
-                    this.usernameField = value;
-                    this.RaisePropertyChanged("username");
                 }
             }
         }
@@ -657,7 +517,8 @@ namespace MindWeaveClient.ProfileService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
     [System.SerializableAttribute()]
     public partial class OperationResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -726,23 +587,11 @@ namespace MindWeaveClient.ProfileService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileView", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileViewResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.PlayerProfileViewDto> getPlayerProfileViewAsync(string username);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getProfile", ReplyAction="http://tempuri.org/IProfileManager/getProfileResponse")]
-        MindWeaveClient.ProfileService.UserProfileDto getProfile(string username);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getProfile", ReplyAction="http://tempuri.org/IProfileManager/getProfileResponse")]
-        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.UserProfileDto> getProfileAsync(string username);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateProfile", ReplyAction="http://tempuri.org/IProfileManager/updateProfileResponse")]
         MindWeaveClient.ProfileService.OperationResultDto updateProfile(string username, MindWeaveClient.ProfileService.UserProfileForEditDto updatedProfileData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateProfile", ReplyAction="http://tempuri.org/IProfileManager/updateProfileResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateProfileAsync(string username, MindWeaveClient.ProfileService.UserProfileForEditDto updatedProfileData);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
-        MindWeaveClient.ProfileService.OperationResultDto changePassword(string username, string currentPassword, string newPassword);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
-        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse")]
         MindWeaveClient.ProfileService.UserProfileForEditDto getPlayerProfileForEdit(string username);
@@ -755,6 +604,12 @@ namespace MindWeaveClient.ProfileService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateAvatarPath", ReplyAction="http://tempuri.org/IProfileManager/updateAvatarPathResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateAvatarPathAsync(string username, string newAvatarPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
+        MindWeaveClient.ProfileService.OperationResultDto changePassword(string username, string currentPassword, string newPassword);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -792,28 +647,12 @@ namespace MindWeaveClient.ProfileService {
             return base.Channel.getPlayerProfileViewAsync(username);
         }
         
-        public MindWeaveClient.ProfileService.UserProfileDto getProfile(string username) {
-            return base.Channel.getProfile(username);
-        }
-        
-        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.UserProfileDto> getProfileAsync(string username) {
-            return base.Channel.getProfileAsync(username);
-        }
-        
         public MindWeaveClient.ProfileService.OperationResultDto updateProfile(string username, MindWeaveClient.ProfileService.UserProfileForEditDto updatedProfileData) {
             return base.Channel.updateProfile(username, updatedProfileData);
         }
         
         public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateProfileAsync(string username, MindWeaveClient.ProfileService.UserProfileForEditDto updatedProfileData) {
             return base.Channel.updateProfileAsync(username, updatedProfileData);
-        }
-        
-        public MindWeaveClient.ProfileService.OperationResultDto changePassword(string username, string currentPassword, string newPassword) {
-            return base.Channel.changePassword(username, currentPassword, newPassword);
-        }
-        
-        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword) {
-            return base.Channel.changePasswordAsync(username, currentPassword, newPassword);
         }
         
         public MindWeaveClient.ProfileService.UserProfileForEditDto getPlayerProfileForEdit(string username) {
@@ -830,6 +669,14 @@ namespace MindWeaveClient.ProfileService {
         
         public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateAvatarPathAsync(string username, string newAvatarPath) {
             return base.Channel.updateAvatarPathAsync(username, newAvatarPath);
+        }
+        
+        public MindWeaveClient.ProfileService.OperationResultDto changePassword(string username, string currentPassword, string newPassword) {
+            return base.Channel.changePassword(username, currentPassword, newPassword);
+        }
+        
+        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword) {
+            return base.Channel.changePasswordAsync(username, currentPassword, newPassword);
         }
     }
 }

@@ -21,6 +21,18 @@ namespace MindWeaveClient
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(langCode);
             base.OnStartup(e);
 
+            try
+            {
+                // Asegúrate que AudioManager cargue los volúmenes iniciales (como hicimos antes)
+                AudioManager.PlayMusic(); // Inicia la reproducción
+                Debug.WriteLine("App.OnStartup: Background music started.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"App.OnStartup: Failed to start background music - {ex.Message}");
+                // Opcional: Mostrar un MessageBox si falla la carga inicial
+                // MessageBox.Show($"Failed to load audio resources: {ex.Message}", "Audio Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
             // Subscription happens in MainWindow.Loaded
             Debug.WriteLine("App.OnStartup completed.");
         }
@@ -153,6 +165,7 @@ namespace MindWeaveClient
 
         protected override void OnExit(ExitEventArgs e)
         {
+            AudioManager.StopMusic();
             // Desuscripción (sin cambios)
             if (SocialServiceClientManager.Instance.CallbackHandler != null)
             {
@@ -163,6 +176,7 @@ namespace MindWeaveClient
             // Desconectar servicios (sin cambios)
             SocialServiceClientManager.Instance.Disconnect();
             MatchmakingServiceClientManager.Instance.Disconnect();
+            ChatServiceClientManager.Instance.Disconnect();
 
             base.OnExit(e);
         }

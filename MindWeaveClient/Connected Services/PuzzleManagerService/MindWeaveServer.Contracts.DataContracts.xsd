@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
   <xs:complexType name="ArrayOfPuzzleInfoDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="PuzzleInfoDto" nillable="true" type="tns:PuzzleInfoDto" />
@@ -16,7 +17,7 @@
   <xs:element name="PuzzleInfoDto" nillable="true" type="tns:PuzzleInfoDto" />
   <xs:complexType name="UploadResultDto">
     <xs:complexContent mixed="false">
-      <xs:extension base="tns:OperationResultDto">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" base="q1:OperationResultDto">
         <xs:sequence>
           <xs:element minOccurs="0" name="newPuzzleId" type="xs:int" />
         </xs:sequence>
@@ -24,11 +25,4 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="UploadResultDto" nillable="true" type="tns:UploadResultDto" />
-  <xs:complexType name="OperationResultDto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="success" type="xs:boolean" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="OperationResultDto" nillable="true" type="tns:OperationResultDto" />
 </xs:schema>

@@ -171,7 +171,8 @@ namespace MindWeaveClient.AuthenticationService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
     [System.SerializableAttribute()]
     public partial class OperationResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -232,7 +233,8 @@ namespace MindWeaveClient.AuthenticationService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UserProfileDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UserProfileDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.A" +
+        "uthentication")]
     [System.SerializableAttribute()]
     public partial class UserProfileDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         

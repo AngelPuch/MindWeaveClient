@@ -2,6 +2,7 @@
 using MindWeaveClient.Services;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
+using MindWeaveClient.View.Settings;
 using MindWeaveClient.ViewModel.Game;
 using System;
 using System.Linq; // Necesario para OfType<MainWindow>()
@@ -77,7 +78,7 @@ namespace MindWeaveClient.ViewModel.Main
             // *** USA EL NUEVO NOMBRE AQUÍ ***
             createLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !isBusy); // Llama al método correcto
             socialCommand = new RelayCommand(p => executeGoToSocial());
-            settingsCommand = new RelayCommand(p => { /* TODO: */ MessageBox.Show("Settings not implemented yet."); });
+            settingsCommand = new RelayCommand(p => executeShowSettings(), p => !isBusy);
             joinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => canJoinLobby);
 
             // Log inicial para verificar el avatarPath
@@ -160,6 +161,26 @@ namespace MindWeaveClient.ViewModel.Main
                 () => executeGoToEditProfile()
             );
             navigateTo(selectAvatarPage);
+        }
+        private void executeShowSettings()
+        {
+            var settingsWindow = new SettingsWindow();
+            // Muestra la ventana como un diálogo modal (bloquea la ventana principal)
+            settingsWindow.Owner = Application.Current.MainWindow; // Establece la ventana principal como dueña
+            bool? result = settingsWindow.ShowDialog();
+
+            // 'result' será true si se guardó, false o null si se canceló.
+            // Puedes actuar según el resultado si es necesario (ej. refrescar algo)
+            if (result == true)
+            {
+                // Settings were saved
+                Console.WriteLine("Settings saved.");
+            }
+            else
+            {
+                // Settings were canceled
+                Console.WriteLine("Settings canceled.");
+            }
         }
 
     }

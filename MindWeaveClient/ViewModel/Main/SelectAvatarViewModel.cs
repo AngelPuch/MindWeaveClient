@@ -1,5 +1,4 @@
 ﻿// MindWeaveClient/ViewModel/Main/SelectAvatarViewModel.cs
-
 using MindWeaveClient.ProfileService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
@@ -13,49 +12,45 @@ using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Main
 {
-    /// <summary>
-    /// Representa un único avatar en la galería de selección.
-    /// </summary>
     public class Avatar : BaseViewModel
     {
+        private bool isSelectedValue; // Backing field
         public string imagePath { get; set; }
+
+        // *** Propiedad Añadida ***
+        public bool IsSelected
+        {
+            get => isSelectedValue;
+            set { isSelectedValue = value; OnPropertyChanged(); }
+        }
     }
 
-    /// <summary>
-    /// ViewModel para la pantalla de selección de avatares precargados.
-    /// </summary>
     public class SelectAvatarViewModel : BaseViewModel
     {
         private readonly Action navigateBack;
-
-        // --- Backing Fields ---
         private ObservableCollection<Avatar> availableAvatarsValue;
         private Avatar selectedAvatarValue;
+        private bool isBusyValue; // Added IsBusy
 
-        // --- Public Properties (camelCase) ---
         public ObservableCollection<Avatar> availableAvatars { get => availableAvatarsValue; set { availableAvatarsValue = value; OnPropertyChanged(); } }
-        public Avatar selectedAvatar { get => selectedAvatarValue; set { selectedAvatarValue = value; OnPropertyChanged(); } }
+        public Avatar selectedAvatar { get => selectedAvatarValue; set { selectedAvatarValue = value; OnPropertyChanged(); ((RelayCommand)saveSelectionCommand).RaiseCanExecuteChanged(); } } // Update CanExecute when selected changes
+        public bool isBusy { get => isBusyValue; private set { SetBusy(value); } } // Added IsBusy Property
 
-        // --- Comandos (camelCase) ---
         public ICommand saveSelectionCommand { get; }
         public ICommand cancelCommand { get; }
 
         public SelectAvatarViewModel(Action navigateBack)
         {
             this.navigateBack = navigateBack;
-            cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke());
-            saveSelectionCommand = new RelayCommand(async p => await saveSelection(), p => canSave());
+            cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !isBusy); // Disable when busy
+            saveSelectionCommand = new RelayCommand(async p => await saveSelection(), p => canSave()); // canSave now checks isBusy indirectly via selectedAvatar null check
 
             loadAvailableAvatars();
         }
 
         private void loadAvailableAvatars()
         {
-            // --- Lógica para cargar los avatares de la carpeta Resources ---
             availableAvatars = new ObservableCollection<Avatar>();
-
-            // OJO: Esta es una forma simple de hacerlo. Si tienes muchos avatares,
-            // se podría hacer de forma más dinámica, pero para empezar es perfecto.
             var avatarPaths = new string[]
             {
                 "/Resources/Images/Avatar/default_avatar.png",
@@ -64,9 +59,6 @@ namespace MindWeaveClient.ViewModel.Main
                 "/Resources/Images/Avatar/ball_avatar.png",
                 "/Resources/Images/Avatar/pirat_avatar.png",
                 "/Resources/Images/Avatar/robot_avatar.png",
-                // Añade aquí las rutas al resto de tus avatares precargados
-                // Ejemplo: "/Resources/Images/Avatar/avatar_warrior.png",
-                // Ejemplo: "/Resources/Images/Avatar/avatar_mage.png",
             };
 
             foreach (var path in avatarPaths)
@@ -74,32 +66,34 @@ namespace MindWeaveClient.ViewModel.Main
                 availableAvatars.Add(new Avatar { imagePath = path });
             }
 
-            // Seleccionamos el avatar actual del jugador, si está en la lista
-            selectedAvatar = availableAvatars.FirstOrDefault(a => a.imagePath == SessionService.avatarPath);
+            // Pre-select the current avatar if it exists in the list
+            var currentAvatar = availableAvatars.FirstOrDefault(a => a.imagePath.Equals(SessionService.avatarPath, StringComparison.OrdinalIgnoreCase));
+            if (currentAvatar != null)
+            {
+                currentAvatar.IsSelected = true;
+                selectedAvatar = currentAvatar; // Also set the selectedAvatar property
+            }
         }
 
-        private bool canSave()
-        {
-            // Solo se puede guardar si se ha seleccionado un avatar
-            return selectedAvatar != null;
-        }
+        // Modified CanSave to ensure selectedAvatar is set, indirectly checking !isBusy via command logic
+        private bool canSave() => selectedAvatar != null && !isBusy;
+
 
         private async Task saveSelection()
         {
             if (!canSave()) return;
 
+            SetBusy(true); // Set busy before async operation
             try
             {
                 var client = new ProfileManagerClient();
-                // Llamamos al nuevo método del servidor, pasándole solo la ruta (string)
                 var result = await client.updateAvatarPathAsync(SessionService.username, selectedAvatar.imagePath);
 
                 if (result.success)
                 {
-                    // Actualizamos la sesión local para que el cambio se vea al instante
                     SessionService.updateAvatarPath(selectedAvatar.imagePath);
-                    MessageBox.Show(result.message, "Success", MessageBoxButton.OK, MessageBoxImage.Information); // TO-DO: Lang
-                    navigateBack?.Invoke(); // Volvemos a la pantalla anterior
+                    MessageBox.Show(result.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information); // Use Lang key
+                    navigateBack?.Invoke();
                 }
                 else
                 {
@@ -108,8 +102,21 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error); // Use Lang key
             }
+            finally
+            {
+                SetBusy(false); // Ensure busy is reset
+            }
+        }
+
+        // Helper to set IsBusy and notify commands
+        private void SetBusy(bool value)
+        {
+            isBusyValue = value;
+            OnPropertyChanged(nameof(isBusy));
+            // Invalidate commands dependent on IsBusy
+            Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
     }
 }

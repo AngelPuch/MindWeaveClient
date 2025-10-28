@@ -26,7 +26,7 @@
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="289f3d3c-2835-4bf1-946b-993929b3752b" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="cbf46207-69da-4b01-8c60-2a44e965b27a" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Authentication.xsd" MetadataType="Schema" ID="5ebd09dd-56cd-47a6-93f0-70c366923d97" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="4bc4b0aa-76ea-401c-920d-6fd3d590034c" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared.xsd" MetadataType="Schema" ID="f28b0beb-f34d-43dd-83ea-1263924f6bbe" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

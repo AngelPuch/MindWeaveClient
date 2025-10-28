@@ -15,7 +15,8 @@ namespace MindWeaveClient.MatchmakingService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LobbySettingsDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LobbySettingsDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.M" +
+        "atchmaking")]
     [System.SerializableAttribute()]
     public partial class LobbySettingsDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -92,7 +93,8 @@ namespace MindWeaveClient.MatchmakingService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
     [System.SerializableAttribute()]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(MindWeaveClient.MatchmakingService.LobbyCreationResultDto))]
     public partial class OperationResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -194,7 +196,8 @@ namespace MindWeaveClient.MatchmakingService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LobbyStateDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LobbyStateDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.M" +
+        "atchmaking")]
     [System.SerializableAttribute()]
     public partial class LobbyStateDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         

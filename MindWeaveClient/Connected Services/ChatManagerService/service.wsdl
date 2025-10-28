@@ -37,7 +37,7 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Chat" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IChatManager_joinLobbyChat_InputMessage">
@@ -101,7 +101,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>ALDO\tonyz</Upn>
+          <Upn>LAPTOP\Dell</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>
