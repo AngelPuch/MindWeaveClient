@@ -1,14 +1,12 @@
-﻿// MindWeaveClient/ViewModel/Game/ChatMessageDisplayViewModel.cs
-using MindWeaveClient.ChatManagerService;
-using MindWeaveClient.Services; // Asegúrate que este using esté
-using MindWeaveClient.ViewModel; // Asegúrate que este using esté (para BaseViewModel)
+﻿using MindWeaveClient.ChatManagerService;
+using MindWeaveClient.Services; 
 using System;
 using System.Windows;
 using System.Windows.Input;
 
-namespace MindWeaveClient.ViewModel.Game // *** ASEGÚRATE QUE ESTÉ DENTRO DE ESTE NAMESPACE ***
+namespace MindWeaveClient.ViewModel.Game
 {
-    public class ChatMessageDisplayViewModel : BaseViewModel // Hereda de BaseViewModel
+    public class ChatMessageDisplayViewModel : BaseViewModel
     {
         public string senderUsername { get; set; }
         public string content { get; set; }

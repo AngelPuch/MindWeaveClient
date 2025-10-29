@@ -1,11 +1,9 @@
-﻿// MindWeaveClient/Helpers/StringToVisibilityConverter.cs
-using System;
+﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
-using System.Windows.Data; // Necesario para IMultiValueConverter
+using System.Windows.Data;
 
-namespace MindWeaveClient.Helpers // Asegúrate que el namespace sea este
+namespace MindWeaveClient.Helpers
 {
     public class StringToVisibilityConverter : IMultiValueConverter
     {
@@ -13,7 +11,6 @@ namespace MindWeaveClient.Helpers // Asegúrate que el namespace sea este
         {
             if (values != null && values.Length == 2 && values[0] is string hostUsername && values[1] is string currentPlayerUsername)
             {
-                // Compara ignorando mayúsculas/minúsculas
                 return (!string.IsNullOrEmpty(hostUsername) && hostUsername.Equals(currentPlayerUsername, StringComparison.OrdinalIgnoreCase))
                     ? Visibility.Visible : Visibility.Collapsed;
             }

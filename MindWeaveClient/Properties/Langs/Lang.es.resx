@@ -450,4 +450,49 @@
   <data name="SelectPuzzleImageTitle" xml:space="preserve">
     <value>Selecciona Imagen del Puzzle</value>
   </data>
+  <data name="LobbyBtnInviteGuest" xml:space="preserve">
+    <value>Invitar Invitado</value>
+  </data>
+  <data name="GuestInvitePromptTitle" xml:space="preserve">
+    <value>Invitar Invitado por Correo</value>
+  </data>
+  <data name="GuestInvitePromptMessage" xml:space="preserve">
+    <value>Ingresa la dirección de correo del invitado que deseas invitar:</value>
+  </data>
+  <data name="GuestInviteBtnSend" xml:space="preserve">
+    <value>Enviar Invitación</value>
+  </data>
+  <data name="GuestJoinTitle" xml:space="preserve">
+    <value>Unirse como Invitado</value>
+  </data>
+  <data name="GuestJoinLbLobbyCode" xml:space="preserve">
+    <value>Código de Sala</value>
+  </data>
+  <data name="GuestJoinLbDesiredUsername" xml:space="preserve">
+    <value>Nombre de Usuario Deseado</value>
+  </data>
+  <data name="GuestJoinBtnJoin" xml:space="preserve">
+    <value>Unirse a la Sala</value>
+  </data>
+  <data name="GuestJoinInfo" xml:space="preserve">
+    <value>Ingresa el código de la sala y tu correo (donde recibiste la invitación).</value>
+  </data>
+  <data name="GuestUsernameValidationError" xml:space="preserve">
+    <value>El nombre de usuario invitado debe tener entre 3 y 16 caracteres alfanuméricos.</value>
+  </data>
+  <data name="ErrorInvalidOrExpiredGuestInvite" xml:space="preserve">
+    <value>Código de invitación inválido, expirado o ya usado para este correo.</value>
+  </data>
+  <data name="ErrorGuestUsernameGenerationFailed" xml:space="preserve">
+    <value>No se pudo generar un nombre de usuario único. Intenta con otro nombre.</value>
+  </data>
+  <data name="SuccessGuestJoinedLobby" xml:space="preserve">
+    <value>Te has unido a la sala como invitado.</value>
+  </data>
+  <data name="ErrorSendingGuestInvitation" xml:space="preserve">
+    <value>No se pudo enviar la invitación de invitado. Inténtalo de nuevo.</value>
+  </data>
+  <data name="GlobalErrorInvalidEmailFormat" xml:space="preserve">
+    <value>Formato de correo inválido.</value>
+  </data>
 </root>

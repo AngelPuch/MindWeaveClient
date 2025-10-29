@@ -66,6 +66,15 @@
   <wsdl:message name="IMatchmakingManager_changeDifficulty_InputMessage">
     <wsdl:part name="parameters" element="tns:changeDifficulty" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_inviteGuestByEmail_InputMessage">
+    <wsdl:part name="parameters" element="tns:inviteGuestByEmail" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_InputMessage">
+    <wsdl:part name="parameters" element="tns:joinLobbyAsGuest" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_OutputMessage">
+    <wsdl:part name="parameters" element="tns:joinLobbyAsGuestResponse" />
+  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_updateLobbyState_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:updateLobbyState" />
   </wsdl:message>
@@ -100,6 +109,13 @@
     </wsdl:operation>
     <wsdl:operation name="changeDifficulty">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/changeDifficulty" message="tns:IMatchmakingManager_changeDifficulty_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="inviteGuestByEmail">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/inviteGuestByEmail" message="tns:IMatchmakingManager_inviteGuestByEmail_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="joinLobbyAsGuest">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest" message="tns:IMatchmakingManager_joinLobbyAsGuest_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse" message="tns:IMatchmakingManager_joinLobbyAsGuest_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/updateLobbyState" message="tns:IMatchmakingManager_updateLobbyState_OutputCallbackMessage" />
@@ -162,6 +178,21 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="inviteGuestByEmail">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/inviteGuestByEmail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="joinLobbyAsGuest">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/updateLobbyState" style="document" />

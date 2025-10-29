@@ -26,6 +26,7 @@
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="bf6e5902-22ed-4acf-8cde-77df1e5f5793" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/PuzzleManagerService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="a2b43b44-8e60-492e-8066-0874d984cb3d" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/PuzzleManagerService/mex" />
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.xsd" MetadataType="Schema" ID="ebfbfe1c-2474-4a2a-bf64-643800b04e60" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/PuzzleManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.ServiceContracts.xsd" MetadataType="Schema" ID="49a527b3-c3b4-4f40-87c1-be8eee009766" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/PuzzleManagerService/mex" />
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared.xsd" MetadataType="Schema" ID="5b8b6c60-2d63-4054-b438-bb9bae29b86a" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/PuzzleManagerService/mex" />
   </Metadata>
   <Extensions>

@@ -1,18 +1,19 @@
-﻿// MindWeaveClient/ViewModel/Game/LobbyViewModel.cs
-using MindWeaveClient.ChatManagerService;
+﻿using MindWeaveClient.ChatManagerService;
 using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.Properties.Langs; // Para Lang
+using MindWeaveClient.Properties.Langs; 
 using MindWeaveClient.Services;
-using MindWeaveClient.SocialManagerService; // *** Necesario para SocialManagerClient y FriendDto ***
+using MindWeaveClient.SocialManagerService;
+using MindWeaveClient.View.Dialogs;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
-using MindWeaveClient.ViewModel.Main; // *** Necesario para FriendDtoDisplay ***
+using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,20 +26,17 @@ namespace MindWeaveClient.ViewModel.Game
     
     public class LobbyViewModel : BaseViewModel
     {
-        // --- Managers y Proxies ---
+        public bool isGuestUser => SessionService.isGuest;
         private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.Instance.Proxy;
         private MatchmakingCallbackHandler matchmakingCallbackHandler => MatchmakingServiceClientManager.Instance.CallbackHandler;
         private SocialManagerClient socialProxy => SocialServiceClientManager.Instance.Proxy;
-        // *** ELIMINADOS DUPLICADOS ***
         private ChatManagerClient chatProxy => ChatServiceClientManager.Instance.Proxy;
         private ChatCallbackHandler chatCallbackHandler => ChatServiceClientManager.Instance.CallbackHandler;
 
 
-        // --- Navegación ---
         private readonly Action<Page> navigateTo;
         private readonly Action navigateBack;
 
-        // --- Propiedades del Lobby ---
         private string lobbyCodeValue;
         public string lobbyCode { get => lobbyCodeValue; set { lobbyCodeValue = value; OnPropertyChanged(); } }
         private string hostUsernameValue;
@@ -51,7 +49,6 @@ namespace MindWeaveClient.ViewModel.Game
         public bool isBusy { get => isBusyValue; set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
         public ObservableCollection<FriendDtoDisplay> onlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
 
-        // --- Chat Properties ---
         public ObservableCollection<ChatMessageDisplayViewModel> chatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
         private string currentChatMessageValue = string.Empty;
         public string currentChatMessage
@@ -59,7 +56,6 @@ namespace MindWeaveClient.ViewModel.Game
             get => currentChatMessageValue;
             set { currentChatMessageValue = value; OnPropertyChanged(); ((RelayCommand)sendMessageCommand).RaiseCanExecuteChanged(); }
         }
-        // --- Comandos ---
         public ICommand leaveLobbyCommand { get; }
         public ICommand startGameCommand { get; }
         public ICommand inviteFriendCommand { get; }
@@ -68,21 +64,22 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand changeSettingsCommand { get; }
         public ICommand refreshFriendsCommand { get; }
         public ICommand sendMessageCommand { get; }
+        public ICommand inviteGuestCommand { get; }
 
         public LobbyViewModel(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
         {
             this.navigateTo = navigateToAction;
             this.navigateBack = navigateBackAction;
 
-            // Definir Comandos
             leaveLobbyCommand = new RelayCommand(executeLeaveLobby, param => !isBusy);
-            startGameCommand = new RelayCommand(executeStartGame, param => isHost && !isBusy /*&& players.Count >= 4*/ ); // Podrías requerir 4
-            inviteFriendCommand = new RelayCommand(executeInviteFriend, param => isHost && !isBusy && param is FriendDtoDisplay friend && friend.isOnline && !players.Contains(friend.username)); // *** Condición CanExecute ***
-            kickPlayerCommand = new RelayCommand(executeKickPlayer, p => isHost && !isBusy && p is string target && target != hostUsername); // *** Comando Kick ***
-            uploadImageCommand = new RelayCommand(p => MessageBox.Show("Upload image TBD"), param => isHost && !isBusy);
-            changeSettingsCommand = new RelayCommand(p => MessageBox.Show("Change settings TBD"), param => isHost && !isBusy);
-            refreshFriendsCommand = new RelayCommand(async p => await loadOnlineFriendsAsync(), p => isHost && !isBusy); // *** Comando Refresh ***
+            startGameCommand = new RelayCommand(executeStartGame, param => isHost && !isBusy && !isGuestUser);
+            inviteFriendCommand = new RelayCommand(executeInviteFriend, param => isHost && !isBusy && !isGuestUser && param is FriendDtoDisplay friend && friend.isOnline && !players.Contains(friend.username));
+            kickPlayerCommand = new RelayCommand(executeKickPlayer, p => isHost && !isBusy && !isGuestUser && p is string target && target != hostUsername);
+            uploadImageCommand = new RelayCommand(p => MessageBox.Show("Upload image TBD"), param => isHost && !isBusy && !isGuestUser);
+            changeSettingsCommand = new RelayCommand(p => MessageBox.Show("Change settings TBD"), param => isHost && !isBusy && !isGuestUser);
+            refreshFriendsCommand = new RelayCommand(async p => await loadOnlineFriendsAsync(), p => isHost && !isBusy && !isGuestUser);
             sendMessageCommand = new RelayCommand(executeSendMessage, canExecuteSendMessage);
+            inviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => isHost && !isBusy && !isGuestUser);
 
             subscribeToCallbacks();
 
@@ -92,13 +89,71 @@ namespace MindWeaveClient.ViewModel.Game
             }
             else { lobbyCode = "Joining..."; hostUsername = "Loading..."; }
 
-            // Cargar amigos si somos el host
-            if (isHost) { refreshFriendsCommand.Execute(null); }
+            if (isHost && !isGuestUser) { refreshFriendsCommand.Execute(null); }
+            OnPropertyChanged(nameof(isGuestUser));
+            RaiseCanExecuteChangedOnCommands();
             Debug.WriteLine($"LobbyViewModel initialized. Initial State Null: {initialState == null}");
 
         }
 
-        // --- Lógica de Comandos ---
+        private async Task executeInviteGuestAsync()
+        {
+            if (!isHost || isGuestUser || isBusy) return;
+
+            var dialog = new GuestInputDialog();
+            dialog.Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+
+            bool? dialogResult = dialog.ShowDialog();
+
+            if (dialogResult != true)
+            {
+                return;
+            }
+
+            string guestEmail = dialog.GuestEmail; 
+
+            if (string.IsNullOrWhiteSpace(guestEmail))
+            {
+                return;
+            }
+
+            if (!Regex.IsMatch(guestEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                MessageBox.Show(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!MatchmakingServiceClientManager.Instance.EnsureConnected())
+            {
+                MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            SetBusy(true);
+
+            var invitationData = new GuestInvitationDto
+            {
+                inviterUsername = SessionService.username,
+                guestEmail = guestEmail.Trim(),
+                lobbyCode = this.lobbyCode
+            };
+
+            try
+            {
+                await matchmakingProxy.inviteGuestByEmailAsync(invitationData);
+                MessageBox.Show($"Invitation sent to {guestEmail}.", Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                HandleError(Lang.ErrorSendingGuestInvitation, ex);
+                MatchmakingServiceClientManager.Instance.Disconnect();
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
         private void connectToChat(string lobbyIdToConnect)
         {
             Debug.WriteLine($"Attempting to connect to chat for lobby {lobbyIdToConnect}...");
@@ -146,11 +201,9 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void handleLobbyMessageReceived(ChatMessageDto messageDto)
         {
-            // Ensure this runs on the UI thread
             Application.Current?.Dispatcher?.Invoke(() =>
             {
                 chatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
-                // Optional: Auto-scroll to the bottom
                 Debug.WriteLine($"Added message from {messageDto.senderUsername} to UI collection.");
             });
         }
@@ -166,19 +219,16 @@ namespace MindWeaveClient.ViewModel.Game
             if (!canExecuteSendMessage(parameter)) return;
 
             string messageToSend = currentChatMessage;
-            currentChatMessage = string.Empty; // Clear input immediately
+            currentChatMessage = string.Empty;
 
             try
             {
-                // Call WCF service (OneWay)
                 chatProxy.sendLobbyMessageAsync(SessionService.username, lobbyCode, messageToSend);
                 Debug.WriteLine($"Sent message: '{messageToSend}'");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error sending chat message: {ex.Message}");
-                // Optionally add message back to input or show error
-                // currentChatMessage = messageToSend; // Put message back if send failed?
                 MessageBox.Show($"Failed to send message: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 // Consider attempting to reconnect chat if channel faulted
                 if (chatProxy.State == CommunicationState.Faulted)
@@ -194,7 +244,6 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void executeLeaveLobby(object parameter)
         {
-            // (Sin cambios)
             if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
             isBusy = true;
             try
@@ -202,14 +251,13 @@ namespace MindWeaveClient.ViewModel.Game
                 matchmakingProxy.leaveLobby(SessionService.username, lobbyCode);
                 navigateBack?.Invoke();
             }
-            catch (Exception ex) { MessageBox.Show($"Error leaving lobby: {ex.Message}", "Error"); } // TODO: Lang
+            catch (Exception ex) { MessageBox.Show($"Error leaving lobby: {ex.Message}", "Error"); }
             finally { isBusy = false; }
         }
 
         private async void executeStartGame(object parameter)
         {
-            // *** VALIDACIÓN: Asegurar 4 jugadores ***
-            if (!isHost || players.Count < 4) // Cambiar a == 4 si es estricto
+            if (!isHost || players.Count < 4) 
             {
                 MessageBox.Show("Need exactly 4 players to start.", "Cannot Start Game", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
                 return;
@@ -220,27 +268,21 @@ namespace MindWeaveClient.ViewModel.Game
             try
             {
                 matchmakingProxy.startGame(SessionService.username, lobbyCode);
-                // La navegación ocurre en el callback handleMatchFound
             }
             catch (Exception ex) { MessageBox.Show($"Error starting game: {ex.Message}", "Error"); isBusy = false; } // TODO: Lang
-            // isBusy se pondrá en false en el callback o si hay error
         }
 
-        // *** NUEVO: Lógica para Kick Player ***
         private void executeKickPlayer(object parameter)
         {
             if (!(parameter is string playerToKick) || !isHost || playerToKick == hostUsername) return;
             if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
 
-            // Confirmación (Opcional pero recomendado)
             var confirmResult = MessageBox.Show($"Are you sure you want to kick {playerToKick}?", "Kick Player", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (confirmResult != MessageBoxResult.Yes) return;
 
             try
             {
-                // Llamada OneWay al servidor
                 matchmakingProxy.kickPlayer(SessionService.username, playerToKick, lobbyCode);
-                // La UI se actualizará cuando llegue el callback updateLobbyState
             }
             catch (Exception ex)
             {
@@ -248,29 +290,26 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        // *** NUEVO: Lógica para Invitar Amigo ***
         private async Task loadOnlineFriendsAsync()
         {
             if (!isHost || !SocialServiceClientManager.Instance.EnsureConnected(SessionService.username)) return;
 
-            SetBusy(true); // Usar el helper SetBusy
+            SetBusy(true);
             onlineFriends.Clear();
             try
             {
-                // Usar el proxy social para obtener la lista de amigos
-                SocialManagerService.FriendDto[] friends = await socialProxy.getFriendsListAsync(SessionService.username); // Namespace completo
+                SocialManagerService.FriendDto[] friends = await socialProxy.getFriendsListAsync(SessionService.username);
                 if (friends != null)
                 {
-                    foreach (var friendDto in friends.Where(f => f.isOnline)) // Filtrar solo online
+                    foreach (var friendDto in friends.Where(f => f.isOnline))
                     {
-                        // Crear FriendDtoDisplay (asegúrate que sea accesible)
                         onlineFriends.Add(new FriendDtoDisplay(friendDto));
                     }
                     Console.WriteLine($"Loaded {onlineFriends.Count} online friends for lobby invite list.");
                 }
             }
-            catch (Exception ex) { HandleError("Error loading online friends", ex); } // Usar helper HandleError
-            finally { SetBusy(false); } // Usar helper SetBusy
+            catch (Exception ex) { HandleError("Error loading online friends", ex); }
+            finally { SetBusy(false); }
         }
 
         private void executeInviteFriend(object parameter)
@@ -278,12 +317,10 @@ namespace MindWeaveClient.ViewModel.Game
             if (!(parameter is FriendDtoDisplay friendToInvite)) return;
             if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
 
-            // No necesitamos isBusy aquí porque es OneWay
             try
             {
                 Console.WriteLine($"Sending invite to {friendToInvite.username} for lobby {lobbyCode}");
                 matchmakingProxy.inviteToLobby(SessionService.username, friendToInvite.username, lobbyCode);
-                // Opcional: Mostrar un mensaje temporal "Invitación enviada"
                 MessageBox.Show($"Invitation sent to {friendToInvite.username}.", "Invitation Sent", MessageBoxButton.OK, MessageBoxImage.Information); // TODO: Lang
             }
             catch (Exception ex)
@@ -291,15 +328,11 @@ namespace MindWeaveClient.ViewModel.Game
                 HandleError("Error sending lobby invite", ex);
             }
         }
-
-
-        // --- Suscripción y Manejo de Callbacks ---
-        // (handleLobbyStateUpdate, handleMatchFound, handleKickedFromLobby sin cambios)
         private void subscribeToCallbacks()
         {
             if (matchmakingCallbackHandler != null)
             {
-                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate; // Prevent duplicates
+                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate; 
                 matchmakingCallbackHandler.MatchFound -= handleMatchFound;
                 matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby;
 
@@ -309,19 +342,18 @@ namespace MindWeaveClient.ViewModel.Game
                 Debug.WriteLine("Subscribed to Matchmaking callbacks.");
             }
             else { Debug.WriteLine("ERROR: Matchmaking callback handler is null."); }
-            // Chat subscription moved to connectToChat
         }
 
-        private void unsubscribeFromCallbacks() // *** CORRECTED LOGIC ***
+        private void unsubscribeFromCallbacks() 
         {
             if (matchmakingCallbackHandler != null)
             {
-                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate; // Use -=
-                matchmakingCallbackHandler.MatchFound -= handleMatchFound;             // Use -=
-                matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby;     // Use -=
+                matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate;
+                matchmakingCallbackHandler.MatchFound -= handleMatchFound;           
+                matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby; 
                 Debug.WriteLine("Unsubscribed from Matchmaking callbacks.");
             }
-            unsubscribeFromChatCallbacks(); // Separate call
+            unsubscribeFromChatCallbacks();
         }
 
         private void handleLobbyStateUpdate(LobbyStateDto newState)
@@ -331,7 +363,6 @@ namespace MindWeaveClient.ViewModel.Game
                 bool isInitialJoin = string.IsNullOrEmpty(this.lobbyCode) || this.lobbyCode == "Joining...";
                 Application.Current.Dispatcher.Invoke(() => updateState(newState));
 
-                // If this is the first state update after joining, connect to chat
                 if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
                 {
                     Debug.WriteLine($"Initial lobby state received ({newState.lobbyId}). Connecting to chat.");
@@ -346,16 +377,14 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    isBusy = false; // Detener estado ocupado si startGame lo activó
+                    isBusy = false;
                     MessageBox.Show($"Match found! Starting game (ID: {matchId})...", "Match Start", MessageBoxButton.OK, MessageBoxImage.Information); // TODO: Lang
                     unsubscribeFromCallbacks();
 
                     var gameWindow = new GameWindow();
-                    // gameWindow.DataContext = new GameViewModel(matchId, playerUsernames); // Pasar datos necesarios
                     gameWindow.Show();
 
-                    // Cerrar ventana actual o navegar
-                    var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive); // O busca por tipo específico si es necesario
+                    var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
                     currentWindow?.Close();
                 });
             }
@@ -371,7 +400,6 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        // --- Métodos Auxiliares ---
         private void updateState(LobbyStateDto state)
         {
             // (Sin cambios)
@@ -385,11 +413,11 @@ namespace MindWeaveClient.ViewModel.Game
             foreach (var p in playersToRemove) players.Remove(p);
             foreach (var p in playersToAdd) players.Add(p);
 
-            OnPropertyChanged(nameof(isHost)); // Notificar cambio por si acaso
-            RaiseCanExecuteChangedOnCommands(); // Actualizar CanExecute
+            OnPropertyChanged(nameof(isHost));
+            OnPropertyChanged(nameof(isGuestUser));
+            RaiseCanExecuteChangedOnCommands();
         }
 
-        // *** NUEVO: Helper para actualizar CanExecute de comandos ***
         private void RaiseCanExecuteChangedOnCommands()
         {
             Application.Current.Dispatcher?.Invoke(() =>
@@ -401,14 +429,12 @@ namespace MindWeaveClient.ViewModel.Game
                 ((RelayCommand)uploadImageCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)changeSettingsCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)refreshFriendsCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)inviteGuestCommand).RaiseCanExecuteChanged();
             });
         }
-        // *** NUEVO: Helpers SetBusy y HandleError ***
         private void SetBusy(bool busy)
         {
             isBusy = busy;
-            // No es necesario llamar a RaiseCanExecuteChangedOnCommands aquí
-            // porque el setter de IsBusy ya lo hace.
         }
 
         private void HandleError(string message, Exception ex)
@@ -417,8 +443,6 @@ namespace MindWeaveClient.ViewModel.Game
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
         }
 
-
-        // --- Limpieza ---
         public void cleanup()
         {
             Debug.WriteLine("LobbyViewModel Cleanup called.");

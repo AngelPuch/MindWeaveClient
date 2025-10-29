@@ -142,11 +142,38 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Could not generate a unique guest username. Please try another name..
+        /// </summary>
+        public static string ErrorGuestUsernameGenerationFailed {
+            get {
+                return ResourceManager.GetString("ErrorGuestUsernameGenerationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invalid, expired, or already used lobby invitation code for this email..
+        /// </summary>
+        public static string ErrorInvalidOrExpiredGuestInvite {
+            get {
+                return ResourceManager.GetString("ErrorInvalidOrExpiredGuestInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error loading puzzles.
         /// </summary>
         public static string ErrorLoadingPuzzles {
             get {
                 return ResourceManager.GetString("ErrorLoadingPuzzles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to send the guest invitation. Please try again..
+        /// </summary>
+        public static string ErrorSendingGuestInvitation {
+            get {
+                return ResourceManager.GetString("ErrorSendingGuestInvitation", resourceCulture);
             }
         }
         
@@ -259,6 +286,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Invalid email format..
+        /// </summary>
+        public static string GlobalErrorInvalidEmailFormat {
+            get {
+                return ResourceManager.GetString("GlobalErrorInvalidEmailFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Date of birth.
         /// </summary>
         public static string GlobalLbBirth {
@@ -358,6 +394,87 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Send Invite.
+        /// </summary>
+        public static string GuestInviteBtnSend {
+            get {
+                return ResourceManager.GetString("GuestInviteBtnSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Enter the email address of the guest you want to invite:.
+        /// </summary>
+        public static string GuestInvitePromptMessage {
+            get {
+                return ResourceManager.GetString("GuestInvitePromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invite Guest by Email.
+        /// </summary>
+        public static string GuestInvitePromptTitle {
+            get {
+                return ResourceManager.GetString("GuestInvitePromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Join Lobby.
+        /// </summary>
+        public static string GuestJoinBtnJoin {
+            get {
+                return ResourceManager.GetString("GuestJoinBtnJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Enter the lobby code and your email (where you received the invite)..
+        /// </summary>
+        public static string GuestJoinInfo {
+            get {
+                return ResourceManager.GetString("GuestJoinInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Desired Username.
+        /// </summary>
+        public static string GuestJoinLbDesiredUsername {
+            get {
+                return ResourceManager.GetString("GuestJoinLbDesiredUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Lobby Code.
+        /// </summary>
+        public static string GuestJoinLbLobbyCode {
+            get {
+                return ResourceManager.GetString("GuestJoinLbLobbyCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Join as Guest.
+        /// </summary>
+        public static string GuestJoinTitle {
+            get {
+                return ResourceManager.GetString("GuestJoinTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Guest username must be 3-16 alphanumeric characters..
+        /// </summary>
+        public static string GuestUsernameValidationError {
+            get {
+                return ResourceManager.GetString("GuestUsernameValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Code sent successfully.
         /// </summary>
         public static string InfoMsgBodyCodeSent {
@@ -399,6 +516,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string LobbyBtnInvite {
             get {
                 return ResourceManager.GetString("LobbyBtnInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invite Guest.
+        /// </summary>
+        public static string LobbyBtnInviteGuest {
+            get {
+                return ResourceManager.GetString("LobbyBtnInviteGuest", resourceCulture);
             }
         }
         
@@ -984,6 +1110,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SocialLbSentRequests {
             get {
                 return ResourceManager.GetString("SocialLbSentRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Successfully joined the lobby as a guest..
+        /// </summary>
+        public static string SuccessGuestJoinedLobby {
+            get {
+                return ResourceManager.GetString("SuccessGuestJoinedLobby", resourceCulture);
             }
         }
         

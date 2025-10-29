@@ -1,5 +1,4 @@
-﻿// MindWeaveClient/ViewModel/Authentication/CreateAccountViewModel.cs
-using MindWeaveClient.AuthenticationService;
+﻿using MindWeaveClient.AuthenticationService;
 using MindWeaveClient.View.Authentication;
 using System;
 using System.Threading.Tasks;
@@ -97,7 +96,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (isFemale) return 1;
             if (isMale) return 2;
             if (isOther) return 3;
-            return 4; // Default to "Prefer not to say"
+            return 4;
         }
     }
 }

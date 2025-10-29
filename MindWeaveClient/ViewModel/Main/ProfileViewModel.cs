@@ -1,11 +1,8 @@
-﻿// MindWeaveClient/ViewModel/Main/ProfileViewModel.cs
-
-using MindWeaveClient.ProfileService;
+﻿using MindWeaveClient.ProfileService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,7 +13,6 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly Action navigateBack;
         private readonly Action navigateToEdit;
 
-        // --- Backing Fields ---
         private string welcomeMessageValue;
         private string usernameValue;
         private string avatarSourceValue;
@@ -30,7 +26,6 @@ namespace MindWeaveClient.ViewModel.Main
         private int highestScoreValue;
         private ObservableCollection<AchievementDto> achievementsValue;
 
-        // --- Public Properties (camelCase) for Data Binding ---
         public string welcomeMessage { get => welcomeMessageValue; set { welcomeMessageValue = value; OnPropertyChanged(); } }
         public string username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
         public string avatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
@@ -76,18 +71,15 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (profileData != null)
                 {
-                    // --- Map all data from DTO to ViewModel properties ---
                     username = profileData.username;
                     welcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), profileData.username.ToUpper());
                     avatarSource = profileData.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-                    // --- NEW FIELDS MAPPED ---
                     firstName = profileData.firstName;
                     lastName = profileData.lastName;
                     dateOfBirth = profileData.dateOfBirth?.ToString("dd/MM/yyyy") ?? "Not specified";
                     gender = profileData.gender ?? "Not specified";
 
-                    // --- Stats Mapping ---
                     if (profileData.stats != null)
                     {
                         puzzlesCompleted = profileData.stats.puzzlesCompleted;
@@ -96,7 +88,6 @@ namespace MindWeaveClient.ViewModel.Main
                         highestScore = profileData.stats.highestScore;
                     }
 
-                    // --- Achievements Mapping ---
                     if (profileData.achievements != null)
                     {
                         achievements = new ObservableCollection<AchievementDto>(profileData.achievements);

@@ -1,10 +1,8 @@
-﻿// MindWeaveClient/ViewModel/Main/SocialViewModel.cs
-using MindWeaveClient.Properties.Langs;
+﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
-using MindWeaveClient.SocialManagerService; // Necesario para FriendDto
+using MindWeaveClient.SocialManagerService;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,8 +10,6 @@ using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Main
 {
-    // *** ESTA CLASE SE REUTILIZARÁ EN LOBBYVIEWMODEL ***
-    // Asegúrate de que sea 'public'
     public class FriendDtoDisplay : BaseViewModel
     {
         private bool isOnlineValue;
@@ -28,23 +24,18 @@ namespace MindWeaveClient.ViewModel.Main
         public FriendDtoDisplay(FriendDto dto)
         {
             this.username = dto.username;
-            this.avatarPath = dto.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png"; // Default si es null
+            this.avatarPath = dto.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
             this.isOnline = dto.isOnline;
         }
 
-        // Constructor vacío o alternativo si es necesario
         public FriendDtoDisplay() { }
     }
 
-    // El resto de SocialViewModel.cs sigue igual...
     public class SocialViewModel : BaseViewModel
     {
-        // ... (código existente de SocialViewModel sin cambios) ...
-        // Managers y Proxies
         private SocialManagerClient _proxy => SocialServiceClientManager.Instance.Proxy;
         private SocialCallbackHandler _callbackHandler => SocialServiceClientManager.Instance.CallbackHandler;
 
-        // Propiedades UI
         private string _searchQuery;
         private bool _isFriendsListChecked = true;
         private bool _isAddFriendChecked;
@@ -61,7 +52,6 @@ namespace MindWeaveClient.ViewModel.Main
         public bool IsRequestsChecked { get => _isRequestsChecked; set { _isRequestsChecked = value; OnPropertyChanged(); if (value) LoadRequestsCommand.Execute(null); } }
         public bool IsBusy { get => _isBusy; set { _isBusy = value; OnPropertyChanged(); ((RelayCommand)LoadFriendsListCommand).RaiseCanExecuteChanged(); ((RelayCommand)LoadRequestsCommand).RaiseCanExecuteChanged(); /* etc */ } }
 
-        // Comandos
         public ICommand LoadFriendsListCommand { get; }
         public ICommand LoadRequestsCommand { get; }
         public ICommand SearchCommand { get; }
@@ -120,7 +110,7 @@ namespace MindWeaveClient.ViewModel.Main
             FriendsList.Clear();
             try
             {
-                SocialManagerService.FriendDto[] friends = await _proxy.getFriendsListAsync(CurrentUserUsername); // Usar el namespace completo
+                SocialManagerService.FriendDto[] friends = await _proxy.getFriendsListAsync(CurrentUserUsername);
                 if (friends != null)
                 {
                     foreach (var friendDto in friends)
@@ -177,7 +167,7 @@ namespace MindWeaveClient.ViewModel.Main
                 MessageBox.Show(result.message, result.success ? Lang.InfoMsgTitleSuccess : "Error", MessageBoxButton.OK, result.success ? MessageBoxImage.Information : MessageBoxImage.Warning);
                 if (result.success)
                 {
-                    SearchResults.Remove(targetUser); // Quitar de resultados si fue exitoso
+                    SearchResults.Remove(targetUser); 
                 }
             }
             catch (Exception ex) { HandleError("Error sending friend request", ex); }
@@ -195,7 +185,7 @@ namespace MindWeaveClient.ViewModel.Main
                 if (result.success)
                 {
                     ReceivedRequests.Remove(request);
-                    if (accept && IsFriendsListChecked) // Si aceptamos y estamos viendo la lista, recargarla
+                    if (accept && IsFriendsListChecked)
                     {
                         await ExecuteLoadFriendsListAsync();
                     }
@@ -231,9 +221,7 @@ namespace MindWeaveClient.ViewModel.Main
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
-                // Podríamos añadir un indicador visual en lugar de recargar toda la lista
                 if (IsRequestsChecked) { await ExecuteLoadRequestsAsync(); }
-                // Mostrar notificación (esto se manejará globalmente ahora)
             });
         }
 
@@ -241,9 +229,7 @@ namespace MindWeaveClient.ViewModel.Main
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
-                // Mostrar notificación (esto se manejará globalmente ahora)
                 if (accepted && IsFriendsListChecked) { await ExecuteLoadFriendsListAsync(); }
-                // Actualizar lista de solicitudes enviadas si la tuvieras
             });
         }
 
@@ -256,13 +242,12 @@ namespace MindWeaveClient.ViewModel.Main
                 if (friend != null)
                 {
                     Console.WriteLine($"SocialViewModel: Found friend {friendUsername} in list. Updating IsOnline to {isOnline}.");
-                    friend.isOnline = isOnline; // Actualiza la propiedad, la UI reacciona
+                    friend.isOnline = isOnline;
                 }
                 else { Console.WriteLine($"SocialViewModel: Friend {friendUsername} not found in current FriendsList."); }
             });
         }
 
-        // --- Helpers ---
         private void SetBusy(bool busy) { IsBusy = busy; Application.Current.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested()); }
         private void HandleError(string message, Exception ex) { Console.WriteLine($"!!! {message}: {ex}"); MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
 

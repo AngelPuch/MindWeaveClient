@@ -30,4 +30,31 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="LobbyStateDto" nillable="true" type="tns:LobbyStateDto" />
+  <xs:complexType name="GuestInvitationDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="guestEmail" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="inviterUsername" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="lobbyCode" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GuestInvitationDto" nillable="true" type="tns:GuestInvitationDto" />
+  <xs:complexType name="GuestJoinRequestDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="desiredGuestUsername" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="guestEmail" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="lobbyCode" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GuestJoinRequestDto" nillable="true" type="tns:GuestJoinRequestDto" />
+  <xs:complexType name="GuestJoinResultDto">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" base="q3:OperationResultDto">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="assignedGuestUsername" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="initialLobbyState" nillable="true" type="tns:LobbyStateDto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GuestJoinResultDto" nillable="true" type="tns:GuestJoinResultDto" />
 </xs:schema>

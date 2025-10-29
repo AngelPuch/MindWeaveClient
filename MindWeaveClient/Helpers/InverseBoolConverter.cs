@@ -1,5 +1,4 @@
-﻿// MindWeaveClient/Helpers/InverseBoolConverter.cs
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -13,7 +12,7 @@ namespace MindWeaveClient.Helpers
             {
                 return !boolValue;
             }
-            return false; // Default value if not a bool
+            return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

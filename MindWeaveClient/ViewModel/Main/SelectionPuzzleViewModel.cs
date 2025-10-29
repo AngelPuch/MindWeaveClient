@@ -1,20 +1,14 @@
-﻿// MindWeaveClient/ViewModel/Main/SelectionPuzzleViewModel.cs
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using MindWeaveClient.MatchmakingService;
-// *** Using para Lang ***
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.PuzzleManagerService;
-// *** Asegúrate que este namespace sea el correcto para tu referencia de servicio ***
 using MindWeaveClient.PuzzleManagerService;
 using MindWeaveClient.Services;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.ViewModel.Game;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text; // Aunque quitamos el MessageBox, lo dejamos por si necesitas logs
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,7 +33,7 @@ namespace MindWeaveClient.ViewModel.Main
     {
         private readonly Action<Page> navigateTo;
         private readonly Action navigateBack;
-        private PuzzleManagerClient puzzleClient; // Proxy
+        private PuzzleManagerClient puzzleClient;
         private MatchmakingManagerClient matchmakingClient => MatchmakingServiceClientManager.Instance.Proxy;
 
         private ObservableCollection<PuzzleDisplayInfo> availablePuzzlesValue = new ObservableCollection<PuzzleDisplayInfo>();
@@ -138,18 +132,15 @@ namespace MindWeaveClient.ViewModel.Main
 
             try
             {
-                // --- LLAMADA REAL AL SERVIDOR ---
                 puzzlesFromServer = await puzzleClient.getAvailablePuzzlesAsync();
 
-                // --- MessageBox de Debug ELIMINADO ---
 
                 if (puzzlesFromServer != null)
                 {
-                    Console.WriteLine($"Received {puzzlesFromServer.Length} puzzles from server."); // Log alternativo
+                    Console.WriteLine($"Received {puzzlesFromServer.Length} puzzles from server."); 
                     foreach (var pzlDto in puzzlesFromServer)
                     {
                         string clientImagePath = pzlDto.imagePath;
-                        // Ajustar ruta si solo viene el nombre de archivo para precargados
                         if (!string.IsNullOrEmpty(clientImagePath) && !clientImagePath.StartsWith("/"))
                         {
                             clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.imagePath}";
@@ -166,7 +157,7 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    Console.WriteLine("Received NULL puzzle list from server."); // Log alternativo
+                    Console.WriteLine("Received NULL puzzle list from server."); 
                 }
             }
             catch (Exception ex)
@@ -246,7 +237,6 @@ namespace MindWeaveClient.ViewModel.Main
             var settings = new LobbySettingsDto
             {
                 preloadedPuzzleId = selectedPuzzle.puzzleId,
-                // difficultyId = 1, // ELIMINADO - Servidor pone default
                 customPuzzleImage = null
             };
 

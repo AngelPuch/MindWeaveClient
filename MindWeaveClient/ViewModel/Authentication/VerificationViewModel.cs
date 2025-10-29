@@ -22,7 +22,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 verificationCodeValue = value;
                 OnPropertyChanged();
-                // Llama al método que añadimos en RelayCommand para actualizar el estado del botón.
                 ((RelayCommand)verifyCommand).RaiseCanExecuteChanged();
             }
         }
@@ -47,7 +46,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private bool canExecuteVerify()
         {
-            // Lógica que decide si el botón "Verificar cuenta" está habilitado.
             return !string.IsNullOrWhiteSpace(verificationCode)
                    && verificationCode.Length == 6
                    && verificationCode.All(char.IsDigit);
@@ -92,12 +90,10 @@ namespace MindWeaveClient.ViewModel.Authentication
             try
             {
                 var client = new AuthenticationManagerClient();
-                // Llamamos al nuevo método del servicio que actualizaste
                 OperationResultDto result = await client.resendVerificationCodeAsync(email);
 
                 if (result.success)
                 {
-                    // Usamos la clave de recurso que añadiremos en el siguiente paso
                     MessageBox.Show("Código enviado con éxito", "Envio exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else

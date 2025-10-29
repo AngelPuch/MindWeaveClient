@@ -1,5 +1,4 @@
-﻿// MindWeaveClient/ViewModel/Authentication/PasswordRecoveryViewModel.cs
-using MindWeaveClient.AuthenticationService;
+﻿using MindWeaveClient.AuthenticationService;
 using MindWeaveClient.Properties.Langs;
 using System;
 using System.Linq;
@@ -7,13 +6,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Text.RegularExpressions; // Para validación regex
+using System.Text.RegularExpressions;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
     public class PasswordRecoveryViewModel : BaseViewModel
     {
-        // ... (navigateBack, navigateToLogin, authClient, State Management sin cambios) ...
         private readonly Action navigateBack;
         private readonly Action navigateToLogin;
         private readonly AuthenticationManagerClient authClient;
@@ -28,7 +26,6 @@ namespace MindWeaveClient.ViewModel.Authentication
         public bool isStep3Visible { get => isStep3VisibleValue; set { isStep3VisibleValue = value; OnPropertyChanged(); } }
         public bool isBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
 
-        // --- Step 1 Properties (Sin cambios) ---
         private string emailValue;
         public string email
         {
@@ -36,40 +33,33 @@ namespace MindWeaveClient.ViewModel.Authentication
             set { emailValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); }
         }
 
-        // --- Step 2 Properties (MODIFICADO) ---
-        // Quitamos codeDigit1 a codeDigit6 y UpdateFullCode
         private string verificationCodeValue;
         public string verificationCode
         {
             get => verificationCodeValue;
             set
             {
-                // Aseguramos que solo sean dígitos y limpiamos si no
                 if (value != null && !Regex.IsMatch(value, "^[0-9]*$"))
                 {
-                    // Encuentra el último caracter válido o devuelve vacío
                     value = Regex.Match(verificationCodeValue ?? "", "^[0-9]*").Value;
                 }
                 verificationCodeValue = value;
                 OnPropertyChanged();
-                RaiseCanExecuteChanged(); // Actualiza CanExecute
+                RaiseCanExecuteChanged();
             }
         }
 
-        // --- Step 3 Properties (Sin cambios) ---
         private string newPasswordValue;
         private string confirmPasswordValue;
         public string newPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
         public string confirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
 
-        // --- Commands (Sin cambios en declaración) ---
         public ICommand sendCodeCommand { get; }
         public ICommand verifyCodeCommand { get; }
         public ICommand resendCodeCommand { get; }
         public ICommand savePasswordCommand { get; }
         public ICommand goBackCommand { get; }
 
-        // --- CanExecute Properties (MODIFICADO para usar verificationCode) ---
         public bool canSendCode => !isBusy && !string.IsNullOrWhiteSpace(email);
         public bool canVerifyCode => !isBusy && verificationCode?.Length == 6 && verificationCode.All(char.IsDigit); // Usa verificationCode
         public bool canResendCode => !isBusy && !string.IsNullOrWhiteSpace(email);
@@ -78,7 +68,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                                        !string.IsNullOrEmpty(confirmPassword) &&
                                        newPassword == confirmPassword;
 
-        // --- Constructor (Sin cambios) ---
         public PasswordRecoveryViewModel(Action navigateBackAction, Action navigateToLoginAction)
         {
             navigateBack = navigateBackAction;
@@ -92,7 +81,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             goBackCommand = new RelayCommand(param => executeGoBack());
         }
 
-        // --- executeSendCodeAsync (MODIFICADO para limpiar verificationCode) ---
         private async Task executeSendCodeAsync(bool isResend = false)
         {
             if (!canSendCode && !isResend) return;
@@ -108,7 +96,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                     isStep1Visible = false;
                     isStep2Visible = true;
                     isStep3Visible = false;
-                    verificationCode = string.Empty; // Limpia el código al entrar/reenviar
+                    verificationCode = string.Empty;
                 }
                 else
                 {
@@ -124,9 +112,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 SetBusy(false);
             }
         }
-
-
-        // --- executeVerifyCodeAsync (Sin cambios lógicos internos, solo CanExecute cambió) ---
         private async Task executeVerifyCodeAsync()
         {
             if (!canVerifyCode) return;
@@ -134,14 +119,11 @@ namespace MindWeaveClient.ViewModel.Authentication
             SetBusy(true);
             try
             {
-                // Simulamos que la verificación fue "exitosa" para pasar al siguiente paso
-                // La validación real se hará en executeSavePasswordAsync
-                await Task.Delay(100); // Pequeña pausa opcional
+                await Task.Delay(100);
 
                 isStep1Visible = false;
                 isStep2Visible = false;
                 isStep3Visible = true;
-                // Limpiar campos de contraseña por si vuelve atrás
                 newPassword = "";
                 confirmPassword = "";
             }
@@ -151,8 +133,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-
-        // --- executeSavePasswordAsync (MODIFICADO para usar verificationCode) ---
         private async Task executeSavePasswordAsync()
         {
             if (!canSavePassword)
@@ -172,7 +152,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             SetBusy(true);
             try
             {
-                // Usa la propiedad 'verificationCode' directamente
                 OperationResultDto result = await authClient.resetPasswordWithCodeAsync(email, verificationCode, newPassword);
 
                 if (result.success)
@@ -186,9 +165,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                     if (result.message == Lang.GlobalVerificationInvalidOrExpiredCode)
                     {
                         isStep1Visible = false;
-                        isStep2Visible = true; // Volver a pedir código
+                        isStep2Visible = true;
                         isStep3Visible = false;
-                        verificationCode = string.Empty; // Limpiar el código viejo
+                        verificationCode = string.Empty;
                     }
                 }
             }
@@ -202,7 +181,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        // --- executeGoBack (MODIFICADO para limpiar verificationCode) ---
         private void executeGoBack()
         {
             if (isStep3Visible)
@@ -212,14 +190,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 isStep3Visible = false;
                 newPassword = "";
                 confirmPassword = "";
-                // Mantenemos verificationCode por si el usuario solo quiere corregirlo
             }
             else if (isStep2Visible)
             {
                 isStep1Visible = true;
                 isStep2Visible = false;
                 isStep3Visible = false;
-                verificationCode = string.Empty; // Limpia el código si vuelve al paso 1
+                verificationCode = string.Empty;
             }
             else
             {
@@ -227,10 +204,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        // --- ELIMINADO ---
-        // private void ClearCodeDigits() { ... }
-
-        // --- RaiseCanExecuteChanged (Sin cambios) ---
         private void RaiseCanExecuteChanged()
         {
             Application.Current.Dispatcher?.Invoke(() =>
@@ -242,7 +215,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged(nameof(canSavePassword));
             });
         }
-        // --- SetBusy (Sin cambios) ---
         private void SetBusy(bool value)
         {
             isBusy = value;

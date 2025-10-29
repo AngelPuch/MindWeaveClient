@@ -1,5 +1,4 @@
-﻿// MindWeaveClient/ViewModel/Main/SelectAvatarViewModel.cs
-using MindWeaveClient.ProfileService;
+﻿using MindWeaveClient.ProfileService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using System;
@@ -14,10 +13,8 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class Avatar : BaseViewModel
     {
-        private bool isSelectedValue; // Backing field
+        private bool isSelectedValue;
         public string imagePath { get; set; }
-
-        // *** Propiedad Añadida ***
         public bool IsSelected
         {
             get => isSelectedValue;
@@ -30,11 +27,11 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly Action navigateBack;
         private ObservableCollection<Avatar> availableAvatarsValue;
         private Avatar selectedAvatarValue;
-        private bool isBusyValue; // Added IsBusy
+        private bool isBusyValue;
 
         public ObservableCollection<Avatar> availableAvatars { get => availableAvatarsValue; set { availableAvatarsValue = value; OnPropertyChanged(); } }
         public Avatar selectedAvatar { get => selectedAvatarValue; set { selectedAvatarValue = value; OnPropertyChanged(); ((RelayCommand)saveSelectionCommand).RaiseCanExecuteChanged(); } } // Update CanExecute when selected changes
-        public bool isBusy { get => isBusyValue; private set { SetBusy(value); } } // Added IsBusy Property
+        public bool isBusy { get => isBusyValue; private set { SetBusy(value); } } 
 
         public ICommand saveSelectionCommand { get; }
         public ICommand cancelCommand { get; }
@@ -42,8 +39,8 @@ namespace MindWeaveClient.ViewModel.Main
         public SelectAvatarViewModel(Action navigateBack)
         {
             this.navigateBack = navigateBack;
-            cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !isBusy); // Disable when busy
-            saveSelectionCommand = new RelayCommand(async p => await saveSelection(), p => canSave()); // canSave now checks isBusy indirectly via selectedAvatar null check
+            cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !isBusy);
+            saveSelectionCommand = new RelayCommand(async p => await saveSelection(), p => canSave());
 
             loadAvailableAvatars();
         }
@@ -66,16 +63,14 @@ namespace MindWeaveClient.ViewModel.Main
                 availableAvatars.Add(new Avatar { imagePath = path });
             }
 
-            // Pre-select the current avatar if it exists in the list
             var currentAvatar = availableAvatars.FirstOrDefault(a => a.imagePath.Equals(SessionService.avatarPath, StringComparison.OrdinalIgnoreCase));
             if (currentAvatar != null)
             {
                 currentAvatar.IsSelected = true;
-                selectedAvatar = currentAvatar; // Also set the selectedAvatar property
+                selectedAvatar = currentAvatar;
             }
         }
 
-        // Modified CanSave to ensure selectedAvatar is set, indirectly checking !isBusy via command logic
         private bool canSave() => selectedAvatar != null && !isBusy;
 
 
@@ -83,7 +78,7 @@ namespace MindWeaveClient.ViewModel.Main
         {
             if (!canSave()) return;
 
-            SetBusy(true); // Set busy before async operation
+            SetBusy(true);
             try
             {
                 var client = new ProfileManagerClient();
@@ -106,16 +101,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false); // Ensure busy is reset
+                SetBusy(false); 
             }
         }
 
-        // Helper to set IsBusy and notify commands
         private void SetBusy(bool value)
         {
             isBusyValue = value;
             OnPropertyChanged(nameof(isBusy));
-            // Invalidate commands dependent on IsBusy
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
     }

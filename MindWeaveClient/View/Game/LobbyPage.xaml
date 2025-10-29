@@ -169,12 +169,21 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
+
                                 <TextBlock Grid.Row="0" Text="Invite Online Friends:" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,10">
                                     <ItemsControl ItemsSource="{Binding onlineFriends}" ItemTemplate="{StaticResource OnlineFriendInviteTemplate}"/>
                                 </ScrollViewer>
                                 <Button Grid.Row="2" Content="Refresh List" ToolTip="Refresh online friends" Style="{StaticResource SecondaryButtonStyle}" Height="30" FontSize="12" Padding="5,0" Command="{Binding refreshFriendsCommand}"/>
+
+                                <Button Grid.Row="3"
+                                        Content="{x:Static lang:Lang.LobbyBtnInviteGuest}"
+                                        Command="{Binding inviteGuestCommand}"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Margin="0,10,0,0" Height="35" FontSize="12" Padding="5,0"/>
+
                             </Grid>
                         </TabItem>
 

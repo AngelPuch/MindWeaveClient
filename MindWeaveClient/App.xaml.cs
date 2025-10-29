@@ -23,8 +23,7 @@ namespace MindWeaveClient
 
             try
             {
-                // Asegúrate que AudioManager cargue los volúmenes iniciales (como hicimos antes)
-                AudioManager.PlayMusic(); // Inicia la reproducción
+                AudioManager.Initialize();
                 Debug.WriteLine("App.OnStartup: Background music started.");
             }
             catch (Exception ex)

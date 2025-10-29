@@ -111,6 +111,7 @@
     <Compile Include="Services\SocialServiceClientManager.cs" />
     <Compile Include="Utilities\AudioManager.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
+    <Compile Include="ViewModel\Authentication\GuestJoinViewModel.cs" />
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
     <Compile Include="ViewModel\Authentication\PasswordRecoveryViewModel.cs" />
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
@@ -131,6 +132,9 @@
     <Compile Include="View\Authentication\CreateAccountPage.xaml.cs">
       <DependentUpon>CreateAccountPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Authentication\GuestJoinPage.xaml.cs">
+      <DependentUpon>GuestJoinPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Authentication\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -139,6 +143,9 @@
     </Compile>
     <Compile Include="View\Authentication\VerificationPage.xaml.cs">
       <DependentUpon>VerificationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\GuestInputDialog.xaml.cs">
+      <DependentUpon>GuestInputDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Game\GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
@@ -186,6 +193,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Authentication\GuestJoinPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Authentication\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -195,6 +206,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Authentication\VerificationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Dialogs\GuestInputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -295,6 +310,9 @@
     <None Include="Connected Services\MatchmakingService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.GuestJoinResultDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.LobbyCreationResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -346,6 +364,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.ServiceContracts.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\PuzzleManagerService\service.wsdl" />

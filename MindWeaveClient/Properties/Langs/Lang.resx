@@ -450,4 +450,49 @@
   <data name="SelectPuzzleImageTitle" xml:space="preserve">
     <value>Select Puzzle Image</value>
   </data>
+  <data name="LobbyBtnInviteGuest" xml:space="preserve">
+    <value>Invite Guest</value>
+  </data>
+  <data name="GuestInvitePromptTitle" xml:space="preserve">
+    <value>Invite Guest by Email</value>
+  </data>
+  <data name="GuestInvitePromptMessage" xml:space="preserve">
+    <value>Enter the email address of the guest you want to invite:</value>
+  </data>
+  <data name="GuestInviteBtnSend" xml:space="preserve">
+    <value>Send Invite</value>
+  </data>
+  <data name="GuestJoinTitle" xml:space="preserve">
+    <value>Join as Guest</value>
+  </data>
+  <data name="GuestJoinLbLobbyCode" xml:space="preserve">
+    <value>Lobby Code</value>
+  </data>
+  <data name="GuestJoinLbDesiredUsername" xml:space="preserve">
+    <value>Desired Username</value>
+  </data>
+  <data name="GuestJoinBtnJoin" xml:space="preserve">
+    <value>Join Lobby</value>
+  </data>
+  <data name="GuestJoinInfo" xml:space="preserve">
+    <value>Enter the lobby code and your email (where you received the invite).</value>
+  </data>
+  <data name="GuestUsernameValidationError" xml:space="preserve">
+    <value>Guest username must be 3-16 alphanumeric characters.</value>
+  </data>
+  <data name="ErrorInvalidOrExpiredGuestInvite" xml:space="preserve">
+    <value>Invalid, expired, or already used lobby invitation code for this email.</value>
+  </data>
+  <data name="ErrorGuestUsernameGenerationFailed" xml:space="preserve">
+    <value>Could not generate a unique guest username. Please try another name.</value>
+  </data>
+  <data name="SuccessGuestJoinedLobby" xml:space="preserve">
+    <value>Successfully joined the lobby as a guest.</value>
+  </data>
+  <data name="ErrorSendingGuestInvitation" xml:space="preserve">
+    <value>Failed to send the guest invitation. Please try again.</value>
+  </data>
+  <data name="GlobalErrorInvalidEmailFormat" xml:space="preserve">
+    <value>Invalid email format.</value>
+  </data>
 </root>

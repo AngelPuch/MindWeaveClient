@@ -4,25 +4,28 @@
     {
         public static string username { get; private set; }
         public static string avatarPath { get; private set; }
+        public static bool isGuest { get; private set; }
 
-        public static void setSession(string username, string avatarPath)
+        public static void setSession(string username, string avatarPath, bool isGuest = false)
         {
             SessionService.username = username;
-            SessionService.avatarPath = avatarPath;
+            SessionService.avatarPath = avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            SessionService.isGuest = isGuest;
         }
 
-        /// <summary>
-        /// Actualiza únicamente la ruta del avatar en la sesión actual.
-        /// </summary>
         public static void updateAvatarPath(string newAvatarPath)
         {
-            avatarPath = newAvatarPath;
+            if (!isGuest)
+            {
+                avatarPath = newAvatarPath;
+            }
         }
 
         public static void clearSession()
         {
             username = null;
             avatarPath = null;
+            isGuest = false;
         }
     }
 }

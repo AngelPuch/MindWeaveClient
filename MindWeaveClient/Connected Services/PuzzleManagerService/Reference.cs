@@ -155,7 +155,8 @@ namespace MindWeaveClient.PuzzleManagerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UploadResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UploadResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.ServiceContract" +
+        "s")]
     [System.SerializableAttribute()]
     public partial class UploadResultDto : MindWeaveClient.PuzzleManagerService.OperationResultDto {
         

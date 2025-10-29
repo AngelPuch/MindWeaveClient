@@ -96,6 +96,7 @@ namespace MindWeaveClient.MatchmakingService {
     [System.Runtime.Serialization.DataContractAttribute(Name="OperationResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
         "hared")]
     [System.SerializableAttribute()]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(MindWeaveClient.MatchmakingService.GuestJoinResultDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(MindWeaveClient.MatchmakingService.LobbyCreationResultDto))]
     public partial class OperationResultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -150,6 +151,46 @@ namespace MindWeaveClient.MatchmakingService {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GuestJoinResultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.M" +
+        "atchmaking")]
+    [System.SerializableAttribute()]
+    public partial class GuestJoinResultDto : MindWeaveClient.MatchmakingService.OperationResultDto {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string assignedGuestUsernameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyStateField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string assignedGuestUsername {
+            get {
+                return this.assignedGuestUsernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.assignedGuestUsernameField, value) != true)) {
+                    this.assignedGuestUsernameField = value;
+                    this.RaisePropertyChanged("assignedGuestUsername");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyState {
+            get {
+                return this.initialLobbyStateField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.initialLobbyStateField, value) != true)) {
+                    this.initialLobbyStateField = value;
+                    this.RaisePropertyChanged("initialLobbyState");
+                }
             }
         }
     }
@@ -288,6 +329,162 @@ namespace MindWeaveClient.MatchmakingService {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GuestInvitationDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.M" +
+        "atchmaking")]
+    [System.SerializableAttribute()]
+    public partial class GuestInvitationDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string guestEmailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string inviterUsernameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string lobbyCodeField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string guestEmail {
+            get {
+                return this.guestEmailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.guestEmailField, value) != true)) {
+                    this.guestEmailField = value;
+                    this.RaisePropertyChanged("guestEmail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string inviterUsername {
+            get {
+                return this.inviterUsernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.inviterUsernameField, value) != true)) {
+                    this.inviterUsernameField = value;
+                    this.RaisePropertyChanged("inviterUsername");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string lobbyCode {
+            get {
+                return this.lobbyCodeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.lobbyCodeField, value) != true)) {
+                    this.lobbyCodeField = value;
+                    this.RaisePropertyChanged("lobbyCode");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GuestJoinRequestDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.M" +
+        "atchmaking")]
+    [System.SerializableAttribute()]
+    public partial class GuestJoinRequestDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string desiredGuestUsernameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string guestEmailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string lobbyCodeField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string desiredGuestUsername {
+            get {
+                return this.desiredGuestUsernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.desiredGuestUsernameField, value) != true)) {
+                    this.desiredGuestUsernameField = value;
+                    this.RaisePropertyChanged("desiredGuestUsername");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string guestEmail {
+            get {
+                return this.guestEmailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.guestEmailField, value) != true)) {
+                    this.guestEmailField = value;
+                    this.RaisePropertyChanged("guestEmail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string lobbyCode {
+            get {
+                return this.lobbyCodeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.lobbyCodeField, value) != true)) {
+                    this.lobbyCodeField = value;
+                    this.RaisePropertyChanged("lobbyCode");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MatchmakingService.IMatchmakingManager", CallbackContract=typeof(MindWeaveClient.MatchmakingService.IMatchmakingManagerCallback))]
     public interface IMatchmakingManager {
@@ -333,6 +530,18 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/changeDifficulty")]
         System.Threading.Tasks.Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/inviteGuestByEmail")]
+        void inviteGuestByEmail(MindWeaveClient.MatchmakingService.GuestInvitationDto invitationData);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/inviteGuestByEmail")]
+        System.Threading.Tasks.Task inviteGuestByEmailAsync(MindWeaveClient.MatchmakingService.GuestInvitationDto invitationData);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest", ReplyAction="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse")]
+        MindWeaveClient.MatchmakingService.GuestJoinResultDto joinLobbyAsGuest(MindWeaveClient.MatchmakingService.GuestJoinRequestDto joinRequest);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest", ReplyAction="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.MatchmakingService.GuestJoinResultDto> joinLobbyAsGuestAsync(MindWeaveClient.MatchmakingService.GuestJoinRequestDto joinRequest);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -433,6 +642,22 @@ namespace MindWeaveClient.MatchmakingService {
         
         public System.Threading.Tasks.Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId) {
             return base.Channel.changeDifficultyAsync(hostUsername, lobbyId, newDifficultyId);
+        }
+        
+        public void inviteGuestByEmail(MindWeaveClient.MatchmakingService.GuestInvitationDto invitationData) {
+            base.Channel.inviteGuestByEmail(invitationData);
+        }
+        
+        public System.Threading.Tasks.Task inviteGuestByEmailAsync(MindWeaveClient.MatchmakingService.GuestInvitationDto invitationData) {
+            return base.Channel.inviteGuestByEmailAsync(invitationData);
+        }
+        
+        public MindWeaveClient.MatchmakingService.GuestJoinResultDto joinLobbyAsGuest(MindWeaveClient.MatchmakingService.GuestJoinRequestDto joinRequest) {
+            return base.Channel.joinLobbyAsGuest(joinRequest);
+        }
+        
+        public System.Threading.Tasks.Task<MindWeaveClient.MatchmakingService.GuestJoinResultDto> joinLobbyAsGuestAsync(MindWeaveClient.MatchmakingService.GuestJoinRequestDto joinRequest) {
+            return base.Channel.joinLobbyAsGuestAsync(joinRequest);
         }
     }
 }

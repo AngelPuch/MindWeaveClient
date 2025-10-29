@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Windows; // Necesario para acceder a 'Application' y 'CommandManager'
+using System.Windows;
 
 namespace MindWeaveClient.ViewModel
 {
@@ -14,8 +14,6 @@ namespace MindWeaveClient.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // --- ESTE ES EL MÉTODO CLAVE ---
-        // Fuerza a la interfaz de usuario a volver a preguntar si un comando se puede ejecutar.
         protected void OnCanExecuteChanged(ICommand command)
         {
             Application.Current.Dispatcher.Invoke(() => CommandManager.InvalidateRequerySuggested());

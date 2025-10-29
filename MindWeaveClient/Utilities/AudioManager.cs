@@ -1,123 +1,200 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Media;
-using MindWeaveClient.Properties;// Necesario para MediaPlayer y Uri
+using MindWeaveClient.Properties;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Threading;
 
-public static class AudioManager
+internal static class AudioManager
 {
     private static MediaPlayer musicPlayer = new MediaPlayer();
-    private static MediaPlayer sfxPlayer = new MediaPlayer(); // Para efectos
+    private static MediaPlayer sfxPlayer = new MediaPlayer();
+    private static bool isMusicLoaded = false;
+    private static string tempMusicFilePath = null;
+
+    public static void Initialize()
+    {
+    }
 
     static AudioManager()
     {
-        // Carga la música de fondo al iniciar
-        // La ruta empieza con '/' y usa el nombre del ensamblado (tu proyecto)
-        // seguido de ';component/' y la ruta relativa dentro del proyecto.
-        try
-        {
-            // OJO: Reemplaza "MindWeaveClient" si el nombre de tu ensamblado es diferente
-            Uri musicUri = new Uri("pack://application:,,,/MindWeaveClient;component/Resources/Audio/audio_background.mp3", UriKind.Absolute);
-            musicPlayer.Open(musicUri);
-            musicPlayer.MediaEnded += (s, e) => { musicPlayer.Position = TimeSpan.Zero; musicPlayer.Play(); }; // Para que se repita (loop)
-            Console.WriteLine("Music loaded successfully."); // Log
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading background music: {ex.Message}");
-            // Considera mostrar un MessageBox o loggear el error
-        }
-
-        // Carga los ajustes de volumen iniciales
         LoadInitialVolumes();
-    }
 
-    private static void LoadInitialVolumes()
-    {
-        // Lee los valores guardados (asegúrate que existan en Settings.settings)
-        double initialMusicVolume = Settings.Default.MusicVolumeSetting;
-        double initialSfxVolume = Settings.Default.SoundEffectsVolumeSetting;
-
-        // Aplica los volúmenes (convirtiendo 0-100 a 0.0-1.0)
-        SetMusicVolume(initialMusicVolume / 100.0);
-        SetSoundEffectsVolume(initialSfxVolume / 100.0);
-        Console.WriteLine($"Initial volumes loaded: Music={musicPlayer.Volume}, SFX={sfxPlayer.Volume}");
-    }
-
-
-    // --- Métodos para controlar volumen (como los tenías en el ViewModel) ---
-    public static void SetMusicVolume(double volume) // volume de 0.0 a 1.0
-    {
-        if (volume < 0) volume = 0;
-        if (volume > 1) volume = 1;
-        musicPlayer.Volume = volume;
-        Console.WriteLine($"Music volume set to: {musicPlayer.Volume}");
-    }
-
-    public static void SetSoundEffectsVolume(double volume) // volume de 0.0 a 1.0
-    {
-        if (volume < 0) volume = 0;
-        if (volume > 1) volume = 1;
-        // Tendrías que aplicar esto a todos los MediaPlayers de SFX si usas varios,
-        // o tener un volumen base global para efectos.
-        sfxPlayer.Volume = volume; // Ejemplo simple
-        Console.WriteLine($"SFX volume set to: {sfxPlayer.Volume}");
-    }
-
-    // --- Métodos para reproducir ---
-    public static void PlayMusic()
-    {
         try
         {
-            if (musicPlayer.Source != null)
+            string resourcePath = "/Resources/Audio/audio_background.mp3";
+            Uri resourceUri = new Uri(resourcePath, UriKind.Relative);
+            var resourceInfo = Application.GetResourceStream(resourceUri);
+
+            if (resourceInfo != null)
             {
-                musicPlayer.Play();
-                Console.WriteLine("Music playing.");
+                // Crear archivo temporal
+                tempMusicFilePath = Path.Combine(Path.GetTempPath(), $"MindWeave_{Guid.NewGuid()}.mp3");
+                Debug.WriteLine($"AudioManager: Creating temporary music file at: {tempMusicFilePath}");
+                using (Stream resourceStream = resourceInfo.Stream)
+                using (FileStream fileStream = new FileStream(tempMusicFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    resourceStream.CopyTo(fileStream);
+                }
+                Debug.WriteLine($"AudioManager: Successfully copied resource stream to temporary file.");
+
+                Uri fileUri = new Uri(tempMusicFilePath, UriKind.Absolute);
+
+                // --- Evento MediaOpened Simplificado ---
+                musicPlayer.MediaOpened += (sender, e) =>
+                {
+                    Debug.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    Debug.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    isMusicLoaded = true;
+                    Debug.WriteLine($"---> AudioManager: MediaOpened event FIRED for TEMP FILE: {tempMusicFilePath}");
+                    Debug.WriteLine($"---> AudioManager: Volume JUST BEFORE Dispatcher: {musicPlayer.Volume}");
+
+                    // *** Intento de Play con Retraso usando Dispatcher ***
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => // Cambiado a Loaded por si acaso
+                    {
+                        Debug.WriteLine($"---> AudioManager: Dispatcher action STARTED."); // Log para ver si entra aquí
+                        try
+                        {
+                            if (isMusicLoaded && musicPlayer.Source != null && musicPlayer.Volume > 0) // Triple chequeo
+                            {
+                                Debug.WriteLine($"---> AudioManager: Volume INSIDE Dispatcher BEFORE Play: {musicPlayer.Volume}"); // Re-verifica volumen
+                                musicPlayer.Play();
+                                Debug.WriteLine($"---> AudioManager: musicPlayer.Play() CALLED via Dispatcher."); // Log *después* de llamar Play
+                                // Añade un pequeño retraso y verifica si está sonando
+                                DispatcherTimer checkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+                                checkTimer.Tick += (s, args) => {
+                                    checkTimer.Stop();
+                                    Debug.WriteLine($"---> AudioManager: Play check after 500ms - HasDuration: {musicPlayer.HasAudio}, Position: {musicPlayer.Position}");
+                                };
+                                checkTimer.Start();
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"---> AudioManager: Play() SKIPPED in Dispatcher. isMusicLoaded={isMusicLoaded}, SourceNull={musicPlayer.Source == null}, Volume={musicPlayer.Volume}");
+                            }
+                        }
+                        catch (Exception playEx)
+                        {
+                            Debug.WriteLine($"---> AudioManager ERROR: Exception calling Play() via Dispatcher - {playEx.ToString()}");
+                        }
+                        Debug.WriteLine($"---> AudioManager: Dispatcher action FINISHED.");
+                        Debug.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Debug.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }));
+                };
+
+                musicPlayer.MediaFailed += (sender, e) =>
+                {
+                    isMusicLoaded = false;
+                    // *** Log COMPLETO de la excepción ***
+                    Debug.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    Debug.WriteLine($"AudioManager ERROR: MediaFailed event fired for TEMP FILE: {tempMusicFilePath}");
+                    if (e.ErrorException != null)
+                    {
+                        Debug.WriteLine($"   Exception Type: {e.ErrorException.GetType().FullName}");
+                        Debug.WriteLine($"   Exception Message: {e.ErrorException.Message}");
+                        Debug.WriteLine($"   Stack Trace: {e.ErrorException.StackTrace}");
+                        if (e.ErrorException.InnerException != null)
+                        {
+                            Debug.WriteLine($"   Inner Exception: {e.ErrorException.InnerException.ToString()}");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"   No specific ErrorException provided.");
+                    }
+                    Debug.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    CleanupTempFile();
+                };
+
+                // Evento MediaEnded (igual que antes)
+                musicPlayer.MediaEnded += (s, e) =>
+                {
+                    musicPlayer.Position = TimeSpan.Zero;
+                    musicPlayer.Play();
+                    Debug.WriteLine("AudioManager: Background music loop.");
+                };
+
+
+                Debug.WriteLine($"AudioManager: Calling musicPlayer.Open() with TEMP FILE URI: {fileUri.AbsoluteUri}");
+                musicPlayer.Open(fileUri);
+
             }
             else
             {
-                Console.WriteLine("Cannot play music, source is null.");
+                Debug.WriteLine($"AudioManager ERROR: Application.GetResourceStream returned null for '{resourcePath}'. Check Build Action and Path.");
+                isMusicLoaded = false;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error playing music: {ex.Message}");
+            Debug.WriteLine($"AudioManager ERROR: Exception during music initialization (Temp File method) - {ex.ToString()}");
+            isMusicLoaded = false;
+            CleanupTempFile();
         }
+
+        Application.Current.Exit += OnApplicationExit;
     }
 
-    public static void StopMusic()
+    // --- El resto de métodos sin cambios ---
+    private static void CleanupTempFile()
     {
-        try
+        if (tempMusicFilePath != null && File.Exists(tempMusicFilePath))
         {
-            if (musicPlayer.CanPause)
+            try
             {
-                musicPlayer.Stop(); // O Pause() si quieres poder reanudar
-                Console.WriteLine("Music stopped.");
+                File.Delete(tempMusicFilePath);
+                Debug.WriteLine($"AudioManager: Deleted temporary music file: {tempMusicFilePath}");
+                tempMusicFilePath = null;
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error stopping music: {ex.Message}");
+            catch (IOException ex) { Debug.WriteLine($"AudioManager WARNING: Could not delete temporary music file '{tempMusicFilePath}'. Error: {ex.Message}"); }
+            catch (UnauthorizedAccessException ex) { Debug.WriteLine($"AudioManager WARNING: No permission to delete temporary music file '{tempMusicFilePath}'. Error: {ex.Message}"); }
         }
     }
-
-
-    public static void PlaySoundEffect(string soundFileName) // Pasas solo el nombre del archivo, ej: "piece_placed.wav"
+    private static void OnApplicationExit(object sender, ExitEventArgs e)
+    {
+        StopMusic();
+        musicPlayer.Close();
+        CleanupTempFile();
+        Application.Current.Exit -= OnApplicationExit;
+    }
+    private static void LoadInitialVolumes()
     {
         try
         {
-            // Construye la Pack URI completa
-            Uri sfxUri = new Uri($"pack://application:,,,/MindWeaveClient;component/Resources/Audio/{soundFileName}", UriKind.Absolute);
+            double initialMusicVolume = Settings.Default.MusicVolumeSetting;
+            double initialSfxVolume = Settings.Default.SoundEffectsVolumeSetting;
+            SetMusicVolumeInternal(initialMusicVolume / 100.0);
+            SetSoundEffectsVolumeInternal(initialSfxVolume / 100.0);
+            Debug.WriteLine($"AudioManager: Initial volumes set from settings - Music={musicPlayer.Volume}, SFX={sfxPlayer.Volume}");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"AudioManager ERROR: Failed to load initial volumes from settings - {ex.Message}");
+            SetMusicVolumeInternal(0.5);
+            SetSoundEffectsVolumeInternal(0.5);
+        }
+    }
+    private static void SetMusicVolumeInternal(double volume) { if (volume < 0) volume = 0; if (volume > 1) volume = 1; musicPlayer.Volume = volume; }
+    private static void SetSoundEffectsVolumeInternal(double volume) { if (volume < 0) volume = 0; if (volume > 1) volume = 1; sfxPlayer.Volume = volume; }
+    public static void SetMusicVolume(double volume) { SetMusicVolumeInternal(volume); Debug.WriteLine($"AudioManager: Music volume set to: {musicPlayer.Volume}"); }
+    public static void SetSoundEffectsVolume(double volume) { SetSoundEffectsVolumeInternal(volume); Debug.WriteLine($"AudioManager: SFX volume set to: {sfxPlayer.Volume}"); }
+    public static void PlayMusic() { if (isMusicLoaded && tempMusicFilePath != null && File.Exists(tempMusicFilePath)) { try { musicPlayer.Play(); Debug.WriteLine("AudioManager: PlayMusic() called manually."); } catch (Exception ex) { Debug.WriteLine($"AudioManager ERROR: Manual PlayMusic() - {ex.Message}"); } } else { Debug.WriteLine($"AudioManager: Manual PlayMusic() called but not ready."); } }
+    public static void StopMusic() { try { if (musicPlayer.CanPause) { musicPlayer.Stop(); Debug.WriteLine("AudioManager: StopMusic() called."); } else { Debug.WriteLine($"AudioManager: StopMusic() called but cannot stop."); } } catch (Exception ex) { Debug.WriteLine($"AudioManager ERROR: StopMusic() - {ex.Message}"); } }
 
-            // Podrías usar un MediaPlayer diferente para cada sonido si se solapan,
-            // o reutilizar uno si solo suena uno a la vez. Reutilizar es más simple aquí:
+    // NOTA: PlaySoundEffect sigue usando la Pack URI. Si también falla, necesitará el mismo
+    // tratamiento de archivo temporal que la música de fondo.
+    public static void PlaySoundEffect(string soundFileName)
+    {
+        if (string.IsNullOrWhiteSpace(soundFileName)) { Debug.WriteLine("AudioManager ERROR: PlaySoundEffect empty filename."); return; }
+        try
+        {
+            Uri sfxUri = new Uri($"pack://application:,,,/MindWeaveClient;component/Resources/Audio/{soundFileName}", UriKind.Absolute);
             sfxPlayer.Open(sfxUri);
             sfxPlayer.Play();
-            Console.WriteLine($"Playing SFX: {soundFileName}");
+            Debug.WriteLine($"AudioManager: Playing SFX '{soundFileName}'.");
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error playing sound effect '{soundFileName}': {ex.Message}");
-        }
+        catch (Exception ex) { Debug.WriteLine($"AudioManager ERROR: Playing SFX '{soundFileName}' - {ex.Message}"); }
     }
-
-    // Puedes añadir más métodos como PauseMusic, etc.
-}
+} // Fin clase

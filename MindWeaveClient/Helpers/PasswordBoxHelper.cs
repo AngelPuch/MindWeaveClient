@@ -8,13 +8,11 @@ namespace MindWeaveClient.Helpers
         public static readonly DependencyProperty BoundPassword =
             DependencyProperty.RegisterAttached("BoundPassword", typeof(string), typeof(PasswordBoxHelper), new PropertyMetadata(string.Empty, OnBoundPasswordChanged));
 
-        // Corregido: de "getBoundPassword" a "GetBoundPassword"
         public static string GetBoundPassword(DependencyObject d)
         {
             return (string)d.GetValue(BoundPassword);
         }
 
-        // Corregido: de "setBoundPassword" a "SetBoundPassword"
         public static void SetBoundPassword(DependencyObject d, string value)
         {
             d.SetValue(BoundPassword, value);
