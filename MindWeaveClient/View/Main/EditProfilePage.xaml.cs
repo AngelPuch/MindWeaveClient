@@ -37,7 +37,7 @@ namespace MindWeaveClient.View.Main
                 // Podrías crear un método RefreshData() en el ViewModel
                 // o simplemente volver a llamar loadEditableData si es seguro hacerlo.
                 // Por ahora, solo actualizaremos el avatar que es lo que cambió.
-                vm.RefreshAvatar(); // Necesitas añadir este método al ViewModel
+                vm.refreshAvatar(); // Necesitas añadir este método al ViewModel
             }
         }
     }

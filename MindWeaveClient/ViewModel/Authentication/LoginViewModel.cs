@@ -45,7 +45,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeLoginAsync()
         {
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 var client = new AuthenticationManagerClient();
@@ -61,13 +61,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     SessionService.setSession(result.username, result.avatarPath);
 
-                    bool socialConnected = SocialServiceClientManager.Instance.Connect(result.username);
+                    bool socialConnected = SocialServiceClientManager.instance.connect(result.username);
                     if (!socialConnected)
                     {
                         MessageBox.Show("Could not connect to social features. Friend status and invites might not work.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
                     }
 
-                    MatchmakingServiceClientManager.Instance.Connect();
+                    MatchmakingServiceClientManager.instance.connect();
 
                     MessageBox.Show(result.operationResult.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -90,17 +90,17 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             catch (Exception ex)
             {
-                HandleError("An error occurred while connecting to the server", ex);
+                handleError("An error occurred while connecting to the server", ex);
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
         private async Task executeResendVerificationAsync()
         {
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 var client = new AuthenticationManagerClient();
@@ -110,10 +110,10 @@ namespace MindWeaveClient.ViewModel.Authentication
                     MessageBox.Show(Lang.InfoMsgBodyCodeSent, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
                     navigateTo(new VerificationPage(this.email));
                 }
-                else { HandleError(result.message, null); }
+                else { handleError(result.message, null); }
             }
-            catch (Exception ex) { HandleError("Error resending code", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error resending code", ex); }
+            finally { setBusy(false); }
         }
         private void executeGoToSignUp() { navigateTo(new CreateAccountPage()); }
         private void executeGoToForgotPassword() { navigateTo(new PasswordRecoveryPage()); }
@@ -122,10 +122,10 @@ namespace MindWeaveClient.ViewModel.Authentication
             navigateTo(new GuestJoinPage());
         }
 
-        private bool isBusyValue = false;
-        public bool IsBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
-        private void SetBusy(bool value) { IsBusy = value; }
-        private void HandleError(string message, Exception ex)
+        private bool isBusyValue;
+        public bool isBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
+        private void setBusy(bool value) { isBusy = value; }
+        private void handleError(string message, Exception ex)
         {
             string errorDetails = ex != null ? ex.Message : "No details";
             Console.WriteLine($"!!! {message}: {errorDetails}");

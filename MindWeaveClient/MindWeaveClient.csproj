@@ -93,7 +93,6 @@
     <Compile Include="Helpers\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\KickButtonVisibilityConverter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
-    <Compile Include="Helpers\SelectedItemToBooleanConverter.cs" />
     <Compile Include="Helpers\StringEqualityToVisibilityConverterInverted.cs" />
     <Compile Include="Helpers\StringEquialityConverter.cs" />
     <Compile Include="Helpers\StringToVisibilityConverter.cs" />

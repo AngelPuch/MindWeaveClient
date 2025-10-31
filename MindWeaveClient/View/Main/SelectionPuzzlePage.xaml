@@ -79,8 +79,8 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <RadioButton Style="{StaticResource PuzzleItemStyle}"
-                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                 Command="{Binding DataContext.SelectPuzzleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                 IsChecked="{Binding isSelected, Mode=TwoWay}"
+                                                 Command="{Binding DataContext.selectPuzzleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                  CommandParameter="{Binding}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

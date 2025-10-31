@@ -3,7 +3,6 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,7 +14,7 @@ namespace MindWeaveClient.ViewModel.Main
     {
         private bool isSelectedValue;
         public string imagePath { get; set; }
-        public bool IsSelected
+        public bool isSelected
         {
             get => isSelectedValue;
             set { isSelectedValue = value; OnPropertyChanged(); }
@@ -31,7 +30,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         public ObservableCollection<Avatar> availableAvatars { get => availableAvatarsValue; set { availableAvatarsValue = value; OnPropertyChanged(); } }
         public Avatar selectedAvatar { get => selectedAvatarValue; set { selectedAvatarValue = value; OnPropertyChanged(); ((RelayCommand)saveSelectionCommand).RaiseCanExecuteChanged(); } } // Update CanExecute when selected changes
-        public bool isBusy { get => isBusyValue; private set { SetBusy(value); } } 
+        public bool isBusy { get => isBusyValue; private set { setBusy(value); } } 
 
         public ICommand saveSelectionCommand { get; }
         public ICommand cancelCommand { get; }
@@ -66,7 +65,7 @@ namespace MindWeaveClient.ViewModel.Main
             var currentAvatar = availableAvatars.FirstOrDefault(a => a.imagePath.Equals(SessionService.avatarPath, StringComparison.OrdinalIgnoreCase));
             if (currentAvatar != null)
             {
-                currentAvatar.IsSelected = true;
+                currentAvatar.isSelected = true;
                 selectedAvatar = currentAvatar;
             }
         }
@@ -78,7 +77,7 @@ namespace MindWeaveClient.ViewModel.Main
         {
             if (!canSave()) return;
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 var client = new ProfileManagerClient();
@@ -101,11 +100,11 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false); 
+                setBusy(false); 
             }
         }
 
-        private void SetBusy(bool value)
+        private void setBusy(bool value)
         {
             isBusyValue = value;
             OnPropertyChanged(nameof(isBusy));

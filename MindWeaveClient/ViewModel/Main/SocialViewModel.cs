@@ -33,212 +33,212 @@ namespace MindWeaveClient.ViewModel.Main
 
     public class SocialViewModel : BaseViewModel
     {
-        private SocialManagerClient _proxy => SocialServiceClientManager.Instance.Proxy;
-        private SocialCallbackHandler _callbackHandler => SocialServiceClientManager.Instance.CallbackHandler;
+        private SocialManagerClient proxy => SocialServiceClientManager.instance.proxy;
+        private SocialCallbackHandler callbackHandler => SocialServiceClientManager.instance.callbackHandler;
 
-        private string _searchQuery;
-        private bool _isFriendsListChecked = true;
-        private bool _isAddFriendChecked;
-        private bool _isRequestsChecked;
-        private bool _isBusy;
+        private string searchQueryValue;
+        private bool isFriendsListCheckedValue = true;
+        private bool isAddFriendCheckedValue;
+        private bool isRequestsCheckedValue;
+        private bool isBusyValue;
 
-        public ObservableCollection<FriendDtoDisplay> FriendsList { get; } = new ObservableCollection<FriendDtoDisplay>();
-        public ObservableCollection<PlayerSearchResultDto> SearchResults { get; } = new ObservableCollection<PlayerSearchResultDto>();
-        public ObservableCollection<FriendRequestInfoDto> ReceivedRequests { get; } = new ObservableCollection<FriendRequestInfoDto>();
+        public ObservableCollection<FriendDtoDisplay> friendsList { get; } = new ObservableCollection<FriendDtoDisplay>();
+        public ObservableCollection<PlayerSearchResultDto> searchResults { get; } = new ObservableCollection<PlayerSearchResultDto>();
+        public ObservableCollection<FriendRequestInfoDto> receivedRequests { get; } = new ObservableCollection<FriendRequestInfoDto>();
 
-        public string SearchQuery { get => _searchQuery; set { _searchQuery = value; OnPropertyChanged(); } }
-        public bool IsFriendsListChecked { get => _isFriendsListChecked; set { _isFriendsListChecked = value; OnPropertyChanged(); if (value) LoadFriendsListCommand.Execute(null); } }
-        public bool IsAddFriendChecked { get => _isAddFriendChecked; set { _isAddFriendChecked = value; OnPropertyChanged(); if (value) { SearchResults.Clear(); SearchQuery = ""; } } }
-        public bool IsRequestsChecked { get => _isRequestsChecked; set { _isRequestsChecked = value; OnPropertyChanged(); if (value) LoadRequestsCommand.Execute(null); } }
-        public bool IsBusy { get => _isBusy; set { _isBusy = value; OnPropertyChanged(); ((RelayCommand)LoadFriendsListCommand).RaiseCanExecuteChanged(); ((RelayCommand)LoadRequestsCommand).RaiseCanExecuteChanged(); /* etc */ } }
+        public string searchQuery { get => searchQueryValue; set { searchQueryValue = value; OnPropertyChanged(); } }
+        public bool isFriendsListChecked { get => isFriendsListCheckedValue; set { isFriendsListCheckedValue = value; OnPropertyChanged(); if (value) loadFriendsListCommand.Execute(null); } }
+        public bool isAddFriendChecked { get => isAddFriendCheckedValue; set { isAddFriendCheckedValue = value; OnPropertyChanged(); if (value) { searchResults.Clear(); searchQuery = ""; } } }
+        public bool isRequestsChecked { get => isRequestsCheckedValue; set { isRequestsCheckedValue = value; OnPropertyChanged(); if (value) loadRequestsCommand.Execute(null); } }
+        public bool isBusy { get => isBusyValue; set { isBusyValue = value; OnPropertyChanged(); ((RelayCommand)loadFriendsListCommand).RaiseCanExecuteChanged(); ((RelayCommand)loadRequestsCommand).RaiseCanExecuteChanged(); /* etc */ } }
 
-        public ICommand LoadFriendsListCommand { get; }
-        public ICommand LoadRequestsCommand { get; }
-        public ICommand SearchCommand { get; }
-        public ICommand SendRequestCommand { get; }
-        public ICommand AcceptRequestCommand { get; }
-        public ICommand DeclineRequestCommand { get; }
-        public ICommand RemoveFriendCommand { get; }
-        public ICommand BackCommand { get; }
+        public ICommand loadFriendsListCommand { get; }
+        public ICommand loadRequestsCommand { get; }
+        public ICommand searchCommand { get; }
+        public ICommand sendRequestCommand { get; }
+        public ICommand acceptRequestCommand { get; }
+        public ICommand declineRequestCommand { get; }
+        public ICommand removeFriendCommand { get; }
+        public ICommand backCommand { get; }
 
-        private readonly Action _navigateBackAction;
-        private string CurrentUserUsername => SessionService.username;
+        private readonly Action navigateBackAction;
+        private string currentUserUsername => SessionService.username;
 
         public SocialViewModel(Action navigateBack)
         {
-            _navigateBackAction = navigateBack;
+            navigateBackAction = navigateBack;
 
-            LoadFriendsListCommand = new RelayCommand(async (param) => await ExecuteLoadFriendsListAsync(), (param) => !IsBusy);
-            LoadRequestsCommand = new RelayCommand(async (param) => await ExecuteLoadRequestsAsync(), (param) => !IsBusy);
-            SearchCommand = new RelayCommand(async (param) => await ExecuteSearchAsync(), (param) => !IsBusy && !string.IsNullOrWhiteSpace(SearchQuery));
-            SendRequestCommand = new RelayCommand(async (param) => await ExecuteSendRequestAsync(param as PlayerSearchResultDto), (param) => !IsBusy && param is PlayerSearchResultDto);
-            AcceptRequestCommand = new RelayCommand(async (param) => await ExecuteRespondRequestAsync(param as FriendRequestInfoDto, true), (param) => !IsBusy && param is FriendRequestInfoDto);
-            DeclineRequestCommand = new RelayCommand(async (param) => await ExecuteRespondRequestAsync(param as FriendRequestInfoDto, false), (param) => !IsBusy && param is FriendRequestInfoDto);
-            RemoveFriendCommand = new RelayCommand(async (param) => await ExecuteRemoveFriendAsync(param as FriendDtoDisplay), (param) => !IsBusy && param is FriendDtoDisplay);
-            BackCommand = new RelayCommand((param) => _navigateBackAction?.Invoke());
+            loadFriendsListCommand = new RelayCommand(async (param) => await executeLoadFriendsListAsync(), (param) => !isBusy);
+            loadRequestsCommand = new RelayCommand(async (param) => await executeLoadRequestsAsync(), (param) => !isBusy);
+            searchCommand = new RelayCommand(async (param) => await executeSearchAsync(), (param) => !isBusy && !string.IsNullOrWhiteSpace(searchQuery));
+            sendRequestCommand = new RelayCommand(async (param) => await executeSendRequestAsync(param as PlayerSearchResultDto), (param) => !isBusy && param is PlayerSearchResultDto);
+            acceptRequestCommand = new RelayCommand(async (param) => await executeRespondRequestAsync(param as FriendRequestInfoDto, true), (param) => !isBusy && param is FriendRequestInfoDto);
+            declineRequestCommand = new RelayCommand(async (param) => await executeRespondRequestAsync(param as FriendRequestInfoDto, false), (param) => !isBusy && param is FriendRequestInfoDto);
+            removeFriendCommand = new RelayCommand(async (param) => await executeRemoveFriendAsync(param as FriendDtoDisplay), (param) => !isBusy && param is FriendDtoDisplay);
+            backCommand = new RelayCommand((param) => navigateBackAction?.Invoke());
 
-            ConnectAndSubscribe();
+            connectAndSubscribe();
 
-            if (IsFriendsListChecked) LoadFriendsListCommand.Execute(null);
-            else if (IsRequestsChecked) LoadRequestsCommand.Execute(null);
+            if (isFriendsListChecked) loadFriendsListCommand.Execute(null);
+            else if (isRequestsChecked) loadRequestsCommand.Execute(null);
         }
 
-        private void ConnectAndSubscribe()
+        private void connectAndSubscribe()
         {
-            if (SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername))
+            if (SocialServiceClientManager.instance.ensureConnected(currentUserUsername))
             {
-                if (_callbackHandler != null)
+                if (callbackHandler != null)
                 {
-                    _callbackHandler.FriendRequestReceived -= HandleFriendRequestReceived;
-                    _callbackHandler.FriendResponseReceived -= HandleFriendResponseReceived;
-                    _callbackHandler.FriendStatusChanged -= HandleFriendStatusChanged;
+                    callbackHandler.FriendRequestReceived -= handleFriendRequestReceived;
+                    callbackHandler.FriendResponseReceived -= handleFriendResponseReceived;
+                    callbackHandler.FriendStatusChanged -= handleFriendStatusChanged;
 
-                    _callbackHandler.FriendRequestReceived += HandleFriendRequestReceived;
-                    _callbackHandler.FriendResponseReceived += HandleFriendResponseReceived;
-                    _callbackHandler.FriendStatusChanged += HandleFriendStatusChanged;
-                    Console.WriteLine($"SocialViewModel: Subscribed to callback events for {CurrentUserUsername}.");
+                    callbackHandler.FriendRequestReceived += handleFriendRequestReceived;
+                    callbackHandler.FriendResponseReceived += handleFriendResponseReceived;
+                    callbackHandler.FriendStatusChanged += handleFriendStatusChanged;
+                    Console.WriteLine($"SocialViewModel: Subscribed to callback events for {currentUserUsername}.");
                 }
                 else { /* Error Handling */ }
             }
             else { /* Error Handling */ }
         }
 
-        private async Task ExecuteLoadFriendsListAsync()
+        private async Task executeLoadFriendsListAsync()
         {
-            if (!SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername)) return;
-            SetBusy(true);
-            FriendsList.Clear();
+            if (!SocialServiceClientManager.instance.ensureConnected(currentUserUsername)) return;
+            setBusy(true);
+            friendsList.Clear();
             try
             {
-                SocialManagerService.FriendDto[] friends = await _proxy.getFriendsListAsync(CurrentUserUsername);
+                SocialManagerService.FriendDto[] friends = await proxy.getFriendsListAsync(currentUserUsername);
                 if (friends != null)
                 {
                     foreach (var friendDto in friends)
                     {
-                        FriendsList.Add(new FriendDtoDisplay(friendDto));
+                        friendsList.Add(new FriendDtoDisplay(friendDto));
                     }
                 }
             }
-            catch (Exception ex) { HandleError("Error loading friends list", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error loading friends list", ex); }
+            finally { setBusy(false); }
         }
 
-        private async Task ExecuteLoadRequestsAsync()
+        private async Task executeLoadRequestsAsync()
         {
-            if (!SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername)) return;
-            SetBusy(true);
-            ReceivedRequests.Clear();
+            if (!SocialServiceClientManager.instance.ensureConnected(currentUserUsername)) return;
+            setBusy(true);
+            receivedRequests.Clear();
             try
             {
-                FriendRequestInfoDto[] requests = await _proxy.getFriendRequestsAsync(CurrentUserUsername);
+                FriendRequestInfoDto[] requests = await proxy.getFriendRequestsAsync(currentUserUsername);
                 if (requests != null)
                 {
-                    foreach (var req in requests) ReceivedRequests.Add(req);
+                    foreach (var req in requests) receivedRequests.Add(req);
                 }
             }
-            catch (Exception ex) { HandleError("Error loading friend requests", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error loading friend requests", ex); }
+            finally { setBusy(false); }
         }
 
-        private async Task ExecuteSearchAsync()
+        private async Task executeSearchAsync()
         {
-            if (!SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername)) return;
-            SetBusy(true);
-            SearchResults.Clear();
+            if (!SocialServiceClientManager.instance.ensureConnected(currentUserUsername)) return;
+            setBusy(true);
+            searchResults.Clear();
             try
             {
-                PlayerSearchResultDto[] results = await _proxy.searchPlayersAsync(CurrentUserUsername, SearchQuery);
+                PlayerSearchResultDto[] results = await proxy.searchPlayersAsync(currentUserUsername, searchQuery);
                 if (results != null)
                 {
-                    foreach (var user in results) SearchResults.Add(user);
+                    foreach (var user in results) searchResults.Add(user);
                 }
             }
-            catch (Exception ex) { HandleError("Error searching players", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error searching players", ex); }
+            finally { setBusy(false); }
         }
 
-        private async Task ExecuteSendRequestAsync(PlayerSearchResultDto targetUser)
+        private async Task executeSendRequestAsync(PlayerSearchResultDto targetUser)
         {
-            if (targetUser == null || !SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername)) return;
-            SetBusy(true);
+            if (targetUser == null || !SocialServiceClientManager.instance.ensureConnected(currentUserUsername)) return;
+            setBusy(true);
             try
             {
-                OperationResultDto result = await _proxy.sendFriendRequestAsync(CurrentUserUsername, targetUser.username);
+                OperationResultDto result = await proxy.sendFriendRequestAsync(currentUserUsername, targetUser.username);
                 MessageBox.Show(result.message, result.success ? Lang.InfoMsgTitleSuccess : "Error", MessageBoxButton.OK, result.success ? MessageBoxImage.Information : MessageBoxImage.Warning);
                 if (result.success)
                 {
-                    SearchResults.Remove(targetUser); 
+                    searchResults.Remove(targetUser); 
                 }
             }
-            catch (Exception ex) { HandleError("Error sending friend request", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error sending friend request", ex); }
+            finally { setBusy(false); }
         }
 
-        private async Task ExecuteRespondRequestAsync(FriendRequestInfoDto request, bool accept)
+        private async Task executeRespondRequestAsync(FriendRequestInfoDto request, bool accept)
         {
-            if (request == null || !SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername)) return;
-            SetBusy(true);
+            if (request == null || !SocialServiceClientManager.instance.ensureConnected(currentUserUsername)) return;
+            setBusy(true);
             try
             {
-                OperationResultDto result = await _proxy.respondToFriendRequestAsync(CurrentUserUsername, request.requesterUsername, accept);
+                OperationResultDto result = await proxy.respondToFriendRequestAsync(currentUserUsername, request.requesterUsername, accept);
                 MessageBox.Show(result.message, result.success ? Lang.InfoMsgTitleSuccess : "Error", MessageBoxButton.OK, result.success ? MessageBoxImage.Information : MessageBoxImage.Warning);
                 if (result.success)
                 {
-                    ReceivedRequests.Remove(request);
-                    if (accept && IsFriendsListChecked)
+                    receivedRequests.Remove(request);
+                    if (accept && isFriendsListChecked)
                     {
-                        await ExecuteLoadFriendsListAsync();
+                        await executeLoadFriendsListAsync();
                     }
                 }
             }
-            catch (Exception ex) { HandleError("Error responding to friend request", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error responding to friend request", ex); }
+            finally { setBusy(false); }
         }
 
-        private async Task ExecuteRemoveFriendAsync(FriendDtoDisplay friendToRemove)
+        private async Task executeRemoveFriendAsync(FriendDtoDisplay friendToRemove)
         {
-            if (friendToRemove == null || !SocialServiceClientManager.Instance.EnsureConnected(CurrentUserUsername)) return;
+            if (friendToRemove == null || !SocialServiceClientManager.instance.ensureConnected(currentUserUsername)) return;
 
             var confirmResult = MessageBox.Show($"Are you sure you want to remove {friendToRemove.username}?", "Remove Friend", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (confirmResult != MessageBoxResult.Yes) return;
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
-                OperationResultDto result = await _proxy.removeFriendAsync(CurrentUserUsername, friendToRemove.username);
+                OperationResultDto result = await proxy.removeFriendAsync(currentUserUsername, friendToRemove.username);
                 MessageBox.Show(result.message, result.success ? Lang.InfoMsgTitleSuccess : "Error", MessageBoxButton.OK, result.success ? MessageBoxImage.Information : MessageBoxImage.Warning);
                 if (result.success)
                 {
-                    FriendsList.Remove(friendToRemove);
+                    friendsList.Remove(friendToRemove);
                 }
             }
-            catch (Exception ex) { HandleError("Error removing friend", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error removing friend", ex); }
+            finally { setBusy(false); }
         }
 
         // --- Handlers ---
-        private void HandleFriendRequestReceived(string fromUsername)
+        private void handleFriendRequestReceived(string fromUsername)
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
-                if (IsRequestsChecked) { await ExecuteLoadRequestsAsync(); }
+                if (isRequestsChecked) { await executeLoadRequestsAsync(); }
             });
         }
 
-        private void HandleFriendResponseReceived(string fromUsername, bool accepted)
+        private void handleFriendResponseReceived(string fromUsername, bool accepted)
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
-                if (accepted && IsFriendsListChecked) { await ExecuteLoadFriendsListAsync(); }
+                if (accepted && isFriendsListChecked) { await executeLoadFriendsListAsync(); }
             });
         }
 
-        private void HandleFriendStatusChanged(string friendUsername, bool isOnline)
+        private void handleFriendStatusChanged(string friendUsername, bool isOnline)
         {
             Console.WriteLine($"SocialViewModel: Received status change for {friendUsername} -> Online: {isOnline}");
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var friend = FriendsList.FirstOrDefault(f => f.username.Equals(friendUsername, StringComparison.OrdinalIgnoreCase));
+                var friend = friendsList.FirstOrDefault(f => f.username.Equals(friendUsername, StringComparison.OrdinalIgnoreCase));
                 if (friend != null)
                 {
                     Console.WriteLine($"SocialViewModel: Found friend {friendUsername} in list. Updating IsOnline to {isOnline}.");
@@ -248,17 +248,17 @@ namespace MindWeaveClient.ViewModel.Main
             });
         }
 
-        private void SetBusy(bool busy) { IsBusy = busy; Application.Current.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested()); }
-        private void HandleError(string message, Exception ex) { Console.WriteLine($"!!! {message}: {ex}"); MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        private void setBusy(bool busy) { isBusy = busy; Application.Current.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested()); }
+        private void handleError(string message, Exception ex) { Console.WriteLine($"!!! {message}: {ex}"); MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
 
-        public void Cleanup()
+        public void cleanup()
         {
-            if (_callbackHandler != null)
+            if (callbackHandler != null)
             {
-                _callbackHandler.FriendRequestReceived -= HandleFriendRequestReceived;
-                _callbackHandler.FriendResponseReceived -= HandleFriendResponseReceived;
-                _callbackHandler.FriendStatusChanged -= HandleFriendStatusChanged;
-                Console.WriteLine($"SocialViewModel: Unsubscribed from callback events for {CurrentUserUsername}.");
+                callbackHandler.FriendRequestReceived -= handleFriendRequestReceived;
+                callbackHandler.FriendResponseReceived -= handleFriendResponseReceived;
+                callbackHandler.FriendStatusChanged -= handleFriendStatusChanged;
+                Console.WriteLine($"SocialViewModel: Unsubscribed from callback events for {currentUserUsername}.");
             }
         }
 

@@ -5,7 +5,6 @@ using MindWeaveClient.Services;
 using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.View.Dialogs;
 using MindWeaveClient.View.Game;
-using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Collections.Generic;
@@ -27,11 +26,11 @@ namespace MindWeaveClient.ViewModel.Game
     public class LobbyViewModel : BaseViewModel
     {
         public bool isGuestUser => SessionService.isGuest;
-        private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.Instance.Proxy;
-        private MatchmakingCallbackHandler matchmakingCallbackHandler => MatchmakingServiceClientManager.Instance.CallbackHandler;
-        private SocialManagerClient socialProxy => SocialServiceClientManager.Instance.Proxy;
-        private ChatManagerClient chatProxy => ChatServiceClientManager.Instance.Proxy;
-        private ChatCallbackHandler chatCallbackHandler => ChatServiceClientManager.Instance.CallbackHandler;
+        private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.instance.proxy;
+        private MatchmakingCallbackHandler matchmakingCallbackHandler => MatchmakingServiceClientManager.instance.callbackHandler;
+        private SocialManagerClient socialProxy => SocialServiceClientManager.instance.proxy;
+        private ChatManagerClient chatProxy => ChatServiceClientManager.instance.proxy;
+        private ChatCallbackHandler chatCallbackHandler => ChatServiceClientManager.instance.callbackHandler;
 
 
         private readonly Action<Page> navigateTo;
@@ -123,13 +122,13 @@ namespace MindWeaveClient.ViewModel.Game
                 return;
             }
 
-            if (!MatchmakingServiceClientManager.Instance.EnsureConnected())
+            if (!MatchmakingServiceClientManager.instance.ensureConnected())
             {
                 MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            SetBusy(true);
+            setBusy(true);
 
             var invitationData = new GuestInvitationDto
             {
@@ -145,19 +144,19 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                HandleError(Lang.ErrorSendingGuestInvitation, ex);
-                MatchmakingServiceClientManager.Instance.Disconnect();
+                handleError(Lang.ErrorSendingGuestInvitation, ex);
+                MatchmakingServiceClientManager.instance.disconnect();
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
         private void connectToChat(string lobbyIdToConnect)
         {
             Debug.WriteLine($"Attempting to connect to chat for lobby {lobbyIdToConnect}...");
-            if (ChatServiceClientManager.Instance.Connect(SessionService.username, lobbyIdToConnect))
+            if (ChatServiceClientManager.instance.connect(SessionService.username, lobbyIdToConnect))
             {
                 Debug.WriteLine($"Chat connected successfully for lobby {lobbyIdToConnect}. Subscribing...");
                 subscribeToChatCallbacks(); // Subscribe specifically to chat messages
@@ -173,7 +172,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Debug.WriteLine("Disconnecting from chat service...");
             unsubscribeFromChatCallbacks();
-            ChatServiceClientManager.Instance.Disconnect();
+            ChatServiceClientManager.instance.disconnect();
         }
 
         private void subscribeToChatCallbacks()
@@ -211,7 +210,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private bool canExecuteSendMessage(object parameter)
         {
-            return !string.IsNullOrWhiteSpace(currentChatMessage) && ChatServiceClientManager.Instance.IsConnected();
+            return !string.IsNullOrWhiteSpace(currentChatMessage) && ChatServiceClientManager.instance.isConnected();
         }
 
         private void executeSendMessage(object parameter)
@@ -244,7 +243,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void executeLeaveLobby(object parameter)
         {
-            if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
+            if (!MatchmakingServiceClientManager.instance.ensureConnected()) return;
             isBusy = true;
             try
             {
@@ -262,7 +261,7 @@ namespace MindWeaveClient.ViewModel.Game
                 MessageBox.Show("Need exactly 4 players to start.", "Cannot Start Game", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
                 return;
             }
-            if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
+            if (!MatchmakingServiceClientManager.instance.ensureConnected()) return;
 
             isBusy = true;
             try
@@ -275,7 +274,7 @@ namespace MindWeaveClient.ViewModel.Game
         private void executeKickPlayer(object parameter)
         {
             if (!(parameter is string playerToKick) || !isHost || playerToKick == hostUsername) return;
-            if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
+            if (!MatchmakingServiceClientManager.instance.ensureConnected()) return;
 
             var confirmResult = MessageBox.Show($"Are you sure you want to kick {playerToKick}?", "Kick Player", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (confirmResult != MessageBoxResult.Yes) return;
@@ -292,9 +291,9 @@ namespace MindWeaveClient.ViewModel.Game
 
         private async Task loadOnlineFriendsAsync()
         {
-            if (!isHost || !SocialServiceClientManager.Instance.EnsureConnected(SessionService.username)) return;
+            if (!isHost || !SocialServiceClientManager.instance.ensureConnected(SessionService.username)) return;
 
-            SetBusy(true);
+            setBusy(true);
             onlineFriends.Clear();
             try
             {
@@ -308,14 +307,14 @@ namespace MindWeaveClient.ViewModel.Game
                     Console.WriteLine($"Loaded {onlineFriends.Count} online friends for lobby invite list.");
                 }
             }
-            catch (Exception ex) { HandleError("Error loading online friends", ex); }
-            finally { SetBusy(false); }
+            catch (Exception ex) { handleError("Error loading online friends", ex); }
+            finally { setBusy(false); }
         }
 
         private void executeInviteFriend(object parameter)
         {
             if (!(parameter is FriendDtoDisplay friendToInvite)) return;
-            if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) return;
+            if (!MatchmakingServiceClientManager.instance.ensureConnected()) return;
 
             try
             {
@@ -325,7 +324,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                HandleError("Error sending lobby invite", ex);
+                handleError("Error sending lobby invite", ex);
             }
         }
         private void subscribeToCallbacks()
@@ -432,12 +431,12 @@ namespace MindWeaveClient.ViewModel.Game
                 ((RelayCommand)inviteGuestCommand).RaiseCanExecuteChanged();
             });
         }
-        private void SetBusy(bool busy)
+        private void setBusy(bool busy)
         {
             isBusy = busy;
         }
 
-        private void HandleError(string message, Exception ex)
+        private void handleError(string message, Exception ex)
         {
             Console.WriteLine($"!!! {message}: {ex}");
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang

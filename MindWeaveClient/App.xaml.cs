@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.Properties.Langs;
 using System.Diagnostics;
+using MindWeaveClient.Utilities;
 
 namespace MindWeaveClient
 {
@@ -23,7 +24,7 @@ namespace MindWeaveClient
 
             try
             {
-                AudioManager.Initialize();
+                AudioManager.initialize();
                 Debug.WriteLine("App.OnStartup: Background music started.");
             }
             catch (Exception ex)
@@ -39,16 +40,16 @@ namespace MindWeaveClient
         // --- SubscribeToGlobalInvites (No changes needed here) ---
         public static void SubscribeToGlobalInvites()
         {
-            if (SocialServiceClientManager.Instance.Proxy?.State == System.ServiceModel.CommunicationState.Opened &&
-                SocialServiceClientManager.Instance.CallbackHandler != null)
+            if (SocialServiceClientManager.instance.proxy?.State == System.ServiceModel.CommunicationState.Opened &&
+                SocialServiceClientManager.instance.callbackHandler != null)
             {
-                SocialServiceClientManager.Instance.CallbackHandler.LobbyInviteReceived -= App_LobbyInviteReceived;
-                SocialServiceClientManager.Instance.CallbackHandler.LobbyInviteReceived += App_LobbyInviteReceived;
+                SocialServiceClientManager.instance.callbackHandler.LobbyInviteReceived -= App_LobbyInviteReceived;
+                SocialServiceClientManager.instance.callbackHandler.LobbyInviteReceived += App_LobbyInviteReceived;
                 Debug.WriteLine("App.xaml.cs: Subscribed to global LobbyInviteReceived event from Social Service.");
             }
             else
             {
-                Debug.WriteLine($"App.xaml.cs: ERROR - Cannot subscribe to invites. Social Service Proxy State: {SocialServiceClientManager.Instance.Proxy?.State}, CallbackHandler Null: {SocialServiceClientManager.Instance.CallbackHandler == null}");
+                Debug.WriteLine($"App.xaml.cs: ERROR - Cannot subscribe to invites. Social Service Proxy State: {SocialServiceClientManager.instance.proxy?.State}, CallbackHandler Null: {SocialServiceClientManager.instance.callbackHandler == null}");
                 if (Application.Current.MainWindow != null && Application.Current.MainWindow.IsLoaded)
                 {
                     MessageBox.Show("Could not initialize invitation system. Please restart.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -73,12 +74,12 @@ namespace MindWeaveClient
             if (result == MessageBoxResult.Yes)
             {
                 Debug.WriteLine($"User {SessionService.username} accepted invite to lobby {lobbyId}. Ensuring Matchmaking connection...");
-                if (MatchmakingServiceClientManager.Instance.EnsureConnected())
+                if (MatchmakingServiceClientManager.instance.ensureConnected())
                 {
                     Debug.WriteLine("Matchmaking service connected. Calling joinLobby...");
                     try
                     {
-                        var matchmakingProxy = MatchmakingServiceClientManager.Instance.Proxy;
+                        var matchmakingProxy = MatchmakingServiceClientManager.instance.proxy;
                         if (string.IsNullOrEmpty(SessionService.username))
                         {
                             Debug.WriteLine("ERROR: SessionService.username is null when trying to join lobby.");
@@ -94,7 +95,7 @@ namespace MindWeaveClient
                     {
                         Debug.WriteLine($"Exception during joinLobby or navigation: {ex}");
                         MessageBox.Show($"Error trying to join lobby {lobbyId}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        MatchmakingServiceClientManager.Instance.Disconnect();
+                        MatchmakingServiceClientManager.instance.disconnect();
                     }
                 }
                 else
@@ -164,18 +165,18 @@ namespace MindWeaveClient
 
         protected override void OnExit(ExitEventArgs e)
         {
-            AudioManager.StopMusic();
+            AudioManager.stopMusic();
             // Desuscripción (sin cambios)
-            if (SocialServiceClientManager.Instance.CallbackHandler != null)
+            if (SocialServiceClientManager.instance.callbackHandler != null)
             {
-                SocialServiceClientManager.Instance.CallbackHandler.LobbyInviteReceived -= App_LobbyInviteReceived;
+                SocialServiceClientManager.instance.callbackHandler.LobbyInviteReceived -= App_LobbyInviteReceived;
                 Debug.WriteLine("App.xaml.cs: Unsubscribed from global LobbyInviteReceived event.");
             }
 
             // Desconectar servicios (sin cambios)
-            SocialServiceClientManager.Instance.Disconnect();
-            MatchmakingServiceClientManager.Instance.Disconnect();
-            ChatServiceClientManager.Instance.Disconnect();
+            SocialServiceClientManager.instance.disconnect();
+            MatchmakingServiceClientManager.instance.disconnect();
+            ChatServiceClientManager.instance.disconnect();
 
             base.OnExit(e);
         }

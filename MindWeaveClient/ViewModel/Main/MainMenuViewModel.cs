@@ -56,7 +56,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.Instance.Proxy;
+        private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.instance.proxy;
 
         public MainMenuViewModel(Action<Page> navigateTo, Page mainMenuPage)
         {
@@ -91,7 +91,7 @@ namespace MindWeaveClient.ViewModel.Main
             isBusy = true;
             try
             {
-                if (!MatchmakingServiceClientManager.Instance.EnsureConnected()) { /*...*/ return; }
+                if (!MatchmakingServiceClientManager.instance.ensureConnected()) { /*...*/ return; }
 
                 matchmakingProxy.joinLobby(SessionService.username, joinLobbyCode);
                 MessageBox.Show($"Attempting to join lobby {joinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); 
@@ -107,7 +107,7 @@ namespace MindWeaveClient.ViewModel.Main
             catch (Exception ex) 
             {
                 MessageBox.Show($"An error occurred while joining lobby: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
-                MatchmakingServiceClientManager.Instance.Disconnect();
+                MatchmakingServiceClientManager.instance.disconnect();
             }
             finally
             {

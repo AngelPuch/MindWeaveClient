@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MindWeaveClient.Utilities;
 
 namespace MindWeaveClient.ViewModel.Main
 {
     public class LanguageOption
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public string name { get; set; }
+        public string code { get; set; }
 
         public override string ToString()
         {
-            return Name;
+            return name;
         }
     }
 
@@ -31,7 +32,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 musicVolumeValue = value;
                 OnPropertyChanged();
-                AudioManager.SetMusicVolume(value / 100.0);
+                AudioManager.setMusicVolume(value / 100.0);
             }
         }
 
@@ -42,7 +43,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 soundEffectsVolumeValue = value;
                 OnPropertyChanged();
-                AudioManager.SetSoundEffectsVolume(value / 100.0);
+                AudioManager.setSoundEffectsVolume(value / 100.0);
             }
         }
 
@@ -79,12 +80,12 @@ namespace MindWeaveClient.ViewModel.Main
         {
             availableLanguages = new List<LanguageOption>
             {
-                new LanguageOption { Name = Lang.SettingsOptEnglish, Code = "en-US" },
-                new LanguageOption { Name = Lang.SettingsOptSpanish, Code = "es-MX" }
+                new LanguageOption { name = Lang.SettingsOptEnglish, code = "en-US" },
+                new LanguageOption { name = Lang.SettingsOptSpanish, code = "es-MX" }
             };
 
             string currentLangCode = Properties.Settings.Default.languageCode;
-            selectedLanguage = availableLanguages.FirstOrDefault(lang => lang.Code == currentLangCode) ?? availableLanguages.First();
+            selectedLanguage = availableLanguages.FirstOrDefault(lang => lang.code == currentLangCode) ?? availableLanguages.First();
         }
 
         private void loadSettings()
@@ -92,8 +93,8 @@ namespace MindWeaveClient.ViewModel.Main
             musicVolume = Properties.Settings.Default.MusicVolumeSetting;
             soundEffectsVolume = Properties.Settings.Default.SoundEffectsVolumeSetting;
 
-            AudioManager.SetMusicVolume(musicVolume / 100.0);
-            AudioManager.SetSoundEffectsVolume(soundEffectsVolume / 100.0);
+            AudioManager.setMusicVolume(musicVolume / 100.0);
+            AudioManager.setSoundEffectsVolume(soundEffectsVolume / 100.0);
         }
 
         private void executeSave()
@@ -101,12 +102,12 @@ namespace MindWeaveClient.ViewModel.Main
             Properties.Settings.Default.MusicVolumeSetting = musicVolume;
             Properties.Settings.Default.SoundEffectsVolumeSetting = soundEffectsVolume;
             string previousLanguageCode = Properties.Settings.Default.languageCode;
-            Properties.Settings.Default.languageCode = selectedLanguage.Code;
+            Properties.Settings.Default.languageCode = selectedLanguage.code;
             Properties.Settings.Default.Save();
-            AudioManager.SetMusicVolume(musicVolume / 100.0);
-            AudioManager.SetSoundEffectsVolume(soundEffectsVolume / 100.0);
+            AudioManager.setMusicVolume(musicVolume / 100.0);
+            AudioManager.setSoundEffectsVolume(soundEffectsVolume / 100.0);
 
-            if (previousLanguageCode != selectedLanguage.Code)
+            if (previousLanguageCode != selectedLanguage.code)
             {
                 applyLanguageChange();
             }

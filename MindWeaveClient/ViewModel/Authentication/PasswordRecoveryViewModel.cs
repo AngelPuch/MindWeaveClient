@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 
@@ -17,20 +16,20 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly AuthenticationManagerClient authClient;
 
         private bool isStep1VisibleValue = true;
-        private bool isStep2VisibleValue = false;
-        private bool isStep3VisibleValue = false;
-        private bool isBusyValue = false;
+        private bool isStep2VisibleValue;
+        private bool isStep3VisibleValue;
+        private bool isBusyValue;
 
         public bool isStep1Visible { get => isStep1VisibleValue; set { isStep1VisibleValue = value; OnPropertyChanged(); } }
         public bool isStep2Visible { get => isStep2VisibleValue; set { isStep2VisibleValue = value; OnPropertyChanged(); } }
         public bool isStep3Visible { get => isStep3VisibleValue; set { isStep3VisibleValue = value; OnPropertyChanged(); } }
-        public bool isBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
+        public bool isBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
 
         private string emailValue;
         public string email
         {
             get => emailValue;
-            set { emailValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); }
+            set { emailValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
         }
 
         private string verificationCodeValue;
@@ -45,14 +44,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 verificationCodeValue = value;
                 OnPropertyChanged();
-                RaiseCanExecuteChanged();
+                raiseCanExecuteChanged();
             }
         }
 
         private string newPasswordValue;
         private string confirmPasswordValue;
-        public string newPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public string confirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
+        public string newPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string confirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
 
         public ICommand sendCodeCommand { get; }
         public ICommand verifyCodeCommand { get; }
@@ -86,7 +85,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (!canSendCode && !isResend) return;
             if (isResend && !canResendCode) return;
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 OperationResultDto result = await authClient.sendPasswordRecoveryCodeAsync(email);
@@ -109,14 +108,14 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
         private async Task executeVerifyCodeAsync()
         {
             if (!canVerifyCode) return;
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 await Task.Delay(100);
@@ -129,7 +128,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
@@ -149,7 +148,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
 
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 OperationResultDto result = await authClient.resetPasswordWithCodeAsync(email, verificationCode, newPassword);
@@ -177,7 +176,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
@@ -204,7 +203,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        private void RaiseCanExecuteChanged()
+        private void raiseCanExecuteChanged()
         {
             Application.Current.Dispatcher?.Invoke(() =>
             {
@@ -215,7 +214,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged(nameof(canSavePassword));
             });
         }
-        private void SetBusy(bool value)
+        private void setBusy(bool value)
         {
             isBusy = value;
         }

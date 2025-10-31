@@ -9,10 +9,10 @@ namespace MindWeaveClient.Services
         private static readonly Lazy<MatchmakingServiceClientManager> lazy =
             new Lazy<MatchmakingServiceClientManager>(() => new MatchmakingServiceClientManager());
 
-        public static MatchmakingServiceClientManager Instance { get { return lazy.Value; } }
+        public static MatchmakingServiceClientManager instance { get { return lazy.Value; } }
 
-        public MatchmakingManagerClient Proxy { get; private set; }
-        public MatchmakingCallbackHandler CallbackHandler { get; private set; }
+        public MatchmakingManagerClient proxy { get; private set; }
+        public MatchmakingCallbackHandler callbackHandler { get; private set; }
 
         private InstanceContext site;
 
@@ -20,83 +20,83 @@ namespace MindWeaveClient.Services
         {
         }
 
-        public bool Connect()
+        public bool connect()
         {
             try
             {
-                if (Proxy != null && (Proxy.State == CommunicationState.Opened || Proxy.State == CommunicationState.Opening))
+                if (proxy != null && (proxy.State == CommunicationState.Opened || proxy.State == CommunicationState.Opening))
                 {
                     return true;
                 }
 
-                if (Proxy != null)
+                if (proxy != null)
                 {
-                    Disconnect();
+                    disconnect();
                 }
 
-                CallbackHandler = new MatchmakingCallbackHandler();
-                site = new InstanceContext(CallbackHandler);
+                callbackHandler = new MatchmakingCallbackHandler();
+                site = new InstanceContext(callbackHandler);
 
-                Proxy = new MatchmakingManagerClient(site, "NetTcpBinding_IMatchmakingManager");
+                proxy = new MatchmakingManagerClient(site, "NetTcpBinding_IMatchmakingManager");
 
-                Proxy.Open();
+                proxy.Open();
                 Console.WriteLine("Matchmaking Service Connected via NetTcpBinding.");
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error connecting Matchmaking Service: {ex.Message}");
-                Disconnect();
+                disconnect();
                 return false;
             }
         }
 
-        public void Disconnect()
+        public void disconnect()
         {
-            Console.WriteLine($"Disconnecting Matchmaking Service. Current state: {Proxy?.State}");
+            Console.WriteLine($"Disconnecting Matchmaking Service. Current state: {proxy?.State}");
             try
             {
-                if (Proxy != null)
+                if (proxy != null)
                 {
-                    if (Proxy.State == CommunicationState.Opened || Proxy.State == CommunicationState.Opening)
+                    if (proxy.State == CommunicationState.Opened || proxy.State == CommunicationState.Opening)
                     {
-                        Proxy.Close();
+                        proxy.Close();
                         Console.WriteLine("Matchmaking Service Closed.");
                     }
-                    else if (Proxy.State != CommunicationState.Closed)
+                    else if (proxy.State != CommunicationState.Closed)
                     {
-                        Proxy.Abort();
-                        Console.WriteLine($"Matchmaking Service Aborted from state {Proxy.State}.");
+                        proxy.Abort();
+                        Console.WriteLine($"Matchmaking Service Aborted from state {proxy.State}.");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception during Matchmaking Service disconnect: {ex.Message}. Aborting.");
-                Proxy?.Abort();
+                proxy?.Abort();
             }
             finally
             {
-                Proxy = null;
+                proxy = null;
                 site = null;
-                CallbackHandler = null;
+                callbackHandler = null;
                 Console.WriteLine("Matchmaking Service resources cleaned up.");
             }
         }
 
-        public bool EnsureConnected()
+        public bool ensureConnected()
         {
-            if (Proxy == null || Proxy.State == CommunicationState.Closed || Proxy.State == CommunicationState.Faulted)
+            if (proxy == null || proxy.State == CommunicationState.Closed || proxy.State == CommunicationState.Faulted)
             {
-                Console.WriteLine($"EnsureConnected (Matchmaking): Proxy is null or in state {Proxy?.State}. Attempting to connect.");
-                return Connect();
+                Console.WriteLine($"EnsureConnected (Matchmaking): Proxy is null or in state {proxy?.State}. Attempting to connect.");
+                return connect();
             }
-            if (Proxy.State == CommunicationState.Opening || Proxy.State == CommunicationState.Created)
+            if (proxy.State == CommunicationState.Opening || proxy.State == CommunicationState.Created)
             {
-                Console.WriteLine($"EnsureConnected (Matchmaking): Proxy is in state {Proxy.State}. Not ready yet.");
+                Console.WriteLine($"EnsureConnected (Matchmaking): Proxy is in state {proxy.State}. Not ready yet.");
                 return false;
             }
-            return Proxy.State == CommunicationState.Opened;
+            return proxy.State == CommunicationState.Opened;
         }
     }
 }

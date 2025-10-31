@@ -22,7 +22,7 @@ namespace MindWeaveClient.View.Main
         private void SocialPage_Unloaded(object sender, System.Windows.RoutedEventArgs e)
         {
             // Limpiar suscripciones de callback cuando la página se descarga
-            _viewModel?.Cleanup();
+            _viewModel?.cleanup();
             // Eliminar suscripción al evento Unloaded para evitar fugas de memoria
             Unloaded -= SocialPage_Unloaded;
         }
@@ -30,9 +30,9 @@ namespace MindWeaveClient.View.Main
         // Permite buscar presionando Enter en el TextBox de búsqueda
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && _viewModel.SearchCommand.CanExecute(null))
+            if (e.Key == Key.Enter && _viewModel.searchCommand.CanExecute(null))
             {
-                _viewModel.SearchCommand.Execute(null);
+                _viewModel.searchCommand.Execute(null);
             }
         }
     }

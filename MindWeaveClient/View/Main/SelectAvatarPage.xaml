@@ -46,7 +46,7 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <RadioButton GroupName="Avatars" IsChecked="{Binding IsSelected, Mode=TwoWay}" Style="{x:Null}">
+                                <RadioButton GroupName="Avatars" IsChecked="{Binding isSelected, Mode=TwoWay}" Style="{x:Null}">
                                     <RadioButton.Template>
                                         <ControlTemplate TargetType="RadioButton">
                                             <Border x:Name="border"

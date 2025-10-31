@@ -12,7 +12,7 @@ namespace MindWeaveClient.Helpers
             string stringValue = value as string;
             string parameterString = parameter as string;
             bool areEqual = string.Equals(stringValue, parameterString, StringComparison.OrdinalIgnoreCase);
-            return areEqual ? Visibility.Collapsed : Visibility.Visible; // Inverted logic
+            return areEqual ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

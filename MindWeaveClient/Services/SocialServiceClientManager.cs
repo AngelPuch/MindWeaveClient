@@ -9,16 +9,22 @@ namespace MindWeaveClient.Services
     {
         private static readonly Lazy<SocialServiceClientManager> lazy =
             new Lazy<SocialServiceClientManager>(() => new SocialServiceClientManager());
-        public static SocialServiceClientManager Instance { get { return lazy.Value; } }
 
-        public SocialManagerClient Proxy { get; private set; }
-        public SocialCallbackHandler CallbackHandler { get; private set; }
+        public static SocialServiceClientManager instance
+        {
+            get { return lazy.Value; }
+        }
+
+        public SocialManagerClient proxy { get; private set; }
+        public SocialCallbackHandler callbackHandler { get; private set; }
         private InstanceContext site;
-        private string connectedUsername = null;
+        private string connectedUsername;
 
-        private SocialServiceClientManager() { }
+        private SocialServiceClientManager()
+        {
+        }
 
-        public bool Connect(string username) 
+        public bool connect(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -28,38 +34,40 @@ namespace MindWeaveClient.Services
 
             try
             {
-                if (Proxy != null && Proxy.State == CommunicationState.Opened && connectedUsername == username)
+                if (proxy != null && proxy.State == CommunicationState.Opened && connectedUsername == username)
                 {
                     Console.WriteLine($"Social Service already connected for user {username}.");
                     return true;
                 }
 
-                if (Proxy != null)
+                if (proxy != null)
                 {
-                    Console.WriteLine($"Social Service exists but state is {Proxy.State} or user mismatch. Disconnecting before reconnecting.");
-                    Disconnect();
+                    Console.WriteLine(
+                        $"Social Service exists but state is {proxy.State} or user mismatch. Disconnecting before reconnecting.");
+                    disconnect();
                 }
 
 
                 Console.WriteLine($"Attempting to connect Social Service for user {username}...");
-                CallbackHandler = new SocialCallbackHandler();
-                site = new InstanceContext(CallbackHandler);
-                Proxy = new SocialManagerClient(site, "NetTcpBinding_ISocialManager");
+                callbackHandler = new SocialCallbackHandler();
+                site = new InstanceContext(callbackHandler);
+                proxy = new SocialManagerClient(site, "NetTcpBinding_ISocialManager");
 
-                Proxy.Open(); 
+                proxy.Open();
                 Console.WriteLine("Social Service WCF Channel Opened.");
 
-                connectedUsername = username; 
-                Task.Run(async () => {
+                connectedUsername = username;
+                Task.Run(async () =>
+                {
                     try
                     {
-                        await Proxy.connectAsync(username);
+                        await proxy.connectAsync(username);
                         Console.WriteLine($"Social Service connectAsync('{username}') called successfully.");
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error calling connectAsync for {username}: {ex.Message}");
-                        Disconnect();
+                        disconnect();
                     }
                 });
 
@@ -69,22 +77,24 @@ namespace MindWeaveClient.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error connecting Social Service for {username}: {ex.Message}");
-                Disconnect(); // Limpia todo en caso de error
+                disconnect();
                 return false;
             }
         }
 
-        public void Disconnect()
+        public void disconnect()
         {
             string userToDisconnect = connectedUsername;
-            Console.WriteLine($"Disconnecting Social Service. Current user: {userToDisconnect}, Proxy state: {Proxy?.State}");
+            Console.WriteLine(
+                $"Disconnecting Social Service. Current user: {userToDisconnect}, Proxy state: {proxy?.State}");
 
-            if (Proxy != null && Proxy.State == CommunicationState.Opened && !string.IsNullOrEmpty(userToDisconnect))
+            if (proxy != null && proxy.State == CommunicationState.Opened && !string.IsNullOrEmpty(userToDisconnect))
             {
-                Task.Run(async () => {
+                Task.Run(async () =>
+                {
                     try
                     {
-                        await Proxy.disconnectAsync(userToDisconnect);
+                        await proxy.disconnectAsync(userToDisconnect);
                         Console.WriteLine($"Social Service disconnectAsync('{userToDisconnect}') called successfully.");
                     }
                     catch (Exception ex)
@@ -95,62 +105,59 @@ namespace MindWeaveClient.Services
             }
             else if (!string.IsNullOrEmpty(userToDisconnect))
             {
-                Console.WriteLine($"Skipping server disconnect call (Proxy State: {Proxy?.State}).");
+                Console.WriteLine($"Skipping server disconnect call (Proxy State: {proxy?.State}).");
             }
 
             try
             {
-                if (Proxy != null)
+                if (proxy != null)
                 {
-                    if (Proxy.State == CommunicationState.Opened || Proxy.State == CommunicationState.Opening)
+                    if (proxy.State == CommunicationState.Opened || proxy.State == CommunicationState.Opening)
                     {
-                        Proxy.Close();
+                        proxy.Close();
                         Console.WriteLine("Social Service WCF Channel Closed.");
                     }
-                    else if (Proxy.State != CommunicationState.Closed)
+                    else if (proxy.State != CommunicationState.Closed)
                     {
-                        Proxy.Abort();
-                        Console.WriteLine($"Social Service WCF Channel Aborted from state {Proxy.State}.");
+                        proxy.Abort();
+                        Console.WriteLine($"Social Service WCF Channel Aborted from state {proxy.State}.");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception during WCF channel close/abort: {ex.Message}. Aborting.");
-                Proxy?.Abort();
+                proxy?.Abort();
             }
             finally
             {
-                Proxy = null;
+                proxy = null;
                 site = null;
-                CallbackHandler = null;
+                callbackHandler = null;
                 connectedUsername = null;
                 Console.WriteLine("Social Service local resources cleaned up.");
             }
         }
 
-        public bool EnsureConnected(string username)
+        public bool ensureConnected(string username)
         {
             if (string.IsNullOrWhiteSpace(username)) return false;
 
-            if (Proxy == null || Proxy.State == CommunicationState.Closed || Proxy.State == CommunicationState.Faulted || connectedUsername != username)
+            if (proxy == null || proxy.State == CommunicationState.Closed ||
+                proxy.State == CommunicationState.Faulted || connectedUsername != username)
             {
-                Console.WriteLine($"EnsureConnected: Need to connect/reconnect for {username}. Current state: {Proxy?.State}, Current user: {connectedUsername}");
-                return Connect(username);
+                Console.WriteLine(
+                    $"EnsureConnected: Need to connect/reconnect for {username}. Current state: {proxy?.State}, Current user: {connectedUsername}");
+                return connect(username);
             }
 
-            if (Proxy.State == CommunicationState.Opening || Proxy.State == CommunicationState.Created)
+            if (proxy.State == CommunicationState.Opening || proxy.State == CommunicationState.Created)
             {
-                Console.WriteLine($"EnsureConnected: Proxy is busy ({Proxy.State}) for {username}. Not ready.");
-                return false; 
+                Console.WriteLine($"EnsureConnected: Proxy is busy ({proxy.State}) for {username}. Not ready.");
+                return false;
             }
 
-            return Proxy.State == CommunicationState.Opened && connectedUsername == username;
-        }
-
-        public bool EnsureConnected()
-        {
-            return EnsureConnected(connectedUsername);
+            return proxy.State == CommunicationState.Opened && connectedUsername == username;
         }
     }
 }

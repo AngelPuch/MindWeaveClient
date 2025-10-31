@@ -9,18 +9,18 @@ namespace MindWeaveClient.Services
         private static readonly Lazy<ChatServiceClientManager> lazy =
             new Lazy<ChatServiceClientManager>(() => new ChatServiceClientManager());
 
-        public static ChatServiceClientManager Instance { get { return lazy.Value; } }
+        public static ChatServiceClientManager instance { get { return lazy.Value; } }
 
-        public ChatManagerClient Proxy { get; private set; }
-        public ChatCallbackHandler CallbackHandler { get; private set; }
+        public ChatManagerClient proxy { get; private set; }
+        public ChatCallbackHandler callbackHandler { get; private set; }
         private InstanceContext site;
-        private string connectedLobbyId = null;
-        private string connectedUsername = null;
+        private string connectedLobbyId;
+        private string connectedUsername;
 
 
         private ChatServiceClientManager() { }
 
-        public bool Connect(string username, string lobbyId)
+        public bool connect(string username, string lobbyId)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(lobbyId))
             {
@@ -28,33 +28,33 @@ namespace MindWeaveClient.Services
                 return false;
             }
 
-            if (Proxy != null && Proxy.State == CommunicationState.Opened && connectedUsername == username && connectedLobbyId == lobbyId)
+            if (proxy != null && proxy.State == CommunicationState.Opened && connectedUsername == username && connectedLobbyId == lobbyId)
             {
                 Console.WriteLine($"[Chat Connect] Already connected for User: {username}, Lobby: {lobbyId}.");
                 return true;
             }
 
-            if (Proxy != null)
+            if (proxy != null)
             {
-                Console.WriteLine($"[Chat Connect] Disconnecting existing chat connection (State: {Proxy.State}, User: {connectedUsername}, Lobby: {connectedLobbyId}) before reconnecting.");
-                Disconnect();
+                Console.WriteLine($"[Chat Connect] Disconnecting existing chat connection (State: {proxy.State}, User: {connectedUsername}, Lobby: {connectedLobbyId}) before reconnecting.");
+                disconnect();
             }
 
 
             try
             {
                 Console.WriteLine($"[Chat Connect] Attempting connection for User: {username}, Lobby: {lobbyId}");
-                CallbackHandler = new ChatCallbackHandler();
-                site = new InstanceContext(CallbackHandler);
-                Proxy = new ChatManagerClient(site, "NetTcpBinding_IChatManager");
+                callbackHandler = new ChatCallbackHandler();
+                site = new InstanceContext(callbackHandler);
+                proxy = new ChatManagerClient(site, "NetTcpBinding_IChatManager");
 
-                Proxy.Open();
+                proxy.Open();
                 Console.WriteLine("[Chat Connect] WCF Channel Opened.");
 
                 connectedUsername = username;
                 connectedLobbyId = lobbyId;
 
-                Proxy.joinLobbyChatAsync(username, lobbyId);
+                proxy.joinLobbyChatAsync(username, lobbyId);
                 Console.WriteLine($"[Chat Connect] joinLobbyChatAsync('{username}', '{lobbyId}') called.");
 
                 return true;
@@ -62,51 +62,51 @@ namespace MindWeaveClient.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[Chat Connect] Error connecting: {ex.Message}");
-                Disconnect(); // Clean up on error
+                disconnect(); // Clean up on error
                 return false;
             }
         }
 
-        public void Disconnect()
+        public void disconnect()
         {
             string userToDisconnect = connectedUsername;
             string lobbyToDisconnect = connectedLobbyId;
-            Console.WriteLine($"[Chat Disconnect] Disconnecting User: {userToDisconnect}, Lobby: {lobbyToDisconnect}, Proxy State: {Proxy?.State}");
+            Console.WriteLine($"[Chat Disconnect] Disconnecting User: {userToDisconnect}, Lobby: {lobbyToDisconnect}, Proxy State: {proxy?.State}");
 
 
-            if (Proxy != null && Proxy.State == CommunicationState.Opened && !string.IsNullOrEmpty(userToDisconnect) && !string.IsNullOrEmpty(lobbyToDisconnect))
+            if (proxy != null && proxy.State == CommunicationState.Opened && !string.IsNullOrEmpty(userToDisconnect) && !string.IsNullOrEmpty(lobbyToDisconnect))
             {
-                Proxy.leaveLobbyChatAsync(userToDisconnect, lobbyToDisconnect); // Use Async for OneWay
+                proxy.leaveLobbyChatAsync(userToDisconnect, lobbyToDisconnect); // Use Async for OneWay
                 Console.WriteLine($"[Chat Disconnect] leaveLobbyChatAsync('{userToDisconnect}', '{lobbyToDisconnect}') called.");
             }
 
             try
             {
-                if (Proxy != null)
+                if (proxy != null)
                 {
-                    if (Proxy.State == CommunicationState.Opened || Proxy.State == CommunicationState.Opening) Proxy.Close();
-                    else Proxy.Abort();
+                    if (proxy.State == CommunicationState.Opened || proxy.State == CommunicationState.Opening) proxy.Close();
+                    else proxy.Abort();
                     Console.WriteLine($"[Chat Disconnect] WCF Channel Closed/Aborted.");
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[Chat Disconnect] Exception during channel close/abort: {ex.Message}");
-                Proxy?.Abort();
+                proxy?.Abort();
             }
             finally
             {
-                Proxy = null;
+                proxy = null;
                 site = null;
-                CallbackHandler = null;
+                callbackHandler = null;
                 connectedUsername = null;
                 connectedLobbyId = null;
             }
         }
 
-        public bool IsConnected()
+        public bool isConnected()
         {
-            return Proxy != null && Proxy.State == CommunicationState.Opened;
+            return proxy != null && proxy.State == CommunicationState.Opened;
         }
     }
 }

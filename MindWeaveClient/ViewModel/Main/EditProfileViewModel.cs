@@ -23,24 +23,24 @@ namespace MindWeaveClient.ViewModel.Main
         private ObservableCollection<GenderDto> gendersValue;
         private string avatarSourceValue;
 
-        private bool isChangePasswordSectionVisibleValue = false;
+        private bool isChangePasswordSectionVisibleValue;
         private string currentPasswordValue;
         private string newPasswordValue;
         private string confirmPasswordValue;
-        private bool isBusyValue = false;
+        private bool isBusyValue;
 
-        public string firstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public string lastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public DateTime? dateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public GenderDto selectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
+        public string firstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string lastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public DateTime? dateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public GenderDto selectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
         public ObservableCollection<GenderDto> genders { get => gendersValue; set { gendersValue = value; OnPropertyChanged(); } }
         public string avatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
 
         public bool isChangePasswordSectionVisible { get => isChangePasswordSectionVisibleValue; set { isChangePasswordSectionVisibleValue = value; OnPropertyChanged(); } }
-        public string currentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public string newPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public string confirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); } }
-        public bool isBusy { get => isBusyValue; private set { SetBusy(value); } }
+        public string currentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string newPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string confirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public bool isBusy { get => isBusyValue; private set { setBusy(value); } }
 
         public bool canSaveChanges =>
             !isBusy &&
@@ -110,7 +110,7 @@ namespace MindWeaveClient.ViewModel.Main
                 return;
             }
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 var result = await profileClient.changePasswordAsync(SessionService.username, currentPassword, newPassword);
@@ -127,18 +127,18 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (Exception ex)
             {
-                HandleError("Error changing password", ex);
+                handleError("Error changing password", ex);
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
 
         private async void loadEditableData()
         {
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
@@ -162,16 +162,16 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     MessageBox.Show(Lang.ErrorFailedToLoadProfile, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-                RaiseCanExecuteChanged();
+                raiseCanExecuteChanged();
             }
             catch (Exception ex)
             {
-                HandleError(Lang.ErrorFailedToLoadProfile, ex);
+                handleError(Lang.ErrorFailedToLoadProfile, ex);
                 navigateBack?.Invoke();
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
@@ -192,7 +192,7 @@ namespace MindWeaveClient.ViewModel.Main
                 availableGenders = null
             };
 
-            SetBusy(true);
+            setBusy(true);
             try
             {
                 var result = await profileClient.updateProfileAsync(SessionService.username, updatedProfile);
@@ -209,27 +209,27 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (Exception ex)
             {
-                HandleError("Error updating profile", ex);
+                handleError("Error updating profile", ex);
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
-        public void RefreshAvatar()
+        public void refreshAvatar()
         {
             avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
         }
 
-        private void SetBusy(bool value)
+        private void setBusy(bool value)
         {
             isBusyValue = value;
             OnPropertyChanged(nameof(isBusy));
-            RaiseCanExecuteChanged(); 
+            raiseCanExecuteChanged(); 
         }
 
-        private void RaiseCanExecuteChanged()
+        private void raiseCanExecuteChanged()
         {
             OnPropertyChanged(nameof(canSaveChanges));
             OnPropertyChanged(nameof(canSaveNewPassword));
@@ -237,7 +237,7 @@ namespace MindWeaveClient.ViewModel.Main
         }
 
 
-        private void HandleError(string message, Exception ex)
+        private void handleError(string message, Exception ex)
         {
             string errorDetails = ex?.Message ?? "No details provided.";
             Console.WriteLine($"!!! {message}: {errorDetails}");

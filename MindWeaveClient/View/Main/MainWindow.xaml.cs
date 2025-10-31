@@ -34,7 +34,7 @@ namespace MindWeaveClient.View.Main
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             // Opcional pero buena práctica: Desuscribirse
-            if (SocialServiceClientManager.Instance.CallbackHandler != null)
+            if (SocialServiceClientManager.instance.callbackHandler != null)
             {
                 // Necesitamos una referencia al método estático. Guardémosla o usemos el nombre completo.
                 // SocialServiceClientManager.Instance.CallbackHandler.LobbyInviteReceived -= App.App_LobbyInviteReceived; // No funciona directamente

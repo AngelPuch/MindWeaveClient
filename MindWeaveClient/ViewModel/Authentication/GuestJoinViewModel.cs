@@ -19,7 +19,7 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private readonly Action<Page> navigateTo;
         private readonly Action navigateBack;
-        private MatchmakingManagerClient matchmakingClient => MatchmakingServiceClientManager.Instance.Proxy;
+        private MatchmakingManagerClient matchmakingClient => MatchmakingServiceClientManager.instance.proxy;
 
         private string lobbyCodeValue;
         private string guestEmailValue;
@@ -37,34 +37,34 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 lobbyCodeValue = value?.Trim();
                 OnPropertyChanged();
-                RaiseCanExecuteChanged();
+                raiseCanExecuteChanged();
             }
         }
 
         public string guestEmail
         {
             get => guestEmailValue;
-            set { guestEmailValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); }
+            set { guestEmailValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
         }
 
         public string desiredUsername
         {
             get => desiredUsernameValue;
-            set { desiredUsernameValue = value; OnPropertyChanged(); RaiseCanExecuteChanged(); }
+            set { desiredUsernameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
         }
 
         public bool isBusy
         {
             get => isBusyValue;
-            private set { SetBusy(value); }
+            private set { setBusy(value); }
         }
 
         public bool canJoinAsGuest =>
             !isBusy &&
             !string.IsNullOrWhiteSpace(lobbyCode) && lobbyCode.Length == 6 &&
             Regex.IsMatch(lobbyCode, "^[a-zA-Z0-9]{6}$") &&
-            !string.IsNullOrWhiteSpace(guestEmail) && IsValidEmail(guestEmail) &&
-            !string.IsNullOrWhiteSpace(desiredUsername) && IsValidGuestUsername(desiredUsername);
+            !string.IsNullOrWhiteSpace(guestEmail) && isValidEmail(guestEmail) &&
+            !string.IsNullOrWhiteSpace(desiredUsername) && isValidGuestUsername(desiredUsername);
 
         public ICommand joinAsGuestCommand { get; }
         public ICommand goBackCommand { get; }
@@ -82,13 +82,13 @@ namespace MindWeaveClient.ViewModel.Authentication
         {
             if (!canJoinAsGuest) return;
 
-            if (!MatchmakingServiceClientManager.Instance.EnsureConnected())
+            if (!MatchmakingServiceClientManager.instance.ensureConnected())
             {
                 MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            SetBusy(true);
+            setBusy(true);
 
             var joinRequest = new GuestJoinRequestDto
             {
@@ -105,7 +105,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     SessionService.setSession(result.assignedGuestUsername, null, true);
 
-                    if (!SocialServiceClientManager.Instance.Connect(result.assignedGuestUsername))
+                    if (!SocialServiceClientManager.instance.connect(result.assignedGuestUsername))
                     {
                         MessageBox.Show("Could not connect to social features. Chat might not work correctly.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
@@ -133,35 +133,35 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             catch (Exception ex)
             {
-                HandleError("An error occurred while connecting to the server", ex);
-                MatchmakingServiceClientManager.Instance.Disconnect();
+                handleError("An error occurred while connecting to the server", ex);
+                MatchmakingServiceClientManager.instance.disconnect();
             }
             finally
             {
-                SetBusy(false);
+                setBusy(false);
             }
         }
 
-        private void SetBusy(bool value)
+        private void setBusy(bool value)
         {
             isBusyValue = value;
             OnPropertyChanged(nameof(isBusy));
-            RaiseCanExecuteChanged();
+            raiseCanExecuteChanged();
         }
 
-        private void RaiseCanExecuteChanged()
+        private void raiseCanExecuteChanged()
         {
             OnPropertyChanged(nameof(canJoinAsGuest));
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
-        private void HandleError(string message, Exception ex)
+        private void handleError(string message, Exception ex)
         {
             string errorDetails = ex?.Message ?? "No details provided.";
             Console.WriteLine($"!!! {message}: {errorDetails}");
             MessageBox.Show($"{message}:\n{errorDetails}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        private bool IsValidEmail(string email)
+        private bool isValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email)) return false;
             try
@@ -175,7 +175,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        private bool IsValidGuestUsername(string username)
+        private bool isValidGuestUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username)) return false;
             return Regex.IsMatch(username, "^[a-zA-Z0-9]{3,16}$");
