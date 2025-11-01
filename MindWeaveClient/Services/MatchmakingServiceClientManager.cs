@@ -20,7 +20,7 @@ namespace MindWeaveClient.Services
         {
         }
 
-        public bool connect()
+        public bool Connect()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace MindWeaveClient.Services
 
                 if (proxy != null)
                 {
-                    disconnect();
+                    Disconnect();
                 }
 
                 callbackHandler = new MatchmakingCallbackHandler();
@@ -46,12 +46,12 @@ namespace MindWeaveClient.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error connecting Matchmaking Service: {ex.Message}");
-                disconnect();
+                Disconnect();
                 return false;
             }
         }
 
-        public void disconnect()
+        public void Disconnect()
         {
             Console.WriteLine($"Disconnecting Matchmaking Service. Current state: {proxy?.State}");
             try
@@ -84,12 +84,12 @@ namespace MindWeaveClient.Services
             }
         }
 
-        public bool ensureConnected()
+        public bool EnsureConnected()
         {
             if (proxy == null || proxy.State == CommunicationState.Closed || proxy.State == CommunicationState.Faulted)
             {
                 Console.WriteLine($"EnsureConnected (Matchmaking): Proxy is null or in state {proxy?.State}. Attempting to connect.");
-                return connect();
+                return Connect();
             }
             if (proxy.State == CommunicationState.Opening || proxy.State == CommunicationState.Created)
             {

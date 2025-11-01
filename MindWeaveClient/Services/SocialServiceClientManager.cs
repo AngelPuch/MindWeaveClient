@@ -24,7 +24,7 @@ namespace MindWeaveClient.Services
         {
         }
 
-        public bool connect(string username)
+        public bool Connect(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -44,7 +44,7 @@ namespace MindWeaveClient.Services
                 {
                     Console.WriteLine(
                         $"Social Service exists but state is {proxy.State} or user mismatch. Disconnecting before reconnecting.");
-                    disconnect();
+                    Disconnect();
                 }
 
 
@@ -67,7 +67,7 @@ namespace MindWeaveClient.Services
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error calling connectAsync for {username}: {ex.Message}");
-                        disconnect();
+                        Disconnect();
                     }
                 });
 
@@ -77,12 +77,12 @@ namespace MindWeaveClient.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error connecting Social Service for {username}: {ex.Message}");
-                disconnect();
+                Disconnect();
                 return false;
             }
         }
 
-        public void disconnect()
+        public void Disconnect()
         {
             string userToDisconnect = connectedUsername;
             Console.WriteLine(
@@ -139,7 +139,7 @@ namespace MindWeaveClient.Services
             }
         }
 
-        public bool ensureConnected(string username)
+        public bool EnsureConnected(string username)
         {
             if (string.IsNullOrWhiteSpace(username)) return false;
 
@@ -148,7 +148,7 @@ namespace MindWeaveClient.Services
             {
                 Console.WriteLine(
                     $"EnsureConnected: Need to connect/reconnect for {username}. Current state: {proxy?.State}, Current user: {connectedUsername}");
-                return connect(username);
+                return Connect(username);
             }
 
             if (proxy.State == CommunicationState.Opening || proxy.State == CommunicationState.Created)

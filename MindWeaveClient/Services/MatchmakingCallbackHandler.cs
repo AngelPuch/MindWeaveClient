@@ -22,20 +22,14 @@ namespace MindWeaveClient.Services
             Application.Current.Dispatcher.Invoke(() => { LobbyStateUpdated?.Invoke(lobbyStateDto); });
         }
 
-        public void matchFound(string matchId, List<string> players)
-        {
-            Debug.WriteLine($"Callback: Match found! ID: {matchId}. Players: {string.Join(", ", players ?? new List<string>())}"); // Usa 'players' directamente
-            Application.Current.Dispatcher.Invoke(() => { MatchFound?.Invoke(matchId, players); }); // Usa 'players' directamente
-        }
-        
+       
         public void matchFound(string matchId, string[] players)
         {
             List<string> playerList = players?.ToList() ?? new List<string>();
             Debug.WriteLine($"Callback: Match found! ID: {matchId}. Players: {string.Join(", ", playerList)}");
             Application.Current.Dispatcher.Invoke(() => { MatchFound?.Invoke(matchId, playerList); });
         }
-        
-
+       
 
         public void lobbyCreationFailed(string reason)
         {

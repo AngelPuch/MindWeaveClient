@@ -55,7 +55,7 @@
                         <Style TargetType="Ellipse">
                             <Setter Property="Fill" Value="Gray"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding isOnline}" Value="True">
+                                <DataTrigger Binding="{Binding IsOnline}" Value="True">
                                     <Setter Property="Fill" Value="LimeGreen"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -68,7 +68,7 @@
                             <Setter Property="Text" Value="{x:Static language:Lang.SocialLbOffline}"/>
                             <Setter Property="Foreground" Value="Gray"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding isOnline}" Value="True">
+                                <DataTrigger Binding="{Binding IsOnline}" Value="True">
                                     <Setter Property="Text" Value="{x:Static language:Lang.SocialLbOnline}"/>
                                     <Setter Property="Foreground" Value="LimeGreen"/>
                                 </DataTrigger>
@@ -104,15 +104,15 @@
                 <TextBlock Text="{x:Static language:Lang.GlobalCommonSocial}" Grid.Row="0" FontSize="42" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <RadioButton GroupName="SocialTabs" Content="{x:Static language:Lang.SocialBtnFriendsList}" Style="{StaticResource TabButtonStyle}" IsChecked="{Binding isFriendsListChecked, Mode=TwoWay}"/>
-                    <RadioButton GroupName="SocialTabs" Content="{x:Static language:Lang.GlobalBtnAddFriend}" Style="{StaticResource TabButtonStyle}" IsChecked="{Binding isAddFriendChecked, Mode=TwoWay}"/>
-                    <RadioButton GroupName="SocialTabs" Content="{x:Static language:Lang.SocialBtnRequests}" Style="{StaticResource TabButtonStyle}" IsChecked="{Binding isRequestsChecked, Mode=TwoWay}"/>
+                    <RadioButton GroupName="SocialTabs" Content="{x:Static language:Lang.SocialBtnFriendsList}" Style="{StaticResource TabButtonStyle}" IsChecked="{Binding IsFriendsListChecked, Mode=TwoWay}"/>
+                    <RadioButton GroupName="SocialTabs" Content="{x:Static language:Lang.GlobalBtnAddFriend}" Style="{StaticResource TabButtonStyle}" IsChecked="{Binding IsAddFriendChecked, Mode=TwoWay}"/>
+                    <RadioButton GroupName="SocialTabs" Content="{x:Static language:Lang.SocialBtnRequests}" Style="{StaticResource TabButtonStyle}" IsChecked="{Binding IsRequestsChecked, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <Grid Grid.Row="2" Margin="0,20,0,0">
 
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding isFriendsListChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ItemsControl ItemsSource="{Binding friendsList}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding IsFriendsListChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl ItemsSource="{Binding FriendsList}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type local_vm:FriendDtoDisplay}">
                                     <Border Style="{StaticResource SocialListItemStyle}">
@@ -120,16 +120,16 @@
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                 <Ellipse Width="30" Height="30">
                                                     <Ellipse.Fill>
-                                                        <ImageBrush ImageSource="{Binding avatarPath}" Stretch="UniformToFill"/>
+                                                        <ImageBrush ImageSource="{Binding AvatarPath}" Stretch="UniformToFill"/>
                                                     </Ellipse.Fill>
                                                 </Ellipse>
-                                                <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                <TextBlock Text="{Binding Username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                             </StackPanel>
 
                                             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource FriendStatusTemplate}" />
 
                                             <Button Content="X" ToolTip="Remove Friend"
-                                                    Command="{Binding DataContext.removeFriendCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    Command="{Binding DataContext.RemoveFriendCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                     CommandParameter="{Binding}"
                                                     Style="{StaticResource SecondaryButtonStyle}"
                                                     Background="#E74C3C" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -141,7 +141,7 @@
                         </ItemsControl>
                     </ScrollViewer>
 
-                    <Grid Visibility="{Binding isAddFriendChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid Visibility="{Binding IsAddFriendChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
@@ -151,16 +151,16 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Text="{Binding searchQuery, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Grid.Column="0" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource AuthInputBoxStyle}" Height="40" VerticalContentAlignment="Center"
                                      Margin="0,0,5,0"
                                      KeyDown="SearchTextBox_KeyDown"/>
                             <Button Grid.Column="1" Content="🔍"
-                                    Command="{Binding searchCommand}"
+                                    Command="{Binding SearchCommand}"
                                     Style="{StaticResource SecondaryButtonStyle}" Height="40" Width="45" FontSize="18"/>
                         </Grid>
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,15,0,0">
-                            <ItemsControl ItemsSource="{Binding searchResults}">
+                            <ItemsControl ItemsSource="{Binding SearchResults}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource SocialListItemStyle}">
@@ -174,7 +174,7 @@
                                                     <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                                 </StackPanel>
                                                 <Button Content="{x:Static language:Lang.GlobalBtnAddFriend}"
-                                                        Command="{Binding DataContext.sendRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        Command="{Binding DataContext.SendRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                         CommandParameter="{Binding}"
                                                         Style="{StaticResource PrimaryButtonStyle}" Height="35" Width="120" Margin="0" HorizontalAlignment="Right"/>
                                             </Grid>
@@ -185,10 +185,10 @@
                         </ScrollViewer>
                     </Grid>
 
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding isRequestsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding IsRequestsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
                             <TextBlock Text="{x:Static language:Lang.SocialLbReceivedRequests}" FontSize="18" FontWeight="Bold" Foreground="#2c3e50"/>
-                            <ItemsControl ItemsSource="{Binding receivedRequests}">
+                            <ItemsControl ItemsSource="{Binding ReceivedRequests}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource SocialListItemStyle}">
@@ -204,11 +204,11 @@
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button Content="{x:Static language:Lang.SocialBtnAccept}"
-                                                            Command="{Binding DataContext.acceptRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            Command="{Binding DataContext.AcceptRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                             CommandParameter="{Binding}"
                                                             Style="{StaticResource PrimaryButtonStyle}" Height="35" Width="100" Margin="0,0,10,0"/>
                                                     <Button Content="{x:Static language:Lang.SocialBtnDecline}"
-                                                            Command="{Binding DataContext.declineRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            Command="{Binding DataContext.DeclineRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                             CommandParameter="{Binding}"
                                                             Style="{StaticResource SecondaryButtonStyle}" Height="35" Width="100" Margin="0"/>
                                                 </StackPanel>
@@ -221,7 +221,7 @@
                     </ScrollViewer>
 
                     <Border Background="#88000000" CornerRadius="10"
-                            Visibility="{Binding isBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
                             HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20">
                         <TextBlock Text="{x:Static language:Lang.GlobalProcessing}" Foreground="White" FontSize="16"/>
                     </Border>
@@ -229,7 +229,7 @@
                 </Grid>
 
                 <Button Grid.Row="3" Content="{x:Static language:Lang.GlobalBtnBack}"
-                        Command="{Binding backCommand}"
+                        Command="{Binding BackCommand}"
                         Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Left" Width="150" Margin="0,20,0,0"/>
             </Grid>
         </Border>

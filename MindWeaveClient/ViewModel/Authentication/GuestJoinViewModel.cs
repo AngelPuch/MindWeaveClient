@@ -26,7 +26,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private string desiredUsernameValue;
         private bool isBusyValue;
 
-        public string lobbyCode
+        public string LobbyCode
         {
             get => lobbyCodeValue;
             set
@@ -41,48 +41,48 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        public string guestEmail
+        public string GuestEmail
         {
             get => guestEmailValue;
             set { guestEmailValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
         }
 
-        public string desiredUsername
+        public string DesiredUsername
         {
             get => desiredUsernameValue;
             set { desiredUsernameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
         }
 
-        public bool isBusy
+        public bool IsBusy
         {
             get => isBusyValue;
             private set { setBusy(value); }
         }
 
-        public bool canJoinAsGuest =>
-            !isBusy &&
-            !string.IsNullOrWhiteSpace(lobbyCode) && lobbyCode.Length == 6 &&
-            Regex.IsMatch(lobbyCode, "^[a-zA-Z0-9]{6}$") &&
-            !string.IsNullOrWhiteSpace(guestEmail) && isValidEmail(guestEmail) &&
-            !string.IsNullOrWhiteSpace(desiredUsername) && isValidGuestUsername(desiredUsername);
+        public bool CanJoinAsGuest =>
+            !IsBusy &&
+            !string.IsNullOrWhiteSpace(LobbyCode) && LobbyCode.Length == 6 &&
+            Regex.IsMatch(LobbyCode, "^[a-zA-Z0-9]{6}$") &&
+            !string.IsNullOrWhiteSpace(GuestEmail) && isValidEmail(GuestEmail) &&
+            !string.IsNullOrWhiteSpace(DesiredUsername) && isValidGuestUsername(DesiredUsername);
 
-        public ICommand joinAsGuestCommand { get; }
-        public ICommand goBackCommand { get; }
+        public ICommand JoinAsGuestCommand { get; }
+        public ICommand GoBackCommand { get; }
 
         public GuestJoinViewModel(Action<Page> navigateToAction, Action navigateBackAction)
         {
             navigateTo = navigateToAction;
             navigateBack = navigateBackAction;
 
-            joinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canJoinAsGuest);
-            goBackCommand = new RelayCommand(param => navigateBack?.Invoke(), param => !isBusy);
+            JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => CanJoinAsGuest);
+            GoBackCommand = new RelayCommand(param => navigateBack?.Invoke(), param => !IsBusy);
         }
 
         private async Task executeJoinAsGuestAsync()
         {
-            if (!canJoinAsGuest) return;
+            if (!CanJoinAsGuest) return;
 
-            if (!MatchmakingServiceClientManager.instance.ensureConnected())
+            if (!MatchmakingServiceClientManager.instance.EnsureConnected())
             {
                 MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -92,9 +92,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             var joinRequest = new GuestJoinRequestDto
             {
-                lobbyCode = this.lobbyCode,
-                guestEmail = this.guestEmail.Trim(),
-                desiredGuestUsername = this.desiredUsername.Trim()
+                lobbyCode = this.LobbyCode,
+                guestEmail = this.GuestEmail.Trim(),
+                desiredGuestUsername = this.DesiredUsername.Trim()
             };
 
             try
@@ -103,9 +103,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (result.success && result.initialLobbyState != null)
                 {
-                    SessionService.setSession(result.assignedGuestUsername, null, true);
+                    SessionService.SetSession(result.assignedGuestUsername, null, true);
 
-                    if (!SocialServiceClientManager.instance.connect(result.assignedGuestUsername))
+                    if (!SocialServiceClientManager.instance.Connect(result.assignedGuestUsername))
                     {
                         MessageBox.Show("Could not connect to social features. Chat might not work correctly.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
@@ -134,7 +134,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             catch (Exception ex)
             {
                 handleError("An error occurred while connecting to the server", ex);
-                MatchmakingServiceClientManager.instance.disconnect();
+                MatchmakingServiceClientManager.instance.Disconnect();
             }
             finally
             {
@@ -145,13 +145,13 @@ namespace MindWeaveClient.ViewModel.Authentication
         private void setBusy(bool value)
         {
             isBusyValue = value;
-            OnPropertyChanged(nameof(isBusy));
+            OnPropertyChanged(nameof(IsBusy));
             raiseCanExecuteChanged();
         }
 
         private void raiseCanExecuteChanged()
         {
-            OnPropertyChanged(nameof(canJoinAsGuest));
+            OnPropertyChanged(nameof(CanJoinAsGuest));
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 

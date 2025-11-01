@@ -18,10 +18,14 @@ namespace MindWeaveClient.ViewModel.Main
     public class PuzzleDisplayInfo : BaseViewModel
     {
         private bool isSelectedValue;
-        public int puzzleId { get; set; }
-        public string name { get; set; }
-        public string imagePath { get; set; }
-        public bool isSelected
+        private int puzzleIdValue;
+        private string nameValue;
+        private string imagePathValue;
+
+        public int PuzzleId { get => puzzleIdValue; set { puzzleIdValue = value; OnPropertyChanged(); } }
+        public string Name { get => nameValue; set { nameValue = value; OnPropertyChanged(); } }
+        public string ImagePath { get => imagePathValue; set { imagePathValue = value; OnPropertyChanged(); } }
+        public bool IsSelected
         {
             get => isSelectedValue;
             set { isSelectedValue = value; OnPropertyChanged(); }
@@ -39,29 +43,29 @@ namespace MindWeaveClient.ViewModel.Main
         private PuzzleDisplayInfo selectedPuzzleValue;
         private bool isBusyValue;
 
-        public ObservableCollection<PuzzleDisplayInfo> availablePuzzles
+        public ObservableCollection<PuzzleDisplayInfo> AvailablePuzzles
         {
             get => availablePuzzlesValue;
             set { availablePuzzlesValue = value; OnPropertyChanged(); }
         }
 
-        public PuzzleDisplayInfo selectedPuzzle
+        public PuzzleDisplayInfo SelectedPuzzle
         {
             get => selectedPuzzleValue;
-            set { selectedPuzzleValue = value; OnPropertyChanged(); ((RelayCommand)confirmAndCreateLobbyCommand).RaiseCanExecuteChanged(); }
+            set { selectedPuzzleValue = value; OnPropertyChanged(); ((RelayCommand)ConfirmAndCreateLobbyCommand).RaiseCanExecuteChanged(); }
         }
 
-        public bool isBusy
+        public bool IsBusy
         {
             get => isBusyValue;
             private set { setBusy(value); }
         }
 
-        public ICommand loadPuzzlesCommand { get; }
-        public ICommand uploadImageCommand { get; }
-        public ICommand confirmAndCreateLobbyCommand { get; }
-        public ICommand cancelCommand { get; }
-        public ICommand selectPuzzleCommand { get; }
+        public ICommand LoadPuzzlesCommand { get; }
+        public ICommand UploadImageCommand { get; }
+        public ICommand ConfirmAndCreateLobbyCommand { get; }
+        public ICommand CancelCommand { get; }
+        public ICommand SelectPuzzleCommand { get; }
 
         public SelectionPuzzleViewModel(Action<Page> navigateToAction, Action navigateBackAction)
         {
@@ -77,44 +81,44 @@ namespace MindWeaveClient.ViewModel.Main
                 puzzleClient = null;
             }
 
-            loadPuzzlesCommand = new RelayCommand(async p => await executeLoadPuzzlesAsync(), p => !isBusy && puzzleClient != null);
-            uploadImageCommand = new RelayCommand(async p => await executeUploadImageAsync(), p => !isBusy && puzzleClient != null);
-            confirmAndCreateLobbyCommand = new RelayCommand(async p => await executeConfirmAndCreateLobbyAsync(), p => canConfirmAndCreateLobby());
-            cancelCommand = new RelayCommand(p => navigateBack?.Invoke(), p => !isBusy);
-            selectPuzzleCommand = new RelayCommand(executeSelectPuzzle, p => p is PuzzleDisplayInfo);
+            LoadPuzzlesCommand = new RelayCommand(async p => await executeLoadPuzzlesAsync(), p => !IsBusy && puzzleClient != null);
+            UploadImageCommand = new RelayCommand(async p => await executeUploadImageAsync(), p => !IsBusy && puzzleClient != null);
+            ConfirmAndCreateLobbyCommand = new RelayCommand(async p => await executeConfirmAndCreateLobbyAsync(), p => canConfirmAndCreateLobby());
+            CancelCommand = new RelayCommand(p => navigateBack?.Invoke(), p => !IsBusy);
+            SelectPuzzleCommand = new RelayCommand(executeSelectPuzzle, p => p is PuzzleDisplayInfo);
 
             if (puzzleClient != null)
             {
-                loadPuzzlesCommand.Execute(null);
+                LoadPuzzlesCommand.Execute(null);
             }
         }
 
         private bool canConfirmAndCreateLobby()
         {
-            return selectedPuzzle != null && !isBusy && puzzleClient != null;
+            return SelectedPuzzle != null && !IsBusy && puzzleClient != null;
         }
 
         private void executeSelectPuzzle(object parameter)
         {
             if (parameter is PuzzleDisplayInfo puzzleInfo)
             {
-                if (selectedPuzzle != null && selectedPuzzle != puzzleInfo)
+                if (SelectedPuzzle != null && SelectedPuzzle != puzzleInfo)
                 {
-                    selectedPuzzle.isSelected = false;
+                    SelectedPuzzle.IsSelected = false;
                 }
-                if (selectedPuzzle != puzzleInfo)
+                if (SelectedPuzzle != puzzleInfo)
                 {
-                    selectedPuzzle = puzzleInfo;
-                    if (!selectedPuzzle.isSelected)
+                    SelectedPuzzle = puzzleInfo;
+                    if (!SelectedPuzzle.IsSelected)
                     {
-                        selectedPuzzle.isSelected = true;
+                        SelectedPuzzle.IsSelected = true;
                     }
-                    OnPropertyChanged(nameof(selectedPuzzle));
-                    ((RelayCommand)confirmAndCreateLobbyCommand).RaiseCanExecuteChanged();
+                    OnPropertyChanged(nameof(SelectedPuzzle));
+                    ((RelayCommand)ConfirmAndCreateLobbyCommand).RaiseCanExecuteChanged();
                 }
-                else if (!selectedPuzzle.isSelected)
+                else if (!SelectedPuzzle.IsSelected)
                 {
-                    selectedPuzzle.isSelected = true;
+                    SelectedPuzzle.IsSelected = true;
                 }
             }
         }
@@ -124,9 +128,9 @@ namespace MindWeaveClient.ViewModel.Main
         {
             if (puzzleClient == null) return;
 
-            isBusy = true;
-            availablePuzzles.Clear();
-            selectedPuzzle = null;
+            IsBusy = true;
+            AvailablePuzzles.Clear();
+            SelectedPuzzle = null;
             PuzzleInfoDto[] puzzlesFromServer;
 
             try
@@ -145,14 +149,14 @@ namespace MindWeaveClient.ViewModel.Main
                             clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.imagePath}";
                         }
 
-                        availablePuzzles.Add(new PuzzleDisplayInfo
+                        AvailablePuzzles.Add(new PuzzleDisplayInfo
                         {
-                            puzzleId = pzlDto.puzzleId,
-                            name = pzlDto.name,
-                            imagePath = clientImagePath
+                            PuzzleId = pzlDto.puzzleId,
+                            Name = pzlDto.name,
+                            ImagePath = clientImagePath
                         });
                     }
-                    OnPropertyChanged(nameof(availablePuzzles));
+                    OnPropertyChanged(nameof(AvailablePuzzles));
                 }
                 else
                 {
@@ -169,7 +173,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                isBusy = false;
+                IsBusy = false;
             }
         }
 
@@ -185,24 +189,24 @@ namespace MindWeaveClient.ViewModel.Main
 
             if (openFileDialog.ShowDialog() == true)
             {
-                isBusy = true;
+                IsBusy = true;
                 try
                 {
                     byte[] imageBytes = File.ReadAllBytes(openFileDialog.FileName);
                     string fileName = Path.GetFileName(openFileDialog.FileName);
 
-                    UploadResultDto uploadResult = await puzzleClient.uploadPuzzleImageAsync(SessionService.username, imageBytes, fileName);
+                    UploadResultDto uploadResult = await puzzleClient.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
 
                     if (uploadResult.success)
                     {
                         int newPuzzleId = uploadResult.newPuzzleId;
                         var newPuzzleInfo = new PuzzleDisplayInfo
                         {
-                            puzzleId = newPuzzleId,
-                            name = fileName,
-                            imagePath = openFileDialog.FileName
+                            PuzzleId = newPuzzleId,
+                            Name = fileName,
+                            ImagePath = openFileDialog.FileName
                         };
-                        availablePuzzles.Add(newPuzzleInfo);
+                        AvailablePuzzles.Add(newPuzzleInfo);
                         executeSelectPuzzle(newPuzzleInfo);
                         MessageBox.Show(uploadResult.message, Lang.UploadSuccessful, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -217,7 +221,7 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 finally
                 {
-                    isBusy = false;
+                    IsBusy = false;
                 }
             }
         }
@@ -225,23 +229,23 @@ namespace MindWeaveClient.ViewModel.Main
         private async Task executeConfirmAndCreateLobbyAsync()
         {
             if (!canConfirmAndCreateLobby()) return;
-            if (!MatchmakingServiceClientManager.instance.ensureConnected())
+            if (!MatchmakingServiceClientManager.instance.EnsureConnected())
             {
                 MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            isBusy = true;
+            IsBusy = true;
 
             var settings = new LobbySettingsDto
             {
-                preloadedPuzzleId = selectedPuzzle.puzzleId,
+                preloadedPuzzleId = SelectedPuzzle.PuzzleId,
                 customPuzzleImage = null
             };
 
             try
             {
-                LobbyCreationResultDto result = await matchmakingClient.createLobbyAsync(SessionService.username, settings);
+                LobbyCreationResultDto result = await matchmakingClient.createLobbyAsync(SessionService.Username, settings);
 
                 if (result.success && result.initialLobbyState != null)
                 {
@@ -257,11 +261,11 @@ namespace MindWeaveClient.ViewModel.Main
             catch (Exception ex)
             {
                 MessageBox.Show($"{Lang.FailedToCreateLobby}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                MatchmakingServiceClientManager.instance.disconnect();
+                MatchmakingServiceClientManager.instance.Disconnect();
             }
             finally
             {
-                isBusy = false;
+                IsBusy = false;
             }
         }
 
@@ -275,7 +279,7 @@ namespace MindWeaveClient.ViewModel.Main
             if (isBusyValue != value)
             {
                 isBusyValue = value;
-                OnPropertyChanged(nameof(isBusy));
+                OnPropertyChanged(nameof(IsBusy));
                 raiseCanExecuteChangedForAllCommands();
             }
         }

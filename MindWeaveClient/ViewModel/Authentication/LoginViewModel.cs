@@ -18,29 +18,29 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly Action<Page> navigateTo;
         private bool showUnverifiedControlsValue = false;
 
-        public string email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
-        public string password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
-        public bool showUnverifiedControls { get => showUnverifiedControlsValue; set { showUnverifiedControlsValue = value; OnPropertyChanged(); } }
+        public string Email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
+        public string Password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
+        public bool ShowUnverifiedControls { get => showUnverifiedControlsValue; set { showUnverifiedControlsValue = value; OnPropertyChanged(); } }
 
-        public ICommand loginCommand { get; }
-        public ICommand signUpCommand { get; }
-        public ICommand forgotPasswordCommand { get; }
-        public ICommand guestLoginCommand { get; }
-        public ICommand resendVerificationCommand { get; }
+        public ICommand LoginCommand { get; }
+        public ICommand SignUpCommand { get; }
+        public ICommand ForgotPasswordCommand { get; }
+        public ICommand GuestLoginCommand { get; }
+        public ICommand ResendVerificationCommand { get; }
 
         public LoginViewModel(Action<Page> navigateAction)
         {
             navigateTo = navigateAction;
-            loginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
-            signUpCommand = new RelayCommand((param) => executeGoToSignUp());
-            forgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
-            guestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
-            resendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
+            LoginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
+            SignUpCommand = new RelayCommand((param) => executeGoToSignUp());
+            ForgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
+            GuestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
+            ResendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
         }
 
         private bool canExecuteLogin()
         {
-            return !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(password);
+            return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
         }
 
         private async Task executeLoginAsync()
@@ -51,23 +51,23 @@ namespace MindWeaveClient.ViewModel.Authentication
                 var client = new AuthenticationManagerClient();
                 var loginCredentials = new LoginDto
                 {
-                    email = this.email,
-                    password = this.password
+                    email = this.Email,
+                    password = this.Password
                 };
 
                 LoginResultDto result = await client.loginAsync(loginCredentials);
 
                 if (result.operationResult.success)
                 {
-                    SessionService.setSession(result.username, result.avatarPath);
+                    SessionService.SetSession(result.username, result.avatarPath);
 
-                    bool socialConnected = SocialServiceClientManager.instance.connect(result.username);
+                    bool socialConnected = SocialServiceClientManager.instance.Connect(result.username);
                     if (!socialConnected)
                     {
                         MessageBox.Show("Could not connect to social features. Friend status and invites might not work.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
                     }
 
-                    MatchmakingServiceClientManager.instance.connect();
+                    MatchmakingServiceClientManager.instance.Connect();
 
                     MessageBox.Show(result.operationResult.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -80,7 +80,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     if (result.resultCode == "ACCOUNT_NOT_VERIFIED")
                     {
-                        showUnverifiedControls = true;
+                        ShowUnverifiedControls = true;
                     }
                     else
                     {
@@ -104,11 +104,11 @@ namespace MindWeaveClient.ViewModel.Authentication
             try
             {
                 var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.resendVerificationCodeAsync(this.email);
+                OperationResultDto result = await client.resendVerificationCodeAsync(this.Email);
                 if (result.success)
                 {
                     MessageBox.Show(Lang.InfoMsgBodyCodeSent, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
-                    navigateTo(new VerificationPage(this.email));
+                    navigateTo(new VerificationPage(this.Email));
                 }
                 else { handleError(result.message, null); }
             }
@@ -123,8 +123,8 @@ namespace MindWeaveClient.ViewModel.Authentication
         }
 
         private bool isBusyValue;
-        public bool isBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
-        private void setBusy(bool value) { isBusy = value; }
+        public bool IsBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
+        private void setBusy(bool value) { IsBusy = value; }
         private void handleError(string message, Exception ex)
         {
             string errorDetails = ex != null ? ex.Message : "No details";

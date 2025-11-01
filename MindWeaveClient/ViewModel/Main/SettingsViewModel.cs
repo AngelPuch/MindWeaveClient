@@ -9,12 +9,12 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class LanguageOption
     {
-        public string name { get; set; }
-        public string code { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
     }
 
@@ -25,7 +25,7 @@ namespace MindWeaveClient.ViewModel.Main
         private LanguageOption selectedLanguageValue;
         private List<LanguageOption> availableLanguagesValue;
 
-        public double musicVolume
+        public double MusicVolume
         {
             get => musicVolumeValue;
             set
@@ -36,7 +36,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        public double soundEffectsVolume
+        public double SoundEffectsVolume
         {
             get => soundEffectsVolumeValue;
             set
@@ -47,21 +47,21 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        public LanguageOption selectedLanguage
+        public LanguageOption SelectedLanguage
         {
             get => selectedLanguageValue;
             set { selectedLanguageValue = value; OnPropertyChanged(); }
         }
 
-        public List<LanguageOption> availableLanguages
+        public List<LanguageOption> AvailableLanguages
         {
             get => availableLanguagesValue;
             private set { availableLanguagesValue = value; OnPropertyChanged(); }
         }
 
-        public ICommand saveCommand { get; }
-        public ICommand cancelCommand { get; }
-        public ICommand showCreditsCommand { get; }
+        public ICommand SaveCommand { get; }
+        public ICommand CancelCommand { get; }
+        public ICommand ShowCreditsCommand { get; }
 
         private Window currentWindow;
 
@@ -71,43 +71,43 @@ namespace MindWeaveClient.ViewModel.Main
             loadSettings();
             initializeLanguages();
 
-            saveCommand = new RelayCommand(p => executeSave());
-            cancelCommand = new RelayCommand(p => executeCancel());
-            showCreditsCommand = new RelayCommand(p => executeShowCredits());
+            SaveCommand = new RelayCommand(p => executeSave());
+            CancelCommand = new RelayCommand(p => executeCancel());
+            ShowCreditsCommand = new RelayCommand(p => executeShowCredits());
         }
 
         private void initializeLanguages()
         {
-            availableLanguages = new List<LanguageOption>
+            AvailableLanguages = new List<LanguageOption>
             {
-                new LanguageOption { name = Lang.SettingsOptEnglish, code = "en-US" },
-                new LanguageOption { name = Lang.SettingsOptSpanish, code = "es-MX" }
+                new LanguageOption { Name = Lang.SettingsOptEnglish, Code = "en-US" },
+                new LanguageOption { Name = Lang.SettingsOptSpanish, Code = "es-MX" }
             };
 
             string currentLangCode = Properties.Settings.Default.languageCode;
-            selectedLanguage = availableLanguages.FirstOrDefault(lang => lang.code == currentLangCode) ?? availableLanguages.First();
+            SelectedLanguage = AvailableLanguages.FirstOrDefault(lang => lang.Code == currentLangCode) ?? AvailableLanguages.First();
         }
 
         private void loadSettings()
         {
-            musicVolume = Properties.Settings.Default.MusicVolumeSetting;
-            soundEffectsVolume = Properties.Settings.Default.SoundEffectsVolumeSetting;
+            MusicVolume = Properties.Settings.Default.MusicVolumeSetting;
+            SoundEffectsVolume = Properties.Settings.Default.SoundEffectsVolumeSetting;
 
-            AudioManager.setMusicVolume(musicVolume / 100.0);
-            AudioManager.setSoundEffectsVolume(soundEffectsVolume / 100.0);
+            AudioManager.setMusicVolume(MusicVolume / 100.0);
+            AudioManager.setSoundEffectsVolume(SoundEffectsVolume / 100.0);
         }
 
         private void executeSave()
         {
-            Properties.Settings.Default.MusicVolumeSetting = musicVolume;
-            Properties.Settings.Default.SoundEffectsVolumeSetting = soundEffectsVolume;
+            Properties.Settings.Default.MusicVolumeSetting = MusicVolume;
+            Properties.Settings.Default.SoundEffectsVolumeSetting = SoundEffectsVolume;
             string previousLanguageCode = Properties.Settings.Default.languageCode;
-            Properties.Settings.Default.languageCode = selectedLanguage.code;
+            Properties.Settings.Default.languageCode = SelectedLanguage.Code;
             Properties.Settings.Default.Save();
-            AudioManager.setMusicVolume(musicVolume / 100.0);
-            AudioManager.setSoundEffectsVolume(soundEffectsVolume / 100.0);
+            AudioManager.setMusicVolume(MusicVolume / 100.0);
+            AudioManager.setSoundEffectsVolume(SoundEffectsVolume / 100.0);
 
-            if (previousLanguageCode != selectedLanguage.code)
+            if (previousLanguageCode != SelectedLanguage.Code)
             {
                 applyLanguageChange();
             }

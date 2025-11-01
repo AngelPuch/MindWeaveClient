@@ -20,7 +20,7 @@ namespace MindWeaveClient.Services
 
         private ChatServiceClientManager() { }
 
-        public bool connect(string username, string lobbyId)
+        public bool Connect(string username, string lobbyId)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(lobbyId))
             {
@@ -37,7 +37,7 @@ namespace MindWeaveClient.Services
             if (proxy != null)
             {
                 Console.WriteLine($"[Chat Connect] Disconnecting existing chat connection (State: {proxy.State}, User: {connectedUsername}, Lobby: {connectedLobbyId}) before reconnecting.");
-                disconnect();
+                Disconnect();
             }
 
 
@@ -62,12 +62,12 @@ namespace MindWeaveClient.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[Chat Connect] Error connecting: {ex.Message}");
-                disconnect(); // Clean up on error
+                Disconnect(); // Clean up on error
                 return false;
             }
         }
 
-        public void disconnect()
+        public void Disconnect()
         {
             string userToDisconnect = connectedUsername;
             string lobbyToDisconnect = connectedLobbyId;
@@ -104,7 +104,7 @@ namespace MindWeaveClient.Services
             }
         }
 
-        public bool isConnected()
+        public bool IsConnected()
         {
             return proxy != null && proxy.State == CommunicationState.Opened;
         }

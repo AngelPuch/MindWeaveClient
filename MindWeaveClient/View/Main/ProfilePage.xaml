@@ -22,7 +22,7 @@
 
             <TextBlock x:Name="lblWelcomeMessage"
                        Grid.Row="0"
-                       Text="{Binding welcomeMessage}"
+                       Text="{Binding WelcomeMessage}"
                        d:Text="¡HOLA, HYELO!"
                        Foreground="#2c3e50" 
                        FontSize="48" 
@@ -48,12 +48,12 @@
                         </Border.Effect>
                         <Ellipse>
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding avatarSource}" Stretch="UniformToFill"/>
+                                <ImageBrush ImageSource="{Binding AvatarSource}" Stretch="UniformToFill"/>
                             </Ellipse.Fill>
                         </Ellipse>
                     </Border>
                     <TextBlock x:Name="lblUsername" 
-                               Text="{Binding username}"
+                               Text="{Binding Username}"
                                d:Text="Hyelo"
                                Foreground="#2c3e50" 
                                FontSize="32" 
@@ -87,13 +87,13 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static language:Lang.GlobalLbFirstName}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding firstName}" d:Text="Angel" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FirstName}" d:Text="Angel" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static language:Lang.GlobalLbLastName}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding lastName}" d:Text="Puch" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LastName}" d:Text="Puch" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding dateOfBirth}" d:Text="24/02/1990" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DateOfBirth}" d:Text="24/02/1990" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static language:Lang.GlobalLbGender}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding gender}" d:Text="Male" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Gender}" d:Text="Male" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -115,13 +115,13 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbPuzzlesCompleted}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding puzzlesCompleted}" d:Text="125" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PuzzlesCompleted}" d:Text="125" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbPuzzlesWon}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding puzzlesWon}" d:Text="20" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PuzzlesWon}" d:Text="20" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbTotalPlaytime}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding totalPlaytime}" d:Text="45H 40m" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalPlaytime}" d:Text="45H 40m" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbHighestScore}" Foreground="#34495e" FontSize="16" Margin="5"/>
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding highestScore}" d:Text="1,000 pts" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HighestScore}" d:Text="1,000 pts" Foreground="#2c3e50" FontSize="16" FontWeight="SemiBold" Margin="5"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -134,7 +134,7 @@
                         <StackPanel>
                             <TextBlock Text="{x:Static language:Lang.ProfileLbAchievements}" Foreground="#2c3e50" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="icAchievements" ItemsSource="{Binding achievements}">
+                                <ItemsControl x:Name="icAchievements" ItemsSource="{Binding Achievements}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel HorizontalAlignment="Center"/>

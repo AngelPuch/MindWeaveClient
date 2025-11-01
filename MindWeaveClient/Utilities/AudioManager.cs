@@ -15,7 +15,7 @@ namespace MindWeaveClient.Utilities
         private static bool isMusicLoaded;
         private static string tempMusicFilePath;
 
-        public static void initialize()
+        public static void Initialize()
         {
         }
 

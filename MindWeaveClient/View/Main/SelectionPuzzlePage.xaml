@@ -25,9 +25,9 @@
                                 <DropShadowEffect ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
                             </Border.Effect>
                             <Grid>
-                                <Image Source="{Binding imagePath}" Stretch="UniformToFill"/>
+                                <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
                                 <Border Background="#AA000000" VerticalAlignment="Bottom" Padding="5">
-                                    <TextBlock Text="{Binding name}" Foreground="White" TextTrimming="CharacterEllipsis" TextAlignment="Center"/>
+                                    <TextBlock Text="{Binding Name}" Foreground="White" TextTrimming="CharacterEllipsis" TextAlignment="Center"/>
                                 </Border>
                             </Grid>
                         </Border>
@@ -59,7 +59,7 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    <RowDefinition Height="Auto" /> </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="{x:Static lang:Lang.SelectionPuzzleHeader}"
                            Foreground="#2c3e50" FontSize="32" FontWeight="Bold"
@@ -70,7 +70,7 @@
                         <ColumnDefinition Width="*"/> <ColumnDefinition Width="Auto"/> </Grid.ColumnDefinitions>
 
                     <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding availablePuzzles}">
+                        <ItemsControl ItemsSource="{Binding AvailablePuzzles}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel HorizontalAlignment="Center"/>
@@ -79,8 +79,8 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <RadioButton Style="{StaticResource PuzzleItemStyle}"
-                                                 IsChecked="{Binding isSelected, Mode=TwoWay}"
-                                                 Command="{Binding DataContext.selectPuzzleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                 Command="{Binding DataContext.SelectPuzzleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                  CommandParameter="{Binding}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -88,7 +88,7 @@
                     </ScrollViewer>
 
                     <Button Grid.Column="1" Content="{x:Static lang:Lang.SelectionPuzzleUploadImageBtn}"
-                            Command="{Binding uploadImageCommand}"
+                            Command="{Binding UploadImageCommand}"
                             Style="{StaticResource SecondaryButtonStyle}"
                             VerticalAlignment="Top" Margin="20,10,0,0" Padding="10" Height="Auto"/>
                 </Grid>
@@ -99,16 +99,16 @@
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="{x:Static lang:Lang.GlobalBtnCancel}"
-                                Command="{Binding cancelCommand}"
+                                Command="{Binding CancelCommand}"
                                 Style="{StaticResource SecondaryButtonStyle}" Width="160" Margin="0,0,10,0"/>
                         <Button Content="{x:Static lang:Lang.SelectionPuzzleCreateLobbyBtn}"
-                                Command="{Binding confirmAndCreateLobbyCommand}"
+                                Command="{Binding ConfirmAndCreateLobbyCommand}"
                                 Style="{StaticResource PrimaryButtonStyle}" Width="180"/>
                     </StackPanel>
                 </Grid>
 
                 <Border Grid.RowSpan="3" Background="#88000000" CornerRadius="10"
-                        Visibility="{Binding isBusy, Converter={StaticResource BoolToVis}}">
+                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="{x:Static lang:Lang.GlobalProcessing}" Foreground="White" FontSize="18" FontWeight="SemiBold"
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>

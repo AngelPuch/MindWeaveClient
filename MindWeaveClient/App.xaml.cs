@@ -24,7 +24,7 @@ namespace MindWeaveClient
 
             try
             {
-                AudioManager.initialize();
+                AudioManager.Initialize();
                 Debug.WriteLine("App.OnStartup: Background music started.");
             }
             catch (Exception ex)
@@ -60,9 +60,9 @@ namespace MindWeaveClient
         // --- App_LobbyInviteReceived (No changes needed here) ---
         private static void App_LobbyInviteReceived(string fromUsername, string lobbyId)
         {
-            Debug.WriteLine($"App_LobbyInviteReceived: Invite from {fromUsername} for lobby {lobbyId}. Current user: {SessionService.username}");
+            Debug.WriteLine($"App_LobbyInviteReceived: Invite from {fromUsername} for lobby {lobbyId}. Current user: {SessionService.Username}");
 
-            if (fromUsername.Equals(SessionService.username, StringComparison.OrdinalIgnoreCase))
+            if (fromUsername.Equals(SessionService.Username, StringComparison.OrdinalIgnoreCase))
             { Debug.WriteLine("App_LobbyInviteReceived: Ignored self-invite."); return; }
 
             MessageBoxResult result = MessageBox.Show(
@@ -73,20 +73,20 @@ namespace MindWeaveClient
 
             if (result == MessageBoxResult.Yes)
             {
-                Debug.WriteLine($"User {SessionService.username} accepted invite to lobby {lobbyId}. Ensuring Matchmaking connection...");
-                if (MatchmakingServiceClientManager.instance.ensureConnected())
+                Debug.WriteLine($"User {SessionService.Username} accepted invite to lobby {lobbyId}. Ensuring Matchmaking connection...");
+                if (MatchmakingServiceClientManager.instance.EnsureConnected())
                 {
                     Debug.WriteLine("Matchmaking service connected. Calling joinLobby...");
                     try
                     {
                         var matchmakingProxy = MatchmakingServiceClientManager.instance.proxy;
-                        if (string.IsNullOrEmpty(SessionService.username))
+                        if (string.IsNullOrEmpty(SessionService.Username))
                         {
                             Debug.WriteLine("ERROR: SessionService.username is null when trying to join lobby.");
                             MessageBox.Show("Session error. Cannot join lobby.", Lang.ErrorTitle);
                             return;
                         }
-                        matchmakingProxy.joinLobby(SessionService.username, lobbyId);
+                        matchmakingProxy.joinLobby(SessionService.Username, lobbyId);
 
                         Debug.WriteLine($"Navigating to LobbyPage for lobby {lobbyId}...");
                         NavigateToLobbyPage(); // Call the corrected helper
@@ -95,7 +95,7 @@ namespace MindWeaveClient
                     {
                         Debug.WriteLine($"Exception during joinLobby or navigation: {ex}");
                         MessageBox.Show($"Error trying to join lobby {lobbyId}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        MatchmakingServiceClientManager.instance.disconnect();
+                        MatchmakingServiceClientManager.instance.Disconnect();
                     }
                 }
                 else
@@ -106,7 +106,7 @@ namespace MindWeaveClient
             }
             else
             {
-                Debug.WriteLine($"User {SessionService.username} declined invite to lobby {lobbyId}.");
+                Debug.WriteLine($"User {SessionService.Username} declined invite to lobby {lobbyId}.");
             }
         }
 
@@ -174,9 +174,9 @@ namespace MindWeaveClient
             }
 
             // Desconectar servicios (sin cambios)
-            SocialServiceClientManager.instance.disconnect();
-            MatchmakingServiceClientManager.instance.disconnect();
-            ChatServiceClientManager.instance.disconnect();
+            SocialServiceClientManager.instance.Disconnect();
+            MatchmakingServiceClientManager.instance.Disconnect();
+            ChatServiceClientManager.instance.Disconnect();
 
             base.OnExit(e);
         }

@@ -12,14 +12,23 @@ namespace MindWeaveClient.View.Main
         }
 
         // Este método se llama cuando un avatar es seleccionado en la galería
-        // y actualiza la propiedad 'selectedAvatar' en el ViewModel.
+        // y actualiza la propiedad 'SelectedAvatar' en el ViewModel.
         private void OnAvatarSelected(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement element && element.DataContext is Avatar avatar)
             {
+                // Buscamos el ViewModel en el DataContext del ItemsControl mediante Tag
                 if (element.Tag is SelectAvatarViewModel viewModel)
                 {
-                    viewModel.selectedAvatar = avatar;
+                    viewModel.SelectedAvatar = avatar;
+                }
+                else
+                {
+                    // Alternativa: intentar obtener el DataContext de la página
+                    if (this.DataContext is SelectAvatarViewModel vm)
+                    {
+                        vm.SelectedAvatar = avatar;
+                    }
                 }
             }
         }

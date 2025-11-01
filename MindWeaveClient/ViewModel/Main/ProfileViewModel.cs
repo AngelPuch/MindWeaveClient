@@ -26,71 +26,70 @@ namespace MindWeaveClient.ViewModel.Main
         private int highestScoreValue;
         private ObservableCollection<AchievementDto> achievementsValue;
 
-        public string welcomeMessage { get => welcomeMessageValue; set { welcomeMessageValue = value; OnPropertyChanged(); } }
-        public string username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
-        public string avatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
-        public string firstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); } }
-        public string lastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); } }
-        public string dateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); } }
-        public string gender { get => genderValue; set { genderValue = value; OnPropertyChanged(); } }
-        public int puzzlesCompleted { get => puzzlesCompletedValue; set { puzzlesCompletedValue = value; OnPropertyChanged(); } }
-        public int puzzlesWon { get => puzzlesWonValue; set { puzzlesWonValue = value; OnPropertyChanged(); } }
-        public string totalPlaytime { get => totalPlaytimeValue; set { totalPlaytimeValue = value; OnPropertyChanged(); } }
-        public int highestScore { get => highestScoreValue; set { highestScoreValue = value; OnPropertyChanged(); } }
-        public ObservableCollection<AchievementDto> achievements { get => achievementsValue; set { achievementsValue = value; OnPropertyChanged(); } }
+        public string WelcomeMessage { get => welcomeMessageValue; set { welcomeMessageValue = value; OnPropertyChanged(); } }
+        public string Username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
+        public string AvatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
+        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); } }
+        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); } }
+        public string DateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); } }
+        public string Gender { get => genderValue; set { genderValue = value; OnPropertyChanged(); } }
+        public int PuzzlesCompleted { get => puzzlesCompletedValue; set { puzzlesCompletedValue = value; OnPropertyChanged(); } }
+        public int PuzzlesWon { get => puzzlesWonValue; set { puzzlesWonValue = value; OnPropertyChanged(); } }
+        public string TotalPlaytime { get => totalPlaytimeValue; set { totalPlaytimeValue = value; OnPropertyChanged(); } }
+        public int HighestScore { get => highestScoreValue; set { highestScoreValue = value; OnPropertyChanged(); } }
+        public ObservableCollection<AchievementDto> Achievements { get => achievementsValue; set { achievementsValue = value; OnPropertyChanged(); } }
 
-        public ICommand backCommand { get; }
-        public ICommand editProfileCommand { get; }
+        public ICommand BackCommand { get; }
+        public ICommand EditProfileCommand { get; }
 
-      
-            public ProfileViewModel(Action navigateBack, Action navigateToEdit)
+        public ProfileViewModel(Action navigateBack, Action navigateToEdit)
         {
             this.navigateBack = navigateBack;
             this.navigateToEdit = navigateToEdit;
 
-            backCommand = new RelayCommand(p => navigateBack?.Invoke());
+            BackCommand = new RelayCommand(p => navigateBack?.Invoke());
 
-            editProfileCommand = new RelayCommand(p => navigateToEdit?.Invoke());
+            EditProfileCommand = new RelayCommand(p => navigateToEdit?.Invoke());
 
-            username = SessionService.username ?? "Loading...";
-            welcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), username.ToUpper());
-            avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-            achievements = new ObservableCollection<AchievementDto>();
+            Username = SessionService.Username ?? "Loading...";
+            WelcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), Username.ToUpper());
+            AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            Achievements = new ObservableCollection<AchievementDto>();
 
             loadProfileData();
         }
 
         private async void loadProfileData()
         {
-            if (string.IsNullOrEmpty(SessionService.username)) return;
+            if (string.IsNullOrEmpty(SessionService.Username)) return;
 
             try
             {
                 var client = new ProfileManagerClient();
-                PlayerProfileViewDto profileData = await client.getPlayerProfileViewAsync(SessionService.username);
+                PlayerProfileViewDto profileData = await client.getPlayerProfileViewAsync(SessionService.Username);
 
                 if (profileData != null)
                 {
-                    username = profileData.username;
-                    welcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), profileData.username.ToUpper());
-                    avatarSource = profileData.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+                    Username = profileData.username;
+                    WelcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), profileData.username.ToUpper());
+                    AvatarSource = profileData.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-                    firstName = profileData.firstName;
-                    lastName = profileData.lastName;
-                    dateOfBirth = profileData.dateOfBirth?.ToString("dd/MM/yyyy") ?? "Not specified";
-                    gender = profileData.gender ?? "Not specified";
+                    FirstName = profileData.firstName;
+                    LastName = profileData.lastName;
+                    DateOfBirth = profileData.dateOfBirth?.ToString("dd/MM/yyyy") ?? "Not specified";
+                    Gender = profileData.gender ?? "Not specified";
 
                     if (profileData.stats != null)
                     {
-                        puzzlesCompleted = profileData.stats.puzzlesCompleted;
-                        puzzlesWon = profileData.stats.puzzlesWon;
-                        totalPlaytime = $"{profileData.stats.totalPlaytime.Hours}H {profileData.stats.totalPlaytime.Minutes}m";
-                        highestScore = profileData.stats.highestScore;
+                        PuzzlesCompleted = profileData.stats.puzzlesCompleted;
+                        PuzzlesWon = profileData.stats.puzzlesWon;
+                        TotalPlaytime = $"{profileData.stats.totalPlaytime.Hours}H {profileData.stats.totalPlaytime.Minutes}m";
+                        HighestScore = profileData.stats.highestScore;
                     }
 
                     if (profileData.achievements != null)
                     {
-                        achievements = new ObservableCollection<AchievementDto>(profileData.achievements);
+                        Achievements = new ObservableCollection<AchievementDto>(profileData.achievements);
                     }
                 }
             }

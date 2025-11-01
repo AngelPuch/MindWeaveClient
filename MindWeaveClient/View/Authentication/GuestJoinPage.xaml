@@ -30,7 +30,7 @@
 
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinLbLobbyCode}" Foreground="#2c3e50" Margin="0,10,0,5"/>
                 <TextBox x:Name="txtLobbyCode"
-                         Text="{Binding lobbyCode, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding LobbyCode, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource AuthInputBoxStyle}"
                          MaxLength="6"
                          FontSize="20"
@@ -38,17 +38,17 @@
                          PreviewTextInput="CodeTextBox_PreviewTextInput"/>
 
                 <TextBlock Text="{x:Static lang:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                <TextBox x:Name="txtGuestEmail" Text="{Binding guestEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
+                <TextBox x:Name="txtGuestEmail" Text="{Binding GuestEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinLbDesiredUsername}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                <TextBox x:Name="txtDesiredUsername" Text="{Binding desiredUsername, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" MaxLength="16"/>
+                <TextBox x:Name="txtDesiredUsername" Text="{Binding DesiredUsername, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" MaxLength="16"/>
 
-                <Button Command="{Binding joinAsGuestCommand}" Content="{x:Static lang:Lang.GuestJoinBtnJoin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" IsEnabled="{Binding canJoinAsGuest}"/>
+                <Button Command="{Binding JoinAsGuestCommand}" Content="{x:Static lang:Lang.GuestJoinBtnJoin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" IsEnabled="{Binding CanJoinAsGuest}"/>
 
-                <Button Command="{Binding goBackCommand}" Content="{x:Static lang:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
+                <Button Command="{Binding GoBackCommand}" Content="{x:Static lang:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
 
                 <Border Background="#88000000" CornerRadius="10" Margin="0,10,0,0"
-                        Visibility="{Binding isBusy, Converter={StaticResource BoolToVis}}"
+                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
                         HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="10">
                     <TextBlock Text="{x:Static lang:Lang.GlobalProcessing}" Foreground="White" FontSize="14" HorizontalAlignment="Center"/>
                 </Border>

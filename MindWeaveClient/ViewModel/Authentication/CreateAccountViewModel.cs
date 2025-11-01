@@ -17,12 +17,12 @@ namespace MindWeaveClient.ViewModel.Authentication
         private DateTime? birthDateValue = DateTime.Now;
         private string passwordValue;
 
-        public string firstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); } }
-        public string lastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); } }
-        public string username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
-        public string email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
-        public DateTime? birthDate { get => birthDateValue; set { birthDateValue = value; OnPropertyChanged(); } }
-        public string password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
+        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); } }
+        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); } }
+        public string Username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
+        public string Email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
+        public DateTime? BirthDate { get => birthDateValue; set { birthDateValue = value; OnPropertyChanged(); } }
+        public string Password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
 
 
         private bool isFemaleValue;
@@ -30,26 +30,26 @@ namespace MindWeaveClient.ViewModel.Authentication
         private bool isOtherValue;
         private bool isPreferNotToSayValue;
 
-        public bool isFemale { get => isFemaleValue; set { isFemaleValue = value; OnPropertyChanged(); } }
-        public bool isMale { get => isMaleValue; set { isMaleValue = value; OnPropertyChanged(); } }
-        public bool isOther { get => isOtherValue; set { isOtherValue = value; OnPropertyChanged(); } }
-        public bool isPreferNotToSay { get => isPreferNotToSayValue; set { isPreferNotToSayValue = value; OnPropertyChanged(); } }
+        public bool IsFemale { get => isFemaleValue; set { isFemaleValue = value; OnPropertyChanged(); } }
+        public bool IsMale { get => isMaleValue; set { isMaleValue = value; OnPropertyChanged(); } }
+        public bool IsOther { get => isOtherValue; set { isOtherValue = value; OnPropertyChanged(); } }
+        public bool IsPreferNotToSay { get => isPreferNotToSayValue; set { isPreferNotToSayValue = value; OnPropertyChanged(); } }
 
-        public ICommand signUpCommand { get; }
-        public ICommand goToLoginCommand { get; }
+        public ICommand SignUpCommand { get; }
+        public ICommand GoToLoginCommand { get; }
 
         private readonly Action<Page> navigateTo;
 
         public CreateAccountViewModel(Action<Page> navigateAction)
         {
             navigateTo = navigateAction;
-            signUpCommand = new RelayCommand(async (param) => await executeSignUp());
-            goToLoginCommand = new RelayCommand((param) => executeGoToLogin());
+            SignUpCommand = new RelayCommand(async (param) => await executeSignUp());
+            GoToLoginCommand = new RelayCommand((param) => executeGoToLogin());
         }
 
         private async Task executeSignUp()
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || birthDate == null)
+            if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || BirthDate == null)
             {
                 MessageBox.Show("Please fill all required fields.", "Incomplete Form", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -57,23 +57,23 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             var userProfile = new UserProfileDto
             {
-                firstName = this.firstName,
-                lastName = this.lastName,
-                username = this.username,
-                email = this.email,
-                dateOfBirth = this.birthDate.Value,
+                firstName = this.FirstName,
+                lastName = this.LastName,
+                username = this.Username,
+                email = this.Email,
+                dateOfBirth = this.BirthDate.Value,
                 genderId = getSelectedGenderId()
             };
 
             try
             {
                 var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.registerAsync(userProfile, this.password);
+                OperationResultDto result = await client.registerAsync(userProfile, this.Password);
 
                 if (result.success)
                 {
                     MessageBox.Show(result.message, "Registration Pending", MessageBoxButton.OK, MessageBoxImage.Information);
-                    navigateTo(new VerificationPage(email));
+                    navigateTo(new VerificationPage(Email));
                 }
                 else
                 {
@@ -93,9 +93,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private int getSelectedGenderId()
         {
-            if (isFemale) return 1;
-            if (isMale) return 2;
-            if (isOther) return 3;
+            if (IsFemale) return 1;
+            if (IsMale) return 2;
+            if (IsOther) return 3;
             return 4;
         }
     }

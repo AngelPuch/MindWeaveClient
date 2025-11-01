@@ -2,30 +2,30 @@
 {
     public static class SessionService
     {
-        public static string username { get; private set; }
-        public static string avatarPath { get; private set; }
-        public static bool isGuest { get; private set; }
+        public static string Username { get; private set; }
+        public static string AvatarPath { get; private set; }
+        public static bool IsGuest { get; private set; }
 
-        public static void setSession(string username, string avatarPath, bool isGuest = false)
+        public static void SetSession(string username, string avatarPath, bool isGuest = false)
         {
-            SessionService.username = username;
-            SessionService.avatarPath = avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-            SessionService.isGuest = isGuest;
+            SessionService.Username = username;
+            SessionService.AvatarPath = avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            SessionService.IsGuest = isGuest;
         }
 
-        public static void updateAvatarPath(string newAvatarPath)
+        public static void UpdateAvatarPath(string newAvatarPath)
         {
-            if (!isGuest)
+            if (!IsGuest)
             {
-                avatarPath = newAvatarPath;
+                AvatarPath = newAvatarPath;
             }
         }
 
-        public static void clearSession()
+        public static void ClearSession()
         {
-            username = null;
-            avatarPath = null;
-            isGuest = false;
+            Username = null;
+            AvatarPath = null;
+            IsGuest = false;
         }
     }
 }

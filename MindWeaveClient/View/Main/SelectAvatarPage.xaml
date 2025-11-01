@@ -36,7 +36,7 @@
                            HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding availableAvatars}"
+                    <ItemsControl ItemsSource="{Binding AvailableAvatars}"
                                   HorizontalAlignment="Center">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -46,7 +46,7 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <RadioButton GroupName="Avatars" IsChecked="{Binding isSelected, Mode=TwoWay}" Style="{x:Null}">
+                                <RadioButton GroupName="Avatars" IsChecked="{Binding IsSelected, Mode=TwoWay}" Style="{x:Null}">
                                     <RadioButton.Template>
                                         <ControlTemplate TargetType="RadioButton">
                                             <Border x:Name="border"
@@ -57,7 +57,7 @@
                                                     BorderThickness="4">
                                                 <Ellipse>
                                                     <Ellipse.Fill>
-                                                        <ImageBrush ImageSource="{Binding imagePath}" Stretch="UniformToFill"/>
+                                                        <ImageBrush ImageSource="{Binding ImagePath}" Stretch="UniformToFill"/>
                                                     </Ellipse.Fill>
                                                 </Ellipse>
                                             </Border>
@@ -87,8 +87,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Command="{Binding cancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"/>
-                    <Button Grid.Column="1" Command="{Binding saveSelectionCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"/>
+                    <Button Grid.Column="0" Command="{Binding CancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Grid.Column="1" Command="{Binding SaveSelectionCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"/>
                 </Grid>
             </Grid>
         </Border>

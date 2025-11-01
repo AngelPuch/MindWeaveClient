@@ -22,28 +22,28 @@
             <StackPanel VerticalAlignment="Center" Margin="40">
                 <TextBlock Text="{x:Static language:Lang.GlobalLbGameName}" Foreground="#2c3e50" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,25"/>
 
-                <StackPanel Visibility="{Binding showUnverifiedControls, Converter={StaticResource InverseBoolToVis}}">
+                <StackPanel Visibility="{Binding ShowUnverifiedControls, Converter={StaticResource InverseBoolToVis}}">
                     <TextBlock Text="{x:Static language:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,0,0,5"/>
-                    <TextBox x:Name="txtEmail" Text="{Binding email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBox x:Name="txtEmail" Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
 
                     <TextBlock Text="{x:Static language:Lang.LogInLbPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <PasswordBox x:Name="pbPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <PasswordBox x:Name="pbPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Button x:Name="btnLogin" Command="{Binding loginCommand}" Content="{x:Static language:Lang.LogInBtnLogin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,0"/>
-                    <Button x:Name="btnForgotPassword" Command="{Binding forgotPasswordCommand}" Content="{x:Static language:Lang.LogInBtnRecover}" Style="{StaticResource LinkButtonStyle}"/>
+                    <Button x:Name="btnLogin" Command="{Binding LoginCommand}" Content="{x:Static language:Lang.LogInBtnLogin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,0"/>
+                    <Button x:Name="btnForgotPassword" Command="{Binding ForgotPasswordCommand}" Content="{x:Static language:Lang.LogInBtnRecover}" Style="{StaticResource LinkButtonStyle}"/>
                 </StackPanel>
 
-                <StackPanel Margin="0,15,0,0" Visibility="{Binding showUnverifiedControls, Converter={StaticResource BoolToVis}}">
+                <StackPanel Margin="0,15,0,0" Visibility="{Binding ShowUnverifiedControls, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="{x:Static language:Lang.LoginAccountNotVerified}" 
                                Foreground="#e74c3c" TextAlignment="Center" TextWrapping="Wrap" FontWeight="SemiBold" FontSize="14"/>
-                    <Button Command="{Binding resendVerificationCommand}" 
+                    <Button Command="{Binding ResendVerificationCommand}" 
                             Content="{x:Static language:Lang.VerificationCodeResend}" 
                             Style="{StaticResource PrimaryButtonStyle}" Margin="0,20,0,0"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,25,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="btnSignUp" Command="{Binding signUpCommand}" Content="{x:Static language:Lang.GlobalBtnSignUp}" Style="{StaticResource SecondaryButtonStyle}" Width="140" Margin="0,0,10,0"/>
-                    <Button x:Name="btnGuestLogin" Command="{Binding guestLoginCommand}" Content="{x:Static language:Lang.LoginBtnGuest}" Style="{StaticResource SecondaryButtonStyle}" Width="140"/>
+                    <Button x:Name="btnSignUp" Command="{Binding SignUpCommand}" Content="{x:Static language:Lang.GlobalBtnSignUp}" Style="{StaticResource SecondaryButtonStyle}" Width="140" Margin="0,0,10,0"/>
+                    <Button x:Name="btnGuestLogin" Command="{Binding GuestLoginCommand}" Content="{x:Static language:Lang.LoginBtnGuest}" Style="{StaticResource SecondaryButtonStyle}" Width="140"/>
                 </StackPanel>
             </StackPanel>
         </Border>

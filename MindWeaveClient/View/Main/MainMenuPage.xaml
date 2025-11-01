@@ -55,14 +55,14 @@
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,50,0" Width="200">
             <Ellipse Width="150" Height="150" Stroke="{StaticResource PrimaryColor}" StrokeThickness="4">
                 <Ellipse.Fill>
-                    <ImageBrush ImageSource="{Binding playerAvatarPath}" Stretch="UniformToFill"/>
+                    <ImageBrush ImageSource="{Binding PlayerAvatarPath}" Stretch="UniformToFill"/>
                 </Ellipse.Fill>
                 <Ellipse.Effect>
                     <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="3" Opacity="0.5"/>
                 </Ellipse.Effect>
             </Ellipse>
-            <TextBlock Text="{Binding playerUsername}" Foreground="#2c3e50" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,15,0,0"/>
-            <Button Content="{x:Static lang:Lang.MainMenuBtnProfile}" Command="{Binding profileCommand}" Style="{StaticResource ProfileButtonStyle}"/>
+            <TextBlock Text="{Binding PlayerUsername}" Foreground="#2c3e50" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,15,0,0"/>
+            <Button Content="{x:Static lang:Lang.MainMenuBtnProfile}" Command="{Binding ProfileCommand}" Style="{StaticResource ProfileButtonStyle}"/>
         </StackPanel>
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0">
@@ -73,7 +73,7 @@
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{x:Static lang:Lang.MainMenuBtnCreateLobby}" Foreground="#2c3e50" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
                         <Button Content="{x:Static lang:Lang.GlobalBtnPlay}" Style="{StaticResource PrimaryButtonStyle}"
-                                Command="{Binding createLobbyCommand}"
+                                Command="{Binding CreateLobbyCommand}"
                                 Width="200" Height="50" FontSize="18"/>
                     </StackPanel>
                 </Border>
@@ -85,15 +85,15 @@
                                    HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
                         <TextBox x:Name="lobbyCodeTextBox"
-                                 Text="{Binding joinLobbyCode, UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding JoinLobbyCode, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{StaticResource AuthInputBoxStyle}"
                                  MaxLength="6" CharacterCasing="Upper"
                                  HorizontalContentAlignment="Center" FontSize="18" FontWeight="Bold"
                                  Margin="0,0,0,15" Height="45"/>
                         <Button Content="{x:Static lang:Lang.MainMenuBtnJoin}"
                                 Style="{StaticResource PrimaryButtonStyle}"
-                                Command="{Binding joinLobbyCommand}"
-                                IsEnabled="{Binding canJoinLobby}"
+                                Command="{Binding JoinLobbyCommand}"
+                                IsEnabled="{Binding CanJoinLobby}"
                                 Width="200" Height="45"/>
                     </StackPanel>
                 </Border>
@@ -103,16 +103,16 @@
             <StackPanel HorizontalAlignment="Center">
                 <Button Content="{x:Static lang:Lang.GlobalCommonSocial}"
                         Style="{StaticResource SecondaryNavButtonStyle}" Width="620"
-                        Command="{Binding socialCommand}"/>
+                        Command="{Binding SocialCommand}"/>
                 <Button Content="{x:Static lang:Lang.GlobalCommonSettings}"
                         Style="{StaticResource SecondaryNavButtonStyle}" Width="620"
-                        Command="{Binding settingsCommand}"/>
+                        Command="{Binding SettingsCommand}"/>
             </StackPanel>
 
         </StackPanel>
 
         <Border Background="#88000000" CornerRadius="10"
-                Visibility="{Binding isBusy, Converter={StaticResource BoolToVis}}"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
                 HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20">
             <TextBlock Text="Processing..." Foreground="White" FontSize="16"/>
         </Border>

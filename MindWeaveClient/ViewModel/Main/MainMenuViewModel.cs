@@ -18,17 +18,17 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly Action<Page> navigateTo;
         private readonly Page mainMenuPage;
 
-        public string playerUsername { get; }
-        public string playerAvatarPath { get; }
+        public string PlayerUsername { get; }
+        public string PlayerAvatarPath { get; }
 
-        public ICommand profileCommand { get; }
-        public ICommand createLobbyCommand { get; } 
-        public ICommand socialCommand { get; }
-        public ICommand settingsCommand { get; }
-        public ICommand joinLobbyCommand { get; } 
+        public ICommand ProfileCommand { get; }
+        public ICommand CreateLobbyCommand { get; }
+        public ICommand SocialCommand { get; }
+        public ICommand SettingsCommand { get; }
+        public ICommand JoinLobbyCommand { get; } 
 
         private string joinLobbyCodeValue = string.Empty;
-        public string joinLobbyCode
+        public string JoinLobbyCode
         {
             get => joinLobbyCodeValue;
             set
@@ -36,23 +36,23 @@ namespace MindWeaveClient.ViewModel.Main
                 joinLobbyCodeValue = value?.ToUpper().Trim() ?? string.Empty;
                 if (joinLobbyCodeValue.Length > 6) { joinLobbyCodeValue = joinLobbyCodeValue.Substring(0, 6); }
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(canJoinLobby));
-                ((RelayCommand)joinLobbyCommand).RaiseCanExecuteChanged();
+                OnPropertyChanged(nameof(CanJoinLobby));
+                ((RelayCommand)JoinLobbyCommand).RaiseCanExecuteChanged();
             }
         }
-        public bool canJoinLobby => !isBusy && !string.IsNullOrWhiteSpace(joinLobbyCode) && joinLobbyCode.Length == 6;
+        public bool CanJoinLobby => !IsBusy && !string.IsNullOrWhiteSpace(JoinLobbyCode) && JoinLobbyCode.Length == 6;
 
         private bool isBusyValue;
-        public bool isBusy
+        public bool IsBusy
         {
             get => isBusyValue;
             set
             {
                 isBusyValue = value;
                 OnPropertyChanged();
-                ((RelayCommand)createLobbyCommand).RaiseCanExecuteChanged(); 
-                ((RelayCommand)joinLobbyCommand).RaiseCanExecuteChanged();
-                OnPropertyChanged(nameof(canJoinLobby));
+                ((RelayCommand)CreateLobbyCommand).RaiseCanExecuteChanged(); 
+                ((RelayCommand)JoinLobbyCommand).RaiseCanExecuteChanged();
+                OnPropertyChanged(nameof(CanJoinLobby));
             }
         }
 
@@ -63,16 +63,16 @@ namespace MindWeaveClient.ViewModel.Main
             this.navigateTo = navigateTo;
             this.mainMenuPage = mainMenuPage;
 
-            playerUsername = SessionService.username;
-            playerAvatarPath = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            PlayerUsername = SessionService.Username;
+            PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-            profileCommand = new RelayCommand(p => executeGoToProfile());
-            createLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !isBusy);
-            socialCommand = new RelayCommand(p => executeGoToSocial());
-            settingsCommand = new RelayCommand(p => executeShowSettings(), p => !isBusy);
-            joinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => canJoinLobby);
+            ProfileCommand = new RelayCommand(p => executeGoToProfile());
+            CreateLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !IsBusy);
+            SocialCommand = new RelayCommand(p => executeGoToSocial());
+            SettingsCommand = new RelayCommand(p => executeShowSettings(), p => !IsBusy);
+            JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => CanJoinLobby);
 
-            Console.WriteLine($"MainMenuViewModel Initialized. Avatar Path: {playerAvatarPath}");
+            Console.WriteLine($"MainMenuViewModel Initialized. Avatar Path: {PlayerAvatarPath}");
         }
         private void executeGoToPuzzleSelection()
         {
@@ -85,16 +85,16 @@ namespace MindWeaveClient.ViewModel.Main
         }
         private async Task executeJoinLobbyAsync()
         {
-            if (!canJoinLobby) return;
-            if (!Regex.IsMatch(joinLobbyCode, "^[A-Z0-9]{6}$")) { /*...*/ return; }
+            if (!CanJoinLobby) return;
+            if (!Regex.IsMatch(JoinLobbyCode, "^[A-Z0-9]{6}$")) { /*...*/ return; }
 
-            isBusy = true;
+            IsBusy = true;
             try
             {
-                if (!MatchmakingServiceClientManager.instance.ensureConnected()) { /*...*/ return; }
+                if (!MatchmakingServiceClientManager.instance.EnsureConnected()) { /*...*/ return; }
 
-                matchmakingProxy.joinLobby(SessionService.username, joinLobbyCode);
-                MessageBox.Show($"Attempting to join lobby {joinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); 
+                matchmakingProxy.joinLobby(SessionService.Username, JoinLobbyCode);
+                MessageBox.Show($"Attempting to join lobby {JoinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); 
 
                 var lobbyPage = new LobbyPage();
                 lobbyPage.DataContext = new LobbyViewModel(
@@ -107,11 +107,11 @@ namespace MindWeaveClient.ViewModel.Main
             catch (Exception ex) 
             {
                 MessageBox.Show($"An error occurred while joining lobby: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
-                MatchmakingServiceClientManager.instance.disconnect();
+                MatchmakingServiceClientManager.instance.Disconnect();
             }
             finally
             {
-                isBusy = false;
+                IsBusy = false;
             }
         }
         
@@ -160,8 +160,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
             else
             {
-                // Settings were canceled
-                Console.WriteLine("Settings canceled.");
+                 Console.WriteLine("Settings canceled.");
             }
         }
 

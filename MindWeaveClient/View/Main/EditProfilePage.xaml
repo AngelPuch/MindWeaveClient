@@ -15,7 +15,7 @@
         <helpers:InverseBoolConverter x:Key="InverseBoolConverter"/>
     </Page.Resources>
 
-    
+
 
     <Grid>
         <Grid.Background>
@@ -55,65 +55,65 @@
                                 BorderBrush="{StaticResource PrimaryColor}" BorderThickness="4">
                             <Ellipse>
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding avatarSource}" Stretch="UniformToFill"/>
+                                    <ImageBrush ImageSource="{Binding AvatarSource}" Stretch="UniformToFill"/>
                                 </Ellipse.Fill>
                             </Ellipse>
                         </Border>
-                        <Button Command="{Binding changeAvatarCommand}" Content="{x:Static language:Lang.EditProfileBtnChangeAvatar}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,20,0,10" Width="180" Height="40" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
-                        <Button Command="{Binding showChangePasswordCommand}" Content="{x:Static language:Lang.EditProfileBtnChangePassword}" Style="{StaticResource SecondaryButtonStyle}" Width="180" Height="40" Visibility="{Binding isChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Command="{Binding ChangeAvatarCommand}" Content="{x:Static language:Lang.EditProfileBtnChangeAvatar}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,20,0,10" Width="180" Height="40" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Button Command="{Binding ShowChangePasswordCommand}" Content="{x:Static language:Lang.EditProfileBtnChangePassword}" Style="{StaticResource SecondaryButtonStyle}" Width="180" Height="40" Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" Visibility="{Binding isChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}">
+                    <StackPanel Grid.Column="1" Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}">
                         <TextBlock Text="{x:Static language:Lang.GlobalLbFirstName}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <TextBox Text="{Binding firstName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" Margin="0,0,0,15" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" Margin="0,0,0,15" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <TextBlock Text="{x:Static language:Lang.GlobalLbLastName}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <TextBox Text="{Binding lastName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" Margin="0,0,0,15" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" Margin="0,0,0,15" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <DatePicker SelectedDate="{Binding dateOfBirth}" Style="{StaticResource AuthDatePickerStyle}" Margin="0,0,0,15" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <DatePicker SelectedDate="{Binding DateOfBirth}" Style="{StaticResource AuthDatePickerStyle}" Margin="0,0,0,15" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <TextBlock Text="{x:Static language:Lang.GlobalLbGender}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <ComboBox ItemsSource="{Binding genders}"
-                                  SelectedItem="{Binding selectedGender}"
+                        <ComboBox ItemsSource="{Binding Genders}"
+                                  SelectedItem="{Binding SelectedGender}"
                                   DisplayMemberPath="name"
                                   Height="45" Padding="10,5" Background="#22FFFFFF" BorderBrush="{StaticResource PrimaryColor}" BorderThickness="2" FontSize="16"
-                                  Margin="0,0,0,25" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                                  Margin="0,0,0,25" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" Visibility="{Binding isChangePasswordSectionVisible, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Grid.Column="1" Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource BoolToVis}}">
                         <TextBlock Text="Current Password" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <PasswordBox x:Name="pbCurrentPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding currentPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <PasswordBox x:Name="pbCurrentPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding CurrentPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <TextBlock Text="{x:Static language:Lang.GlobalTxtNewPassword}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <PasswordBox x:Name="pbNewPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding newPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <PasswordBox x:Name="pbNewPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding NewPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <TextBlock Text="{x:Static language:Lang.PasswordRecoveryLbConfirmPassword}" Foreground="#34495e" FontSize="14" FontWeight="SemiBold" Margin="5,0,5,5"/>
-                        <PasswordBox x:Name="pbConfirmPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding confirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,25" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                        <PasswordBox x:Name="pbConfirmPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,25" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Command="{Binding cancelChangePasswordCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,5,0" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
-                            <Button Grid.Column="1" Command="{Binding saveNewPasswordCommand}" Content="{x:Static language:Lang.PasswordRecoveryBtnSave}" Style="{StaticResource PrimaryButtonStyle}" Margin="5,0,0,0" IsEnabled="{Binding canSaveNewPassword}"/>
+                            <Button Grid.Column="0" Command="{Binding CancelChangePasswordCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,5,0" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                            <Button Grid.Column="1" Command="{Binding SaveNewPasswordCommand}" Content="{x:Static language:Lang.PasswordRecoveryBtnSave}" Style="{StaticResource PrimaryButtonStyle}" Margin="5,0,0,0" IsEnabled="{Binding CanSaveNewPassword}"/>
                         </Grid>
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="3" Margin="0,30,0,0" Visibility="{Binding isChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}">
+                <Grid Grid.Row="3" Margin="0,30,0,0" Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Command="{Binding cancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0" IsEnabled="{Binding isBusy, Converter={StaticResource InverseBoolConverter}}"/>
-                    <Button Grid.Column="1" Command="{Binding saveChangesCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0" IsEnabled="{Binding canSaveChanges}"/>
+                    <Button Grid.Column="0" Command="{Binding CancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                    <Button Grid.Column="1" Command="{Binding SaveChangesCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0" IsEnabled="{Binding CanSaveChanges}"/>
                 </Grid>
 
                 <Border Grid.Row="1" Grid.ColumnSpan="2" Background="#88000000" CornerRadius="10"
-                        Visibility="{Binding isBusy, Converter={StaticResource BoolToVis}}" >
+                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" >
                     <TextBlock Text="{x:Static language:Lang.GlobalProcessing}" Foreground="White" FontSize="18" FontWeight="SemiBold"
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>

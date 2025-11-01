@@ -13,8 +13,8 @@ namespace MindWeaveClient.ViewModel.Main
     public class Avatar : BaseViewModel
     {
         private bool isSelectedValue;
-        public string imagePath { get; set; }
-        public bool isSelected
+        public string ImagePath { get; set; }
+        public bool IsSelected
         {
             get => isSelectedValue;
             set { isSelectedValue = value; OnPropertyChanged(); }
@@ -28,25 +28,25 @@ namespace MindWeaveClient.ViewModel.Main
         private Avatar selectedAvatarValue;
         private bool isBusyValue;
 
-        public ObservableCollection<Avatar> availableAvatars { get => availableAvatarsValue; set { availableAvatarsValue = value; OnPropertyChanged(); } }
-        public Avatar selectedAvatar { get => selectedAvatarValue; set { selectedAvatarValue = value; OnPropertyChanged(); ((RelayCommand)saveSelectionCommand).RaiseCanExecuteChanged(); } } // Update CanExecute when selected changes
-        public bool isBusy { get => isBusyValue; private set { setBusy(value); } } 
+        public ObservableCollection<Avatar> AvailableAvatars { get => availableAvatarsValue; set { availableAvatarsValue = value; OnPropertyChanged(); } }
+        public Avatar SelectedAvatar { get => selectedAvatarValue; set { selectedAvatarValue = value; OnPropertyChanged(); ((RelayCommand)SaveSelectionCommand).RaiseCanExecuteChanged(); } } // Update CanExecute when selected changes
+        public bool IsBusy { get => isBusyValue; private set { setBusy(value); } } 
 
-        public ICommand saveSelectionCommand { get; }
-        public ICommand cancelCommand { get; }
+        public ICommand SaveSelectionCommand { get; }
+        public ICommand CancelCommand { get; }
 
         public SelectAvatarViewModel(Action navigateBack)
         {
             this.navigateBack = navigateBack;
-            cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !isBusy);
-            saveSelectionCommand = new RelayCommand(async p => await saveSelection(), p => canSave());
+            CancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !IsBusy);
+            SaveSelectionCommand = new RelayCommand(async p => await saveSelection(), p => canSave());
 
             loadAvailableAvatars();
         }
 
         private void loadAvailableAvatars()
         {
-            availableAvatars = new ObservableCollection<Avatar>();
+            AvailableAvatars = new ObservableCollection<Avatar>();
             var avatarPaths = new string[]
             {
                 "/Resources/Images/Avatar/default_avatar.png",
@@ -59,18 +59,18 @@ namespace MindWeaveClient.ViewModel.Main
 
             foreach (var path in avatarPaths)
             {
-                availableAvatars.Add(new Avatar { imagePath = path });
+                AvailableAvatars.Add(new Avatar { ImagePath = path });
             }
 
-            var currentAvatar = availableAvatars.FirstOrDefault(a => a.imagePath.Equals(SessionService.avatarPath, StringComparison.OrdinalIgnoreCase));
+            var currentAvatar = AvailableAvatars.FirstOrDefault(a => a.ImagePath.Equals(SessionService.AvatarPath, StringComparison.OrdinalIgnoreCase));
             if (currentAvatar != null)
             {
-                currentAvatar.isSelected = true;
-                selectedAvatar = currentAvatar;
+                currentAvatar.IsSelected = true;
+                SelectedAvatar = currentAvatar;
             }
         }
 
-        private bool canSave() => selectedAvatar != null && !isBusy;
+        private bool canSave() => SelectedAvatar != null && !IsBusy;
 
 
         private async Task saveSelection()
@@ -81,11 +81,11 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 var client = new ProfileManagerClient();
-                var result = await client.updateAvatarPathAsync(SessionService.username, selectedAvatar.imagePath);
+                var result = await client.updateAvatarPathAsync(SessionService.Username, SelectedAvatar.ImagePath);
 
                 if (result.success)
                 {
-                    SessionService.updateAvatarPath(selectedAvatar.imagePath);
+                    SessionService.UpdateAvatarPath(SelectedAvatar.ImagePath);
                     MessageBox.Show(result.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information); // Use Lang key
                     navigateBack?.Invoke();
                 }
@@ -107,7 +107,7 @@ namespace MindWeaveClient.ViewModel.Main
         private void setBusy(bool value)
         {
             isBusyValue = value;
-            OnPropertyChanged(nameof(isBusy));
+            OnPropertyChanged(nameof(IsBusy));
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
     }

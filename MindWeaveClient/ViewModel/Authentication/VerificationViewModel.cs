@@ -14,41 +14,41 @@ namespace MindWeaveClient.ViewModel.Authentication
         private string emailValue;
         private string verificationCodeValue;
 
-        public string email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
-        public string verificationCode
+        public string Email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
+        public string VerificationCode
         {
             get => verificationCodeValue;
             set
             {
                 verificationCodeValue = value;
                 OnPropertyChanged();
-                ((RelayCommand)verifyCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)VerifyCommand).RaiseCanExecuteChanged();
             }
         }
 
-        public ICommand verifyCommand { get; }
-        public ICommand goBackCommand { get; }
-        public ICommand resendCodeCommand { get; }
+        public ICommand VerifyCommand { get; }
+        public ICommand GoBackCommand { get; }
+        public ICommand ResendCodeCommand { get; }
 
         private readonly Action<Page> navigateTo;
         private readonly Action navigateBack;
 
         public VerificationViewModel(string email, Action<Page> navigateTo, Action navigateBack)
         {
-            this.email = email;
+            this.Email = email;
             this.navigateTo = navigateTo;
             this.navigateBack = navigateBack;
 
-            verifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
-            goBackCommand = new RelayCommand((param) => executeGoBack());
-            resendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
+            VerifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
+            GoBackCommand = new RelayCommand((param) => executeGoBack());
+            ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
         }
 
         private bool canExecuteVerify()
         {
-            return !string.IsNullOrWhiteSpace(verificationCode)
-                   && verificationCode.Length == 6
-                   && verificationCode.All(char.IsDigit);
+            return !string.IsNullOrWhiteSpace(VerificationCode)
+                   && VerificationCode.Length == 6
+                   && VerificationCode.All(char.IsDigit);
         }
 
         private async Task executeVerifyAsync()
@@ -62,7 +62,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             try
             {
                 var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.verifyAccountAsync(email, verificationCode);
+                OperationResultDto result = await client.verifyAccountAsync(Email, VerificationCode);
 
                 if (result.success)
                 {
@@ -90,7 +90,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             try
             {
                 var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.resendVerificationCodeAsync(email);
+                OperationResultDto result = await client.resendVerificationCodeAsync(Email);
 
                 if (result.success)
                 {

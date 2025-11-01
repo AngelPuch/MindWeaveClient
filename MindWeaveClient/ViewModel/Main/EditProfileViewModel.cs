@@ -29,39 +29,39 @@ namespace MindWeaveClient.ViewModel.Main
         private string confirmPasswordValue;
         private bool isBusyValue;
 
-        public string firstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string lastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public DateTime? dateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public GenderDto selectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public ObservableCollection<GenderDto> genders { get => gendersValue; set { gendersValue = value; OnPropertyChanged(); } }
-        public string avatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
+        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public DateTime? DateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public GenderDto SelectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public ObservableCollection<GenderDto> Genders { get => gendersValue; set { gendersValue = value; OnPropertyChanged(); } }
+        public string AvatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
 
-        public bool isChangePasswordSectionVisible { get => isChangePasswordSectionVisibleValue; set { isChangePasswordSectionVisibleValue = value; OnPropertyChanged(); } }
-        public string currentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string newPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string confirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public bool isBusy { get => isBusyValue; private set { setBusy(value); } }
+        public bool IsChangePasswordSectionVisible { get => isChangePasswordSectionVisibleValue; set { isChangePasswordSectionVisibleValue = value; OnPropertyChanged(); } }
+        public string CurrentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string NewPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string ConfirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public bool IsBusy { get => isBusyValue; private set { setBusy(value); } }
 
-        public bool canSaveChanges =>
-            !isBusy &&
-            !string.IsNullOrWhiteSpace(firstName) &&
-            !string.IsNullOrWhiteSpace(lastName) &&
-            dateOfBirth.HasValue &&
-            selectedGender != null;
+        public bool CanSaveChanges =>
+            !IsBusy &&
+            !string.IsNullOrWhiteSpace(FirstName) &&
+            !string.IsNullOrWhiteSpace(LastName) &&
+            DateOfBirth.HasValue &&
+            SelectedGender != null;
 
-        public bool canSaveNewPassword =>
-            !isBusy &&
-            !string.IsNullOrWhiteSpace(currentPassword) &&
-            !string.IsNullOrWhiteSpace(newPassword) &&
-            !string.IsNullOrWhiteSpace(confirmPassword) &&
-            newPassword == confirmPassword;
+        public bool CanSaveNewPassword =>
+            !IsBusy &&
+            !string.IsNullOrWhiteSpace(CurrentPassword) &&
+            !string.IsNullOrWhiteSpace(NewPassword) &&
+            !string.IsNullOrWhiteSpace(ConfirmPassword) &&
+            NewPassword == ConfirmPassword;
 
-        public ICommand saveChangesCommand { get; }
-        public ICommand cancelCommand { get; }
-        public ICommand changeAvatarCommand { get; }
-        public ICommand showChangePasswordCommand { get; }
-        public ICommand saveNewPasswordCommand { get; }
-        public ICommand cancelChangePasswordCommand { get; }
+        public ICommand SaveChangesCommand { get; }
+        public ICommand CancelCommand { get; }
+        public ICommand ChangeAvatarCommand { get; }
+        public ICommand ShowChangePasswordCommand { get; }
+        public ICommand SaveNewPasswordCommand { get; }
+        public ICommand CancelChangePasswordCommand { get; }
 
 
         public EditProfileViewModel(Action navigateBack, Action navigateToSelectAvatar)
@@ -70,41 +70,41 @@ namespace MindWeaveClient.ViewModel.Main
             this.navigateToSelectAvatar = navigateToSelectAvatar;
             this.profileClient = new ProfileManagerClient();
 
-            cancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !isBusy);
-            saveChangesCommand = new RelayCommand(async p => await saveProfileChangesAsync(), p => canSaveChanges);
-            changeAvatarCommand = new RelayCommand(p => this.navigateToSelectAvatar?.Invoke(), p => !isBusy);
-            showChangePasswordCommand = new RelayCommand(executeShowChangePassword, p => !isBusy);
-            saveNewPasswordCommand = new RelayCommand(async p => await executeSaveNewPasswordAsync(), p => canSaveNewPassword);
-            cancelChangePasswordCommand = new RelayCommand(executeCancelChangePassword, p => !isBusy);
+            CancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !IsBusy);
+            SaveChangesCommand = new RelayCommand(async p => await saveProfileChangesAsync(), p => CanSaveChanges);
+            ChangeAvatarCommand = new RelayCommand(p => this.navigateToSelectAvatar?.Invoke(), p => !IsBusy);
+            ShowChangePasswordCommand = new RelayCommand(executeShowChangePassword, p => !IsBusy);
+            SaveNewPasswordCommand = new RelayCommand(async p => await executeSaveNewPasswordAsync(), p => CanSaveNewPassword);
+            CancelChangePasswordCommand = new RelayCommand(executeCancelChangePassword, p => !IsBusy);
 
-            genders = new ObservableCollection<GenderDto>();
+            Genders = new ObservableCollection<GenderDto>();
             loadEditableData();
         }
 
         private void executeShowChangePassword(object parameter)
         {
-            isChangePasswordSectionVisible = true;
-            currentPassword = string.Empty;
-            newPassword = string.Empty;
-            confirmPassword = string.Empty;
+            IsChangePasswordSectionVisible = true;
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmPassword = string.Empty;
         }
 
         private void executeCancelChangePassword(object parameter)
         {
-            isChangePasswordSectionVisible = false;
-            currentPassword = string.Empty;
-            newPassword = string.Empty;
-            confirmPassword = string.Empty;
+            IsChangePasswordSectionVisible = false;
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmPassword = string.Empty;
         }
 
         private async Task executeSaveNewPasswordAsync()
         {
-            if (newPassword != confirmPassword)
+            if (NewPassword != ConfirmPassword)
             {
                 MessageBox.Show(Lang.ValidationPasswordsDoNotMatch, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            if (string.IsNullOrWhiteSpace(currentPassword) || string.IsNullOrWhiteSpace(newPassword))
+            if (string.IsNullOrWhiteSpace(CurrentPassword) || string.IsNullOrWhiteSpace(NewPassword))
             {
                 MessageBox.Show(Lang.GlobalErrorAllFieldsRequired, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -113,7 +113,7 @@ namespace MindWeaveClient.ViewModel.Main
             setBusy(true);
             try
             {
-                var result = await profileClient.changePasswordAsync(SessionService.username, currentPassword, newPassword);
+                var result = await profileClient.changePasswordAsync(SessionService.Username, CurrentPassword, NewPassword);
 
                 if (result.success)
                 {
@@ -141,22 +141,22 @@ namespace MindWeaveClient.ViewModel.Main
             setBusy(true);
             try
             {
-                avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-                var profileData = await profileClient.getPlayerProfileForEditAsync(SessionService.username);
+                AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+                var profileData = await profileClient.getPlayerProfileForEditAsync(SessionService.Username);
                 if (profileData != null)
                 {
-                    firstName = profileData.firstName;
-                    lastName = profileData.lastName;
-                    dateOfBirth = profileData.dateOfBirth;
-                    genders.Clear();
+                    FirstName = profileData.firstName;
+                    LastName = profileData.lastName;
+                    DateOfBirth = profileData.dateOfBirth;
+                    Genders.Clear();
                     if (profileData.availableGenders != null)
                     {
                         foreach (var gender in profileData.availableGenders)
                         {
-                            genders.Add(gender);
+                            Genders.Add(gender);
                         }
                     }
-                    selectedGender = genders.FirstOrDefault(g => g.idGender == profileData.idGender);
+                    SelectedGender = Genders.FirstOrDefault(g => g.idGender == profileData.idGender);
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task saveProfileChangesAsync()
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || !dateOfBirth.HasValue || selectedGender == null)
+            if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) || !DateOfBirth.HasValue || SelectedGender == null)
             {
                 MessageBox.Show(Lang.GlobalErrorAllFieldsRequired, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -185,17 +185,17 @@ namespace MindWeaveClient.ViewModel.Main
 
             var updatedProfile = new UserProfileForEditDto
             {
-                firstName = this.firstName,
-                lastName = this.lastName,
-                dateOfBirth = this.dateOfBirth,
-                idGender = this.selectedGender.idGender,
+                firstName = this.FirstName,
+                lastName = this.LastName,
+                dateOfBirth = this.DateOfBirth,
+                idGender = this.SelectedGender.idGender,
                 availableGenders = null
             };
 
             setBusy(true);
             try
             {
-                var result = await profileClient.updateProfileAsync(SessionService.username, updatedProfile);
+                var result = await profileClient.updateProfileAsync(SessionService.Username, updatedProfile);
 
                 if (result.success)
                 {
@@ -217,22 +217,22 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        public void refreshAvatar()
+        public void RefreshAvatar()
         {
-            avatarSource = SessionService.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
         }
 
         private void setBusy(bool value)
         {
             isBusyValue = value;
-            OnPropertyChanged(nameof(isBusy));
+            OnPropertyChanged(nameof(IsBusy));
             raiseCanExecuteChanged(); 
         }
 
         private void raiseCanExecuteChanged()
         {
-            OnPropertyChanged(nameof(canSaveChanges));
-            OnPropertyChanged(nameof(canSaveNewPassword));
+            OnPropertyChanged(nameof(CanSaveChanges));
+            OnPropertyChanged(nameof(CanSaveNewPassword));
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
