@@ -21,10 +21,8 @@ using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Game
 {
-
- 
- public class LobbyViewModel : BaseViewModel
- {
+    public class LobbyViewModel : BaseViewModel 
+    {
  public bool IsGuestUser => SessionService.IsGuest;
  private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.instance.proxy;
  private MatchmakingCallbackHandler matchmakingCallbackHandler => MatchmakingServiceClientManager.instance.callbackHandler;

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+  <ProjectName>MindWeaveClient</ProjectName>
+  <ProjectLanguage>C#</ProjectLanguage>
+  <ProjectType>Product</ProjectType>
+  <ProjectGuid>0ef5e7c1-3218-4442-b6ac-53ebe27b09a2</ProjectGuid>
+  <FullPath>C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\MindWeaveClient.csproj</FullPath>
+  <IsExcluded>false</IsExcluded>
+  <AnalysisResultFiles>
+    <AnalysisResultFile Id="FilesToAnalyze" Location="C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\.sonarqube\conf\1\FilesToAnalyze.txt" />
+  </AnalysisResultFiles>
+  <AnalysisSettings>
+    <Property Name="sonar.cs.roslyn.reportFilePaths">C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\.sonarqube\out\1\Issues.json</Property>
+    <Property Name="sonar.cs.analyzer.projectOutPaths">C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\.sonarqube\out\1</Property>
+    <Property Name="sonar.cs.scanner.telemetry">C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\.sonarqube\out\1\Telemetry.json</Property>
+  </AnalysisSettings>
+  <Configuration>Debug</Configuration>
+  <Platform>AnyCPU</Platform>
+</ProjectInfo>

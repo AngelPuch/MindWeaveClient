@@ -1,26 +1,63 @@
-﻿using MindWeaveClient.AuthenticationService;
+﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Authentication;
-using MindWeaveClient.View.Main;
 using System;
+using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MindWeaveClient.Services;
-using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Validators;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
     public class LoginViewModel : BaseViewModel
     {
-        private string emailValue;
-        private string passwordValue;
-        private readonly Action<Page> navigateTo;
-        private bool showUnverifiedControlsValue = false;
+        private string email;
+        private string password;
+        private bool showUnverifiedControls = false;
 
-        public string Email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
-        public string Password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
-        public bool ShowUnverifiedControls { get => showUnverifiedControlsValue; set { showUnverifiedControlsValue = value; OnPropertyChanged(); } }
+        private readonly Action<Page> navigateAction;
+
+        private readonly IAuthenticationService authenticationService;
+        private readonly IDialogService dialogService;
+        private readonly LoginValidator validator;
+
+        public string Email
+        {
+            get => email;
+            set
+            {
+                email = value;
+                OnPropertyChanged();
+                Validate(validator, this);
+            }
+        }
+
+        public string Password
+        {
+            get => password;
+            set
+            {
+                password = value;
+                OnPropertyChanged();
+                Validate(validator, this);
+            }
+        }
+
+        public bool ShowUnverifiedControls
+        {
+            get => showUnverifiedControls;
+            set
+            {
+                showUnverifiedControls = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event EventHandler LoginSuccess;
 
         public ICommand LoginCommand { get; }
         public ICommand SignUpCommand { get; }
@@ -28,112 +65,131 @@ namespace MindWeaveClient.ViewModel.Authentication
         public ICommand GuestLoginCommand { get; }
         public ICommand ResendVerificationCommand { get; }
 
+        public LoginViewModel()
+        {
+
+        }
+
         public LoginViewModel(Action<Page> navigateAction)
         {
-            navigateTo = navigateAction;
+            this.navigateAction = navigateAction;
+
+            this.authenticationService = new Services.Implementations.AuthenticationService();
+            this.dialogService = new DialogService();
+            this.validator = new LoginValidator();
+
             LoginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
             SignUpCommand = new RelayCommand((param) => executeGoToSignUp());
             ForgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
             GuestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
             ResendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
+
+            Validate(validator, this);
         }
+
 
         private bool canExecuteLogin()
         {
-            return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
+            return !IsBusy && !HasErrors;
         }
 
         private async Task executeLoginAsync()
         {
-            setBusy(true);
+            if (HasErrors)
+            {
+                return;
+            }
+
+            SetBusy(true);
             try
             {
-                var client = new AuthenticationManagerClient();
-                var loginCredentials = new LoginDto
+                LoginServiceResultDto serviceResult = await authenticationService.loginAsync(Email, Password);
+
+                if (serviceResult.wcfLoginResult.operationResult.success)
                 {
-                    email = this.Email,
-                    password = this.Password
-                };
-
-                LoginResultDto result = await client.loginAsync(loginCredentials);
-
-                if (result.operationResult.success)
-                {
-                    SessionService.SetSession(result.username, result.avatarPath);
-
-                    bool socialConnected = SocialServiceClientManager.instance.Connect(result.username);
-                    if (!socialConnected)
+                    if (!serviceResult.isSocialServiceConnected)
                     {
-                        MessageBox.Show("Could not connect to social features. Friend status and invites might not work.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
+                        dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle);
+                    }
+                    if (!serviceResult.isMatchmakingServiceConnected)
+                    {
+                        dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle);
                     }
 
-                    MatchmakingServiceClientManager.instance.Connect();
-
-                    MessageBox.Show(result.operationResult.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    var currentWindow = Application.Current.MainWindow;
-                    var mainAppWindow = new MainWindow();
-                    mainAppWindow.Show();
-                    currentWindow?.Close();
+                    LoginSuccess?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
-                    if (result.resultCode == "ACCOUNT_NOT_VERIFIED")
+                    if (serviceResult.wcfLoginResult.resultCode == "ACCOUNT_NOT_VERIFIED")
                     {
                         ShowUnverifiedControls = true;
                     }
                     else
                     {
-                        MessageBox.Show(result.operationResult.message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        dialogService.showError(serviceResult.wcfLoginResult.operationResult.message, Lang.ErrorTitle);
                     }
                 }
             }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
             catch (Exception ex)
             {
-                handleError("An error occurred while connecting to the server", ex);
+                handleError(Lang.ErrorMsgLoginFailed, ex);
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
         private async Task executeResendVerificationAsync()
         {
-            setBusy(true);
+            SetBusy(true);
             try
             {
-                var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.resendVerificationCodeAsync(this.Email);
+                var result = await authenticationService.resendVerificationCodeAsync(Email);
+
                 if (result.success)
                 {
-                    MessageBox.Show(Lang.InfoMsgBodyCodeSent, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
-                    navigateTo(new VerificationPage(this.Email));
+                    dialogService.showInfo(Lang.InfoMsgBodyCodeSent, Lang.InfoMsgTitleSuccess);
+                    navigateAction(new VerificationPage(this.Email));
                 }
-                else { handleError(result.message, null); }
+                else
+                {
+                    handleError(result.message, null);
+                }
             }
-            catch (Exception ex) { handleError("Error resending code", ex); }
-            finally { setBusy(false); }
-        }
-        private void executeGoToSignUp() { navigateTo(new CreateAccountPage()); }
-        private void executeGoToForgotPassword() { navigateTo(new PasswordRecoveryPage()); }
-        private void executeGoToGuestJoin()
-        {
-            navigateTo(new GuestJoinPage());
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorMsgResendCodeFailed, ex);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
         }
 
-        private bool isBusyValue;
-        public bool IsBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
-        private void setBusy(bool value) { IsBusy = value; }
+        private void executeGoToSignUp()
+        {
+            navigateAction(new CreateAccountPage());
+        }
+
+        private void executeGoToForgotPassword()
+        {
+            navigateAction(new PasswordRecoveryPage());
+        }
+
+        private void executeGoToGuestJoin()
+        {
+            navigateAction(new GuestJoinPage());
+        }
+
         private void handleError(string message, Exception ex)
         {
-            string errorDetails = ex != null ? ex.Message : "No details";
-            Console.WriteLine($"!!! {message}: {errorDetails}");
-            MessageBox.Show($"{message}: {errorDetails}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        private void RaiseCanExecuteChangedOnCommands()
-        {
-            Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

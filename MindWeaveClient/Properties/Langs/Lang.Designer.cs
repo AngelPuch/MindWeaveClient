@@ -169,6 +169,42 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a An unexpected error occurred while logging in..
+        /// </summary>
+        public static string ErrorMsgLoginFailed {
+            get {
+                return ResourceManager.GetString("ErrorMsgLoginFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No details provided..
+        /// </summary>
+        public static string ErrorMsgNoDetails {
+            get {
+                return ResourceManager.GetString("ErrorMsgNoDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a An error occurred while resending the verification code..
+        /// </summary>
+        public static string ErrorMsgResendCodeFailed {
+            get {
+                return ResourceManager.GetString("ErrorMsgResendCodeFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The server is unavailable. Please try again later..
+        /// </summary>
+        public static string ErrorMsgServerOffline {
+            get {
+                return ResourceManager.GetString("ErrorMsgServerOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Failed to send the guest invitation. Please try again..
         /// </summary>
         public static string ErrorSendingGuestInvitation {
@@ -183,6 +219,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorTitle {
             get {
                 return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Details:.
+        /// </summary>
+        public static string ErrorTitleDetails {
+            get {
+                return ResourceManager.GetString("ErrorTitleDetails", resourceCulture);
             }
         }
         
@@ -1141,6 +1186,33 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Email format is invalid..
+        /// </summary>
+        public static string ValidationEmailInvalid {
+            get {
+                return ResourceManager.GetString("ValidationEmailInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Email is required..
+        /// </summary>
+        public static string ValidationEmailRequired {
+            get {
+                return ResourceManager.GetString("ValidationEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password is required..
+        /// </summary>
+        public static string ValidationPasswordRequired {
+            get {
+                return ResourceManager.GetString("ValidationPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a The passwords do not match..
         /// </summary>
         public static string ValidationPasswordsDoNotMatch {
@@ -1191,6 +1263,33 @@ namespace MindWeaveClient.Properties.Langs {
         public static string VerificationCodeResend {
             get {
                 return ResourceManager.GetString("VerificationCodeResend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Could not connect to matchmaking service..
+        /// </summary>
+        public static string WarningMsgMatchmakingConnectFailed {
+            get {
+                return ResourceManager.GetString("WarningMsgMatchmakingConnectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Could not connect to social features. Friend lists and invites might not work..
+        /// </summary>
+        public static string WarningMsgSocialConnectFailed {
+            get {
+                return ResourceManager.GetString("WarningMsgSocialConnectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Warning.
+        /// </summary>
+        public static string WarningTitle {
+            get {
+                return ResourceManager.GetString("WarningTitle", resourceCulture);
             }
         }
     }

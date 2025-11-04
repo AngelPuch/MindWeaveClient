@@ -5,13 +5,21 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"
+      xmlns:viewModel="clr-namespace:MindWeaveClient.ViewModel.Authentication"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="760"
-      Title="LoginPage">
+      Title="LoginPage"
+      d:DataContext="{d:DesignInstance Type=viewModel:LoginViewModel}">
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <helpers:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
+
+        <Style x:Key="ValidationErrorTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#e74c3c"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
     </Page.Resources>
 
     <Grid>
@@ -19,32 +27,49 @@
             <Border.Effect>
                 <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="30" Opacity="0.6"/>
             </Border.Effect>
+
             <StackPanel VerticalAlignment="Center" Margin="40">
+
                 <TextBlock Text="{x:Static language:Lang.GlobalLbGameName}" Foreground="#2c3e50" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,25"/>
 
                 <StackPanel Visibility="{Binding ShowUnverifiedControls, Converter={StaticResource InverseBoolToVis}}">
+
                     <TextBlock Text="{x:Static language:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,0,0,5"/>
-                    <TextBox x:Name="txtEmail" Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
+
+                    <TextBox Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" 
+                             Style="{StaticResource AuthInputBoxStyle}"/>
+
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}"
+                               Text="{Binding Errors[Email][0]}"/>
+
 
                     <TextBlock Text="{x:Static language:Lang.LogInLbPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <PasswordBox x:Name="pbPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Button x:Name="btnLogin" Command="{Binding LoginCommand}" Content="{x:Static language:Lang.LogInBtnLogin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,0"/>
-                    <Button x:Name="btnForgotPassword" Command="{Binding ForgotPasswordCommand}" Content="{x:Static language:Lang.LogInBtnRecover}" Style="{StaticResource LinkButtonStyle}"/>
+                    <PasswordBox helpers:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}"
+                               Text="{Binding Errors[Password][0]}"/>
+
+
+                    <Button Command="{Binding LoginCommand}" Content="{x:Static language:Lang.LogInBtnLogin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,0"/>
+
+                    <Button Command="{Binding ForgotPasswordCommand}" Content="{x:Static language:Lang.LogInBtnRecover}" Style="{StaticResource LinkButtonStyle}"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,15,0,0" Visibility="{Binding ShowUnverifiedControls, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="{x:Static language:Lang.LoginAccountNotVerified}" 
                                Foreground="#e74c3c" TextAlignment="Center" TextWrapping="Wrap" FontWeight="SemiBold" FontSize="14"/>
+
                     <Button Command="{Binding ResendVerificationCommand}" 
                             Content="{x:Static language:Lang.VerificationCodeResend}" 
                             Style="{StaticResource PrimaryButtonStyle}" Margin="0,20,0,0"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,25,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="btnSignUp" Command="{Binding SignUpCommand}" Content="{x:Static language:Lang.GlobalBtnSignUp}" Style="{StaticResource SecondaryButtonStyle}" Width="140" Margin="0,0,10,0"/>
-                    <Button x:Name="btnGuestLogin" Command="{Binding GuestLoginCommand}" Content="{x:Static language:Lang.LoginBtnGuest}" Style="{StaticResource SecondaryButtonStyle}" Width="140"/>
+                    <Button Command="{Binding SignUpCommand}" Content="{x:Static language:Lang.GlobalBtnSignUp}" Style="{StaticResource SecondaryButtonStyle}" Width="140" Margin="0,0,10,0"/>
+                    <Button Command="{Binding GuestLoginCommand}" Content="{x:Static language:Lang.LoginBtnGuest}" Style="{StaticResource SecondaryButtonStyle}" Width="140"/>
                 </StackPanel>
+
             </StackPanel>
         </Border>
     </Grid>

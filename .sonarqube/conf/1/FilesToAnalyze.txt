@@ -1,0 +1,151 @@
+﻿C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\App.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\DifficultyIndexConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\EqualityToVisibilityConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\InverseBoolConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\InverseBooleanToVisibilityConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\KickButtonVisibilityConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\PasswordBoxHelper.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\StringEqualityToVisibilityConverterInverted.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\StringEquialityConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\StringToVisibilityConverter.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\ChatCallbackHandler.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\ChatServiceClientManager.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\MatchmakingCallbackHandler.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\MatchmakingServiceClientManager.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\SessionService.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\SocialCallbackHandler.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\SocialServiceClientManager.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Utilities\AudioManager.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\CreateAccountViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\GuestJoinViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\LoginViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\PasswordRecoveryViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\VerificationViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\BaseViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Game\ChatMessageDisplayViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Game\LobbyViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\EditProfileViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\MainMenuViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\ProfileViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SelectAvatarViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SelectionPuzzleViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SettingsViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SocialViewModel.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\RelayCommand.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\AuthenticationWindow.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\CreateAccountPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\GuestJoinPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\LoginPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\PasswordRecoveryPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\VerificationPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Dialogs\GuestInputDialog.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Game\GameWindow.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Game\LobbyPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\EditProfilePage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\MainMenuPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\MainWindow.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\ProfilePage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SelectAvatarPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SelectionPuzzlePage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SocialPage.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SettingsWindow.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\App.xaml.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\AssemblyInfo.cs
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Langs\Lang.resx
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Resources.resx
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Langs\Lang.es.resx
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\MindWeaveClient.AuthenticationService.LoginResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\MindWeaveClient.AuthenticationService.OperationResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\MindWeaveServer.Contracts.DataContracts.Authentication.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\MindWeaveServer.Contracts.DataContracts.Shared.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\service.wsdl
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\service.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\service1.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\service.wsdl
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\service.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\service1.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\Arrays.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.GuestJoinResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.LobbyCreationResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\service.wsdl
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\service.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\service1.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\MindWeaveClient.ProfileService.OperationResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\MindWeaveClient.ProfileService.PlayerProfileViewDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\MindWeaveClient.ProfileService.UserProfileForEditDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Profile.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Shared.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\MindWeaveServer.Contracts.DataContracts.Stats.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\service.wsdl
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\service.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\service1.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.PuzzleInfoDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.UploadResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.ServiceContracts.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\service.wsdl
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\service.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\service1.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendRequestInfoDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.OperationResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.PlayerSearchResultDto.datasource
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\service.wsdl
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\service.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\service1.xsd
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Settings.settings
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\App.config
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\configuration91.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\configuration.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\Reference.svcmap
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\configuration91.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\configuration.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\Reference.svcmap
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\configuration91.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\configuration.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\Reference.svcmap
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\configuration91.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\configuration.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\Reference.svcmap
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\configuration91.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\configuration.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\Reference.svcmap
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\configuration91.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\configuration.svcinfo
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\Reference.svcmap
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Styles\GlobalStyles.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\AuthenticationWindow.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\CreateAccountPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\GuestJoinPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\LoginPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\PasswordRecoveryPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\VerificationPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Dialogs\GuestInputDialog.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Game\GameWindow.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Game\LobbyPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\EditProfilePage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\MainMenuPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\MainWindow.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\ProfilePage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SelectAvatarPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SelectionPuzzlePage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SocialPage.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SettingsWindow.xaml
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\MindWeave_logo.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\background.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Avatar\default_avatar.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Avatar\alien_avatar.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Avatar\ball_avatar.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Avatar\goblin_avatar.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Avatar\pirat_avatar.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Avatar\robot_avatar.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Puzzles\puzzleDefault3.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Puzzles\puzzleDefault2.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Images\Puzzles\puzzleDefault.png
+C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Resources\Audio\audio_background.mp3

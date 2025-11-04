@@ -67,7 +67,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.success)
                 {
                     MessageBox.Show(result.message, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                    this.navigateTo(new LoginPage());
+                    //this.navigateTo(new LoginPage());
                 }
                 else
                 {

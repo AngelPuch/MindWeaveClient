@@ -1,0 +1,1 @@
+•R†C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\MindWeaveClient.csprojò	CSharp7_3

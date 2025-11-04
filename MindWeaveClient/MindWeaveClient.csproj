@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentValidation, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.10.3.6\lib\netstandard2.0\FluentValidation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -101,14 +104,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\Abstractions\IAuthenticationService.cs" />
     <Compile Include="Services\ChatCallbackHandler.cs" />
     <Compile Include="Services\ChatServiceClientManager.cs" />
+    <Compile Include="Services\Implementations\AuthenticationService.cs" />
+    <Compile Include="Services\LoginServiceResultDto.cs" />
     <Compile Include="Services\MatchmakingCallbackHandler.cs" />
     <Compile Include="Services\MatchmakingServiceClientManager.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Services\SocialCallbackHandler.cs" />
     <Compile Include="Services\SocialServiceClientManager.cs" />
+    <Compile Include="Utilities\Abstractions\IDialogService.cs" />
+    <Compile Include="Utilities\Abstractions\INavigationService.cs" />
     <Compile Include="Utilities\AudioManager.cs" />
+    <Compile Include="Utilities\Implementations\DialogService.cs" />
+    <Compile Include="Validators\LoginValidator.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
     <Compile Include="ViewModel\Authentication\GuestJoinViewModel.cs" />
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />
@@ -359,13 +369,10 @@
     <None Include="Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.UploadResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.Puzzle.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.DataContracts.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\PuzzleManagerService\MindWeaveServer.Contracts.ServiceContracts.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\PuzzleManagerService\service.wsdl" />
@@ -400,6 +407,7 @@
     <None Include="Connected Services\SocialManagerService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

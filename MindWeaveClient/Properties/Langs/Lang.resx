@@ -495,4 +495,37 @@
   <data name="GlobalErrorInvalidEmailFormat" xml:space="preserve">
     <value>Invalid email format.</value>
   </data>
+  <data name="WarningMsgSocialConnectFailed" xml:space="preserve">
+    <value>Could not connect to social features. Friend lists and invites might not work.</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="WarningMsgMatchmakingConnectFailed" xml:space="preserve">
+    <value>Could not connect to matchmaking service.</value>
+  </data>
+  <data name="ErrorMsgServerOffline" xml:space="preserve">
+    <value>The server is unavailable. Please try again later.</value>
+  </data>
+  <data name="ErrorMsgLoginFailed" xml:space="preserve">
+    <value>An unexpected error occurred while logging in.</value>
+  </data>
+  <data name="ErrorMsgResendCodeFailed" xml:space="preserve">
+    <value>An error occurred while resending the verification code.</value>
+  </data>
+  <data name="ErrorMsgNoDetails" xml:space="preserve">
+    <value>No details provided.</value>
+  </data>
+  <data name="ErrorTitleDetails" xml:space="preserve">
+    <value>Details:</value>
+  </data>
+  <data name="ValidationEmailRequired" xml:space="preserve">
+    <value>Email is required.</value>
+  </data>
+  <data name="ValidationEmailInvalid" xml:space="preserve">
+    <value>Email format is invalid.</value>
+  </data>
+  <data name="ValidationPasswordRequired" xml:space="preserve">
+    <value>Password is required.</value>
+  </data>
 </root>

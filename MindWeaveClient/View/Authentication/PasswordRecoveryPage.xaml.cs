@@ -13,11 +13,11 @@ namespace MindWeaveClient.View.Authentication
     {
         public PasswordRecoveryPage()
         {
-            InitializeComponent();
-            this.DataContext = new PasswordRecoveryViewModel(
-                () => { if (this.NavigationService.CanGoBack) this.NavigationService.GoBack(); },
-                () => this.NavigationService?.Navigate(new LoginPage())
-            );
+            //InitializeComponent();
+            //this.DataContext = new PasswordRecoveryViewModel(
+                //() => { if (this.NavigationService.CanGoBack) this.NavigationService.GoBack(); },
+                //() => this.NavigationService?.Navigate(new LoginPage())
+            //);
         }
 
         // Valida que solo se ingresen números en el TextBox del código

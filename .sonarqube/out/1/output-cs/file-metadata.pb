@@ -1,0 +1,82 @@
+¶
+öC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\GeneratedInternalTypeHelper.g.csutf-8∏
+¨C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.csutf-8£
+óC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\SettingsWindow.g.csutf-8®
+úC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\SelectionPuzzlePage.g.csutf-8é
+ÇC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\App.g.csutf-8ü
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\SocialPage.g.csutf-8•
+ôC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\SelectAvatarPage.g.csutf-8†
+îC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\ProfilePage.g.csutf-8ü
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\MainWindow.g.csutf-8°
+ïC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\MainMenuPage.g.csutf-8û
+íC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Game\LobbyPage.g.csutf-8§
+òC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Main\EditProfilePage.g.csutf-8Ø
+£C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Authentication\VerificationPage.g.csutf-8ü
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Game\GameWindow.g.csutf-8®
+úC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Dialogs\GuestInputDialog.g.csutf-8≥
+ßC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Authentication\PasswordRecoveryPage.g.csutf-8®
+úC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Authentication\LoginPage.g.csutf-8∞
+§C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Authentication\CreateAccountPage.g.csutf-8¨
+†C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Authentication\GuestJoinPage.g.csutf-8≥
+ßC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\obj\Debug\View\Authentication\AuthenticationWindow.g.csutf-8õ
+èC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Settings.Designer.csutf-8î
+äC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\AssemblyInfo.csutf-8ú
+êC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Resources.Designer.csutf-8Ñ
+{C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\App.xaml.csutf-8ö
+êC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SettingsWindow.xaml.csutf-8ñ
+åC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SocialPage.xaml.csutf-8ü
+ïC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SelectionPuzzlePage.xaml.csutf-8ú
+íC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\SelectAvatarPage.xaml.csutf-8ó
+çC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\ProfilePage.xaml.csutf-8ñ
+åC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\MainWindow.xaml.csutf-8ò
+éC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\MainMenuPage.xaml.csutf-8õ
+ëC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Main\EditProfilePage.xaml.csutf-8ï
+ãC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Game\LobbyPage.xaml.csutf-8ñ
+åC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Game\GameWindow.xaml.csutf-8ü
+ïC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Dialogs\GuestInputDialog.xaml.csutf-8¶
+úC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\VerificationPage.xaml.csutf-8™
+†C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\PasswordRecoveryPage.xaml.csutf-8ü
+ïC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\LoginPage.xaml.csutf-8£
+ôC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\GuestJoinPage.xaml.csutf-8ß
+ùC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\CreateAccountPage.xaml.csutf-8™
+†C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\View\Authentication\AuthenticationWindow.xaml.csutf-8ì
+âC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\RelayCommand.csutf-8õ
+ëC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SocialViewModel.csutf-8ù
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SettingsViewModel.csutf-8§
+öC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SelectionPuzzleViewModel.csutf-8°
+óC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\SelectAvatarViewModel.csutf-8ú
+íC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\ProfileViewModel.csutf-8ù
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\MainMenuViewModel.csutf-8†
+ñC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Main\EditProfileViewModel.csutf-8ö
+êC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Game\LobbyViewModel.csutf-8ß
+ùC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Game\ChatMessageDisplayViewModel.csutf-8î
+äC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\BaseViewModel.csutf-8Ø
+•C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\PasswordRecoveryViewModel.csutf-8´
+°C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\VerificationViewModel.csutf-8§
+öC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\LoginViewModel.csutf-8®
+ûC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\GuestJoinViewModel.csutf-8¨
+¢C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\ViewModel\Authentication\CreateAccountViewModel.csutf-8•
+õC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\MatchmakingServiceClientManager.csutf-8ì
+âC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Utilities\AudioManager.csutf-8†
+ñC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\SocialServiceClientManager.csutf-8õ
+ëC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\SocialCallbackHandler.csutf-8†
+ñC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\MatchmakingCallbackHandler.csutf-8î
+äC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\SessionService.csutf-8û
+îC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\ChatServiceClientManager.csutf-8ô
+èC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Services\ChatCallbackHandler.csutf-8ù
+ëC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Properties\Langs\Lang.Designer.csutf-8†
+ñC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\StringToVisibilityConverter.csutf-8ù
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\StringEquialityConverter.csutf-8∞
+¶C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\StringEqualityToVisibilityConverterInverted.csutf-8®
+ûC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\InverseBooleanToVisibilityConverter.csutf-8¢
+òC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\EqualityToVisibilityConverter.csutf-8¢
+òC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\KickButtonVisibilityConverter.csutf-8ñ
+åC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\PasswordBoxHelper.csutf-8ô
+èC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\InverseBoolConverter.csutf-8ù
+ìC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Helpers\DifficultyIndexConverter.csutf-8∞
+§C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\SocialManagerService\Reference.csutf-8∞
+§C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\PuzzleManagerService\Reference.csutf-8™
+ûC:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ProfileService\Reference.csutf-8Æ
+¢C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\MatchmakingService\Reference.csutf-8Æ
+¢C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\ChatManagerService\Reference.csutf-8±
+•C:\Users\Dell\Documents\Materias Universidad\5to Semestre\construccion\Proyecto\MindWeaveClient\MindWeaveClient\Connected Services\AuthenticationService\Reference.csutf-8

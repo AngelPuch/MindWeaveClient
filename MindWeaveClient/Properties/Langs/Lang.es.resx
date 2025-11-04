@@ -495,4 +495,37 @@
   <data name="GlobalErrorInvalidEmailFormat" xml:space="preserve">
     <value>Formato de correo inválido.</value>
   </data>
+  <data name="WarningMsgSocialConnectFailed" xml:space="preserve">
+    <value>No se pudo conectar a los servicios sociales. Las listas de amigos e invitaciones podrían no funcionar.</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Advertencia</value>
+  </data>
+  <data name="WarningMsgMatchmakingConnectFailed" xml:space="preserve">
+    <value>No se pudo conectar al servicio de emparejamiento.</value>
+  </data>
+  <data name="ErrorMsgServerOffline" xml:space="preserve">
+    <value>El servidor no está disponible. Por favor, inténtelo más tarde.</value>
+  </data>
+  <data name="ErrorMsgLoginFailed" xml:space="preserve">
+    <value>Ocurrió un error inesperado al iniciar sesión.</value>
+  </data>
+  <data name="ErrorMsgResendCodeFailed" xml:space="preserve">
+    <value>Ocurrió un error al reenviar el código de verificación.</value>
+  </data>
+  <data name="ErrorMsgNoDetails" xml:space="preserve">
+    <value>Sin detalles.</value>
+  </data>
+  <data name="ErrorTitleDetails" xml:space="preserve">
+    <value>Detalles:</value>
+  </data>
+  <data name="ValidationEmailRequired" xml:space="preserve">
+    <value>El correo es obligatorio.</value>
+  </data>
+  <data name="ValidationEmailInvalid" xml:space="preserve">
+    <value>El formato del correo no es válido.</value>
+  </data>
+  <data name="ValidationPasswordRequired" xml:space="preserve">
+    <value>La contraseña es obligatoria.</value>
+  </data>
 </root>

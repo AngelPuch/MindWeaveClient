@@ -88,7 +88,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoToLogin()
         {
-            navigateTo(new LoginPage());
+            //navigateTo(new LoginPage());
         }
 
         private int getSelectedGenderId()
