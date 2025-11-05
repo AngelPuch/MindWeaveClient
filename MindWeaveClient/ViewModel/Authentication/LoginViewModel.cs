@@ -154,7 +154,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.success)
                 {
                     dialogService.showInfo(Lang.InfoMsgBodyCodeSent, Lang.InfoMsgTitleSuccess);
-                    navigateAction(new VerificationPage(this.Email));
+                    navigateAction(new VerificationPage(this.Email, navigateAction));
                 }
                 else
                 {
@@ -173,17 +173,17 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoToSignUp()
         {
-            navigateAction(new CreateAccountPage());
+            navigateAction(new CreateAccountPage(navigateAction));
         }
 
         private void executeGoToForgotPassword()
         {
-            navigateAction(new PasswordRecoveryPage());
+            navigateAction(new PasswordRecoveryPage(navigateAction));
         }
 
         private void executeGoToGuestJoin()
         {
-            navigateAction(new GuestJoinPage());
+            navigateAction(new GuestJoinPage(navigateAction));
         }
 
         private void handleError(string message, Exception ex)

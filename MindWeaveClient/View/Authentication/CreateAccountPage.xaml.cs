@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.ViewModel.Authentication;
+using System;
 using System.Windows.Controls;
 
 namespace MindWeaveClient.View.Authentication
@@ -8,10 +9,10 @@ namespace MindWeaveClient.View.Authentication
     /// </summary>
     public partial class CreateAccountPage : Page
     {
-        public CreateAccountPage()
+        public CreateAccountPage(Action<Page> navigateAction)
         {
-            InitializeComponent(); // Agrega esta línea
-            this.DataContext = new CreateAccountViewModel(page => this.NavigationService?.Navigate(page));
+            InitializeComponent();
+            DataContext = new CreateAccountViewModel(navigateAction);
         }
     }
 }

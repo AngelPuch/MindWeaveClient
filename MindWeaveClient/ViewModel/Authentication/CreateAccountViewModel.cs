@@ -1,8 +1,13 @@
 ﻿using MindWeaveClient.AuthenticationService;
+using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
+using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -10,50 +15,71 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class CreateAccountViewModel : BaseViewModel
     {
-        private string firstNameValue;
-        private string lastNameValue;
-        private string usernameValue;
-        private string emailValue;
-        private DateTime? birthDateValue = DateTime.Now;
-        private string passwordValue;
+        private string firstName;
+        private string lastName;
+        private string username;
+        private string email;
+        private DateTime? birthDate = DateTime.Now;
+        private string password;
+        private bool isFemale;
+        private bool isMale;
+        private bool isOther;
+        private bool isPreferNotToSay;
 
-        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); } }
-        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); } }
-        public string Username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
-        public string Email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
-        public DateTime? BirthDate { get => birthDateValue; set { birthDateValue = value; OnPropertyChanged(); } }
-        public string Password { get => passwordValue; set { passwordValue = value; OnPropertyChanged(); } }
+        private readonly Action<Page> navigateAction;
 
+        private readonly IAuthenticationService authenticationService;
+        private readonly IDialogService dialogService;
+        private readonly CreateAccountValidator validator;
 
-        private bool isFemaleValue;
-        private bool isMaleValue;
-        private bool isOtherValue;
-        private bool isPreferNotToSayValue;
+        public string FirstName { get => firstName; set { firstName = value; OnPropertyChanged(); Validate(validator, this); } }
+        public string LastName { get => lastName; set { lastName = value; OnPropertyChanged(); Validate(validator, this); } }
+        public string Username { get => username; set { username = value; OnPropertyChanged(); Validate(validator, this); } }
+        public string Email { get => email; set { email = value; OnPropertyChanged(); Validate(validator, this); } }
+        public DateTime? BirthDate { get => birthDate; set { birthDate = value; OnPropertyChanged(); Validate(validator, this); } }
+        public string Password { get => password; set { password = value; OnPropertyChanged(); Validate(validator, this); } }
 
-        public bool IsFemale { get => isFemaleValue; set { isFemaleValue = value; OnPropertyChanged(); } }
-        public bool IsMale { get => isMaleValue; set { isMaleValue = value; OnPropertyChanged(); } }
-        public bool IsOther { get => isOtherValue; set { isOtherValue = value; OnPropertyChanged(); } }
-        public bool IsPreferNotToSay { get => isPreferNotToSayValue; set { isPreferNotToSayValue = value; OnPropertyChanged(); } }
+        public bool IsFemale { get => isFemale; set { isFemale = value; OnPropertyChanged(); Validate(validator, this); } }
+        public bool IsMale { get => isMale; set { isMale = value; OnPropertyChanged(); Validate(validator, this); } }
+        public bool IsOther { get => isOther; set { isOther = value; OnPropertyChanged(); Validate(validator, this); } }
+        public bool IsPreferNotToSay { get => isPreferNotToSay; set { isPreferNotToSay = value; OnPropertyChanged(); Validate(validator, this); } }
 
         public ICommand SignUpCommand { get; }
         public ICommand GoToLoginCommand { get; }
-
-        private readonly Action<Page> navigateTo;
+        
+        public CreateAccountViewModel()
+        {
+            this.validator = new CreateAccountValidator();
+            Validate(validator, this);
+        }
 
         public CreateAccountViewModel(Action<Page> navigateAction)
         {
-            navigateTo = navigateAction;
-            SignUpCommand = new RelayCommand(async (param) => await executeSignUp());
+            this.navigateAction = navigateAction;
+
+            this.authenticationService = new Services.Implementations.AuthenticationService();
+            this.dialogService = new DialogService();
+            this.validator = new CreateAccountValidator();
+
+            SignUpCommand = new RelayCommand(async (param) => await executeSignUp(), (param) => canExecuteSignUp());
             GoToLoginCommand = new RelayCommand((param) => executeGoToLogin());
+
+            Validate(validator, this);
+        }
+        
+        private bool canExecuteSignUp()
+        {
+            return !IsBusy && !HasErrors;
         }
 
         private async Task executeSignUp()
         {
-            if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || BirthDate == null)
+            if (HasErrors)
             {
-                MessageBox.Show("Please fill all required fields.", "Incomplete Form", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            SetBusy(true);
 
             var userProfile = new UserProfileDto
             {
@@ -67,28 +93,34 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             try
             {
-                var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.registerAsync(userProfile, this.Password);
+                OperationResultDto result = await authenticationService.registerAsync(userProfile, this.Password);
 
                 if (result.success)
                 {
-                    MessageBox.Show(result.message, "Registration Pending", MessageBoxButton.OK, MessageBoxImage.Information);
-                    navigateTo(new VerificationPage(Email));
+                    navigateAction(new VerificationPage(email, navigateAction));
                 }
                 else
                 {
-                    MessageBox.Show(result.message, "Registration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                handleError(Lang.ErrorMsgSignUpFailed, ex);
+            }
+            finally
+            {
+                SetBusy(false);
             }
         }
 
         private void executeGoToLogin()
         {
-            //navigateTo(new LoginPage());
+            navigateAction(new LoginPage(navigateAction));
         }
 
         private int getSelectedGenderId()
@@ -97,6 +129,12 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (IsMale) return 2;
             if (IsOther) return 3;
             return 4;
+        }
+
+        private void handleError(string message, Exception ex)
+        {
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

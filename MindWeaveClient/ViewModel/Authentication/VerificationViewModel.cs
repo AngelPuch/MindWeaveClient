@@ -1,9 +1,13 @@
 ﻿using MindWeaveClient.AuthenticationService;
+using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
-using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -11,18 +15,24 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class VerificationViewModel : BaseViewModel
     {
-        private string emailValue;
-        private string verificationCodeValue;
+        private string email;
+        private string verificationCode;
+        private readonly Action<Page> navigateAction;
 
-        public string Email { get => emailValue; set { emailValue = value; OnPropertyChanged(); } }
+        private readonly IAuthenticationService authenticationService;
+        private readonly IDialogService dialogService;
+        private readonly VerificationValidator validator;
+
+        public string Email { get => email; set { email = value; OnPropertyChanged(); } }
+
         public string VerificationCode
         {
-            get => verificationCodeValue;
+            get => verificationCode;
             set
             {
-                verificationCodeValue = value;
+                verificationCode = value;
                 OnPropertyChanged();
-                ((RelayCommand)VerifyCommand).RaiseCanExecuteChanged();
+                Validate(validator, this);
             }
         }
 
@@ -30,81 +40,105 @@ namespace MindWeaveClient.ViewModel.Authentication
         public ICommand GoBackCommand { get; }
         public ICommand ResendCodeCommand { get; }
 
-        private readonly Action<Page> navigateTo;
-        private readonly Action navigateBack;
+        public VerificationViewModel()
+        {
+            this.validator = new VerificationValidator();
+            Validate(validator, this);
+        }
 
-        public VerificationViewModel(string email, Action<Page> navigateTo, Action navigateBack)
+        public VerificationViewModel(string email, Action<Page> navigateAction)
         {
             this.Email = email;
-            this.navigateTo = navigateTo;
-            this.navigateBack = navigateBack;
+            this.navigateAction = navigateAction;
+
+            this.authenticationService = new Services.Implementations.AuthenticationService();
+            this.dialogService = new DialogService();
+            this.validator = new VerificationValidator();
 
             VerifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
             GoBackCommand = new RelayCommand((param) => executeGoBack());
             ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
+
+            Validate(validator, this);
         }
 
         private bool canExecuteVerify()
         {
-            return !string.IsNullOrWhiteSpace(VerificationCode)
-                   && VerificationCode.Length == 6
-                   && VerificationCode.All(char.IsDigit);
+            return !IsBusy && !HasErrors;
         }
 
         private async Task executeVerifyAsync()
         {
-            if (!canExecuteVerify())
-            {
-                MessageBox.Show(Properties.Langs.Lang.VerificationCodeInvalidFormat, "Código Inválido", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (HasErrors) return;
 
+            SetBusy(true);
             try
             {
-                var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.verifyAccountAsync(Email, VerificationCode);
+                OperationResultDto result = await authenticationService.verifyAccountAsync(Email, VerificationCode);
 
                 if (result.success)
                 {
-                    MessageBox.Show(result.message, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                    //this.navigateTo(new LoginPage());
+                    dialogService.showInfo(Lang.InfoMsgVerifySuccessBody, Lang.InfoMsgVerifySuccessTitle);
+                    executeGoBack();
                 }
                 else
                 {
-                    MessageBox.Show(result.message, "Verificación Fallida", MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                handleError(Lang.ErrorMsgVerifyFailed, ex);
+            }
+            finally
+            {
+                SetBusy(false);
             }
         }
 
         private void executeGoBack()
         {
-            this.navigateBack?.Invoke();
+            navigateAction(new LoginPage(navigateAction));
         }
 
         private async Task executeResendCodeAsync()
         {
+            SetBusy(true);
             try
             {
-                var client = new AuthenticationManagerClient();
-                OperationResultDto result = await client.resendVerificationCodeAsync(Email);
+                OperationResultDto result = await authenticationService.resendVerificationCodeAsync(Email);
 
                 if (result.success)
                 {
-                    MessageBox.Show("Código enviado con éxito", "Envio exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    dialogService.showInfo(Lang.InfoMsgResendSuccessBody, Lang.InfoMsgResendSuccessTitle);
                 }
                 else
                 {
-                    MessageBox.Show(result.message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error de conexión: {ex.Message}", "Error de Conexión", MessageBoxButton.OK, MessageBoxImage.Error);
+                handleError(Lang.ErrorMsgResendCodeFailed, ex);
             }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
+        private void handleError(string message, Exception ex)
+        {
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

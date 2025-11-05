@@ -169,6 +169,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a An error occurred while joining the lobby..
+        /// </summary>
+        public static string ErrorMsgGuestJoinFailed {
+            get {
+                return ResourceManager.GetString("ErrorMsgGuestJoinFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a An unexpected error occurred while logging in..
         /// </summary>
         public static string ErrorMsgLoginFailed {
@@ -187,6 +196,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a An error occurred while resetting your password..
+        /// </summary>
+        public static string ErrorMsgPasswordResetFailed {
+            get {
+                return ResourceManager.GetString("ErrorMsgPasswordResetFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a An error occurred while resending the verification code..
         /// </summary>
         public static string ErrorMsgResendCodeFailed {
@@ -201,6 +219,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorMsgServerOffline {
             get {
                 return ResourceManager.GetString("ErrorMsgServerOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a An unexpected error occurred while registering the account..
+        /// </summary>
+        public static string ErrorMsgSignUpFailed {
+            get {
+                return ResourceManager.GetString("ErrorMsgSignUpFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a An error occurred while verifying the account..
+        /// </summary>
+        public static string ErrorMsgVerifyFailed {
+            get {
+                return ResourceManager.GetString("ErrorMsgVerifyFailed", resourceCulture);
             }
         }
         
@@ -529,11 +565,65 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Your password has been changed successfully. You may now log in..
+        /// </summary>
+        public static string InfoMsgPasswordResetSuccessBody {
+            get {
+                return ResourceManager.GetString("InfoMsgPasswordResetSuccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password Reset.
+        /// </summary>
+        public static string InfoMsgPasswordResetSuccessTitle {
+            get {
+                return ResourceManager.GetString("InfoMsgPasswordResetSuccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a A new verification code has been sent to your email..
+        /// </summary>
+        public static string InfoMsgResendSuccessBody {
+            get {
+                return ResourceManager.GetString("InfoMsgResendSuccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Code Sent.
+        /// </summary>
+        public static string InfoMsgResendSuccessTitle {
+            get {
+                return ResourceManager.GetString("InfoMsgResendSuccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Success.
         /// </summary>
         public static string InfoMsgTitleSuccess {
             get {
                 return ResourceManager.GetString("InfoMsgTitleSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Your account has been verified! You can now log in..
+        /// </summary>
+        public static string InfoMsgVerifySuccessBody {
+            get {
+                return ResourceManager.GetString("InfoMsgVerifySuccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Account Verified.
+        /// </summary>
+        public static string InfoMsgVerifySuccessTitle {
+            get {
+                return ResourceManager.GetString("InfoMsgVerifySuccessTitle", resourceCulture);
             }
         }
         
@@ -1186,6 +1276,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a You must be at least 13 years old and the date cannot be in the future..
+        /// </summary>
+        public static string ValidationBirthDateInvalid {
+            get {
+                return ResourceManager.GetString("ValidationBirthDateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Date of birth is required..
+        /// </summary>
+        public static string ValidationBirthDateRequired {
+            get {
+                return ResourceManager.GetString("ValidationBirthDateRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Email format is invalid..
         /// </summary>
         public static string ValidationEmailInvalid {
@@ -1204,6 +1312,87 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a First name is required..
+        /// </summary>
+        public static string ValidationFirstNameRequired {
+            get {
+                return ResourceManager.GetString("ValidationFirstNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You must select a gender option..
+        /// </summary>
+        public static string ValidationGenderRequired {
+            get {
+                return ResourceManager.GetString("ValidationGenderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Last name is required..
+        /// </summary>
+        public static string ValidationLastNameRequired {
+            get {
+                return ResourceManager.GetString("ValidationLastNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Code must be 6 alphanumeric characters..
+        /// </summary>
+        public static string ValidationLobbyCodeFormat {
+            get {
+                return ResourceManager.GetString("ValidationLobbyCodeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Lobby code is required..
+        /// </summary>
+        public static string ValidationLobbyCodeRequired {
+            get {
+                return ResourceManager.GetString("ValidationLobbyCodeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Please confirm your password..
+        /// </summary>
+        public static string ValidationPasswordConfirmRequired {
+            get {
+                return ResourceManager.GetString("ValidationPasswordConfirmRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a New password is required..
+        /// </summary>
+        public static string ValidationPasswordNewRequired {
+            get {
+                return ResourceManager.GetString("ValidationPasswordNewRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password must be 8+ chars, 1 uppercase, 1 lowercase, 1 number, and 1 symbol..
+        /// </summary>
+        public static string ValidationPasswordPolicy {
+            get {
+                return ResourceManager.GetString("ValidationPasswordPolicy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a A recovery code has been sent to your email..
+        /// </summary>
+        public static string ValidationPasswordRecoveryCodeSent {
+            get {
+                return ResourceManager.GetString("ValidationPasswordRecoveryCodeSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Password is required..
         /// </summary>
         public static string ValidationPasswordRequired {
@@ -1218,6 +1407,42 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ValidationPasswordsDoNotMatch {
             get {
                 return ResourceManager.GetString("ValidationPasswordsDoNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Username must be between 3 and 16 characters..
+        /// </summary>
+        public static string ValidationUsernameLength {
+            get {
+                return ResourceManager.GetString("ValidationUsernameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Username is required..
+        /// </summary>
+        public static string ValidationUsernameRequired {
+            get {
+                return ResourceManager.GetString("ValidationUsernameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The code must be 6 numeric digits..
+        /// </summary>
+        public static string ValidationVerificationCodeFormat {
+            get {
+                return ResourceManager.GetString("ValidationVerificationCodeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Code is required..
+        /// </summary>
+        public static string ValidationVerificationCodeRequired {
+            get {
+                return ResourceManager.GetString("ValidationVerificationCodeRequired", resourceCulture);
             }
         }
         
@@ -1281,6 +1506,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string WarningMsgSocialConnectFailed {
             get {
                 return ResourceManager.GetString("WarningMsgSocialConnectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Could not connect to social features. Chat might not work correctly..
+        /// </summary>
+        public static string WarningMsgSocialConnectFailedGuest {
+            get {
+                return ResourceManager.GetString("WarningMsgSocialConnectFailedGuest", resourceCulture);
             }
         }
         

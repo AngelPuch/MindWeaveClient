@@ -5,12 +5,21 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"
+      xmlns:viewModel="clr-namespace:MindWeaveClient.ViewModel.Authentication"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="760"
-      Title="CreateAccountPage">
+      Title="CreateAccountPage"
+      d:DataContext="{d:DesignInstance Type=viewModel:CreateAccountViewModel}">
+
+    <Page.Resources>
+        <Style x:Key="ValidationErrorTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#e74c3c"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+    </Page.Resources>
 
     <Grid>
-
         <Border Width="500"
                 MaxHeight="700"
                 Background="#CCFFFFFF" 
@@ -22,7 +31,7 @@
             </Border.Effect>
 
             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="5">
-                <StackPanel Margin="40,25">
+                <StackPanel Margin="40,20">
 
                     <TextBlock Text="{x:Static language:Lang.SignUpLbNewAccount}" Foreground="#2c3e50" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
@@ -33,44 +42,56 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="0,0,5,0">
                             <TextBlock Text="{x:Static language:Lang.GlobalLbFirstName}" Foreground="#2c3e50" Margin="0,0,0,5" />
-                            <TextBox x:Name="txtFirstName" Text="{Binding FirstName}" Style="{StaticResource AuthInputBoxStyle}"/>
+                            <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                                     Style="{StaticResource AuthInputBoxStyle}"/>
+                            <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[FirstName][0]}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="5,0,0,0">
                             <TextBlock Text="{x:Static language:Lang.GlobalLbLastName}" Foreground="#2c3e50" Margin="0,0,0,5" />
-                            <TextBox x:Name="txtLastName" Text="{Binding LastName}" Style="{StaticResource AuthInputBoxStyle}"/>
+                            <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                                     Style="{StaticResource AuthInputBoxStyle}"/>
+                            <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[LastName][0]}"/>
                         </StackPanel>
                     </Grid>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbUsername}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <TextBox x:Name="txtUsername" Text="{Binding Username}" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                             Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[Username][0]}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbBirth}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <DatePicker x:Name="dpBirthDate" 
-                                SelectedDate="{Binding BirthDate}"
+                    <DatePicker SelectedDate="{Binding BirthDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                                 Style="{StaticResource AuthDatePickerStyle}"/>
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[BirthDate][0]}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbGender}" Foreground="#2c3e50" Margin="0,15,0,5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
-                        <RadioButton x:Name="rbFemale" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbFemale}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsFemale}"/>
-                        <RadioButton x:Name="rbMale" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbMale}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsMale}"/>
-                        <RadioButton x:Name="rbOther" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbOther}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsOther}"/>
-                        <RadioButton x:Name="rbPreferNotToSay" GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbNoSay}" Foreground="#2c3e50" Margin="5" IsChecked="{Binding IsPreferNotToSay}"/>
+                        <RadioButton GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbFemale}" Foreground="#2c3e50" Margin="5" 
+                                     IsChecked="{Binding IsFemale, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbMale}" Foreground="#2c3e50" Margin="5" 
+                                     IsChecked="{Binding IsMale, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbOther}" Foreground="#2c3e50" Margin="5" 
+                                     IsChecked="{Binding IsOther, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton GroupName="GenderGroup" Content="{x:Static language:Lang.SignUpRbNoSay}" Foreground="#2c3e50" Margin="5" 
+                                     IsChecked="{Binding IsPreferNotToSay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[IsFemale][0]}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <TextBox x:Name="txtEmail" Text="{Binding Email}" Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                             Style="{StaticResource AuthInputBoxStyle}"/>
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[Email][0]}"/>
 
                     <TextBlock Text="{x:Static language:Lang.GlobalTxtNewPassword}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                    <PasswordBox x:Name="pbPassword" helpers:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <PasswordBox helpers:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+                    <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[Password][0]}"/>
 
-                    <Button x:Name="btnSignUp" 
-                            Command="{Binding SignUpCommand}"
+                    <Button Command="{Binding SignUpCommand}"
                             Content="{x:Static language:Lang.GlobalBtnSignUp}" 
                             Style="{StaticResource PrimaryButtonStyle}"
                             Margin="0,30,0,0"/>
 
-                    <Button x:Name="btnGoToLogin"
-                            Command="{Binding GoToLoginCommand}"
+                    <Button Command="{Binding GoToLoginCommand}"
                             Content="{x:Static language:Lang.SignUpLbAlreadyAccount}"
                             Style="{StaticResource LinkButtonStyle}"/>
 

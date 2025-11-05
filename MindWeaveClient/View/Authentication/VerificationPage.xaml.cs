@@ -4,43 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MindWeaveClient.View.Authentication
 {
-    /// <summary>
-    /// Lógica de interacción para VerificationPage.xaml
-    /// </summary>
     public partial class VerificationPage : Page
     {
-        public VerificationPage(string email)
+        public VerificationPage(string email, Action<Page> navigateAction)
         {
             InitializeComponent();
-            this.DataContext = new VerificationViewModel(
-                email,
-                page => this.NavigationService?.Navigate(page),
-                () => { if (this.NavigationService.CanGoBack) this.NavigationService.GoBack(); }
-            );
+
+            DataContext = new VerificationViewModel(email, navigateAction);
         }
 
         private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+"); // Solo permite números
+            var regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

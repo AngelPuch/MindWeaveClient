@@ -35,13 +35,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentValidation, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentValidation.10.3.6\lib\netstandard2.0\FluentValidation.dll</HintPath>
+    <Reference Include="FluentValidation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.11.5.2\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -105,9 +111,12 @@
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Abstractions\IAuthenticationService.cs" />
+    <Compile Include="Services\Abstractions\IMatchmakingService.cs" />
     <Compile Include="Services\ChatCallbackHandler.cs" />
     <Compile Include="Services\ChatServiceClientManager.cs" />
+    <Compile Include="Services\GuestJoinServiceResultDto.cs" />
     <Compile Include="Services\Implementations\AuthenticationService.cs" />
+    <Compile Include="Services\Implementations\MatchmakingService.cs" />
     <Compile Include="Services\LoginServiceResultDto.cs" />
     <Compile Include="Services\MatchmakingCallbackHandler.cs" />
     <Compile Include="Services\MatchmakingServiceClientManager.cs" />
@@ -118,7 +127,11 @@
     <Compile Include="Utilities\Abstractions\INavigationService.cs" />
     <Compile Include="Utilities\AudioManager.cs" />
     <Compile Include="Utilities\Implementations\DialogService.cs" />
+    <Compile Include="Validators\CreateAccountValidator.cs" />
+    <Compile Include="Validators\GuestJoinValidator.cs" />
     <Compile Include="Validators\LoginValidator.cs" />
+    <Compile Include="Validators\PasswordRecoveryValidator.cs" />
+    <Compile Include="Validators\VerificationValidator.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />
     <Compile Include="ViewModel\Authentication\GuestJoinViewModel.cs" />
     <Compile Include="ViewModel\Authentication\LoginViewModel.cs" />

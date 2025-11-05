@@ -528,4 +528,82 @@
   <data name="ValidationPasswordRequired" xml:space="preserve">
     <value>Password is required.</value>
   </data>
+  <data name="ValidationFirstNameRequired" xml:space="preserve">
+    <value>First name is required.</value>
+  </data>
+  <data name="ValidationLastNameRequired" xml:space="preserve">
+    <value>Last name is required.</value>
+  </data>
+  <data name="ValidationUsernameRequired" xml:space="preserve">
+    <value>Username is required.</value>
+  </data>
+  <data name="ValidationUsernameLength" xml:space="preserve">
+    <value>Username must be between 3 and 16 characters.</value>
+  </data>
+  <data name="ValidationPasswordPolicy" xml:space="preserve">
+    <value>Password must be 8+ chars, 1 uppercase, 1 lowercase, 1 number, and 1 symbol.</value>
+  </data>
+  <data name="ValidationBirthDateRequired" xml:space="preserve">
+    <value>Date of birth is required.</value>
+  </data>
+  <data name="ValidationBirthDateInvalid" xml:space="preserve">
+    <value>You must be at least 13 years old and the date cannot be in the future.</value>
+  </data>
+  <data name="ValidationGenderRequired" xml:space="preserve">
+    <value>You must select a gender option.</value>
+  </data>
+  <data name="ErrorMsgSignUpFailed" xml:space="preserve">
+    <value>An unexpected error occurred while registering the account.</value>
+  </data>
+  <data name="ValidationVerificationCodeRequired" xml:space="preserve">
+    <value>Code is required.</value>
+  </data>
+  <data name="ValidationVerificationCodeFormat" xml:space="preserve">
+    <value>The code must be 6 numeric digits.</value>
+  </data>
+  <data name="ErrorMsgVerifyFailed" xml:space="preserve">
+    <value>An error occurred while verifying the account.</value>
+  </data>
+  <data name="InfoMsgVerifySuccessTitle" xml:space="preserve">
+    <value>Account Verified</value>
+  </data>
+  <data name="InfoMsgVerifySuccessBody" xml:space="preserve">
+    <value>Your account has been verified! You can now log in.</value>
+  </data>
+  <data name="InfoMsgResendSuccessTitle" xml:space="preserve">
+    <value>Code Sent</value>
+  </data>
+  <data name="InfoMsgResendSuccessBody" xml:space="preserve">
+    <value>A new verification code has been sent to your email.</value>
+  </data>
+  <data name="ValidationPasswordNewRequired" xml:space="preserve">
+    <value>New password is required.</value>
+  </data>
+  <data name="ValidationPasswordConfirmRequired" xml:space="preserve">
+    <value>Please confirm your password.</value>
+  </data>
+  <data name="ValidationPasswordRecoveryCodeSent" xml:space="preserve">
+    <value>A recovery code has been sent to your email.</value>
+  </data>
+  <data name="InfoMsgPasswordResetSuccessTitle" xml:space="preserve">
+    <value>Password Reset</value>
+  </data>
+  <data name="InfoMsgPasswordResetSuccessBody" xml:space="preserve">
+    <value>Your password has been changed successfully. You may now log in.</value>
+  </data>
+  <data name="ErrorMsgPasswordResetFailed" xml:space="preserve">
+    <value>An error occurred while resetting your password.</value>
+  </data>
+  <data name="ValidationLobbyCodeRequired" xml:space="preserve">
+    <value>Lobby code is required.</value>
+  </data>
+  <data name="ValidationLobbyCodeFormat" xml:space="preserve">
+    <value>Code must be 6 alphanumeric characters.</value>
+  </data>
+  <data name="ErrorMsgGuestJoinFailed" xml:space="preserve">
+    <value>An error occurred while joining the lobby.</value>
+  </data>
+  <data name="WarningMsgSocialConnectFailedGuest" xml:space="preserve">
+    <value>Could not connect to social features. Chat might not work correctly.</value>
+  </data>
 </root>

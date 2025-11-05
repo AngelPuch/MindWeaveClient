@@ -528,4 +528,82 @@
   <data name="ValidationPasswordRequired" xml:space="preserve">
     <value>La contraseña es obligatoria.</value>
   </data>
+  <data name="ValidationFirstNameRequired" xml:space="preserve">
+    <value>El nombre es obligatorio.</value>
+  </data>
+  <data name="ValidationLastNameRequired" xml:space="preserve">
+    <value>El apellido es obligatorio.</value>
+  </data>
+  <data name="ValidationUsernameRequired" xml:space="preserve">
+    <value>El nombre de usuario es obligatorio.</value>
+  </data>
+  <data name="ValidationUsernameLength" xml:space="preserve">
+    <value>El nombre de usuario debe tener entre 3 y 16 caracteres.</value>
+  </data>
+  <data name="ValidationPasswordPolicy" xml:space="preserve">
+    <value>La contraseña debe tener 8+ caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 símbolo.</value>
+  </data>
+  <data name="ValidationBirthDateRequired" xml:space="preserve">
+    <value>La fecha de nacimiento es obligatoria.</value>
+  </data>
+  <data name="ValidationBirthDateInvalid" xml:space="preserve">
+    <value>Debes tener al menos 13 años y la fecha no puede ser futura.</value>
+  </data>
+  <data name="ValidationGenderRequired" xml:space="preserve">
+    <value>Debes seleccionar un género.</value>
+  </data>
+  <data name="ErrorMsgSignUpFailed" xml:space="preserve">
+    <value>Ocurrió un error inesperado al registrar la cuenta.</value>
+  </data>
+  <data name="ValidationVerificationCodeRequired" xml:space="preserve">
+    <value>El código es obligatorio.</value>
+  </data>
+  <data name="ValidationVerificationCodeFormat" xml:space="preserve">
+    <value>El código debe ser de 6 dígitos numéricos.</value>
+  </data>
+  <data name="ErrorMsgVerifyFailed" xml:space="preserve">
+    <value>Ocurrió un error al verificar la cuenta.</value>
+  </data>
+  <data name="InfoMsgVerifySuccessTitle" xml:space="preserve">
+    <value>Cuenta Verificada</value>
+  </data>
+  <data name="InfoMsgVerifySuccessBody" xml:space="preserve">
+    <value>¡Tu cuenta ha sido verificada! Ahora puedes iniciar sesión.</value>
+  </data>
+  <data name="InfoMsgResendSuccessTitle" xml:space="preserve">
+    <value>Código Enviado</value>
+  </data>
+  <data name="InfoMsgResendSuccessBody" xml:space="preserve">
+    <value>Se ha enviado un nuevo código de verificación a tu correo.</value>
+  </data>
+  <data name="ValidationPasswordNewRequired" xml:space="preserve">
+    <value>La nueva contraseña es obligatoria.</value>
+  </data>
+  <data name="ValidationPasswordConfirmRequired" xml:space="preserve">
+    <value>Debes confirmar la contraseña.</value>
+  </data>
+  <data name="ValidationPasswordRecoveryCodeSent" xml:space="preserve">
+    <value>Se ha enviado un código de recuperación a tu correo.</value>
+  </data>
+  <data name="InfoMsgPasswordResetSuccessTitle" xml:space="preserve">
+    <value>Contraseña Restablecida</value>
+  </data>
+  <data name="InfoMsgPasswordResetSuccessBody" xml:space="preserve">
+    <value>Tu contraseña se ha cambiado con éxito. Ya puedes iniciar sesión.</value>
+  </data>
+  <data name="ErrorMsgPasswordResetFailed" xml:space="preserve">
+    <value>Ocurrió un error al restablecer tu contraseña.</value>
+  </data>
+  <data name="ValidationLobbyCodeRequired" xml:space="preserve">
+    <value>El código de sala es obligatorio.</value>
+  </data>
+  <data name="ValidationLobbyCodeFormat" xml:space="preserve">
+    <value>El código debe tener 6 caracteres alfanuméricos.</value>
+  </data>
+  <data name="ErrorMsgGuestJoinFailed" xml:space="preserve">
+    <value>Ocurrió un error al unirse a la sala.</value>
+  </data>
+  <data name="WarningMsgSocialConnectFailedGuest" xml:space="preserve">
+    <value>No se pudo conectar a las funciones sociales. El chat podría no funcionar.</value>
+  </data>
 </root>

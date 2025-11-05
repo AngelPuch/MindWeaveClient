@@ -1,184 +1,137 @@
 ﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
-using MindWeaveClient.Services;
-using MindWeaveClient.View.Authentication;
-using MindWeaveClient.View.Game;
-using MindWeaveClient.View.Main;
-using MindWeaveClient.ViewModel.Game;
+using MindWeaveClient.Services; 
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.Validators;
 using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
     public class GuestJoinViewModel : BaseViewModel
     {
-        private readonly Action<Page> navigateTo;
+        private string lobbyCode;
+        private string guestEmail;
+        private string desiredUsername;
         private readonly Action navigateBack;
-        private MatchmakingManagerClient matchmakingClient => MatchmakingServiceClientManager.instance.proxy;
 
-        private string lobbyCodeValue;
-        private string guestEmailValue;
-        private string desiredUsernameValue;
-        private bool isBusyValue;
+        private readonly IMatchmakingService matchmakingService;
+        private readonly IDialogService dialogService;
+        private readonly GuestJoinValidator validator;
+
+        public event EventHandler<GuestJoinResultDto> JoinSuccess;
 
         public string LobbyCode
         {
-            get => lobbyCodeValue;
-            set
-            {
-                if (value != null && !Regex.IsMatch(value, "^[a-zA-Z0-9]*$"))
-                {
-                    value = Regex.Match(lobbyCodeValue ?? "", "^[a-zA-Z0-9]*").Value;
-                }
-                lobbyCodeValue = value?.Trim();
-                OnPropertyChanged();
-                raiseCanExecuteChanged();
-            }
+            get => lobbyCode;
+            set { lobbyCode = value; OnPropertyChanged(); Validate(validator, this); }
         }
 
         public string GuestEmail
         {
-            get => guestEmailValue;
-            set { guestEmailValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
+            get => guestEmail;
+            set { guestEmail = value; OnPropertyChanged(); Validate(validator, this); }
         }
 
         public string DesiredUsername
         {
-            get => desiredUsernameValue;
-            set { desiredUsernameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
+            get => desiredUsername;
+            set { desiredUsername = value; OnPropertyChanged(); Validate(validator, this); }
         }
-
-        public bool IsBusy
-        {
-            get => isBusyValue;
-            private set { setBusy(value); }
-        }
-
-        public bool CanJoinAsGuest =>
-            !IsBusy &&
-            !string.IsNullOrWhiteSpace(LobbyCode) && LobbyCode.Length == 6 &&
-            Regex.IsMatch(LobbyCode, "^[a-zA-Z0-9]{6}$") &&
-            !string.IsNullOrWhiteSpace(GuestEmail) && isValidEmail(GuestEmail) &&
-            !string.IsNullOrWhiteSpace(DesiredUsername) && isValidGuestUsername(DesiredUsername);
 
         public ICommand JoinAsGuestCommand { get; }
         public ICommand GoBackCommand { get; }
 
-        public GuestJoinViewModel(Action<Page> navigateToAction, Action navigateBackAction)
+        public GuestJoinViewModel()
         {
-            navigateTo = navigateToAction;
-            navigateBack = navigateBackAction;
+            this.validator = new GuestJoinValidator();
+            Validate(validator, this);
+        }
 
-            JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => CanJoinAsGuest);
-            GoBackCommand = new RelayCommand(param => navigateBack?.Invoke(), param => !IsBusy);
+        public GuestJoinViewModel(Action navigateBackAction)
+        {
+            this.navigateBack = navigateBackAction;
+
+            this.matchmakingService = new Services.Implementations.MatchmakingService();
+            this.dialogService = new DialogService();
+            this.validator = new GuestJoinValidator();
+
+            JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canExecuteJoin());
+            GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
+
+            Validate(validator, this);
+        }
+
+        private bool canExecuteJoin()
+        {
+            return !IsBusy && !HasErrors;
+        }
+
+        private void executeGoBack()
+        {
+            navigateBack?.Invoke();
         }
 
         private async Task executeJoinAsGuestAsync()
         {
-            if (!CanJoinAsGuest) return;
+            if (HasErrors) return;
 
-            if (!MatchmakingServiceClientManager.instance.EnsureConnected())
-            {
-                MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            setBusy(true);
+            SetBusy(true);
 
             var joinRequest = new GuestJoinRequestDto
             {
-                lobbyCode = this.LobbyCode,
+                lobbyCode = this.LobbyCode.Trim(),
                 guestEmail = this.GuestEmail.Trim(),
                 desiredGuestUsername = this.DesiredUsername.Trim()
             };
 
             try
             {
-                GuestJoinResultDto result = await matchmakingClient.joinLobbyAsGuestAsync(joinRequest);
+                GuestJoinServiceResultDto serviceResult = await matchmakingService.joinLobbyAsGuestAsync(joinRequest);
 
-                if (result.success && result.initialLobbyState != null)
+                if (serviceResult.wcfResult.success && serviceResult.wcfResult.initialLobbyState != null)
                 {
-                    SessionService.SetSession(result.assignedGuestUsername, null, true);
-
-                    if (!SocialServiceClientManager.instance.Connect(result.assignedGuestUsername))
+                    if (!serviceResult.isSocialServiceConnected)
                     {
-                        MessageBox.Show("Could not connect to social features. Chat might not work correctly.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        dialogService.showWarning(Lang.WarningMsgSocialConnectFailedGuest, Lang.WarningTitle);
                     }
 
-                    MessageBox.Show(result.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    var currentWindow = Application.Current.Windows.OfType<AuthenticationWindow>().FirstOrDefault();
-                    var mainAppWindow = new MainWindow();
-
-                    var lobbyPage = new LobbyPage();
-                    lobbyPage.DataContext = new LobbyViewModel(
-                        result.initialLobbyState,
-                        page => mainAppWindow.MainFrame.Navigate(page),
-                        () => mainAppWindow.MainFrame.Navigate(new MainMenuPage(page => mainAppWindow.MainFrame.Navigate(page))) 
-                    );
-                    mainAppWindow.MainFrame.Navigate(lobbyPage);
-
-                    mainAppWindow.Show();
-                    currentWindow?.Close();
+                    JoinSuccess?.Invoke(this, serviceResult.wcfResult);
                 }
                 else
                 {
-                    MessageBox.Show(result.message ?? "Unexpected error", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(serviceResult.wcfResult.message ?? "Unexpected error", Lang.ErrorTitle);
+
+                    if (!serviceResult.didMatchmakingConnect)
+                    {
+                        MatchmakingServiceClientManager.instance.Disconnect();
+                    }
                 }
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+                MatchmakingServiceClientManager.instance.Disconnect();
             }
             catch (Exception ex)
             {
-                handleError("An error occurred while connecting to the server", ex);
+                handleError(Lang.ErrorMsgGuestJoinFailed, ex);
                 MatchmakingServiceClientManager.instance.Disconnect();
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
-        }
-
-        private void setBusy(bool value)
-        {
-            isBusyValue = value;
-            OnPropertyChanged(nameof(IsBusy));
-            raiseCanExecuteChanged();
-        }
-
-        private void raiseCanExecuteChanged()
-        {
-            OnPropertyChanged(nameof(CanJoinAsGuest));
-            Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
         private void handleError(string message, Exception ex)
         {
-            string errorDetails = ex?.Message ?? "No details provided.";
-            Console.WriteLine($"!!! {message}: {errorDetails}");
-            MessageBox.Show($"{message}:\n{errorDetails}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        private bool isValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email)) return false;
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool isValidGuestUsername(string username)
-        {
-            if (string.IsNullOrWhiteSpace(username)) return false;
-            return Regex.IsMatch(username, "^[a-zA-Z0-9]{3,16}$");
+            string errorDetails = ex?.Message ?? Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}:\n{errorDetails}", Lang.ErrorTitle);
         }
     }
 }

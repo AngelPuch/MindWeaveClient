@@ -1,11 +1,12 @@
-﻿using MindWeaveClient.AuthenticationService;
-using MindWeaveClient.Properties.Langs;
+﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.Validators;
 using System;
-using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
-using System.Text.RegularExpressions;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -13,45 +14,29 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private readonly Action navigateBack;
         private readonly Action navigateToLogin;
-        private readonly AuthenticationManagerClient authClient;
+        private readonly IAuthenticationService authenticationService;
+        private readonly IDialogService dialogService;
+        private readonly PasswordRecoveryValidator validator;
 
-        private bool isStep1VisibleValue = true;
-        private bool isStep2VisibleValue;
-        private bool isStep3VisibleValue;
-        private bool isBusyValue;
+        private bool isStep1Visible = true;
+        private bool isStep2Visible;
+        private bool isStep3Visible;
 
-        public bool IsStep1Visible { get => isStep1VisibleValue; set { isStep1VisibleValue = value; OnPropertyChanged(); } }
-        public bool IsStep2Visible { get => isStep2VisibleValue; set { isStep2VisibleValue = value; OnPropertyChanged(); } }
-        public bool IsStep3Visible { get => isStep3VisibleValue; set { isStep3VisibleValue = value; OnPropertyChanged(); } }
-        public bool IsBusy { get => isBusyValue; private set { isBusyValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public bool IsStep1Visible { get => isStep1Visible; set { isStep1Visible = value; OnPropertyChanged(); } }
+        public bool IsStep2Visible { get => isStep2Visible; set { isStep2Visible = value; OnPropertyChanged(); } }
+        public bool IsStep3Visible { get => isStep3Visible; set { isStep3Visible = value; OnPropertyChanged(); } }
 
-        private string emailValue;
-        public string Email
-        {
-            get => emailValue;
-            set { emailValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); }
-        }
+        private string email;
+        public string Email { get => email; set { email = value; OnPropertyChanged(); validateCurrentStep(); } }
 
-        private string verificationCodeValue;
-        public string VerificationCode
-        {
-            get => verificationCodeValue;
-            set
-            {
-                if (value != null && !Regex.IsMatch(value, "^[0-9]*$"))
-                {
-                    value = Regex.Match(verificationCodeValue ?? "", "^[0-9]*").Value;
-                }
-                verificationCodeValue = value;
-                OnPropertyChanged();
-                raiseCanExecuteChanged();
-            }
-        }
+        private string verificationCode;
+        public string VerificationCode { get => verificationCode; set { verificationCode = value; OnPropertyChanged(); validateCurrentStep(); } }
 
-        private string newPasswordValue;
-        private string confirmPasswordValue;
-        public string NewPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string ConfirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        private string newPassword;
+        public string NewPassword { get => newPassword; set { newPassword = value; OnPropertyChanged(); validateCurrentStep(); } }
+
+        private string confirmPassword;
+        public string ConfirmPassword { get => confirmPassword; set { confirmPassword = value; OnPropertyChanged(); validateCurrentStep(); } }
 
         public ICommand SendCodeCommand { get; }
         public ICommand VerifyCodeCommand { get; }
@@ -59,124 +44,130 @@ namespace MindWeaveClient.ViewModel.Authentication
         public ICommand SavePasswordCommand { get; }
         public ICommand GoBackCommand { get; }
 
-        public bool CanSendCode => !IsBusy && !string.IsNullOrWhiteSpace(Email);
-        public bool CanVerifyCode => !IsBusy && VerificationCode?.Length == 6 && VerificationCode.All(char.IsDigit); // Usa verificationCode
-        public bool CanResendCode => !IsBusy && !string.IsNullOrWhiteSpace(Email);
-        public bool CanSavePassword => !IsBusy &&
-                                       !string.IsNullOrEmpty(NewPassword) &&
-                                       !string.IsNullOrEmpty(ConfirmPassword) &&
-                                       NewPassword == ConfirmPassword;
+        public PasswordRecoveryViewModel()
+        {
+            this.validator = new PasswordRecoveryValidator();
+            validateCurrentStep();
+        }
 
         public PasswordRecoveryViewModel(Action navigateBackAction, Action navigateToLoginAction)
         {
-            navigateBack = navigateBackAction;
-            navigateToLogin = navigateToLoginAction;
-            authClient = new AuthenticationManagerClient();
+            this.navigateBack = navigateBackAction;
+            this.navigateToLogin = navigateToLoginAction;
 
-            SendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(), param => CanSendCode);
-            VerifyCodeCommand = new RelayCommand(async param => await executeVerifyCodeAsync(), param => CanVerifyCode);
-            ResendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(true), param => CanResendCode);
-            SavePasswordCommand = new RelayCommand(async param => await executeSavePasswordAsync(), param => CanSavePassword);
+            this.authenticationService = new Services.Implementations.AuthenticationService();
+            this.dialogService = new DialogService();
+            this.validator = new PasswordRecoveryValidator();
+
+            SendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(), param => !HasErrors && !IsBusy);
+            VerifyCodeCommand = new RelayCommand(async param => await executeVerifyCodeAsync(), param => !HasErrors && !IsBusy);
+            ResendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(true), param => !IsBusy);
+            SavePasswordCommand = new RelayCommand(async param => await executeSavePasswordAsync(), param => !HasErrors && !IsBusy);
             GoBackCommand = new RelayCommand(param => executeGoBack());
+
+            validateCurrentStep();
         }
+
 
         private async Task executeSendCodeAsync(bool isResend = false)
         {
-            if (!CanSendCode && !isResend) return;
-            if (isResend && !CanResendCode) return;
+            if (!isResend)
+            {
+                if (HasErrors) return;
+            }
 
-            setBusy(true);
+            SetBusy(true);
             try
             {
-                OperationResultDto result = await authClient.sendPasswordRecoveryCodeAsync(Email);
+                var result = await authenticationService.sendPasswordRecoveryCodeAsync(Email);
                 if (result.success)
                 {
-                    MessageBox.Show(result.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
-                    IsStep1Visible = false;
-                    IsStep2Visible = true;
-                    IsStep3Visible = false;
-                    VerificationCode = string.Empty;
-                }
-                else
-                {
-                    MessageBox.Show(result.message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                setBusy(false);
-            }
-        }
-        private async Task executeVerifyCodeAsync()
-        {
-            if (!CanVerifyCode) return;
+                    dialogService.showInfo(Lang.ValidationPasswordRecoveryCodeSent, Lang.InfoMsgResendSuccessTitle);
 
-            setBusy(true);
-            try
-            {
-                await Task.Delay(100);
-
-                IsStep1Visible = false;
-                IsStep2Visible = false;
-                IsStep3Visible = true;
-                NewPassword = "";
-                ConfirmPassword = "";
-            }
-            finally
-            {
-                setBusy(false);
-            }
-        }
-
-        private async Task executeSavePasswordAsync()
-        {
-            if (!CanSavePassword)
-            {
-                if (string.IsNullOrEmpty(NewPassword) || string.IsNullOrEmpty(ConfirmPassword))
-                {
-                    MessageBox.Show(Lang.GlobalErrorAllFieldsRequired, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else if (NewPassword != ConfirmPassword)
-                {
-                    MessageBox.Show(Lang.ValidationPasswordsDoNotMatch, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                return;
-            }
-
-
-            setBusy(true);
-            try
-            {
-                OperationResultDto result = await authClient.resetPasswordWithCodeAsync(Email, VerificationCode, NewPassword);
-
-                if (result.success)
-                {
-                    MessageBox.Show(result.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
-                    navigateToLogin?.Invoke();
-                }
-                else
-                {
-                    MessageBox.Show(result.message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                    if (result.message == Lang.GlobalVerificationInvalidOrExpiredCode)
+                    if (!isResend)
                     {
                         IsStep1Visible = false;
                         IsStep2Visible = true;
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
+                        validateCurrentStep();
                     }
                 }
+                else
+                {
+                    dialogService.showError(result.message, Lang.ErrorTitle);
+                }
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                handleError(Lang.ErrorMsgResendCodeFailed, ex);
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
+            }
+        }
+
+        private Task executeVerifyCodeAsync()
+        {
+            if (HasErrors) return Task.CompletedTask;
+
+            SetBusy(true);
+
+            IsStep1Visible = false;
+            IsStep2Visible = false;
+            IsStep3Visible = true;
+            NewPassword = "";
+            ConfirmPassword = "";
+            validateCurrentStep();
+
+            SetBusy(false);
+            return Task.CompletedTask;
+        }
+
+        private async Task executeSavePasswordAsync()
+        {
+            if (HasErrors) return;
+
+            SetBusy(true);
+            try
+            {
+                var result = await authenticationService.resetPasswordWithCodeAsync(Email, VerificationCode, NewPassword);
+
+                if (result.success)
+                {
+                    dialogService.showInfo(Lang.InfoMsgPasswordResetSuccessBody, Lang.InfoMsgPasswordResetSuccessTitle);
+                    navigateToLogin?.Invoke();
+                }
+                else
+                {
+                    dialogService.showError(result.message, Lang.ErrorTitle);
+
+                    if (result.message.Contains(Lang.GlobalVerificationInvalidOrExpiredCode))
+                    {
+                        IsStep1Visible = false;
+                        IsStep2Visible = true;
+                        IsStep3Visible = false;
+                        VerificationCode = string.Empty;
+                        validateCurrentStep();
+                    }
+                }
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorMsgPasswordResetFailed, ex);
+            }
+            finally
+            {
+                SetBusy(false);
             }
         }
 
@@ -187,15 +178,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep1Visible = false;
                 IsStep2Visible = true;
                 IsStep3Visible = false;
-                NewPassword = "";
-                ConfirmPassword = "";
+                validateCurrentStep();
             }
             else if (IsStep2Visible)
             {
                 IsStep1Visible = true;
                 IsStep2Visible = false;
                 IsStep3Visible = false;
-                VerificationCode = string.Empty;
+                validateCurrentStep();
             }
             else
             {
@@ -203,20 +193,26 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        private void raiseCanExecuteChanged()
+        private void validateCurrentStep()
         {
-            Application.Current.Dispatcher?.Invoke(() =>
+            if (IsStep1Visible)
             {
-                CommandManager.InvalidateRequerySuggested();
-                OnPropertyChanged(nameof(CanSendCode));
-                OnPropertyChanged(nameof(CanVerifyCode));
-                OnPropertyChanged(nameof(CanResendCode));
-                OnPropertyChanged(nameof(CanSavePassword));
-            });
+                Validate(validator, this, "Step1");
+            }
+            else if (IsStep2Visible)
+            {
+                Validate(validator, this, "Step2");
+            }
+            else if (IsStep3Visible)
+            {
+                Validate(validator, this, "Step3");
+            }
         }
-        private void setBusy(bool value)
+
+        private void handleError(string message, Exception ex)
         {
-            IsBusy = value;
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

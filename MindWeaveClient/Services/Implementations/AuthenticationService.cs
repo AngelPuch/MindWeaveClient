@@ -41,7 +41,39 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        private (bool socialConnected, bool matchmakingConnected) handleSuccessfulLogin(string username, string avatarPath)
+        public async Task<OperationResultDto> registerAsync(UserProfileDto profile, string password)
+        {
+            using (var client = new AuthenticationManagerClient())
+            {
+                return await client.registerAsync(profile, password);
+            }
+        }
+
+        public async Task<OperationResultDto> verifyAccountAsync(string email, string code)
+        {
+            using (var client = new AuthenticationManagerClient())
+            {
+                return await client.verifyAccountAsync(email, code);
+            }
+        }
+
+        public async Task<OperationResultDto> sendPasswordRecoveryCodeAsync(string email)
+        {
+            using (var client = new AuthenticationManagerClient())
+            {
+                return await client.sendPasswordRecoveryCodeAsync(email);
+            }
+        }
+
+        public async Task<OperationResultDto> resetPasswordWithCodeAsync(string email, string code, string newPassword)
+        {
+            using (var client = new AuthenticationManagerClient())
+            {
+                return await client.resetPasswordWithCodeAsync(email, code, newPassword);
+            }
+        }
+
+        private static (bool socialConnected, bool matchmakingConnected) handleSuccessfulLogin(string username, string avatarPath)
         {
             bool socialConnected;
             bool matchmakingConnected;

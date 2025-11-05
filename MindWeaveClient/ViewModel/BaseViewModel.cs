@@ -1,4 +1,5 @@
-﻿using FluentValidation.Results;
+﻿using FluentValidation;
+using FluentValidation.Results;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace MindWeaveClient.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        
         private bool isBusy;
         public bool IsBusy
         {
@@ -41,6 +43,7 @@ namespace MindWeaveClient.ViewModel
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
+        
         private readonly Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
@@ -56,9 +59,19 @@ namespace MindWeaveClient.ViewModel
             return errors.ContainsKey(propertyName) ? errors[propertyName] : null;
         }
 
-        protected void Validate<TViewModel>(FluentValidation.IValidator<TViewModel> validator, TViewModel viewModel)
+        protected void Validate<TViewModel>(IValidator<TViewModel> validator, TViewModel viewModel, string ruleSet = null)
+            where TViewModel : class
         {
-            var validationResult = validator.Validate(viewModel);
+            ValidationResult validationResult;
+
+            if (string.IsNullOrEmpty(ruleSet))
+            {
+                validationResult = validator.Validate(viewModel);
+            }
+            else
+            {
+                validationResult = validator.Validate(viewModel, v => v.IncludeRuleSets(ruleSet));
+            }
 
             var propertyNamesWithErrors = errors.Keys.ToList();
             errors.Clear();
@@ -81,7 +94,6 @@ namespace MindWeaveClient.ViewModel
                 OnErrorsChanged(propertyName);
             }
 
-            // Raise for HasErrors property
             OnPropertyChanged(nameof(HasErrors));
         }
 

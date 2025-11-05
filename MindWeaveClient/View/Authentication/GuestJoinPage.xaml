@@ -3,18 +3,22 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:MindWeaveClient.View.Authentication"
-      xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Authentication"
       xmlns:lang="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"
+      xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Authentication"
       mc:Ignorable="d"
-      d:DataContext="{d:DesignInstance Type=vm:GuestJoinViewModel, IsDesignTimeCreatable=False}"
+      d:DataContext="{d:DesignInstance Type=vm:GuestJoinViewModel, IsDesignTimeCreatable=True}"
       d:DesignHeight="720" d:DesignWidth="760"
       Title="{x:Static lang:Lang.GuestJoinTitle}">
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <helpers:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
+        <Style x:Key="ValidationErrorTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#e74c3c"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
     </Page.Resources>
 
     <Grid>
@@ -29,21 +33,28 @@
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinInfo}" Foreground="#34495e" TextWrapping="Wrap" Margin="0,0,0,20" TextAlignment="Center"/>
 
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinLbLobbyCode}" Foreground="#2c3e50" Margin="0,10,0,5"/>
-                <TextBox x:Name="txtLobbyCode"
-                         Text="{Binding LobbyCode, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding LobbyCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                          Style="{StaticResource AuthInputBoxStyle}"
                          MaxLength="6"
                          FontSize="20"
                          TextAlignment="Center"
                          PreviewTextInput="CodeTextBox_PreviewTextInput"/>
+                <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[LobbyCode][0]}" HorizontalAlignment="Center"/>
+
 
                 <TextBlock Text="{x:Static lang:Lang.GlobalLbEmail}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                <TextBox x:Name="txtGuestEmail" Text="{Binding GuestEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}"/>
+                <TextBox Text="{Binding GuestEmail, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                         Style="{StaticResource AuthInputBoxStyle}"/>
+                <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[GuestEmail][0]}"/>
+
 
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinLbDesiredUsername}" Foreground="#2c3e50" Margin="0,15,0,5"/>
-                <TextBox x:Name="txtDesiredUsername" Text="{Binding DesiredUsername, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AuthInputBoxStyle}" MaxLength="16"/>
+                <TextBox Text="{Binding DesiredUsername, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                         Style="{StaticResource AuthInputBoxStyle}" MaxLength="16"/>
+                <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" Text="{Binding Errors[DesiredUsername][0]}"/>
 
-                <Button Command="{Binding JoinAsGuestCommand}" Content="{x:Static lang:Lang.GuestJoinBtnJoin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" IsEnabled="{Binding CanJoinAsGuest}"/>
+
+                <Button Command="{Binding JoinAsGuestCommand}" Content="{x:Static lang:Lang.GuestJoinBtnJoin}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" />
 
                 <Button Command="{Binding GoBackCommand}" Content="{x:Static lang:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
 
