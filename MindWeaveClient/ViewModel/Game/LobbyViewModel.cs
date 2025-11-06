@@ -1,450 +1,365 @@
 ﻿using MindWeaveClient.ChatManagerService;
 using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.Properties.Langs; 
+using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Services.Implementations;
 using MindWeaveClient.SocialManagerService;
-using MindWeaveClient.View.Dialogs;
-using MindWeaveClient.View.Game;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.ServiceModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-
 namespace MindWeaveClient.ViewModel.Game
 {
-    public class LobbyViewModel : BaseViewModel 
+    public class LobbyViewModel : BaseViewModel
     {
- public bool IsGuestUser => SessionService.IsGuest;
- private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.instance.proxy;
- private MatchmakingCallbackHandler matchmakingCallbackHandler => MatchmakingServiceClientManager.instance.callbackHandler;
- private SocialManagerClient socialProxy => SocialServiceClientManager.instance.proxy;
- private ChatManagerClient chatProxy => ChatServiceClientManager.instance.proxy;
- private ChatCallbackHandler chatCallbackHandler => ChatServiceClientManager.instance.callbackHandler;
+        private readonly Action<Page> navigateAction;
+        private readonly Action navigateBackAction;
+        private readonly IMatchmakingService matchmakingService;
+        private readonly ISocialService socialService;
+        private readonly IChatService chatService;
+        private readonly IDialogService dialogService;
 
+        public bool IsGuestUser => SessionService.IsGuest;
+        private LobbyStateDto lobbyState;
 
- private readonly Action<Page> navigateTo;
- private readonly Action navigateBack;
+        public string LobbyCode { get; private set; } = "Joining...";
+        public string HostUsername { get; private set; } = "Loading...";
+        public bool IsHost => lobbyState?.hostUsername == SessionService.Username;
+        public LobbySettingsDto CurrentSettings { get; private set; }
 
- private string lobbyCodeValue;
- public string LobbyCode { get => lobbyCodeValue; set { lobbyCodeValue = value; OnPropertyChanged(); } }
- private string hostUsernameValue;
- public string HostUsername { get => hostUsernameValue; set { hostUsernameValue = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsHost)); } }
- public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
- private LobbySettingsDto currentSettingsValue;
- public LobbySettingsDto CurrentSettings { get => currentSettingsValue; set { currentSettingsValue = value; OnPropertyChanged(); } }
- public bool IsHost => hostUsernameValue == SessionService.Username;
- private bool isBusyValue;
- public bool IsBusy { get => isBusyValue; set { isBusyValue = value; OnPropertyChanged(); RaiseCanExecuteChangedOnCommands(); } }
- public ObservableCollection<FriendDtoDisplay> OnlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
+        public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
+        public ObservableCollection<FriendDtoDisplay> OnlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
+        public ObservableCollection<ChatMessageDisplayViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
 
- public ObservableCollection<ChatMessageDisplayViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
- private string currentChatMessageValue = string.Empty;
- public string CurrentChatMessage
- {
- get => currentChatMessageValue;
- set { currentChatMessageValue = value; OnPropertyChanged(); ((RelayCommand)SendMessageCommand).RaiseCanExecuteChanged(); }
- }
- public ICommand LeaveLobbyCommand { get; }
- public ICommand StartGameCommand { get; }
- public ICommand InviteFriendCommand { get; }
- public ICommand KickPlayerCommand { get; }
- public ICommand UploadImageCommand { get; }
- public ICommand ChangeSettingsCommand { get; }
- public ICommand RefreshFriendsCommand { get; }
- public ICommand SendMessageCommand { get; }
- public ICommand InviteGuestCommand { get; }
+        private string currentChatMessage = string.Empty;
+        public string CurrentChatMessage
+        {
+            get => currentChatMessage;
+            set { currentChatMessage = value; OnPropertyChanged(); ((RelayCommand)SendMessageCommand).RaiseCanExecuteChanged(); }
+        }
 
- public LobbyViewModel(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
- {
- this.navigateTo = navigateToAction;
- this.navigateBack = navigateBackAction;
+        public event EventHandler<string> OnMatchStarting;
 
- LeaveLobbyCommand = new RelayCommand(executeLeaveLobby, param => !IsBusy);
- StartGameCommand = new RelayCommand(executeStartGame, param => IsHost && !IsBusy && !IsGuestUser);
- InviteFriendCommand = new RelayCommand(executeInviteFriend, param => IsHost && !IsBusy && !IsGuestUser && param is FriendDtoDisplay friend && friend.IsOnline && !Players.Contains(friend.Username));
- KickPlayerCommand = new RelayCommand(executeKickPlayer, p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
- UploadImageCommand = new RelayCommand(p => MessageBox.Show("Upload image TBD"), param => IsHost && !IsBusy && !IsGuestUser);
- ChangeSettingsCommand = new RelayCommand(p => MessageBox.Show("Change settings TBD"), param => IsHost && !IsBusy && !IsGuestUser);
- RefreshFriendsCommand = new RelayCommand(async p => await loadOnlineFriendsAsync(), p => IsHost && !IsBusy && !IsGuestUser);
- SendMessageCommand = new RelayCommand(executeSendMessage, canExecuteSendMessage);
- InviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => IsHost && !IsBusy && !IsGuestUser);
+        public ICommand LeaveLobbyCommand { get; }
+        public ICommand StartGameCommand { get; }
+        public ICommand InviteFriendCommand { get; }
+        public ICommand KickPlayerCommand { get; }
+        public ICommand UploadImageCommand { get; }
+        public ICommand ChangeSettingsCommand { get; }
+        public ICommand RefreshFriendsCommand { get; }
+        public ICommand SendMessageCommand { get; }
+        public ICommand InviteGuestCommand { get; }
 
- subscribeToCallbacks();
+        public LobbyViewModel(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
+        {
+            this.navigateAction = navigateToAction;
+            this.navigateBackAction = navigateBackAction;
 
- if (initialState != null) {
- connectToChat(initialState.lobbyId);
- updateState(initialState);
- }
- else { LobbyCode = "Joining..."; HostUsername = "Loading..."; }
+            this.matchmakingService = new Services.Implementations.MatchmakingService();
+            this.socialService = new SocialService();
+            this.chatService = new ChatService();
+            this.dialogService = new DialogService();
 
- if (IsHost && !IsGuestUser) { RefreshFriendsCommand.Execute(null); }
- OnPropertyChanged(nameof(IsGuestUser));
- RaiseCanExecuteChangedOnCommands();
- Debug.WriteLine($"LobbyViewModel initialized. Initial State Null: {initialState == null}");
+            LeaveLobbyCommand = new RelayCommand(executeLeaveLobby, param => !IsBusy);
+            StartGameCommand = new RelayCommand(executeStartGame, param => IsHost && !IsBusy && !IsGuestUser);
+            InviteFriendCommand = new RelayCommand(executeInviteFriend, canInviteFriend);
+            KickPlayerCommand = new RelayCommand(executeKickPlayer, p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
+            UploadImageCommand = new RelayCommand(p => dialogService.showInfo("La carga de imágenes personalizadas aún no está implementada.", "Info"), param => IsHost && !IsBusy && !IsGuestUser);
+            ChangeSettingsCommand = new RelayCommand(p => dialogService.showInfo("El cambio de ajustes de partida aún no está implementado.", "Info"), param => IsHost && !IsBusy && !IsGuestUser);
+            RefreshFriendsCommand = new RelayCommand(async p => await executeRefreshFriendsAsync(), p => IsHost && !IsBusy && !IsGuestUser);
+            SendMessageCommand = new RelayCommand(executeSendMessage, canExecuteSendMessage);
+            InviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => IsHost && !IsBusy && !IsGuestUser);
 
- }
+            subscribeToAggregator();
 
- private async Task executeInviteGuestAsync()
- {
- if (!IsHost || IsGuestUser || IsBusy) return;
+            if (initialState != null)
+            {
+                onLobbyStateUpdated(initialState);
+            }
+            else
+            {
+                SetBusy(true);
+            }
 
- var dialog = new GuestInputDialog();
- dialog.Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+            if (IsHost && !IsGuestUser)
+            {
+                RefreshFriendsCommand.Execute(null);
+            }
 
- bool? dialogResult = dialog.ShowDialog();
+            OnPropertyChanged(nameof(IsGuestUser));
+        }
 
- if (dialogResult != true)
- {
- return;
- }
+        private void subscribeToAggregator()
+        {
+            GameEventAggregator.OnLobbyStateUpdated += onLobbyStateUpdated;
+            GameEventAggregator.OnMatchFound += onMatchFound;
+            GameEventAggregator.OnLobbyJoinFailed += onKickedOrFailed;
+            GameEventAggregator.OnChatMessageReceived += onChatMessageReceived;
+        }
 
- string guestEmail = dialog.GuestEmail; 
+        private void unsubscribeFromAggregator()
+        {
+            GameEventAggregator.OnLobbyStateUpdated -= onLobbyStateUpdated;
+            GameEventAggregator.OnMatchFound -= onMatchFound;
+            GameEventAggregator.OnLobbyJoinFailed -= onKickedOrFailed;
+            GameEventAggregator.OnChatMessageReceived -= onChatMessageReceived;
+        }
 
- if (string.IsNullOrWhiteSpace(guestEmail))
- {
- return;
- }
+        private void onLobbyStateUpdated(LobbyStateDto newState)
+        {
+            bool isInitialJoin = string.IsNullOrEmpty(this.LobbyCode) || this.LobbyCode == "Joining...";
 
- if (!Regex.IsMatch(guestEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
- {
- MessageBox.Show(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
- return;
- }
+            SetBusy(false);
 
- if (!MatchmakingServiceClientManager.instance.EnsureConnected())
- {
- MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
- return;
- }
+            this.lobbyState = newState;
+            LobbyCode = newState.lobbyId;
+            HostUsername = newState.hostUsername;
+            CurrentSettings = newState.currentSettingsDto;
 
- setBusy(true);
+            var playersToRemove = Players.Except(newState.players).ToList();
+            var playersToAdd = newState.players.Except(Players).ToList();
+            foreach (var p in playersToRemove) Players.Remove(p);
+            foreach (var p in playersToAdd) Players.Add(p);
 
- var invitationData = new GuestInvitationDto
- {
- inviterUsername = SessionService.Username,
- guestEmail = guestEmail.Trim(),
- lobbyCode = this.LobbyCode
- };
+            OnPropertyChanged(nameof(LobbyCode));
+            OnPropertyChanged(nameof(HostUsername));
+            OnPropertyChanged(nameof(CurrentSettings));
+            OnPropertyChanged(nameof(IsHost));
+            OnPropertyChanged(nameof(IsGuestUser));
 
- try
- {
- await matchmakingProxy.inviteGuestByEmailAsync(invitationData);
- MessageBox.Show($"Invitation sent to {guestEmail}.", Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
- }
- catch (Exception ex)
- {
- handleError(Lang.ErrorSendingGuestInvitation, ex);
- MatchmakingServiceClientManager.instance.Disconnect();
- }
- finally
- {
- setBusy(false);
- }
- }
+            if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
+            {
+                connectToChat(newState.lobbyId);
+            }
+        }
 
- private void connectToChat(string lobbyIdToConnect)
- {
- Debug.WriteLine($"Attempting to connect to chat for lobby {lobbyIdToConnect}...");
- if (ChatServiceClientManager.instance.Connect(SessionService.Username, lobbyIdToConnect))
- {
- Debug.WriteLine($"Chat connected successfully for lobby {lobbyIdToConnect}. Subscribing...");
- subscribeToChatCallbacks(); // Subscribe specifically to chat messages
- }
- else
- {
- Debug.WriteLine($"Failed to connect to chat service for lobby {lobbyIdToConnect}.");
- MessageBox.Show("Could not connect to lobby chat.", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
- }
- }
+        private void onMatchFound(string matchId, List<string> playerUsernames)
+        {
+            if (playerUsernames != null && playerUsernames.Contains(SessionService.Username))
+            {
+                SetBusy(false);
+                cleanupAndUnsubscribe();
+                OnMatchStarting?.Invoke(this, matchId);
+            }
+        }
 
- private void disconnectFromChat()
- {
- Debug.WriteLine("Disconnecting from chat service...");
- unsubscribeFromChatCallbacks();
- ChatServiceClientManager.instance.Disconnect();
- }
+        private void onKickedOrFailed(string reason)
+        {
+            dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
+            cleanupAndUnsubscribe();
+            navigateBackAction?.Invoke();
+        }
 
- private void subscribeToChatCallbacks()
- {
- if (chatCallbackHandler != null)
- {
- chatCallbackHandler.LobbyMessageReceived -= handleLobbyMessageReceived; // Prevent duplicates
- chatCallbackHandler.LobbyMessageReceived += handleLobbyMessageReceived;
- Debug.WriteLine("Subscribed to LobbyMessageReceived.");
- }
- else
- {
- Debug.WriteLine("ERROR: Cannot subscribe to chat callbacks, handler is null.");
- }
- }
+        private void onChatMessageReceived(ChatMessageDto messageDto)
+        {
+            ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
+        }
 
- private void unsubscribeFromChatCallbacks()
- {
- if (chatCallbackHandler != null)
- {
- chatCallbackHandler.LobbyMessageReceived -= handleLobbyMessageReceived;
- Debug.WriteLine("Unsubscribed from LobbyMessageReceived.");
- }
- }
+        private async void executeLeaveLobby(object parameter)
+        {
+            SetBusy(true);
+            try
+            {
+                await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
+                cleanupAndUnsubscribe();
+                navigateBackAction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorLeavingLobby, ex);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
 
- private void handleLobbyMessageReceived(ChatMessageDto messageDto)
- {
- Application.Current?.Dispatcher?.Invoke(() =>
- {
- ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
- Debug.WriteLine($"Added message from {messageDto.senderUsername} to UI collection.");
- });
- }
+        private async void executeStartGame(object parameter)
+        {
+            if (Players.Count != 4)
+            {
+                dialogService.showError(Lang.Need4PlayersError, Lang.ErrorTitle);
+                return;
+            }
 
+            SetBusy(true);
+            try
+            {
+                await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.GameStartError, ex);
+                SetBusy(false);
+            }
+        }
 
- private bool canExecuteSendMessage(object parameter)
- {
- return !string.IsNullOrWhiteSpace(CurrentChatMessage) && ChatServiceClientManager.instance.IsConnected();
- }
+        private async void executeKickPlayer(object parameter)
+        {
+            if (!(parameter is string playerToKick)) return;
 
- private void executeSendMessage(object parameter)
- {
- if (!canExecuteSendMessage(parameter)) return;
+            var confirm = dialogService.showConfirmation(
+                string.Format(Lang.KickPlayerMessage, playerToKick),
+                Lang.KickPlayerTitle
+            );
 
- string messageToSend = CurrentChatMessage;
- CurrentChatMessage = string.Empty;
+            if (!confirm) return;
 
- try
- {
- chatProxy.sendLobbyMessageAsync(SessionService.Username, LobbyCode, messageToSend);
- Debug.WriteLine($"Sent message: '{messageToSend}'");
- }
- catch (Exception ex)
- {
- Debug.WriteLine($"Error sending chat message: {ex.Message}");
- MessageBox.Show($"Failed to send message: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            try
+            {
+                await matchmakingService.kickPlayerAsync(SessionService.Username, playerToKick, LobbyCode);
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorKickingPlayer, ex);
+            }
+        }
 
- if (chatProxy.State == CommunicationState.Faulted)
- {
- disconnectFromChat();
- connectToChat(LobbyCode);
- }
- }
- }
+        private bool canInviteFriend(object parameter)
+        {
+            if (parameter is FriendDtoDisplay friend)
+            {
+                return IsHost && !IsBusy && !IsGuestUser &&
+                       friend.IsOnline && !Players.Contains(friend.Username);
+            }
+            return false;
+        }
 
+        private async void executeInviteFriend(object parameter)
+        {
+            if (!(parameter is FriendDtoDisplay friendToInvite)) return;
 
+            try
+            {
+                await matchmakingService.inviteToLobbyAsync(SessionService.Username, friendToInvite.Username, LobbyCode);
+                dialogService.showInfo(string.Format(Lang.InviteSentBody, friendToInvite.Username), Lang.InviteSentTitle);
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.SendInviteError, ex);
+            }
+        }
 
+        private async Task executeRefreshFriendsAsync()
+        {
+            if (!IsHost || IsGuestUser) return;
 
- private void executeLeaveLobby(object parameter)
- {
- if (!MatchmakingServiceClientManager.instance.EnsureConnected()) return;
- IsBusy = true;
- try
- {
- matchmakingProxy.leaveLobby(SessionService.Username, LobbyCode);
- navigateBack?.Invoke();
- }
- catch (Exception ex) { MessageBox.Show($"Error leaving lobby: {ex.Message}", "Error"); }
- finally { IsBusy = false; }
- }
+            SetBusy(true);
+            try
+            {
+                OnlineFriends.Clear();
+                FriendDto[] friends = await socialService.getFriendsListAsync(SessionService.Username);
 
- private async void executeStartGame(object parameter)
- {
- if (!IsHost || Players.Count <4) 
- {
- MessageBox.Show("Need exactly4 players to start.", "Cannot Start Game", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
- return;
- }
- if (!MatchmakingServiceClientManager.instance.EnsureConnected()) return;
+                if (friends != null)
+                {
+                    foreach (var friendDto in friends.Where(f => f.isOnline))
+                    {
+                        OnlineFriends.Add(new FriendDtoDisplay(friendDto));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.LoadFriendsError, ex);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
 
- IsBusy = true;
- try
- {
- matchmakingProxy.startGame(SessionService.Username, LobbyCode);
- }
- catch (Exception ex) { MessageBox.Show($"Error starting game: {ex.Message}", "Error"); IsBusy = false; } // TODO: Lang
- }
+        private async Task executeInviteGuestAsync()
+        {
+            if (dialogService.showGuestInputDialog(out string guestEmail))
+            {
+                if (string.IsNullOrWhiteSpace(guestEmail) || !Regex.IsMatch(guestEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    dialogService.showError(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle);
+                    return;
+                }
 
- private void executeKickPlayer(object parameter)
- {
- if (!(parameter is string playerToKick) || !IsHost || playerToKick == HostUsername) return;
- if (!MatchmakingServiceClientManager.instance.EnsureConnected()) return;
+                SetBusy(true);
+                var invitationData = new GuestInvitationDto
+                {
+                    inviterUsername = SessionService.Username,
+                    guestEmail = guestEmail.Trim(),
+                    lobbyCode = this.LobbyCode
+                };
 
- var confirmResult = MessageBox.Show($"Are you sure you want to kick {playerToKick}?", "Kick Player", MessageBoxButton.YesNo, MessageBoxImage.Warning);
- if (confirmResult != MessageBoxResult.Yes) return;
+                try
+                {
+                    await matchmakingService.inviteGuestByEmailAsync(invitationData);
+                    dialogService.showInfo(string.Format(Lang.InviteSentBody, guestEmail), Lang.InviteSentTitle);
+                }
+                catch (Exception ex)
+                {
+                    handleError(Lang.GuestInviteError, ex);
+                }
+                finally
+                {
+                    SetBusy(false);
+                }
+            }
+        }
 
- try
- {
- matchmakingProxy.kickPlayer(SessionService.Username, playerToKick, LobbyCode);
- }
- catch (Exception ex)
- {
- MessageBox.Show($"Error kicking player: {ex.Message}", "Error"); // TODO: Lang
- }
- }
+        private void connectToChat(string lobbyIdToConnect)
+        {
+            if (!chatService.connect(SessionService.Username, lobbyIdToConnect))
+            {
+                dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
+            }
+        }
 
- private async Task loadOnlineFriendsAsync()
- {
- if (!IsHost || !SocialServiceClientManager.instance.EnsureConnected(SessionService.Username)) return;
+        private void disconnectFromChat()
+        {
+            chatService.disconnect();
+        }
 
- setBusy(true);
- OnlineFriends.Clear();
- try
- {
- SocialManagerService.FriendDto[] friends = await socialProxy.getFriendsListAsync(SessionService.Username);
- if (friends != null)
- {
- foreach (var friendDto in friends.Where(f => f.isOnline))
- {
- OnlineFriends.Add(new FriendDtoDisplay(friendDto));
- }
- Console.WriteLine($"Loaded {OnlineFriends.Count} online friends for lobby invite list.");
- }
- }
- catch (Exception ex) { handleError("Error loading online friends", ex); }
- finally { setBusy(false); }
- }
+        private bool canExecuteSendMessage(object parameter)
+        {
+            return !string.IsNullOrWhiteSpace(CurrentChatMessage) && chatService.isConnected();
+        }
 
- private void executeInviteFriend(object parameter)
- {
- if (!(parameter is FriendDtoDisplay friendToInvite)) return;
- if (!MatchmakingServiceClientManager.instance.EnsureConnected()) return;
+        private async void executeSendMessage(object parameter)
+        {
+            if (!canExecuteSendMessage(parameter)) return;
 
- try
- {
- Console.WriteLine($"Sending invite to {friendToInvite.Username} for lobby {LobbyCode}");
- matchmakingProxy.inviteToLobby(SessionService.Username, friendToInvite.Username, LobbyCode);
- MessageBox.Show($"Invitation sent to {friendToInvite.Username}.", "Invitation Sent", MessageBoxButton.OK, MessageBoxImage.Information); // TODO: Lang
- }
- catch (Exception ex)
- {
- handleError("Error sending lobby invite", ex);
- }
- }
- private void subscribeToCallbacks()
- {
- if (matchmakingCallbackHandler != null)
- {
- matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate; 
- matchmakingCallbackHandler.MatchFound -= handleMatchFound;
- matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby;
+            string messageToSend = CurrentChatMessage;
+            CurrentChatMessage = string.Empty;
 
- matchmakingCallbackHandler.LobbyStateUpdated += handleLobbyStateUpdate;
- matchmakingCallbackHandler.MatchFound += handleMatchFound;
- matchmakingCallbackHandler.KickedFromLobby += handleKickedFromLobby;
- Debug.WriteLine("Subscribed to Matchmaking callbacks.");
- }
- else { Debug.WriteLine("ERROR: Matchmaking callback handler is null."); }
- }
+            try
+            {
+                await chatService.sendLobbyMessageAsync(SessionService.Username, LobbyCode, messageToSend);
+            }
+            catch (Exception ex)
+            {
+                dialogService.showError(string.Format(Lang.SendChatError, ex.Message), Lang.ErrorTitle);
 
- private void unsubscribeFromCallbacks() 
- {
- if (matchmakingCallbackHandler != null)
- {
- matchmakingCallbackHandler.LobbyStateUpdated -= handleLobbyStateUpdate;
- matchmakingCallbackHandler.MatchFound -= handleMatchFound; 
- matchmakingCallbackHandler.KickedFromLobby -= handleKickedFromLobby; 
- Debug.WriteLine("Unsubscribed from Matchmaking callbacks.");
- }
- unsubscribeFromChatCallbacks();
- }
+                disconnectFromChat();
+                connectToChat(LobbyCode);
+            }
+        }
 
- private void handleLobbyStateUpdate(LobbyStateDto newState)
- {
- if (newState != null && (string.IsNullOrEmpty(this.LobbyCode) || this.LobbyCode == "Joining..." || newState.lobbyId == this.LobbyCode))
- {
- bool isInitialJoin = string.IsNullOrEmpty(this.LobbyCode) || this.LobbyCode == "Joining...";
- Application.Current.Dispatcher.Invoke(() => updateState(newState));
+        private void cleanupAndUnsubscribe()
+        {
+            unsubscribeFromAggregator();
+            disconnectFromChat();
+        }
 
- if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
- {
- Debug.WriteLine($"Initial lobby state received ({newState.lobbyId}). Connecting to chat.");
- connectToChat(newState.lobbyId);
- }
- }
- }
+        private void handleError(string message, Exception ex)
+        {
+            dialogService.showError($"{message}: {ex.Message}", Lang.ErrorTitle);
+        }
 
- private void handleMatchFound(string matchId, List<string> playerUsernames)
- {
- if (playerUsernames != null && playerUsernames.Contains(SessionService.Username))
- {
- Application.Current.Dispatcher.Invoke(() =>
- {
- IsBusy = false;
- MessageBox.Show($"Match found! Starting game (ID: {matchId})...", "Match Start", MessageBoxButton.OK, MessageBoxImage.Information); // TODO: Lang
- unsubscribeFromCallbacks();
-
- var gameWindow = new GameWindow();
- gameWindow.Show();
-
- var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
- currentWindow?.Close();
- });
- }
- }
-
- private void handleKickedFromLobby(string reason)
- {
- Application.Current.Dispatcher.Invoke(() =>
- {
- MessageBox.Show($"You have been kicked. Reason: {reason}", "Kicked", MessageBoxButton.OK, MessageBoxImage.Warning); // TODO: Lang
- unsubscribeFromCallbacks();
- navigateBack?.Invoke();
- });
- }
-
- private void updateState(LobbyStateDto state)
- {
- // (Sin cambios)
- LobbyCode = state.lobbyId;
- HostUsername = state.hostUsername;
- CurrentSettings = state.currentSettingsDto;
-
- var playersToRemove = Players.Except(state.players).ToList();
- var playersToAdd = state.players.Except(Players).ToList();
-
- foreach (var p in playersToRemove) Players.Remove(p);
- foreach (var p in playersToAdd) Players.Add(p);
-
- OnPropertyChanged(nameof(IsHost));
- OnPropertyChanged(nameof(IsGuestUser));
- RaiseCanExecuteChangedOnCommands();
- }
-
- private void RaiseCanExecuteChangedOnCommands()
- {
- Application.Current.Dispatcher?.Invoke(() =>
- {
- ((RelayCommand)LeaveLobbyCommand).RaiseCanExecuteChanged();
- ((RelayCommand)StartGameCommand).RaiseCanExecuteChanged();
- ((RelayCommand)InviteFriendCommand).RaiseCanExecuteChanged();
- ((RelayCommand)KickPlayerCommand).RaiseCanExecuteChanged();
- ((RelayCommand)UploadImageCommand).RaiseCanExecuteChanged();
- ((RelayCommand)ChangeSettingsCommand).RaiseCanExecuteChanged();
- ((RelayCommand)RefreshFriendsCommand).RaiseCanExecuteChanged();
- ((RelayCommand)InviteGuestCommand).RaiseCanExecuteChanged();
- });
- }
- private void setBusy(bool busy)
- {
- IsBusy = busy;
- }
-
- private void handleError(string message, Exception ex)
- {
- Console.WriteLine($"!!! {message}: {ex}");
- MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
- }
-
- public void cleanup()
- {
- Debug.WriteLine("LobbyViewModel Cleanup called.");
- unsubscribeFromCallbacks();
- disconnectFromChat();
- }
- }
+    }
 }

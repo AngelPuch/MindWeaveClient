@@ -111,17 +111,22 @@
       <DependentUpon>Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Abstractions\IAuthenticationService.cs" />
+    <Compile Include="Services\Abstractions\IChatService.cs" />
     <Compile Include="Services\Abstractions\IMatchmakingService.cs" />
-    <Compile Include="Services\ChatCallbackHandler.cs" />
+    <Compile Include="Services\Abstractions\ISocialService.cs" />
+    <Compile Include="Services\Callbacks\ChatCallbackHandler.cs" />
     <Compile Include="Services\ChatServiceClientManager.cs" />
+    <Compile Include="Services\Callbacks\GameEventAggregator.cs" />
     <Compile Include="Services\GuestJoinServiceResultDto.cs" />
     <Compile Include="Services\Implementations\AuthenticationService.cs" />
+    <Compile Include="Services\Implementations\ChatService.cs" />
     <Compile Include="Services\Implementations\MatchmakingService.cs" />
+    <Compile Include="Services\Implementations\SocialService.cs" />
     <Compile Include="Services\LoginServiceResultDto.cs" />
-    <Compile Include="Services\MatchmakingCallbackHandler.cs" />
+    <Compile Include="Services\Callbacks\MatchmakingCallbackHandler.cs" />
     <Compile Include="Services\MatchmakingServiceClientManager.cs" />
     <Compile Include="Services\SessionService.cs" />
-    <Compile Include="Services\SocialCallbackHandler.cs" />
+    <Compile Include="Services\Callbacks\SocialCallbackHandler.cs" />
     <Compile Include="Services\SocialServiceClientManager.cs" />
     <Compile Include="Utilities\Abstractions\IDialogService.cs" />
     <Compile Include="Utilities\Abstractions\INavigationService.cs" />
@@ -130,6 +135,7 @@
     <Compile Include="Validators\CreateAccountValidator.cs" />
     <Compile Include="Validators\GuestJoinValidator.cs" />
     <Compile Include="Validators\LoginValidator.cs" />
+    <Compile Include="Validators\MainMenuValidator.cs" />
     <Compile Include="Validators\PasswordRecoveryValidator.cs" />
     <Compile Include="Validators\VerificationValidator.cs" />
     <Compile Include="ViewModel\Authentication\CreateAccountViewModel.cs" />

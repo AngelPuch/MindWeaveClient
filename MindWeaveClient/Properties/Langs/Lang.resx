@@ -606,4 +606,49 @@
   <data name="WarningMsgSocialConnectFailedGuest" xml:space="preserve">
     <value>Could not connect to social features. Chat might not work correctly.</value>
   </data>
+  <data name="KickPlayerTitle" xml:space="preserve">
+    <value>Kick Player</value>
+  </data>
+  <data name="KickPlayerMessage" xml:space="preserve">
+    <value>Are you sure you want to kick {0}?</value>
+  </data>
+  <data name="Need4PlayersError" xml:space="preserve">
+    <value>Need 4 players to start.</value>
+  </data>
+  <data name="GameStartError" xml:space="preserve">
+    <value>Error starting game.</value>
+  </data>
+  <data name="KickedMessage" xml:space="preserve">
+    <value>You have been kicked from the lobby. Reason: {0}</value>
+  </data>
+  <data name="KickedTitle" xml:space="preserve">
+    <value>Kicked</value>
+  </data>
+  <data name="InviteSentTitle" xml:space="preserve">
+    <value>Invitation Sent</value>
+  </data>
+  <data name="InviteSentBody" xml:space="preserve">
+    <value>Invitation sent to {0}.</value>
+  </data>
+  <data name="LoadFriendsError" xml:space="preserve">
+    <value>Error loading friends list</value>
+  </data>
+  <data name="SendInviteError" xml:space="preserve">
+    <value>Error sending lobby invite</value>
+  </data>
+  <data name="SendChatError" xml:space="preserve">
+    <value>Failed to send message: {0}</value>
+  </data>
+  <data name="ChatConnectError" xml:space="preserve">
+    <value>Could not connect to lobby chat.</value>
+  </data>
+  <data name="GuestInviteError" xml:space="preserve">
+    <value>Error sending guest invitation.</value>
+  </data>
+  <data name="ErrorLeavingLobby" xml:space="preserve">
+    <value>Error leaving lobby.</value>
+  </data>
+  <data name="ErrorKickingPlayer" xml:space="preserve">
+    <value>Error kicking player.</value>
+  </data>
 </root>

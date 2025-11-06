@@ -95,11 +95,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (serviceResult.wcfResult.success && serviceResult.wcfResult.initialLobbyState != null)
                 {
-                    if (!serviceResult.isSocialServiceConnected)
-                    {
-                        dialogService.showWarning(Lang.WarningMsgSocialConnectFailedGuest, Lang.WarningTitle);
-                    }
-
                     JoinSuccess?.Invoke(this, serviceResult.wcfResult);
                 }
                 else

@@ -249,7 +249,7 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.success && result.initialLobbyState != null)
                 {
-                    var lobbyPage = new LobbyPage();
+                    var lobbyPage = new LobbyPage(result.initialLobbyState, navigateTo, navigateBack);
                     lobbyPage.DataContext = new LobbyViewModel(result.initialLobbyState, navigateTo, navigateBack);
                     navigateTo(lobbyPage);
                 }

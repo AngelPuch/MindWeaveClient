@@ -606,4 +606,49 @@
   <data name="WarningMsgSocialConnectFailedGuest" xml:space="preserve">
     <value>No se pudo conectar a las funciones sociales. El chat podría no funcionar.</value>
   </data>
+  <data name="KickPlayerTitle" xml:space="preserve">
+    <value>Expulsar Jugador</value>
+  </data>
+  <data name="KickPlayerMessage" xml:space="preserve">
+    <value>¿Seguro que quieres expulsar a {0}?</value>
+  </data>
+  <data name="Need4PlayersError" xml:space="preserve">
+    <value>Se necesitan 4 jugadores para empezar.</value>
+  </data>
+  <data name="GameStartError" xml:space="preserve">
+    <value>Error al iniciar la partida.</value>
+  </data>
+  <data name="KickedMessage" xml:space="preserve">
+    <value>Has sido expulsado de la sala. Razón: {0}</value>
+  </data>
+  <data name="KickedTitle" xml:space="preserve">
+    <value>Expulsado</value>
+  </data>
+  <data name="InviteSentTitle" xml:space="preserve">
+    <value>Invitación Enviada</value>
+  </data>
+  <data name="InviteSentBody" xml:space="preserve">
+    <value>Invitación enviada a {0}.</value>
+  </data>
+  <data name="LoadFriendsError" xml:space="preserve">
+    <value>Error al cargar amigos</value>
+  </data>
+  <data name="SendInviteError" xml:space="preserve">
+    <value>Error al enviar invitación</value>
+  </data>
+  <data name="SendChatError" xml:space="preserve">
+    <value>Error al enviar mensaje: {0}</value>
+  </data>
+  <data name="ChatConnectError" xml:space="preserve">
+    <value>No se pudo conectar al chat de la sala.</value>
+  </data>
+  <data name="GuestInviteError" xml:space="preserve">
+    <value>Error al enviar invitación de invitado.</value>
+  </data>
+  <data name="ErrorLeavingLobby" xml:space="preserve">
+    <value>Error al salir de la sala.</value>
+  </data>
+  <data name="ErrorKickingPlayer" xml:space="preserve">
+    <value>Error al expulsar al jugador.</value>
+  </data>
 </root>

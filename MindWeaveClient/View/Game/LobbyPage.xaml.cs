@@ -1,5 +1,7 @@
 ﻿// MindWeaveClient/View/Game/LobbyPage.xaml.cs
+using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.ViewModel.Game;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -7,21 +9,25 @@ namespace MindWeaveClient.View.Game
 {
     public partial class LobbyPage : Page
     {
-        public LobbyPage()
+        public LobbyPage(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
         {
             InitializeComponent();
-            this.Unloaded += LobbyPage_Unloaded;
+
+            var viewModel = new LobbyViewModel(initialState, navigateToAction, navigateBackAction);
+
+            viewModel.OnMatchStarting += onMatchStarting;
+                
+            DataContext = viewModel;
         }
 
-        private void LobbyPage_Unloaded(object sender, RoutedEventArgs e)
+        private void onMatchStarting(object sender, string matchId)
         {
-            if (this.DataContext is LobbyViewModel viewModel)
-            {
-                viewModel.cleanup();
-            }
-            this.Unloaded -= LobbyPage_Unloaded;
-        }
+            var gameWindow = new GameWindow();
+            // gameWindow.DataContext = new GameViewModel(matchId);
+            gameWindow.Show();
 
-        // YA NO NECESITAS LAS CLASES DE CONVERTIDORES AQUÍ
+            var currentWindow = Window.GetWindow(this);
+            currentWindow?.Close();
+        }
     }
 }

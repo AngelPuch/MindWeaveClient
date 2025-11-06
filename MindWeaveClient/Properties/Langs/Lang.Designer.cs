@@ -70,6 +70,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Could not connect to lobby chat..
+        /// </summary>
+        public static string ChatConnectError {
+            get {
+                return ResourceManager.GetString("ChatConnectError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Easy (25 Pcs).
         /// </summary>
         public static string DifficultyOptEasy {
@@ -156,6 +165,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorInvalidOrExpiredGuestInvite {
             get {
                 return ResourceManager.GetString("ErrorInvalidOrExpiredGuestInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error kicking player..
+        /// </summary>
+        public static string ErrorKickingPlayer {
+            get {
+                return ResourceManager.GetString("ErrorKickingPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error leaving lobby..
+        /// </summary>
+        public static string ErrorLeavingLobby {
+            get {
+                return ResourceManager.GetString("ErrorLeavingLobby", resourceCulture);
             }
         }
         
@@ -282,6 +309,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string FailedToCreateLobby {
             get {
                 return ResourceManager.GetString("FailedToCreateLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error starting game..
+        /// </summary>
+        public static string GameStartError {
+            get {
+                return ResourceManager.GetString("GameStartError", resourceCulture);
             }
         }
         
@@ -484,6 +520,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error sending guest invitation..
+        /// </summary>
+        public static string GuestInviteError {
+            get {
+                return ResourceManager.GetString("GuestInviteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Enter the email address of the guest you want to invite:.
         /// </summary>
         public static string GuestInvitePromptMessage {
@@ -646,6 +691,69 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Invitation sent to {0}..
+        /// </summary>
+        public static string InviteSentBody {
+            get {
+                return ResourceManager.GetString("InviteSentBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invitation Sent.
+        /// </summary>
+        public static string InviteSentTitle {
+            get {
+                return ResourceManager.GetString("InviteSentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You have been kicked from the lobby. Reason: {0}.
+        /// </summary>
+        public static string KickedMessage {
+            get {
+                return ResourceManager.GetString("KickedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Kicked.
+        /// </summary>
+        public static string KickedTitle {
+            get {
+                return ResourceManager.GetString("KickedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to kick {0}?.
+        /// </summary>
+        public static string KickPlayerMessage {
+            get {
+                return ResourceManager.GetString("KickPlayerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Kick Player.
+        /// </summary>
+        public static string KickPlayerTitle {
+            get {
+                return ResourceManager.GetString("KickPlayerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error loading friends list.
+        /// </summary>
+        public static string LoadFriendsError {
+            get {
+                return ResourceManager.GetString("LoadFriendsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Invite friends.
         /// </summary>
         public static string LobbyBtnInvite {
@@ -804,6 +912,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string MainMenuLbJoinCodePrompt {
             get {
                 return ResourceManager.GetString("MainMenuLbJoinCodePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Need 4 players to start..
+        /// </summary>
+        public static string Need4PlayersError {
+            get {
+                return ResourceManager.GetString("Need4PlayersError", resourceCulture);
             }
         }
         
@@ -1002,6 +1119,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SelectPuzzleImageTitle {
             get {
                 return ResourceManager.GetString("SelectPuzzleImageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to send message: {0}.
+        /// </summary>
+        public static string SendChatError {
+            get {
+                return ResourceManager.GetString("SendChatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error sending lobby invite.
+        /// </summary>
+        public static string SendInviteError {
+            get {
+                return ResourceManager.GetString("SendInviteError", resourceCulture);
             }
         }
         

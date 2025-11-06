@@ -1,9 +1,9 @@
-﻿using MindWeaveClient.SocialManagerService;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Windows; 
+using System.Windows;
+using MindWeaveClient.SocialManagerService;
 
-namespace MindWeaveClient.Services
+namespace MindWeaveClient.Services.Callbacks
 {
     public class SocialCallbackHandler : ISocialManagerCallback
     {

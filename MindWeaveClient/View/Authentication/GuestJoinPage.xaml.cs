@@ -1,14 +1,13 @@
-﻿// MindWeaveClient/View/Authentication/GuestJoinPage.xaml.cs
-using MindWeaveClient.MatchmakingService;
+﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Authentication;
-using MindWeaveClient.ViewModel.Game;
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MindWeaveClient.Services;
 
 namespace MindWeaveClient.View.Authentication
 {
@@ -24,7 +23,7 @@ namespace MindWeaveClient.View.Authentication
             };
 
             var viewModel = new GuestJoinViewModel(navigateBackAction);
-            viewModel.JoinSuccess += onJoinSuccess; // Suscribirse al evento de éxito
+            viewModel.JoinSuccess += onJoinSuccess;
 
             DataContext = viewModel;
         }
@@ -38,18 +37,23 @@ namespace MindWeaveClient.View.Authentication
         private void onJoinSuccess(object sender, GuestJoinResultDto e)
         {
             var currentWindow = Window.GetWindow(this);
-
             var mainAppWindow = new MainWindow();
+            Action<Page> navigateForwardAction = page => mainAppWindow.MainFrame.Navigate(page);
 
-            var lobbyPage = new LobbyPage();
-            lobbyPage.DataContext = new LobbyViewModel(
-                e.initialLobbyState,
-                page => mainAppWindow.MainFrame.Navigate(page),
-                () => mainAppWindow.MainFrame.Navigate(new MainMenuPage(page => mainAppWindow.MainFrame.Navigate(page)))
-            );
+            Action guestNavigateBackAction = () =>
+            {
+                SessionService.ClearSession();
+                var authWindow = new AuthenticationWindow();
+                authWindow.Show();
+                mainAppWindow.Close();
+            };
+
+            var lobbyPage = new LobbyPage(
+                e.initialLobbyState, 
+                navigateForwardAction,
+                guestNavigateBackAction);
 
             mainAppWindow.MainFrame.Navigate(lobbyPage);
-
             mainAppWindow.Show();
             currentWindow?.Close();
         }

@@ -1,11 +1,14 @@
-﻿using MindWeaveClient.MatchmakingService;
+﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.Validators;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.View.Settings;
-using MindWeaveClient.ViewModel.Game;
 using System;
-using System.Text.RegularExpressions;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,129 +18,126 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class MainMenuViewModel : BaseViewModel
     {
-        private readonly Action<Page> navigateTo;
+        private readonly Action<Page> navigateAction;
         private readonly Page mainMenuPage;
+        private readonly IMatchmakingService matchmakingService;
+        private readonly IDialogService dialogService;
+        private readonly MainMenuValidator validator;
 
         public string PlayerUsername { get; }
         public string PlayerAvatarPath { get; }
+
+        private string joinLobbyCode = string.Empty;
+        public string JoinLobbyCode
+        {
+            get => joinLobbyCode;
+            set
+            {
+                joinLobbyCode = value?.Trim() ?? string.Empty;
+                OnPropertyChanged();
+                Validate(validator, this, "JoinLobby");
+            }
+        }
 
         public ICommand ProfileCommand { get; }
         public ICommand CreateLobbyCommand { get; }
         public ICommand SocialCommand { get; }
         public ICommand SettingsCommand { get; }
-        public ICommand JoinLobbyCommand { get; } 
+        public ICommand JoinLobbyCommand { get; }
 
-        private string joinLobbyCodeValue = string.Empty;
-        public string JoinLobbyCode
+        public MainMenuViewModel(Action<Page> navigateAction, Page mainMenuPage)
         {
-            get => joinLobbyCodeValue;
-            set
-            {
-                joinLobbyCodeValue = value?.ToUpper().Trim() ?? string.Empty;
-                if (joinLobbyCodeValue.Length > 6) { joinLobbyCodeValue = joinLobbyCodeValue.Substring(0, 6); }
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(CanJoinLobby));
-                ((RelayCommand)JoinLobbyCommand).RaiseCanExecuteChanged();
-            }
-        }
-        public bool CanJoinLobby => !IsBusy && !string.IsNullOrWhiteSpace(JoinLobbyCode) && JoinLobbyCode.Length == 6;
-
-        private bool isBusyValue;
-        public bool IsBusy
-        {
-            get => isBusyValue;
-            set
-            {
-                isBusyValue = value;
-                OnPropertyChanged();
-                ((RelayCommand)CreateLobbyCommand).RaiseCanExecuteChanged(); 
-                ((RelayCommand)JoinLobbyCommand).RaiseCanExecuteChanged();
-                OnPropertyChanged(nameof(CanJoinLobby));
-            }
-        }
-
-        private MatchmakingManagerClient matchmakingProxy => MatchmakingServiceClientManager.instance.proxy;
-
-        public MainMenuViewModel(Action<Page> navigateTo, Page mainMenuPage)
-        {
-            this.navigateTo = navigateTo;
+            this.navigateAction = navigateAction;
             this.mainMenuPage = mainMenuPage;
+
+            this.matchmakingService = new Services.Implementations.MatchmakingService();
+            this.dialogService = new DialogService();
+            this.validator = new MainMenuValidator();
 
             PlayerUsername = SessionService.Username;
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-            ProfileCommand = new RelayCommand(p => executeGoToProfile());
+            ProfileCommand = new RelayCommand(p => executeGoToProfile(), p => !IsBusy);
             CreateLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !IsBusy);
-            SocialCommand = new RelayCommand(p => executeGoToSocial());
+            SocialCommand = new RelayCommand(p => executeGoToSocial(), p => !IsBusy);
             SettingsCommand = new RelayCommand(p => executeShowSettings(), p => !IsBusy);
-            JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => CanJoinLobby);
+            JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
 
-            Console.WriteLine($"MainMenuViewModel Initialized. Avatar Path: {PlayerAvatarPath}");
+            Validate(validator, this, "JoinLobby");
         }
-        private void executeGoToPuzzleSelection()
-        {
-            var selectionPage = new SelectionPuzzlePage(); 
-            selectionPage.DataContext = new SelectionPuzzleViewModel(
-                navigateTo,         
-                () => navigateTo(mainMenuPage)
-            );
-            navigateTo(selectionPage);
-        }
+
         private async Task executeJoinLobbyAsync()
         {
-            if (!CanJoinLobby) return;
-            if (!Regex.IsMatch(JoinLobbyCode, "^[A-Z0-9]{6}$")) { /*...*/ return; }
+            if (HasErrors) return;
 
-            IsBusy = true;
+            SetBusy(true);
             try
             {
-                if (!MatchmakingServiceClientManager.instance.EnsureConnected()) { /*...*/ return; }
-
-                matchmakingProxy.joinLobby(SessionService.Username, JoinLobbyCode);
-                MessageBox.Show($"Attempting to join lobby {JoinLobbyCode}...", "Joining", MessageBoxButton.OK, MessageBoxImage.Information); 
-
-                var lobbyPage = new LobbyPage();
-                lobbyPage.DataContext = new LobbyViewModel(
-                    null, 
-                    navigateTo,
-                    () => navigateTo(mainMenuPage)
-                );
-                navigateTo(lobbyPage);
+                await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
+                
+                var lobbyPage = new LobbyPage(null, navigateAction, () => navigateAction(mainMenuPage));
+                navigateAction(lobbyPage);
             }
-            catch (Exception ex) 
+            catch (InvalidOperationException ex)
             {
-                MessageBox.Show($"An error occurred while joining lobby: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // TODO: Lang
+                dialogService.showError(ex.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+                MatchmakingServiceClientManager.instance.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorMsgGuestJoinFailed, ex);
                 MatchmakingServiceClientManager.instance.Disconnect();
             }
             finally
             {
-                IsBusy = false;
+                SetBusy(false);
             }
         }
-        
+
+        private static void executeShowSettings()
+        {
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.Owner = Application.Current.MainWindow;
+            settingsWindow.ShowDialog();
+        }
+
+        private void executeGoToPuzzleSelection()
+        {
+            var selectionPage = new SelectionPuzzlePage();
+            selectionPage.DataContext = new SelectionPuzzleViewModel(
+                navigateAction,
+                () => navigateAction(mainMenuPage)
+            );
+            navigateAction(selectionPage);
+        }
 
         private void executeGoToProfile()
         {
             var profilePage = new ProfilePage();
             profilePage.DataContext = new ProfileViewModel(
-                () => navigateTo(mainMenuPage),  
-                () => executeGoToEditProfile() 
+                () => navigateAction(mainMenuPage),
+                () => executeGoToEditProfile()
             );
-            navigateTo(profilePage);
+            navigateAction(profilePage);
         }
 
-        private void executeGoToSocial() {
-            navigateTo(new SocialPage());
+        private void executeGoToSocial()
+        {
+            navigateAction(new SocialPage());
         }
 
         private void executeGoToEditProfile()
         {
             var editProfilePage = new EditProfilePage();
             editProfilePage.DataContext = new EditProfileViewModel(
-                () => executeGoToProfile(), 
+                () => executeGoToProfile(),
                 () => executeGoToSelectAvatar()
             );
-            navigateTo(editProfilePage);
+            navigateAction(editProfilePage);
         }
 
         private void executeGoToSelectAvatar()
@@ -146,23 +146,13 @@ namespace MindWeaveClient.ViewModel.Main
             selectAvatarPage.DataContext = new SelectAvatarViewModel(
                 () => executeGoToEditProfile()
             );
-            navigateTo(selectAvatarPage);
+            navigateAction(selectAvatarPage);
         }
-        private void executeShowSettings()
+
+        private void handleError(string message, Exception ex)
         {
-            var settingsWindow = new SettingsWindow();
-            settingsWindow.Owner = Application.Current.MainWindow;
-            bool? result = settingsWindow.ShowDialog();
-
-            if (result == true)
-            {
-                Console.WriteLine("Settings saved.");
-            }
-            else
-            {
-                 Console.WriteLine("Settings canceled.");
-            }
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
-
     }
 }

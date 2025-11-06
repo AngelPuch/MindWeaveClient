@@ -130,7 +130,7 @@ namespace MindWeaveClient
                     }
 
                     // Crear la página y el ViewModel
-                    var lobbyPage = new LobbyPage();
+                    var lobbyPage = new LobbyPage(null, page => mainWindow.MainFrame.Navigate(page), () => mainWindow.MainFrame.Navigate(new MainMenuPage(page => mainWindow.MainFrame.Navigate(page))));
                     lobbyPage.DataContext = new LobbyViewModel(
                         null, // Estado inicial nulo al unirse
                         page => mainWindow.MainFrame.Navigate(page), // Navegar adelante

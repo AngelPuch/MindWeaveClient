@@ -5,13 +5,11 @@ namespace MindWeaveClient.Services
     public class GuestJoinServiceResultDto
     {
         public GuestJoinResultDto wcfResult { get; }
-        public bool isSocialServiceConnected { get; }
         public bool didMatchmakingConnect { get; }
 
-        public GuestJoinServiceResultDto(GuestJoinResultDto wcfResult, bool socialConnected, bool matchmakingConnected = true)
+        public GuestJoinServiceResultDto(GuestJoinResultDto wcfResult, bool matchmakingConnected = true)
         {
             this.wcfResult = wcfResult;
-            this.isSocialServiceConnected = socialConnected;
             this.didMatchmakingConnect = matchmakingConnected;
         }
     }
