@@ -1,6 +1,7 @@
 ﻿using MindWeaveClient.MatchmakingService;
 using System;
 using System.ServiceModel;
+using MindWeaveClient.Services.Callbacks;
 
 namespace MindWeaveClient.Services
 {

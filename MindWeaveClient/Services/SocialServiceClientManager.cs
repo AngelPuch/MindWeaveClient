@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using MindWeaveClient.SocialManagerService;
 using System.Threading.Tasks;
+using MindWeaveClient.Services.Callbacks;
 
 namespace MindWeaveClient.Services
 {

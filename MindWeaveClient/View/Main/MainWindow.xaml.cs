@@ -5,6 +5,7 @@ using MindWeaveClient.Utilities.Implementations;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using MindWeaveClient.Services.Callbacks;
 
 namespace MindWeaveClient.View.Main
 {

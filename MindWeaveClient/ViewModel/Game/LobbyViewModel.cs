@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MindWeaveClient.Services.Callbacks;
 
 namespace MindWeaveClient.ViewModel.Game
 {
