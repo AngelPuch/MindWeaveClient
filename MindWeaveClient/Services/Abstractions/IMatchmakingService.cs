@@ -5,6 +5,7 @@ namespace MindWeaveClient.Services.Abstractions
 {
     public interface IMatchmakingService
     {
+        Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings);
         Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request);
         Task joinLobbyAsync(string username, string lobbyCode);
         Task leaveLobbyAsync(string username, string lobbyId);
@@ -13,5 +14,7 @@ namespace MindWeaveClient.Services.Abstractions
         Task inviteToLobbyAsync(string inviter, string invited, string lobbyId);
         Task inviteGuestByEmailAsync(GuestInvitationDto invitationData);
         Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId);
+        bool connect();
+        void disconnect();
     }
 }

@@ -4,55 +4,45 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.PuzzleManagerService;
 using MindWeaveClient.Services;
 using MindWeaveClient.View.Game;
-using MindWeaveClient.ViewModel.Game;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
 
 namespace MindWeaveClient.ViewModel.Main
 {
-    public class PuzzleDisplayInfo : BaseViewModel
-    {
-        private bool isSelectedValue;
-        private int puzzleIdValue;
-        private string nameValue;
-        private string imagePathValue;
-
-        public int PuzzleId { get => puzzleIdValue; set { puzzleIdValue = value; OnPropertyChanged(); } }
-        public string Name { get => nameValue; set { nameValue = value; OnPropertyChanged(); } }
-        public string ImagePath { get => imagePathValue; set { imagePathValue = value; OnPropertyChanged(); } }
-        public bool IsSelected
-        {
-            get => isSelectedValue;
-            set { isSelectedValue = value; OnPropertyChanged(); }
-        }
-    }
-
     public class SelectionPuzzleViewModel : BaseViewModel
     {
-        private readonly Action<Page> navigateTo;
-        private readonly Action navigateBack;
-        private PuzzleManagerClient puzzleClient;
-        private MatchmakingManagerClient matchmakingClient => MatchmakingServiceClientManager.instance.proxy;
+        private readonly IPuzzleService puzzleService;
+        private readonly IMatchmakingService matchmakingService;
+        private readonly IDialogService dialogService;
+        private readonly INavigationService navigationService;
+        private readonly IWindowNavigationService windowNavigationService;
+        private readonly ICurrentLobbyService currentLobbyService;
 
-        private ObservableCollection<PuzzleDisplayInfo> availablePuzzlesValue = new ObservableCollection<PuzzleDisplayInfo>();
-        private PuzzleDisplayInfo selectedPuzzleValue;
+        private ObservableCollection<PuzzleDisplayInfo> availablePuzzles = new ObservableCollection<PuzzleDisplayInfo>();
+        private PuzzleDisplayInfo selectedPuzzle;
         private bool isBusyValue;
 
         public ObservableCollection<PuzzleDisplayInfo> AvailablePuzzles
         {
-            get => availablePuzzlesValue;
-            set { availablePuzzlesValue = value; OnPropertyChanged(); }
+            get => availablePuzzles;
+            set { availablePuzzles = value; OnPropertyChanged(); }
         }
 
         public PuzzleDisplayInfo SelectedPuzzle
         {
-            get => selectedPuzzleValue;
-            set { selectedPuzzleValue = value; OnPropertyChanged(); ((RelayCommand)ConfirmAndCreateLobbyCommand).RaiseCanExecuteChanged(); }
+            get => selectedPuzzle;
+            set
+            {
+                selectedPuzzle = value;
+                OnPropertyChanged();
+                (ConfirmAndCreateLobbyCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            }
         }
 
         public bool IsBusy
@@ -67,35 +57,33 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand CancelCommand { get; }
         public ICommand SelectPuzzleCommand { get; }
 
-        public SelectionPuzzleViewModel(Action<Page> navigateToAction, Action navigateBackAction)
+        public SelectionPuzzleViewModel(
+            IPuzzleService puzzleService,
+            IMatchmakingService matchmakingService,
+            IDialogService dialogService,
+            INavigationService navigationService,
+            IWindowNavigationService windowNavigationService,
+            ICurrentLobbyService currentLobbyService)
         {
-            navigateTo = navigateToAction;
-            navigateBack = navigateBackAction;
-            try
-            {
-                puzzleClient = new PuzzleManagerClient();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to create Puzzle Service client: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Stop);
-                puzzleClient = null;
-            }
+            this.puzzleService = puzzleService;
+            this.matchmakingService = matchmakingService;
+            this.dialogService = dialogService;
+            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
+            this.currentLobbyService = currentLobbyService;
 
-            LoadPuzzlesCommand = new RelayCommand(async p => await executeLoadPuzzlesAsync(), p => !IsBusy && puzzleClient != null);
-            UploadImageCommand = new RelayCommand(async p => await executeUploadImageAsync(), p => !IsBusy && puzzleClient != null);
+            LoadPuzzlesCommand = new RelayCommand(async p => await executeLoadPuzzlesAsync(), p => !IsBusy);
+            UploadImageCommand = new RelayCommand(async p => await executeUploadImageAsync(), p => !IsBusy);
             ConfirmAndCreateLobbyCommand = new RelayCommand(async p => await executeConfirmAndCreateLobbyAsync(), p => canConfirmAndCreateLobby());
-            CancelCommand = new RelayCommand(p => navigateBack?.Invoke(), p => !IsBusy);
+            CancelCommand = new RelayCommand(p => executeCancel(), p => !IsBusy);
             SelectPuzzleCommand = new RelayCommand(executeSelectPuzzle, p => p is PuzzleDisplayInfo);
 
-            if (puzzleClient != null)
-            {
-                LoadPuzzlesCommand.Execute(null);
-            }
+            LoadPuzzlesCommand.Execute(null);
         }
 
         private bool canConfirmAndCreateLobby()
         {
-            return SelectedPuzzle != null && !IsBusy && puzzleClient != null;
+            return SelectedPuzzle != null && !IsBusy;
         }
 
         private void executeSelectPuzzle(object parameter)
@@ -106,17 +94,10 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     SelectedPuzzle.IsSelected = false;
                 }
-                if (SelectedPuzzle != puzzleInfo)
-                {
-                    SelectedPuzzle = puzzleInfo;
-                    if (!SelectedPuzzle.IsSelected)
-                    {
-                        SelectedPuzzle.IsSelected = true;
-                    }
-                    OnPropertyChanged(nameof(SelectedPuzzle));
-                    ((RelayCommand)ConfirmAndCreateLobbyCommand).RaiseCanExecuteChanged();
-                }
-                else if (!SelectedPuzzle.IsSelected)
+
+                SelectedPuzzle = puzzleInfo;
+
+                if (!SelectedPuzzle.IsSelected)
                 {
                     SelectedPuzzle.IsSelected = true;
                 }
@@ -126,21 +107,16 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task executeLoadPuzzlesAsync()
         {
-            if (puzzleClient == null) return;
-
-            IsBusy = true;
+            SetBusy(true);
             AvailablePuzzles.Clear();
             SelectedPuzzle = null;
-            PuzzleInfoDto[] puzzlesFromServer;
 
             try
             {
-                puzzlesFromServer = await puzzleClient.getAvailablePuzzlesAsync();
-
+                PuzzleInfoDto[] puzzlesFromServer = await puzzleService.getAvailablePuzzlesAsync();
 
                 if (puzzlesFromServer != null)
                 {
-                    Console.WriteLine($"Received {puzzlesFromServer.Length} puzzles from server."); 
                     foreach (var pzlDto in puzzlesFromServer)
                     {
                         string clientImagePath = pzlDto.imagePath;
@@ -149,27 +125,18 @@ namespace MindWeaveClient.ViewModel.Main
                             clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.imagePath}";
                         }
 
-                        AvailablePuzzles.Add(new PuzzleDisplayInfo
-                        {
-                            PuzzleId = pzlDto.puzzleId,
-                            Name = pzlDto.name,
-                            ImagePath = clientImagePath
-                        });
+                        AvailablePuzzles.Add(new PuzzleDisplayInfo(
+                            pzlDto.puzzleId,
+                            pzlDto.name,
+                            clientImagePath
+                        ));
                     }
                     OnPropertyChanged(nameof(AvailablePuzzles));
-                }
-                else
-                {
-                    Console.WriteLine("Received NULL puzzle list from server."); 
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Lang.ErrorLoadingPuzzles}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                if (ex.InnerException != null)
-                {
-                    MessageBox.Show($"Inner Exception: {ex.InnerException.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                dialogService.showError(Lang.ErrorLoadingPuzzles, Lang.ErrorTitle);
             }
             finally
             {
@@ -179,7 +146,6 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task executeUploadImageAsync()
         {
-            if (puzzleClient == null) return;
 
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -189,53 +155,51 @@ namespace MindWeaveClient.ViewModel.Main
 
             if (openFileDialog.ShowDialog() == true)
             {
-                IsBusy = true;
+                SetBusy(true);
                 try
                 {
                     byte[] imageBytes = File.ReadAllBytes(openFileDialog.FileName);
                     string fileName = Path.GetFileName(openFileDialog.FileName);
 
-                    UploadResultDto uploadResult = await puzzleClient.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
+                    UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
 
                     if (uploadResult.success)
                     {
-                        int newPuzzleId = uploadResult.newPuzzleId;
-                        var newPuzzleInfo = new PuzzleDisplayInfo
-                        {
-                            PuzzleId = newPuzzleId,
-                            Name = fileName,
-                            ImagePath = openFileDialog.FileName
-                        };
+                        var newPuzzleInfo = new PuzzleDisplayInfo(
+                            uploadResult.newPuzzleId,
+                            fileName,
+                            openFileDialog.FileName
+                        );
+
                         AvailablePuzzles.Add(newPuzzleInfo);
                         executeSelectPuzzle(newPuzzleInfo);
-                        MessageBox.Show(uploadResult.message, Lang.UploadSuccessful, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        dialogService.showInfo(uploadResult.message, Lang.UploadSuccessful);
                     }
                     else
                     {
-                        MessageBox.Show(uploadResult.message, Lang.UploadFailed, MessageBoxButton.OK, MessageBoxImage.Warning);
+                        dialogService.showWarning(uploadResult.message, Lang.UploadFailed);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"{Lang.ErrorUploadingImage}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(Lang.ErrorUploadingImage, Lang.ErrorTitle);
                 }
                 finally
                 {
-                    IsBusy = false;
+                    SetBusy(false);
                 }
             }
         }
 
         private async Task executeConfirmAndCreateLobbyAsync()
         {
-            if (!canConfirmAndCreateLobby()) return;
-            if (!MatchmakingServiceClientManager.instance.EnsureConnected())
+            if (!canConfirmAndCreateLobby())
             {
-                MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            IsBusy = true;
+            SetBusy(true);
 
             var settings = new LobbySettingsDto
             {
@@ -245,28 +209,34 @@ namespace MindWeaveClient.ViewModel.Main
 
             try
             {
-                LobbyCreationResultDto result = await matchmakingClient.createLobbyAsync(SessionService.Username, settings);
+                LobbyCreationResultDto result = await matchmakingService.createLobbyAsync(SessionService.Username, settings);
 
                 if (result.success && result.initialLobbyState != null)
                 {
-                    var lobbyPage = new LobbyPage(result.initialLobbyState, navigateTo, navigateBack);
-                    lobbyPage.DataContext = new LobbyViewModel(result.initialLobbyState, navigateTo, navigateBack);
-                    navigateTo(lobbyPage);
+                    currentLobbyService.setInitialState(result.initialLobbyState);
+
+                    windowNavigationService.openWindow<GameWindow>();
+                    windowNavigationService.closeWindowFromContext(this);
                 }
                 else
                 {
-                    MessageBox.Show(result.message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(result.message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Lang.FailedToCreateLobby}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                MatchmakingServiceClientManager.instance.Disconnect();
+                dialogService.showError(Lang.FailedToCreateLobby, Lang.ErrorTitle);
+                matchmakingService.disconnect();
             }
             finally
             {
                 IsBusy = false;
             }
+        }
+
+        private void executeCancel()
+        {
+            navigationService.goBack();
         }
 
         private void raiseCanExecuteChangedForAllCommands()

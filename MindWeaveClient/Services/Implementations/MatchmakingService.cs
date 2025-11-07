@@ -8,21 +8,17 @@ namespace MindWeaveClient.Services.Implementations
 {
     public class MatchmakingService : IMatchmakingService
     {
+        public async Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings)
+        {
+            var proxy = getProxy();
+            return await proxy.createLobbyAsync(hostUsername, settings);
+        }
 
         public async Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request)
         {
-            if (!MatchmakingServiceClientManager.instance.EnsureConnected())
-            {
-                var errorResult = new GuestJoinResultDto
-                {
-                    success = false,
-                    message = Lang.CannotConnectMatchmaking
-                };
-                return new GuestJoinServiceResultDto(errorResult, false);
-            }
+            var proxy = getProxy();
 
-            var matchmakingClient = MatchmakingServiceClientManager.instance.proxy;
-            GuestJoinResultDto wcfResult = await matchmakingClient.joinLobbyAsGuestAsync(request);
+            GuestJoinResultDto wcfResult = await proxy.joinLobbyAsGuestAsync(request);
 
             if (wcfResult.success && wcfResult.initialLobbyState != null)
             {
@@ -34,16 +30,11 @@ namespace MindWeaveClient.Services.Implementations
 
         public async Task joinLobbyAsync(string username, string lobbyCode)
         {
-            if (!MatchmakingServiceClientManager.instance.EnsureConnected())
-            {
-                throw new InvalidOperationException(Lang.CannotConnectMatchmaking);
-            }
-
-            var matchmakingClient = MatchmakingServiceClientManager.instance.proxy;
+            var proxy = getProxy();
 
             await Task.Run(() =>
             {
-                matchmakingClient.joinLobby(username, lobbyCode);
+                proxy.joinLobby(username, lobbyCode);
             });
         }
 
@@ -86,7 +77,6 @@ namespace MindWeaveClient.Services.Implementations
 
         public async Task inviteGuestByEmailAsync(GuestInvitationDto invitationData)
         {
-            // Este SÍ es async en el contrato del server, no necesita Task.Run
             await getProxy().inviteGuestByEmailAsync(invitationData);
         }
 
@@ -96,5 +86,14 @@ namespace MindWeaveClient.Services.Implementations
             await Task.Run(() => proxy.changeDifficulty(hostUsername, lobbyId, newDifficultyId));
         }
 
+        public bool connect()
+        {
+            return MatchmakingServiceClientManager.instance.EnsureConnected();
+        }
+
+        public void disconnect()
+        {
+            MatchmakingServiceClientManager.instance.Disconnect();
+        }
     }
 }

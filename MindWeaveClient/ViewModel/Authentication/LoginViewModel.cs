@@ -1,15 +1,14 @@
 ﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Authentication;
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using MindWeaveClient.Services;
 using MindWeaveClient.Validators;
+using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -19,11 +18,11 @@ namespace MindWeaveClient.ViewModel.Authentication
         private string password;
         private bool showUnverifiedControls = false;
 
-        private readonly Action<Page> navigateAction;
-
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
         private readonly LoginValidator validator;
+        private readonly INavigationService navigationService;
+        private readonly IWindowNavigationService windowNavigationService;
 
         public string Email
         {
@@ -56,9 +55,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
             }
         }
-
-        public event EventHandler LoginSuccess;
-
+        
         public ICommand LoginCommand { get; }
         public ICommand SignUpCommand { get; }
         public ICommand ForgotPasswordCommand { get; }
@@ -70,13 +67,19 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         }
 
-        public LoginViewModel(Action<Page> navigateAction)
+        public LoginViewModel(
+            IAuthenticationService authenticationService,
+            IDialogService dialogService,
+            LoginValidator validator,
+            INavigationService navigationService,
+            IWindowNavigationService windowNavigationService)
         {
-            this.navigateAction = navigateAction;
 
-            this.authenticationService = new Services.Implementations.AuthenticationService();
-            this.dialogService = new DialogService();
-            this.validator = new LoginValidator();
+            this.authenticationService = authenticationService;
+            this.dialogService = dialogService;
+            this.validator = validator;
+            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
 
             LoginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
             SignUpCommand = new RelayCommand((param) => executeGoToSignUp());
@@ -116,7 +119,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                         dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle);
                     }
 
-                    LoginSuccess?.Invoke(this, EventArgs.Empty);
+                    windowNavigationService.openWindow<MainWindow>();
+                    windowNavigationService.closeWindowFromContext(this);
+
                 }
                 else
                 {
@@ -153,8 +158,8 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (result.success)
                 {
-                    dialogService.showInfo(Lang.InfoMsgBodyCodeSent, Lang.InfoMsgTitleSuccess);
-                    navigateAction(new VerificationPage(this.Email, navigateAction));
+                    SessionService.PendingVerificationEmail = this.Email;
+                    navigationService.navigateTo<VerificationPage>();
                 }
                 else
                 {
@@ -173,17 +178,17 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoToSignUp()
         {
-            navigateAction(new CreateAccountPage(navigateAction));
+            navigationService.navigateTo<CreateAccountPage>();
         }
 
         private void executeGoToForgotPassword()
         {
-            navigateAction(new PasswordRecoveryPage(navigateAction));
+            navigationService.navigateTo<PasswordRecoveryPage>();
         }
 
         private void executeGoToGuestJoin()
         {
-            navigateAction(new GuestJoinPage(navigateAction));
+            navigationService.navigateTo<GuestJoinPage>();
         }
 
         private void handleError(string message, Exception ex)

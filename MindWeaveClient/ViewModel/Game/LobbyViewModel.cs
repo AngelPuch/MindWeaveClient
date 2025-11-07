@@ -3,10 +3,13 @@ using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Services.Implementations;
 using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Collections.Generic;
@@ -17,18 +20,18 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MindWeaveClient.Services.Callbacks;
 
 namespace MindWeaveClient.ViewModel.Game
 {
     public class LobbyViewModel : BaseViewModel
     {
-        private readonly Action<Page> navigateAction;
-        private readonly Action navigateBackAction;
         private readonly IMatchmakingService matchmakingService;
         private readonly ISocialService socialService;
         private readonly IChatService chatService;
         private readonly IDialogService dialogService;
+        private readonly INavigationService navigationService;
+        private readonly IWindowNavigationService windowNavigationService;
+        private readonly ICurrentMatchService currentMatchService;
 
         public bool IsGuestUser => SessionService.IsGuest;
         private LobbyStateDto lobbyState;
@@ -49,8 +52,6 @@ namespace MindWeaveClient.ViewModel.Game
             set { currentChatMessage = value; OnPropertyChanged(); ((RelayCommand)SendMessageCommand).RaiseCanExecuteChanged(); }
         }
 
-        public event EventHandler<string> OnMatchStarting;
-
         public ICommand LeaveLobbyCommand { get; }
         public ICommand StartGameCommand { get; }
         public ICommand InviteFriendCommand { get; }
@@ -61,15 +62,23 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand SendMessageCommand { get; }
         public ICommand InviteGuestCommand { get; }
 
-        public LobbyViewModel(LobbyStateDto initialState, Action<Page> navigateToAction, Action navigateBackAction)
+        public LobbyViewModel(
+            IMatchmakingService matchmakingService,
+            ISocialService socialService,
+            IChatService chatService,
+            IDialogService dialogService,
+            INavigationService navigationService,
+            IWindowNavigationService windowNavigationService,
+            ICurrentLobbyService currentLobbyService,
+            ICurrentMatchService currentMatchService)
         {
-            this.navigateAction = navigateToAction;
-            this.navigateBackAction = navigateBackAction;
-
-            this.matchmakingService = new Services.Implementations.MatchmakingService();
-            this.socialService = new SocialService();
-            this.chatService = new ChatService();
-            this.dialogService = new DialogService();
+            this.matchmakingService = matchmakingService;
+            this.socialService = socialService;
+            this.chatService = chatService;
+            this.dialogService = dialogService;
+            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
+            this.currentMatchService = currentMatchService;
 
             LeaveLobbyCommand = new RelayCommand(executeLeaveLobby, param => !IsBusy);
             StartGameCommand = new RelayCommand(executeStartGame, param => IsHost && !IsBusy && !IsGuestUser);
@@ -83,6 +92,7 @@ namespace MindWeaveClient.ViewModel.Game
 
             subscribeToAggregator();
 
+            var initialState = currentLobbyService.getInitialState();
             if (initialState != null)
             {
                 onLobbyStateUpdated(initialState);
@@ -150,7 +160,9 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 SetBusy(false);
                 cleanupAndUnsubscribe();
-                OnMatchStarting?.Invoke(this, matchId);
+                currentMatchService.setMatchId(matchId);
+
+                navigationService.navigateTo<GamePage>();
             }
         }
 
@@ -158,7 +170,8 @@ namespace MindWeaveClient.ViewModel.Game
         {
             dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
             cleanupAndUnsubscribe();
-            navigateBackAction?.Invoke();
+            windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindowFromContext(this);
         }
 
         private void onChatMessageReceived(ChatMessageDto messageDto)
@@ -173,7 +186,8 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
                 cleanupAndUnsubscribe();
-                navigateBackAction?.Invoke();
+                windowNavigationService.openWindow<MainWindow>();
+                windowNavigationService.closeWindowFromContext(this);
             }
             catch (Exception ex)
             {

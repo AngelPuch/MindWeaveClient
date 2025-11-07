@@ -8,16 +8,10 @@ namespace MindWeaveClient.View.Authentication
 {
     public partial class PasswordRecoveryPage : Page
     {
-        public PasswordRecoveryPage(Action<Page> navigateAction)
+        public PasswordRecoveryPage(PasswordRecoveryViewModel viewModel)
         {
             InitializeComponent();
-
-            Action navigateToLogin = () =>
-            {
-                navigateAction(new LoginPage(navigateAction));
-            };
-
-            DataContext = new PasswordRecoveryViewModel(navigateToLogin, navigateToLogin);
+            this.DataContext = viewModel;
         }
 
         private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

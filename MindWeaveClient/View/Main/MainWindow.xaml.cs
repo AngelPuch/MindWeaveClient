@@ -1,39 +1,40 @@
-﻿using MindWeaveClient.Properties.Langs;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
-using System;
 using System.Windows;
-using System.Windows.Controls;
-using MindWeaveClient.Services.Callbacks;
 
 namespace MindWeaveClient.View.Main
 {
     public partial class MainWindow : Window
     {
-        private readonly IDialogService dialogService;
-        public MainWindow()
+        private readonly INavigationService navigationService;
+        private readonly IInvitationService invitationService;
+
+        public MainWindow(INavigationService navigationService, IInvitationService invitationService)
         {
             InitializeComponent();
-            this.dialogService = new DialogService();
+            this.navigationService = navigationService;
+            this.invitationService = invitationService;
 
-            GameEventAggregator.OnLobbyJoinFailed += onLobbyJoinFailed;
-            MainFrame.Navigate(new MainMenuPage(page => MainFrame.Navigate(page)));
+            this.navigationService.initialize(MainFrame);
+            this.navigationService.navigateTo<MainMenuPage>();
+
+            this.Loaded += mainWindow_Loaded;
+            this.Closing += mainWindow_Closing;
         }
 
-        private void onLobbyJoinFailed(string reason)
+        private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            dialogService.showError(reason, Lang.ErrorTitle);
-
-            if (MainFrame.Content is Page && !(MainFrame.Content is MainMenuPage))
-            {
-                MainFrame.Navigate(new MainMenuPage(page => MainFrame.Navigate(page)));
-            }
+            invitationService.subscribeToGlobalInvites();
         }
-        protected override void OnClosed(EventArgs e)
+
+        private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            GameEventAggregator.OnLobbyJoinFailed -= onLobbyJoinFailed;
-            base.OnClosed(e);
+            SocialServiceClientManager.instance.Disconnect();
+            MatchmakingServiceClientManager.instance.Disconnect();
+            ChatServiceClientManager.instance.Disconnect();
+            SessionService.ClearSession();
         }
     }
 }

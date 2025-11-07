@@ -3,15 +3,12 @@ using System.Windows.Controls;
 
 namespace MindWeaveClient.View.Main
 {
-    /// <summary>
-    /// Lógica de interacción para ProfilePage.xaml
-    /// </summary>
     public partial class ProfilePage : Page
     {
-        public ProfilePage()
+        public ProfilePage(ProfileViewModel viewModel)
         {
             InitializeComponent();
-           
+            this.DataContext = viewModel;
         }
     }
 }

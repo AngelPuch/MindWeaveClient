@@ -1,6 +1,10 @@
 ﻿using MindWeaveClient.ProfileService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Validators;
+using MindWeaveClient.View.Main;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,9 +16,10 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class EditProfileViewModel : BaseViewModel
     {
-        private readonly Action navigateBack;
-        private readonly Action navigateToSelectAvatar;
-        private ProfileManagerClient profileClient;
+        private readonly INavigationService navigationService;
+        private readonly IProfileService profileService;
+        private readonly IDialogService dialogService;
+        private readonly EditProfileValidator validator;
 
         private string firstNameValue;
         private string lastNameValue;
@@ -29,32 +34,21 @@ namespace MindWeaveClient.ViewModel.Main
         private string confirmPasswordValue;
         private bool isBusyValue;
 
-        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public DateTime? DateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public GenderDto SelectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public DateTime? DateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public GenderDto SelectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); validateCurrentStep(); } }
         public ObservableCollection<GenderDto> Genders { get => gendersValue; set { gendersValue = value; OnPropertyChanged(); } }
         public string AvatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
 
-        public bool IsChangePasswordSectionVisible { get => isChangePasswordSectionVisibleValue; set { isChangePasswordSectionVisibleValue = value; OnPropertyChanged(); } }
-        public string CurrentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string NewPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
-        public string ConfirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); raiseCanExecuteChanged(); } }
+        public bool IsChangePasswordSectionVisible { get => isChangePasswordSectionVisibleValue; set { isChangePasswordSectionVisibleValue = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string CurrentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string NewPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string ConfirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); validateCurrentStep(); } }
         public bool IsBusy { get => isBusyValue; private set { setBusy(value); } }
 
-        public bool CanSaveChanges =>
-            !IsBusy &&
-            !string.IsNullOrWhiteSpace(FirstName) &&
-            !string.IsNullOrWhiteSpace(LastName) &&
-            DateOfBirth.HasValue &&
-            SelectedGender != null;
-
-        public bool CanSaveNewPassword =>
-            !IsBusy &&
-            !string.IsNullOrWhiteSpace(CurrentPassword) &&
-            !string.IsNullOrWhiteSpace(NewPassword) &&
-            !string.IsNullOrWhiteSpace(ConfirmPassword) &&
-            NewPassword == ConfirmPassword;
+        public bool CanSaveChanges => !HasErrors && !IsBusy && !IsChangePasswordSectionVisible;
+        public bool CanSaveNewPassword => !HasErrors && !IsBusy && IsChangePasswordSectionVisible;
 
         public ICommand SaveChangesCommand { get; }
         public ICommand CancelCommand { get; }
@@ -63,16 +57,20 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand SaveNewPasswordCommand { get; }
         public ICommand CancelChangePasswordCommand { get; }
 
-
-        public EditProfileViewModel(Action navigateBack, Action navigateToSelectAvatar)
+        public EditProfileViewModel(
+            INavigationService navigationService,
+            IProfileService profileService,
+            IDialogService dialogService,
+            EditProfileValidator validator)
         {
-            this.navigateBack = navigateBack;
-            this.navigateToSelectAvatar = navigateToSelectAvatar;
-            this.profileClient = new ProfileManagerClient();
+            this.navigationService = navigationService;
+            this.profileService = profileService;
+            this.dialogService = dialogService;
+            this.validator = validator;
 
-            CancelCommand = new RelayCommand(p => this.navigateBack?.Invoke(), p => !IsBusy);
+            CancelCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
             SaveChangesCommand = new RelayCommand(async p => await saveProfileChangesAsync(), p => CanSaveChanges);
-            ChangeAvatarCommand = new RelayCommand(p => this.navigateToSelectAvatar?.Invoke(), p => !IsBusy);
+            ChangeAvatarCommand = new RelayCommand(p => this.navigationService.navigateTo<SelectAvatarPage>(), p => !IsBusy);
             ShowChangePasswordCommand = new RelayCommand(executeShowChangePassword, p => !IsBusy);
             SaveNewPasswordCommand = new RelayCommand(async p => await executeSaveNewPasswordAsync(), p => CanSaveNewPassword);
             CancelChangePasswordCommand = new RelayCommand(executeCancelChangePassword, p => !IsBusy);
@@ -99,35 +97,26 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task executeSaveNewPasswordAsync()
         {
-            if (NewPassword != ConfirmPassword)
-            {
-                MessageBox.Show(Lang.ValidationPasswordsDoNotMatch, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(CurrentPassword) || string.IsNullOrWhiteSpace(NewPassword))
-            {
-                MessageBox.Show(Lang.GlobalErrorAllFieldsRequired, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (HasErrors) return;
 
             setBusy(true);
             try
             {
-                var result = await profileClient.changePasswordAsync(SessionService.Username, CurrentPassword, NewPassword);
+                var result = await profileService.changePasswordAsync(SessionService.Username, CurrentPassword, NewPassword);
 
                 if (result.success)
                 {
-                    MessageBox.Show(result.message, Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
                     executeCancelChangePassword(null);
                 }
                 else
                 {
-                    MessageBox.Show(result.message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
             {
-                handleError("Error changing password", ex);
+                handleError(Lang.ErrorChangingPassword, ex);
             }
             finally
             {
@@ -135,14 +124,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-
         private async void loadEditableData()
         {
             setBusy(true);
             try
             {
                 AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-                var profileData = await profileClient.getPlayerProfileForEditAsync(SessionService.Username);
+                var profileData = await profileService.getPlayerProfileForEditAsync(SessionService.Username);
+
                 if (profileData != null)
                 {
                     FirstName = profileData.firstName;
@@ -160,14 +149,14 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    MessageBox.Show(Lang.ErrorFailedToLoadProfile, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    dialogService.showWarning(Lang.ErrorFailedToLoadProfile, Lang.WarningTitle);
                 }
-                raiseCanExecuteChanged();
+                validateCurrentStep();
             }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorFailedToLoadProfile, ex);
-                navigateBack?.Invoke();
+                navigationService.goBack();
             }
             finally
             {
@@ -177,11 +166,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task saveProfileChangesAsync()
         {
-            if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) || !DateOfBirth.HasValue || SelectedGender == null)
-            {
-                MessageBox.Show(Lang.GlobalErrorAllFieldsRequired, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (HasErrors) return;
 
             var updatedProfile = new UserProfileForEditDto
             {
@@ -195,21 +180,21 @@ namespace MindWeaveClient.ViewModel.Main
             setBusy(true);
             try
             {
-                var result = await profileClient.updateProfileAsync(SessionService.Username, updatedProfile);
+                var result = await profileService.updateProfileAsync(SessionService.Username, updatedProfile);
 
                 if (result.success)
                 {
-                    MessageBox.Show("Profile updated successfully!", Lang.InfoMsgTitleSuccess, MessageBoxButton.OK, MessageBoxImage.Information); // TODO: Lang key
-                    navigateBack?.Invoke();
+                    dialogService.showInfo(Lang.ProfileUpdateSuccess, Lang.InfoMsgTitleSuccess);
+                    navigationService.goBack();
                 }
                 else
                 {
-                    MessageBox.Show(result.message, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
             {
-                handleError("Error updating profile", ex);
+                handleError(Lang.ProfileUpdateError, ex);
             }
             finally
             {
@@ -226,7 +211,20 @@ namespace MindWeaveClient.ViewModel.Main
         {
             isBusyValue = value;
             OnPropertyChanged(nameof(IsBusy));
-            raiseCanExecuteChanged(); 
+            raiseCanExecuteChanged();
+        }
+
+        private void validateCurrentStep()
+        {
+            if (IsChangePasswordSectionVisible)
+            {
+                Validate(validator, this, "Password");
+            }
+            else
+            {
+                Validate(validator, this, "Profile");
+            }
+            raiseCanExecuteChanged();
         }
 
         private void raiseCanExecuteChanged()
@@ -236,12 +234,9 @@ namespace MindWeaveClient.ViewModel.Main
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
-
         private void handleError(string message, Exception ex)
         {
-            string errorDetails = ex?.Message ?? "No details provided.";
-            Console.WriteLine($"!!! {message}: {errorDetails}");
-            MessageBox.Show($"{message}:\n{errorDetails}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            dialogService.showError(message , Lang.ErrorTitle);
         }
     }
 }

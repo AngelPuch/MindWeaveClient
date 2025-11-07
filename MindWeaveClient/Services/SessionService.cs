@@ -5,6 +5,7 @@
         public static string Username { get; private set; }
         public static string AvatarPath { get; private set; }
         public static bool IsGuest { get; private set; }
+        public static string PendingVerificationEmail { get; set; }
 
         public static void SetSession(string username, string avatarPath, bool isGuest = false)
         {
@@ -26,6 +27,7 @@
             Username = null;
             AvatarPath = null;
             IsGuest = false;
+            PendingVerificationEmail = null;
         }
     }
 }

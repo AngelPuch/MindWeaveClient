@@ -10,22 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MindWeaveClient.Utilities.Abstractions;
 
 namespace MindWeaveClient.View.Game
 {
-    public partial class GameWindow : Window
+    /// <summary>
+    /// Lógica de interacción para GamePage.xaml
+    /// </summary>
+    public partial class GamePage : Page
     {
-        private readonly INavigationService navigationService;
-
-        public GameWindow(INavigationService navigationService, LobbyPage startPage)
+        public GamePage()
         {
             InitializeComponent();
-            this.navigationService = navigationService;
-
-            this.navigationService.initialize(GameFrame);
-            this.navigationService.navigateTo<LobbyPage>();
         }
     }
 }

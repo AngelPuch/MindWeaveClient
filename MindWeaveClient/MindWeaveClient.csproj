@@ -38,15 +38,24 @@
     <Reference Include="FluentValidation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.11.5.2\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.10, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.10\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=9.0.0.10, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.9.0.10\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.10, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.10\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -112,7 +121,12 @@
     </Compile>
     <Compile Include="Services\Abstractions\IAuthenticationService.cs" />
     <Compile Include="Services\Abstractions\IChatService.cs" />
+    <Compile Include="Services\Abstractions\ICurrentLobbyService.cs" />
+    <Compile Include="Services\Abstractions\ICurrentMatchService.cs" />
+    <Compile Include="Services\Abstractions\IInvitationService.cs" />
     <Compile Include="Services\Abstractions\IMatchmakingService.cs" />
+    <Compile Include="Services\Abstractions\IProfileService.cs" />
+    <Compile Include="Services\Abstractions\IPuzzleService.cs" />
     <Compile Include="Services\Abstractions\ISocialService.cs" />
     <Compile Include="Services\Callbacks\ChatCallbackHandler.cs" />
     <Compile Include="Services\ChatServiceClientManager.cs" />
@@ -120,7 +134,12 @@
     <Compile Include="Services\GuestJoinServiceResultDto.cs" />
     <Compile Include="Services\Implementations\AuthenticationService.cs" />
     <Compile Include="Services\Implementations\ChatService.cs" />
+    <Compile Include="Services\Implementations\CurrentLobbyService.cs" />
+    <Compile Include="Services\Implementations\CurrentMatchService.cs" />
+    <Compile Include="Services\Implementations\InvitationService.cs" />
     <Compile Include="Services\Implementations\MatchmakingService.cs" />
+    <Compile Include="Services\Implementations\ProfileService.cs" />
+    <Compile Include="Services\Implementations\PuzzleService.cs" />
     <Compile Include="Services\Implementations\SocialService.cs" />
     <Compile Include="Services\LoginServiceResultDto.cs" />
     <Compile Include="Services\Callbacks\MatchmakingCallbackHandler.cs" />
@@ -130,9 +149,13 @@
     <Compile Include="Services\SocialServiceClientManager.cs" />
     <Compile Include="Utilities\Abstractions\IDialogService.cs" />
     <Compile Include="Utilities\Abstractions\INavigationService.cs" />
+    <Compile Include="Utilities\Abstractions\IWindowNavigationService.cs" />
     <Compile Include="Utilities\AudioManager.cs" />
     <Compile Include="Utilities\Implementations\DialogService.cs" />
+    <Compile Include="Utilities\Implementations\NavigationService.cs" />
+    <Compile Include="Utilities\Implementations\WindowNavigationService.cs" />
     <Compile Include="Validators\CreateAccountValidator.cs" />
+    <Compile Include="Validators\EditProfileValidator.cs" />
     <Compile Include="Validators\GuestJoinValidator.cs" />
     <Compile Include="Validators\LoginValidator.cs" />
     <Compile Include="Validators\MainMenuValidator.cs" />
@@ -153,6 +176,7 @@
     <Compile Include="ViewModel\Main\SelectionPuzzleViewModel.cs" />
     <Compile Include="ViewModel\Main\SettingsViewModel.cs" />
     <Compile Include="ViewModel\Main\SocialViewModel.cs" />
+    <Compile Include="ViewModel\PuzzleDisplayInfo.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
@@ -175,11 +199,17 @@
     <Compile Include="View\Dialogs\GuestInputDialog.xaml.cs">
       <DependentUpon>GuestInputDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Game\GamePage.xaml.cs">
+      <DependentUpon>GamePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Game\GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Game\LobbyPage.xaml.cs">
       <DependentUpon>LobbyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Game\PostMatchResultsPage.xaml.cs">
+      <DependentUpon>PostMatchResultsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Main\EditProfilePage.xaml.cs">
       <DependentUpon>EditProfilePage.xaml</DependentUpon>
@@ -241,11 +271,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Game\GamePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Game\GameWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Game\LobbyPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Game\PostMatchResultsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,7 +2,6 @@
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
@@ -11,18 +10,18 @@ using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Main
 {
     public class MainMenuViewModel : BaseViewModel
     {
-        private readonly Action<Page> navigateAction;
-        private readonly Page mainMenuPage;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
         private readonly MainMenuValidator validator;
+        private readonly INavigationService navigationService;
+        private readonly IWindowNavigationService windowNavigationService;
+        private readonly ICurrentLobbyService currentLobbyService;
 
         public string PlayerUsername { get; }
         public string PlayerAvatarPath { get; }
@@ -45,21 +44,27 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand SettingsCommand { get; }
         public ICommand JoinLobbyCommand { get; }
 
-        public MainMenuViewModel(Action<Page> navigateAction, Page mainMenuPage)
+        public MainMenuViewModel(
+            IMatchmakingService matchmakingService,
+            IDialogService dialogService,
+            MainMenuValidator validator,
+            INavigationService navigationService,
+            IWindowNavigationService windowNavigationService,
+            ICurrentLobbyService currentLobbyService)
         {
-            this.navigateAction = navigateAction;
-            this.mainMenuPage = mainMenuPage;
-
-            this.matchmakingService = new Services.Implementations.MatchmakingService();
-            this.dialogService = new DialogService();
-            this.validator = new MainMenuValidator();
+            this.matchmakingService = matchmakingService;
+            this.dialogService = dialogService;
+            this.validator = validator;
+            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
+            this.currentLobbyService = currentLobbyService;
 
             PlayerUsername = SessionService.Username;
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-            ProfileCommand = new RelayCommand(p => executeGoToProfile(), p => !IsBusy);
+            ProfileCommand = new RelayCommand(p => this.navigationService.navigateTo<ProfilePage>(), p => !IsBusy);
             CreateLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !IsBusy);
-            SocialCommand = new RelayCommand(p => executeGoToSocial(), p => !IsBusy);
+            SocialCommand = new RelayCommand(p => this.navigationService.navigateTo<SocialPage>(), p => !IsBusy);
             SettingsCommand = new RelayCommand(p => executeShowSettings(), p => !IsBusy);
             JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
 
@@ -74,9 +79,10 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
-                
-                var lobbyPage = new LobbyPage(null, navigateAction, () => navigateAction(mainMenuPage));
-                navigateAction(lobbyPage);
+                currentLobbyService.setInitialState(null);
+
+                windowNavigationService.openWindow<GameWindow>();
+                windowNavigationService.closeWindowFromContext(this);
             }
             catch (InvalidOperationException ex)
             {
@@ -98,55 +104,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private static void executeShowSettings()
+        private void executeShowSettings()
         {
-            var settingsWindow = new SettingsWindow();
-            settingsWindow.Owner = Application.Current.MainWindow;
-            settingsWindow.ShowDialog();
+            windowNavigationService.openDialog<SettingsWindow>(Application.Current.MainWindow);
         }
 
         private void executeGoToPuzzleSelection()
         {
-            var selectionPage = new SelectionPuzzlePage();
-            selectionPage.DataContext = new SelectionPuzzleViewModel(
-                navigateAction,
-                () => navigateAction(mainMenuPage)
-            );
-            navigateAction(selectionPage);
-        }
-
-        private void executeGoToProfile()
-        {
-            var profilePage = new ProfilePage();
-            profilePage.DataContext = new ProfileViewModel(
-                () => navigateAction(mainMenuPage),
-                () => executeGoToEditProfile()
-            );
-            navigateAction(profilePage);
-        }
-
-        private void executeGoToSocial()
-        {
-            navigateAction(new SocialPage());
-        }
-
-        private void executeGoToEditProfile()
-        {
-            var editProfilePage = new EditProfilePage();
-            editProfilePage.DataContext = new EditProfileViewModel(
-                () => executeGoToProfile(),
-                () => executeGoToSelectAvatar()
-            );
-            navigateAction(editProfilePage);
-        }
-
-        private void executeGoToSelectAvatar()
-        {
-            var selectAvatarPage = new SelectAvatarPage();
-            selectAvatarPage.DataContext = new SelectAvatarViewModel(
-                () => executeGoToEditProfile()
-            );
-            navigateAction(selectAvatarPage);
+            navigationService.navigateTo<SelectionPuzzlePage>();
         }
 
         private void handleError(string message, Exception ex)

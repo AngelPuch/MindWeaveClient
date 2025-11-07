@@ -7,6 +7,17 @@ namespace MindWeaveClient.Services.Implementations
 {
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly IMatchmakingService matchmakingService;
+        private readonly ISocialService socialService;
+
+        public AuthenticationService(
+            IMatchmakingService matchmakingService,
+            ISocialService socialService)
+        {
+            this.matchmakingService = matchmakingService;
+            this.socialService = socialService;
+        }
+
         public async Task<LoginServiceResultDto> loginAsync(string email, string password)
         {
             using (var client = new AuthenticationManagerClient())
@@ -18,10 +29,15 @@ namespace MindWeaveClient.Services.Implementations
                 };
 
                 LoginResultDto result = await client.loginAsync(loginCredentials);
+                bool socialConnected = false;
+                bool matchmakingConnected = false;
 
                 if (result.operationResult.success)
                 {
-                    var (socialConnected, matchmakingConnected) = handleSuccessfulLogin(result.username, result.avatarPath);
+                    SessionService.SetSession(result.username, result.avatarPath);
+
+                    socialConnected = this.socialService.connect(result.username);
+                    matchmakingConnected = this.matchmakingService.connect();
 
                     return new LoginServiceResultDto(result, socialConnected, matchmakingConnected);
                 }
@@ -71,35 +87,6 @@ namespace MindWeaveClient.Services.Implementations
             {
                 return await client.resetPasswordWithCodeAsync(email, code, newPassword);
             }
-        }
-
-        private static (bool socialConnected, bool matchmakingConnected) handleSuccessfulLogin(string username, string avatarPath)
-        {
-            bool socialConnected;
-            bool matchmakingConnected;
-
-            SessionService.SetSession(username, avatarPath);
-
-            try
-            {
-                socialConnected = SocialServiceClientManager.instance.Connect(username);
-            }
-            catch (Exception)
-            {
-                socialConnected = false;
-            }
-
-            try
-            {
-                MatchmakingServiceClientManager.instance.Connect();
-                matchmakingConnected = true;
-            }
-            catch (Exception)
-            {
-                matchmakingConnected = false;
-            }
-
-            return (socialConnected, matchmakingConnected);
         }
     }
 }

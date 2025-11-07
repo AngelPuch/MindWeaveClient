@@ -3,12 +3,12 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services; 
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -17,11 +17,13 @@ namespace MindWeaveClient.ViewModel.Authentication
         private string lobbyCode;
         private string guestEmail;
         private string desiredUsername;
-        private readonly Action navigateBack;
 
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
         private readonly GuestJoinValidator validator;
+        private readonly INavigationService navigationService;
+        private readonly IWindowNavigationService windowNavigationService;
+        private readonly ICurrentLobbyService currentLobbyService;
 
         public event EventHandler<GuestJoinResultDto> JoinSuccess;
 
@@ -52,13 +54,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             Validate(validator, this);
         }
 
-        public GuestJoinViewModel(Action navigateBackAction)
+        public GuestJoinViewModel(
+            IMatchmakingService matchmakingService,
+            IDialogService dialogService,
+            GuestJoinValidator validator,
+            INavigationService navigationService,
+            IWindowNavigationService windowNavigationService,
+            ICurrentLobbyService currentLobbyService)
         {
-            this.navigateBack = navigateBackAction;
-
-            this.matchmakingService = new Services.Implementations.MatchmakingService();
-            this.dialogService = new DialogService();
-            this.validator = new GuestJoinValidator();
+            this.matchmakingService = matchmakingService;
+            this.dialogService = dialogService;
+            this.validator = validator;
+            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
+            this.currentLobbyService = currentLobbyService;
 
             JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canExecuteJoin());
             GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
@@ -73,7 +82,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoBack()
         {
-            navigateBack?.Invoke();
+            navigationService.goBack();
         }
 
         private async Task executeJoinAsGuestAsync()
@@ -95,7 +104,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (serviceResult.wcfResult.success && serviceResult.wcfResult.initialLobbyState != null)
                 {
-                    JoinSuccess?.Invoke(this, serviceResult.wcfResult);
+                    currentLobbyService.setInitialState(serviceResult.wcfResult.initialLobbyState);
+                    windowNavigationService.openWindow<GameWindow>();
+                    windowNavigationService.closeWindowFromContext(this);
                 }
                 else
                 {
@@ -103,19 +114,19 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                     if (!serviceResult.didMatchmakingConnect)
                     {
-                        MatchmakingServiceClientManager.instance.Disconnect();
+                        matchmakingService.disconnect();
                     }
                 }
             }
             catch (EndpointNotFoundException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
-                MatchmakingServiceClientManager.instance.Disconnect();
+                matchmakingService.disconnect();
             }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorMsgGuestJoinFailed, ex);
-                MatchmakingServiceClientManager.instance.Disconnect();
+                matchmakingService.disconnect();
             }
             finally
             {

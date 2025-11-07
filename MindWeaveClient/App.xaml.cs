@@ -1,183 +1,115 @@
-﻿// MindWeaveClient/App.xaml.cs
+﻿using Microsoft.Extensions.DependencyInjection;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Services.Implementations;
+using MindWeaveClient.Utilities;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.Validators;
+using MindWeaveClient.View.Authentication;
+using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
+using MindWeaveClient.View.Settings;
+using MindWeaveClient.ViewModel.Authentication;
+using MindWeaveClient.ViewModel.Game;
+using MindWeaveClient.ViewModel.Main;
 using System;
-using System.Linq; // Needed for OfType<T>()
 using System.Threading;
 using System.Windows;
-using MindWeaveClient.Services;
-using MindWeaveClient.View.Game;
-using MindWeaveClient.ViewModel.Game;
-using System.Windows.Navigation;
-using MindWeaveClient.View.Main;
-using MindWeaveClient.Properties.Langs;
-using System.Diagnostics;
-using MindWeaveClient.Utilities;
+using NavigationService = MindWeaveClient.Utilities.Implementations.NavigationService;
+
 
 namespace MindWeaveClient
 {
     public partial class App : Application
     {
+        public static IServiceProvider ServiceProvider { get; private set; }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             var langCode = MindWeaveClient.Properties.Settings.Default.languageCode;
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(langCode);
             base.OnStartup(e);
 
-            try
-            {
-                AudioManager.Initialize();
-                Debug.WriteLine("App.OnStartup: Background music started.");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"App.OnStartup: Failed to start background music - {ex.Message}");
-                // Opcional: Mostrar un MessageBox si falla la carga inicial
-                // MessageBox.Show($"Failed to load audio resources: {ex.Message}", "Audio Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            // Subscription happens in MainWindow.Loaded
-            Debug.WriteLine("App.OnStartup completed.");
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            ServiceProvider = services.BuildServiceProvider();
+
+            AudioManager.Initialize();
+
+            var invitationService = ServiceProvider.GetRequiredService<IInvitationService>();
+            invitationService.subscribeToGlobalInvites();
+
+            var authWindow = ServiceProvider.GetService<AuthenticationWindow>();
+            authWindow.Show();
+
         }
 
-        // --- SubscribeToGlobalInvites (No changes needed here) ---
-        public static void SubscribeToGlobalInvites()
+        private void ConfigureServices(IServiceCollection services)
         {
-            if (SocialServiceClientManager.instance.proxy?.State == System.ServiceModel.CommunicationState.Opened &&
-                SocialServiceClientManager.instance.callbackHandler != null)
-            {
-                SocialServiceClientManager.instance.callbackHandler.LobbyInviteReceived -= App_LobbyInviteReceived;
-                SocialServiceClientManager.instance.callbackHandler.LobbyInviteReceived += App_LobbyInviteReceived;
-                Debug.WriteLine("App.xaml.cs: Subscribed to global LobbyInviteReceived event from Social Service.");
-            }
-            else
-            {
-                Debug.WriteLine($"App.xaml.cs: ERROR - Cannot subscribe to invites. Social Service Proxy State: {SocialServiceClientManager.instance.proxy?.State}, CallbackHandler Null: {SocialServiceClientManager.instance.callbackHandler == null}");
-                if (Application.Current.MainWindow != null && Application.Current.MainWindow.IsLoaded)
-                {
-                    MessageBox.Show("Could not initialize invitation system. Please restart.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-            }
+            services.AddSingleton<IAuthenticationService, MindWeaveClient.Services.Implementations.AuthenticationService>();
+            services.AddSingleton<IProfileService, MindWeaveClient.Services.Implementations.ProfileService>();
+            services.AddSingleton<IMatchmakingService, MindWeaveClient.Services.Implementations.MatchmakingService>();
+            services.AddSingleton<ISocialService, MindWeaveClient.Services.Implementations.SocialService>();
+            services.AddSingleton<IChatService, MindWeaveClient.Services.Implementations.ChatService>();
+            services.AddSingleton<IPuzzleService, Services.Implementations.PuzzleService>();
+            services.AddSingleton<IInvitationService, InvitationService>();
+
+            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
+            services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
+            services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
+
+            services.AddTransient<LoginValidator>();
+            services.AddTransient<CreateAccountValidator>();
+            services.AddTransient<GuestJoinValidator>();
+            services.AddTransient<MainMenuValidator>();
+            services.AddTransient<PasswordRecoveryValidator>();
+            services.AddTransient<VerificationValidator>();
+            services.AddTransient<EditProfileValidator>();
+
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<CreateAccountViewModel>();
+            services.AddTransient<GuestJoinViewModel>();
+            services.AddTransient<PasswordRecoveryViewModel>();
+            services.AddTransient<VerificationViewModel>();
+            services.AddTransient<MainMenuViewModel>();
+            services.AddTransient<LobbyViewModel>();
+            services.AddTransient<ProfileViewModel>();
+            services.AddTransient<EditProfileViewModel>();
+            services.AddTransient<SelectAvatarViewModel>();
+            services.AddTransient<SelectionPuzzleViewModel>();
+            services.AddTransient<SettingsViewModel>();
+            services.AddTransient<SocialViewModel>();
+
+            services.AddTransient<LoginPage>();
+            services.AddTransient<CreateAccountPage>();
+            services.AddTransient<GuestJoinPage>();
+            services.AddTransient<PasswordRecoveryPage>();
+            services.AddTransient<VerificationPage>();
+            services.AddTransient<MainMenuPage>();
+            services.AddTransient<LobbyPage>();
+            services.AddTransient<ProfilePage>();
+            services.AddTransient<EditProfilePage>();
+            services.AddTransient<SelectAvatarPage>();
+            services.AddTransient<SelectionPuzzlePage>();
+            services.AddTransient<SocialPage>();
+
+            services.AddTransient<AuthenticationWindow>();
+            services.AddTransient<MainWindow>();
+            services.AddTransient<SettingsWindow>();
+            services.AddTransient<GameWindow>();
         }
 
-        // --- App_LobbyInviteReceived (No changes needed here) ---
-        private static void App_LobbyInviteReceived(string fromUsername, string lobbyId)
-        {
-            Debug.WriteLine($"App_LobbyInviteReceived: Invite from {fromUsername} for lobby {lobbyId}. Current user: {SessionService.Username}");
-
-            if (fromUsername.Equals(SessionService.Username, StringComparison.OrdinalIgnoreCase))
-            { Debug.WriteLine("App_LobbyInviteReceived: Ignored self-invite."); return; }
-
-            MessageBoxResult result = MessageBox.Show(
-                $"You received a lobby invitation from {fromUsername}.\nLobby Code: {lobbyId}\n\nDo you want to join?",
-                "Lobby Invitation",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                Debug.WriteLine($"User {SessionService.Username} accepted invite to lobby {lobbyId}. Ensuring Matchmaking connection...");
-                if (MatchmakingServiceClientManager.instance.EnsureConnected())
-                {
-                    Debug.WriteLine("Matchmaking service connected. Calling joinLobby...");
-                    try
-                    {
-                        var matchmakingProxy = MatchmakingServiceClientManager.instance.proxy;
-                        if (string.IsNullOrEmpty(SessionService.Username))
-                        {
-                            Debug.WriteLine("ERROR: SessionService.username is null when trying to join lobby.");
-                            MessageBox.Show("Session error. Cannot join lobby.", Lang.ErrorTitle);
-                            return;
-                        }
-                        matchmakingProxy.joinLobby(SessionService.Username, lobbyId);
-
-                        Debug.WriteLine($"Navigating to LobbyPage for lobby {lobbyId}...");
-                        NavigateToLobbyPage(); // Call the corrected helper
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Exception during joinLobby or navigation: {ex}");
-                        MessageBox.Show($"Error trying to join lobby {lobbyId}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        MatchmakingServiceClientManager.instance.Disconnect();
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Failed to connect to Matchmaking service.");
-                    MessageBox.Show(Lang.CannotConnectMatchmaking, Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"User {SessionService.Username} declined invite to lobby {lobbyId}.");
-            }
-        }
-
-        // *** HELPER PARA NAVEGACIÓN (CORREGIDO) ***
-        private static void NavigateToLobbyPage()
-        {
-            // Ejecutar en el hilo de UI
-            Application.Current.Dispatcher.Invoke(() => {
-                // *** CAMBIO: Buscar la MainWindow en la colección de ventanas abiertas ***
-                MainWindow mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-
-                // Verificar que encontramos la MainWindow y que su MainFrame es usable
-                if (mainWindow != null && mainWindow.MainFrame?.NavigationService != null)
-                {
-                    Debug.WriteLine("NavigateToLobbyPage: Found MainWindow and MainFrame. Proceeding with navigation.");
-
-                    // Limpiar historial de navegación (opcional pero recomendado)
-                    while (mainWindow.MainFrame.NavigationService.CanGoBack)
-                    {
-                        mainWindow.MainFrame.NavigationService.RemoveBackEntry();
-                    }
-
-                    // Crear la página y el ViewModel
-                    var lobbyPage = new LobbyPage(null, page => mainWindow.MainFrame.Navigate(page), () => mainWindow.MainFrame.Navigate(new MainMenuPage(page => mainWindow.MainFrame.Navigate(page))));
-                    lobbyPage.DataContext = new LobbyViewModel(
-                        null, // Estado inicial nulo al unirse
-                        page => mainWindow.MainFrame.Navigate(page), // Navegar adelante
-                                                                     // Navegar atrás (volver al menú principal)
-                        () => mainWindow.MainFrame.Navigate(new MainMenuPage(page => mainWindow.MainFrame.Navigate(page)))
-                    );
-
-                    // Realizar la navegación
-                    mainWindow.MainFrame.Navigate(lobbyPage);
-                    Debug.WriteLine("Successfully navigated to LobbyPage.");
-                }
-                else // Error si no se encontró MainWindow o MainFrame
-                {
-                    // Log detallado del error
-                    string errorReason = "Unknown reason";
-                    if (mainWindow == null)
-                    {
-                        errorReason = "Could not find an open window of type MainWindow in Application.Current.Windows.";
-                        // Log adicional: ¿Qué ventanas están abiertas?
-                        var openWindowTypes = string.Join(", ", Application.Current.Windows.OfType<Window>().Select(w => w.GetType().Name));
-                        Debug.WriteLine($"Open windows: [{openWindowTypes}]");
-                    }
-                    else if (mainWindow.MainFrame == null) { errorReason = "Found MainWindow, but its MainFrame property is null."; }
-                    else if (mainWindow.MainFrame.NavigationService == null) { errorReason = "Found MainWindow and MainFrame, but MainFrame.NavigationService is null."; }
-
-                    Debug.WriteLine($"Navigation Error: Could not find MainWindow or MainFrame for navigation. Reason: {errorReason}");
-                    MessageBox.Show($"Navigation Error: Could not find the main navigation frame.\n({errorReason})", Lang.ErrorTitle);
-                }
-            });
-        }
 
 
         protected override void OnExit(ExitEventArgs e)
         {
             AudioManager.stopMusic();
-            // Desuscripción (sin cambios)
-            if (SocialServiceClientManager.instance.callbackHandler != null)
-            {
-                SocialServiceClientManager.instance.callbackHandler.LobbyInviteReceived -= App_LobbyInviteReceived;
-                Debug.WriteLine("App.xaml.cs: Unsubscribed from global LobbyInviteReceived event.");
-            }
-
-            // Desconectar servicios (sin cambios)
-            SocialServiceClientManager.instance.Disconnect();
-            MatchmakingServiceClientManager.instance.Disconnect();
-            ChatServiceClientManager.instance.Disconnect();
-
+            ServiceProvider.GetService<IInvitationService>()?.unsubscribeFromGlobalInvites();
+            ServiceProvider.GetService<ISocialService>()?.disconnect();
+            ServiceProvider.GetService<IMatchmakingService>()?.disconnect();
+            ServiceProvider.GetService<IChatService>()?.disconnect();
             base.OnExit(e);
         }
     }

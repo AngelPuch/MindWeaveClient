@@ -133,11 +133,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Current Password.
+        /// </summary>
+        public static string EditProfileLbCurrentPassword {
+            get {
+                return ResourceManager.GetString("EditProfileLbCurrentPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Edit Profile.
         /// </summary>
         public static string EditProfileTitle {
             get {
                 return ResourceManager.GetString("EditProfileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error changing password..
+        /// </summary>
+        public static string ErrorChangingPassword {
+            get {
+                return ResourceManager.GetString("ErrorChangingPassword", resourceCulture);
             }
         }
         
@@ -165,6 +183,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorInvalidOrExpiredGuestInvite {
             get {
                 return ResourceManager.GetString("ErrorInvalidOrExpiredGuestInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a An error occurred while trying to join the lobby..
+        /// </summary>
+        public static string ErrorJoiningLobby {
+            get {
+                return ResourceManager.GetString("ErrorJoiningLobby", resourceCulture);
             }
         }
         
@@ -273,6 +300,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorSendingGuestInvitation {
             get {
                 return ResourceManager.GetString("ErrorSendingGuestInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Your session has expired. Cannot join lobby..
+        /// </summary>
+        public static string ErrorSessionExpired {
+            get {
+                return ResourceManager.GetString("ErrorSessionExpired", resourceCulture);
             }
         }
         
@@ -462,6 +498,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string GlobalLbLastName {
             get {
                 return ResourceManager.GetString("GlobalLbLastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Loading....
+        /// </summary>
+        public static string GlobalLbLoading {
+            get {
+                return ResourceManager.GetString("GlobalLbLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Not specified.
+        /// </summary>
+        public static string GlobalLbNotSpecified {
+            get {
+                return ResourceManager.GetString("GlobalLbNotSpecified", resourceCulture);
             }
         }
         
@@ -687,6 +741,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string InGameLbTime {
             get {
                 return ResourceManager.GetString("InGameLbTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You received an invitation from {0} to join lobby {1}..
+        /// </summary>
+        public static string InviteReceivedBody {
+            get {
+                return ResourceManager.GetString("InviteReceivedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Lobby Invitation.
+        /// </summary>
+        public static string InviteReceivedTitle {
+            get {
+                return ResourceManager.GetString("InviteReceivedTitle", resourceCulture);
             }
         }
         
@@ -997,6 +1069,78 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Back to Lobby.
+        /// </summary>
+        public static string PostMatchBtnBackToLobby {
+            get {
+                return ResourceManager.GetString("PostMatchBtnBackToLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Main Menu.
+        /// </summary>
+        public static string PostMatchBtnMainMenu {
+            get {
+                return ResourceManager.GetString("PostMatchBtnMainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Pieces.
+        /// </summary>
+        public static string PostMatchHeaderPieces {
+            get {
+                return ResourceManager.GetString("PostMatchHeaderPieces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Player.
+        /// </summary>
+        public static string PostMatchHeaderPlayer {
+            get {
+                return ResourceManager.GetString("PostMatchHeaderPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Rank.
+        /// </summary>
+        public static string PostMatchHeaderRank {
+            get {
+                return ResourceManager.GetString("PostMatchHeaderRank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Pts.
+        /// </summary>
+        public static string PostMatchLbScoreSuffix {
+            get {
+                return ResourceManager.GetString("PostMatchLbScoreSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Match Results.
+        /// </summary>
+        public static string PostMatchLbTitle {
+            get {
+                return ResourceManager.GetString("PostMatchLbTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a WINNER.
+        /// </summary>
+        public static string PostMatchLbWinner {
+            get {
+                return ResourceManager.GetString("PostMatchLbWinner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Achievements.
         /// </summary>
         public static string ProfileLbAchievements {
@@ -1065,6 +1209,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ProfileLbTotalPlaytime {
             get {
                 return ResourceManager.GetString("ProfileLbTotalPlaytime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error updating profile..
+        /// </summary>
+        public static string ProfileUpdateError {
+            get {
+                return ResourceManager.GetString("ProfileUpdateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Profile updated successfully!.
+        /// </summary>
+        public static string ProfileUpdateSuccess {
+            get {
+                return ResourceManager.GetString("ProfileUpdateSuccess", resourceCulture);
             }
         }
         
@@ -1425,6 +1587,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ValidationBirthDateRequired {
             get {
                 return ResourceManager.GetString("ValidationBirthDateRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Current password is required..
+        /// </summary>
+        public static string ValidationCurrentPasswordRequired {
+            get {
+                return ResourceManager.GetString("ValidationCurrentPasswordRequired", resourceCulture);
             }
         }
         

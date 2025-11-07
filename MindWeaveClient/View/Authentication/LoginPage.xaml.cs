@@ -1,31 +1,15 @@
-﻿using MindWeaveClient.View.Main;
-using MindWeaveClient.ViewModel.Authentication;
-using System;
-using System.Windows;
+﻿using MindWeaveClient.ViewModel.Authentication;
+using MindWeaveClient.ViewModel.Game;
 using System.Windows.Controls;
 
 namespace MindWeaveClient.View.Authentication
 {
     public partial class LoginPage : Page
     {
-        public LoginPage(Action<Page> navigateAction)
+        public LoginPage(LobbyViewModel viewModel)
         {
             InitializeComponent();
-            var viewModel = new LoginViewModel(navigateAction);
-            viewModel.LoginSuccess += OnLoginSuccess;
-
-            DataContext = viewModel;
+            this.DataContext = viewModel;
         }
-
-        private void OnLoginSuccess(object sender, EventArgs e)
-        {
-            var currentWindow = Window.GetWindow(this);
-
-            var mainAppWindow = new MainWindow();
-            mainAppWindow.Show();
-
-            currentWindow?.Close();
-        }
-
     }
 }

@@ -20,8 +20,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="lblWelcomeMessage"
-                       Grid.Row="0"
+            <TextBlock Grid.Row="0"
                        Text="{Binding WelcomeMessage}"
                        d:Text="¡HOLA, HYELO!"
                        Foreground="#2c3e50" 
@@ -52,8 +51,8 @@
                             </Ellipse.Fill>
                         </Ellipse>
                     </Border>
-                    <TextBlock x:Name="lblUsername" 
-                               Text="{Binding Username}"
+
+                    <TextBlock Text="{Binding Username}"
                                d:Text="Hyelo"
                                Foreground="#2c3e50" 
                                FontSize="32" 
@@ -134,7 +133,7 @@
                         <StackPanel>
                             <TextBlock Text="{x:Static language:Lang.ProfileLbAchievements}" Foreground="#2c3e50" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="icAchievements" ItemsSource="{Binding Achievements}">
+                                <ItemsControl ItemsSource="{Binding Achievements}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel HorizontalAlignment="Center"/>
@@ -153,15 +152,13 @@
             </Grid>
 
             <Grid Grid.Row="2" Margin="0,20,0,0">
-                <Button x:Name="btnBack" 
-                        Command="{Binding backCommand}"
+                <Button Command="{Binding BackCommand}"
                         Content="{x:Static language:Lang.GlobalBtnBack}" 
                         Style="{StaticResource SecondaryButtonStyle}"
                         HorizontalAlignment="Left"
                         Width="180"/>
 
-                <Button x:Name="btnEditProfile" 
-                        Command="{Binding editProfileCommand}"
+                <Button Command="{Binding EditProfileCommand}"
                         Content="{x:Static language:Lang.GlobalCommonEditProfile}" 
                         Style="{StaticResource PrimaryButtonStyle}"
                         HorizontalAlignment="Right"

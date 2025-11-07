@@ -3,20 +3,21 @@ using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
+using MindWeaveClient.View.Authentication;
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
     public class PasswordRecoveryViewModel : BaseViewModel
     {
-        private readonly Action navigateBack;
-        private readonly Action navigateToLogin;
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
         private readonly PasswordRecoveryValidator validator;
+        private readonly INavigationService navigationService;
 
         private bool isStep1Visible = true;
         private bool isStep2Visible;
@@ -50,14 +51,16 @@ namespace MindWeaveClient.ViewModel.Authentication
             validateCurrentStep();
         }
 
-        public PasswordRecoveryViewModel(Action navigateBackAction, Action navigateToLoginAction)
+        public PasswordRecoveryViewModel(
+            IAuthenticationService authenticationService,
+            IDialogService dialogService,
+            PasswordRecoveryValidator validator,
+            INavigationService navigationService)
         {
-            this.navigateBack = navigateBackAction;
-            this.navigateToLogin = navigateToLoginAction;
-
-            this.authenticationService = new Services.Implementations.AuthenticationService();
-            this.dialogService = new DialogService();
-            this.validator = new PasswordRecoveryValidator();
+            this.authenticationService = authenticationService;
+            this.dialogService = dialogService;
+            this.validator = validator;
+            this.navigationService = navigationService;
 
             SendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(), param => !HasErrors && !IsBusy);
             VerifyCodeCommand = new RelayCommand(async param => await executeVerifyCodeAsync(), param => !HasErrors && !IsBusy);
@@ -141,7 +144,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.success)
                 {
                     dialogService.showInfo(Lang.InfoMsgPasswordResetSuccessBody, Lang.InfoMsgPasswordResetSuccessTitle);
-                    navigateToLogin?.Invoke();
+                    navigationService.navigateTo<LoginPage>();
                 }
                 else
                 {
@@ -189,7 +192,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             else
             {
-                navigateBack?.Invoke();
+                navigationService.goBack();
             }
         }
 

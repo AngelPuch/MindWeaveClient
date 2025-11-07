@@ -10,5 +10,11 @@ namespace MindWeaveClient.Services.Abstractions
     public interface ISocialService
     {
         Task<FriendDto[]> getFriendsListAsync(string username);
+
+        event Action<string, string> OnLobbyInviteReceived;
+
+        bool connect(string username);
+
+        void disconnect();
     }
 }

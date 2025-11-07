@@ -10,6 +10,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MindWeaveClient.Services;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -26,11 +27,10 @@ namespace MindWeaveClient.ViewModel.Authentication
         private bool isOther;
         private bool isPreferNotToSay;
 
-        private readonly Action<Page> navigateAction;
-
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
         private readonly CreateAccountValidator validator;
+        private readonly INavigationService navigationService;
 
         public string FirstName { get => firstName; set { firstName = value; OnPropertyChanged(); Validate(validator, this); } }
         public string LastName { get => lastName; set { lastName = value; OnPropertyChanged(); Validate(validator, this); } }
@@ -53,13 +53,16 @@ namespace MindWeaveClient.ViewModel.Authentication
             Validate(validator, this);
         }
 
-        public CreateAccountViewModel(Action<Page> navigateAction)
+        public CreateAccountViewModel(
+            IAuthenticationService authenticationService,
+            IDialogService dialogService,
+            CreateAccountValidator validator,
+            INavigationService navigationService)
         {
-            this.navigateAction = navigateAction;
-
-            this.authenticationService = new Services.Implementations.AuthenticationService();
-            this.dialogService = new DialogService();
-            this.validator = new CreateAccountValidator();
+            this.authenticationService = authenticationService;
+            this.dialogService = dialogService;
+            this.validator = validator;
+            this.navigationService = navigationService;
 
             SignUpCommand = new RelayCommand(async (param) => await executeSignUp(), (param) => canExecuteSignUp());
             GoToLoginCommand = new RelayCommand((param) => executeGoToLogin());
@@ -97,7 +100,8 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (result.success)
                 {
-                    navigateAction(new VerificationPage(email, navigateAction));
+                    SessionService.PendingVerificationEmail = this.Email;
+                    navigationService.navigateTo<VerificationPage>();
                 }
                 else
                 {
@@ -120,7 +124,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoToLogin()
         {
-            navigateAction(new LoginPage(navigateAction));
+            navigationService.navigateTo<LoginPage>();
         }
 
         private int getSelectedGenderId()

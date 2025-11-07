@@ -11,11 +11,10 @@ namespace MindWeaveClient.View.Authentication
 {
     public partial class VerificationPage : Page
     {
-        public VerificationPage(string email, Action<Page> navigateAction)
+        public VerificationPage(VerificationViewModel viewModel)
         {
             InitializeComponent();
-
-            DataContext = new VerificationViewModel(email, navigateAction);
+            this.DataContext = viewModel;
         }
 
         private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

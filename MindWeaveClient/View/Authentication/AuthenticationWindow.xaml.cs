@@ -1,22 +1,20 @@
-﻿using System;
+﻿using MindWeaveClient.Utilities.Abstractions;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace MindWeaveClient.View.Authentication
 {
     public partial class AuthenticationWindow : Window
     {
-        public AuthenticationWindow()
+        private readonly INavigationService navigationService;
+
+        public AuthenticationWindow(INavigationService navigationService, LoginPage startPage)
         {
             InitializeComponent();
-            Action<Page> navigateAction = (pageToNavigate) =>
-            {
-                AuthenticationFrame.Navigate(pageToNavigate);
-            };
 
-            LoginPage loginPage = new LoginPage(navigateAction);
+            this.navigationService = navigationService;
+            this.navigationService.initialize(AuthenticationFrame);
 
-            AuthenticationFrame.Navigate(loginPage);
+            AuthenticationFrame.Navigate(startPage);
         }
 
     }

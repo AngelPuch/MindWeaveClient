@@ -9,10 +9,10 @@ namespace MindWeaveClient.View.Authentication
     /// </summary>
     public partial class CreateAccountPage : Page
     {
-        public CreateAccountPage(Action<Page> navigateAction)
+        public CreateAccountPage(CreateAccountViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = new CreateAccountViewModel(navigateAction);
+            this.DataContext = viewModel;
         }
     }
 }

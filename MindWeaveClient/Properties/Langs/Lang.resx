@@ -651,4 +651,61 @@
   <data name="ErrorKickingPlayer" xml:space="preserve">
     <value>Error kicking player.</value>
   </data>
+  <data name="GlobalLbLoading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="GlobalLbNotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="InviteReceivedBody" xml:space="preserve">
+    <value>You received an invitation from {0} to join lobby {1}.</value>
+  </data>
+  <data name="InviteReceivedTitle" xml:space="preserve">
+    <value>Lobby Invitation</value>
+  </data>
+  <data name="ErrorSessionExpired" xml:space="preserve">
+    <value>Your session has expired. Cannot join lobby.</value>
+  </data>
+  <data name="ErrorJoiningLobby" xml:space="preserve">
+    <value>An error occurred while trying to join the lobby.</value>
+  </data>
+  <data name="ValidationCurrentPasswordRequired" xml:space="preserve">
+    <value>Current password is required.</value>
+  </data>
+  <data name="EditProfileLbCurrentPassword" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="ErrorChangingPassword" xml:space="preserve">
+    <value>Error changing password.</value>
+  </data>
+  <data name="ProfileUpdateSuccess" xml:space="preserve">
+    <value>Profile updated successfully!</value>
+  </data>
+  <data name="ProfileUpdateError" xml:space="preserve">
+    <value>Error updating profile.</value>
+  </data>
+  <data name="PostMatchLbTitle" xml:space="preserve">
+    <value>Match Results</value>
+  </data>
+  <data name="PostMatchLbWinner" xml:space="preserve">
+    <value>WINNER</value>
+  </data>
+  <data name="PostMatchLbScoreSuffix" xml:space="preserve">
+    <value>Pts</value>
+  </data>
+  <data name="PostMatchHeaderRank" xml:space="preserve">
+    <value>Rank</value>
+  </data>
+  <data name="PostMatchHeaderPlayer" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="PostMatchHeaderPieces" xml:space="preserve">
+    <value>Pieces</value>
+  </data>
+  <data name="PostMatchBtnBackToLobby" xml:space="preserve">
+    <value>Back to Lobby</value>
+  </data>
+  <data name="PostMatchBtnMainMenu" xml:space="preserve">
+    <value>Main Menu</value>
+  </data>
 </root>

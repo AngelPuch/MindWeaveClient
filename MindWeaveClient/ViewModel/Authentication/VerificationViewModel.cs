@@ -1,14 +1,13 @@
 ﻿using MindWeaveClient.AuthenticationService;
 using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Authentication
@@ -17,10 +16,10 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private string email;
         private string verificationCode;
-        private readonly Action<Page> navigateAction;
 
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
+        private readonly INavigationService navigationService;
         private readonly VerificationValidator validator;
 
         public string Email { get => email; set { email = value; OnPropertyChanged(); } }
@@ -46,14 +45,19 @@ namespace MindWeaveClient.ViewModel.Authentication
             Validate(validator, this);
         }
 
-        public VerificationViewModel(string email, Action<Page> navigateAction)
+        public VerificationViewModel(
+            IAuthenticationService authenticationService,
+            IDialogService dialogService,
+            INavigationService navigationService,
+            VerificationValidator validator)
         {
-            this.Email = email;
-            this.navigateAction = navigateAction;
+            this.authenticationService = authenticationService;
+            this.dialogService = dialogService;
+            this.navigationService = navigationService;
+            this.validator = validator;
 
-            this.authenticationService = new Services.Implementations.AuthenticationService();
-            this.dialogService = new DialogService();
-            this.validator = new VerificationValidator();
+            this.Email = SessionService.PendingVerificationEmail;
+
 
             VerifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
             GoBackCommand = new RelayCommand((param) => executeGoBack());
@@ -79,6 +83,8 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.success)
                 {
                     dialogService.showInfo(Lang.InfoMsgVerifySuccessBody, Lang.InfoMsgVerifySuccessTitle);
+                    SessionService.PendingVerificationEmail = null;
+                    navigationService.navigateTo<LoginPage>();
                     executeGoBack();
                 }
                 else
@@ -102,7 +108,8 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoBack()
         {
-            navigateAction(new LoginPage(navigateAction));
+            SessionService.PendingVerificationEmail = null;
+            navigationService.navigateTo<LoginPage>();
         }
 
         private async Task executeResendCodeAsync()

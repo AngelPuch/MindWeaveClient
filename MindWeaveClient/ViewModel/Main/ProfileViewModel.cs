@@ -1,72 +1,81 @@
 ﻿using MindWeaveClient.ProfileService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
+using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Main
 {
     public class ProfileViewModel : BaseViewModel
     {
-        private readonly Action navigateBack;
-        private readonly Action navigateToEdit;
+        private readonly IProfileService profileService;
+        private readonly IDialogService dialogService;
+        private readonly INavigationService navigationService;
 
-        private string welcomeMessageValue;
-        private string usernameValue;
-        private string avatarSourceValue;
-        private string firstNameValue;
-        private string lastNameValue;
-        private string dateOfBirthValue;
-        private string genderValue;
-        private int puzzlesCompletedValue;
-        private int puzzlesWonValue;
-        private string totalPlaytimeValue;
-        private int highestScoreValue;
-        private ObservableCollection<AchievementDto> achievementsValue;
+        private string welcomeMessage;
+        private string username;
+        private string avatarSource;
+        private string firstName;
+        private string lastName;
+        private string dateOfBirth;
+        private string gender;
+        private int puzzlesCompleted;
+        private int puzzlesWon;
+        private string totalPlaytime;
+        private int highestScore;
+        private ObservableCollection<AchievementDto> achievements;
 
-        public string WelcomeMessage { get => welcomeMessageValue; set { welcomeMessageValue = value; OnPropertyChanged(); } }
-        public string Username { get => usernameValue; set { usernameValue = value; OnPropertyChanged(); } }
-        public string AvatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
-        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); } }
-        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); } }
-        public string DateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); } }
-        public string Gender { get => genderValue; set { genderValue = value; OnPropertyChanged(); } }
-        public int PuzzlesCompleted { get => puzzlesCompletedValue; set { puzzlesCompletedValue = value; OnPropertyChanged(); } }
-        public int PuzzlesWon { get => puzzlesWonValue; set { puzzlesWonValue = value; OnPropertyChanged(); } }
-        public string TotalPlaytime { get => totalPlaytimeValue; set { totalPlaytimeValue = value; OnPropertyChanged(); } }
-        public int HighestScore { get => highestScoreValue; set { highestScoreValue = value; OnPropertyChanged(); } }
-        public ObservableCollection<AchievementDto> Achievements { get => achievementsValue; set { achievementsValue = value; OnPropertyChanged(); } }
+        public string WelcomeMessage { get => welcomeMessage; set { welcomeMessage = value; OnPropertyChanged(); } }
+        public string Username { get => username; set { username = value; OnPropertyChanged(); } }
+        public string AvatarSource { get => avatarSource; set { avatarSource = value; OnPropertyChanged(); } }
+        public string FirstName { get => firstName; set { firstName = value; OnPropertyChanged(); } }
+        public string LastName { get => lastName; set { lastName = value; OnPropertyChanged(); } }
+        public string DateOfBirth { get => dateOfBirth; set { dateOfBirth = value; OnPropertyChanged(); } }
+        public string Gender { get => gender; set { gender = value; OnPropertyChanged(); } }
+        public int PuzzlesCompleted { get => puzzlesCompleted; set { puzzlesCompleted = value; OnPropertyChanged(); } }
+        public int PuzzlesWon { get => puzzlesWon; set { puzzlesWon = value; OnPropertyChanged(); } }
+        public string TotalPlaytime { get => totalPlaytime; set { totalPlaytime = value; OnPropertyChanged(); } }
+        public int HighestScore { get => highestScore; set { highestScore = value; OnPropertyChanged(); } }
+        public ObservableCollection<AchievementDto> Achievements { get => achievements; set { achievements = value; OnPropertyChanged(); } }
 
         public ICommand BackCommand { get; }
         public ICommand EditProfileCommand { get; }
 
-        public ProfileViewModel(Action navigateBack, Action navigateToEdit)
+        public ProfileViewModel(
+            IProfileService profileService,
+            IDialogService dialogService,
+            INavigationService navigationService)
         {
-            this.navigateBack = navigateBack;
-            this.navigateToEdit = navigateToEdit;
+            this.profileService = profileService;
+            this.dialogService = dialogService;
+            this.navigationService = navigationService;
 
-            BackCommand = new RelayCommand(p => navigateBack?.Invoke());
+            BackCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
+            EditProfileCommand = new RelayCommand(p => this.navigationService.navigateTo<EditProfilePage>(), p => !IsBusy);
 
-            EditProfileCommand = new RelayCommand(p => navigateToEdit?.Invoke());
-
-            Username = SessionService.Username ?? "Loading...";
+            Username = SessionService.Username ?? Lang.GlobalLbLoading;
             WelcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), Username.ToUpper());
             AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
             Achievements = new ObservableCollection<AchievementDto>();
 
-            loadProfileData();
+            loadProfileDataAsync();
         }
 
-        private async void loadProfileData()
+        private async void loadProfileDataAsync()
         {
-            if (string.IsNullOrEmpty(SessionService.Username)) return;
+            if (string.IsNullOrEmpty(SessionService.Username))
+            {
+                return;
+            }
 
+            SetBusy(true);
             try
             {
-                var client = new ProfileManagerClient();
-                PlayerProfileViewDto profileData = await client.getPlayerProfileViewAsync(SessionService.Username);
+                PlayerProfileViewDto profileData = await profileService.getPlayerProfileViewAsync(SessionService.Username);
 
                 if (profileData != null)
                 {
@@ -74,10 +83,10 @@ namespace MindWeaveClient.ViewModel.Main
                     WelcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), profileData.username.ToUpper());
                     AvatarSource = profileData.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-                    FirstName = profileData.firstName;
-                    LastName = profileData.lastName;
-                    DateOfBirth = profileData.dateOfBirth?.ToString("dd/MM/yyyy") ?? "Not specified";
-                    Gender = profileData.gender ?? "Not specified";
+                    FirstName = profileData.firstName ?? Lang.GlobalLbNotSpecified;
+                    LastName = profileData.lastName ?? Lang.GlobalLbNotSpecified;
+                    DateOfBirth = profileData.dateOfBirth?.ToString("dd/MM/yyyy") ?? Lang.GlobalLbNotSpecified;
+                    Gender = profileData.gender ?? Lang.GlobalLbNotSpecified;
 
                     if (profileData.stats != null)
                     {
@@ -95,7 +104,11 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Lang.ErrorFailedToLoadProfile}: {ex.Message}", Lang.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                dialogService.showError(Lang.ErrorFailedToLoadProfile + ex.Message, Lang.ErrorTitle);
+            }
+            finally
+            {
+                SetBusy(false);
             }
         }
     }
