@@ -6,29 +6,18 @@ namespace MindWeaveClient.Services.Implementations
     public class CurrentLobbyService : ICurrentLobbyService
     {
         private LobbyStateDto initialState;
-        private bool hasBeenRetrieved;
 
         public void setInitialState(LobbyStateDto initialState)
         {
             this.initialState = initialState;
-            this.hasBeenRetrieved = false;
         }
 
         public LobbyStateDto getInitialState()
         {
-            if (hasBeenRetrieved)
-            {
-                return null;
-            }
-
-            hasBeenRetrieved = true;
-            return initialState;
-        }
-
-        public void clearState()
-        {
-            initialState = null;
-            hasBeenRetrieved = false;
+            // Devolver el estado y luego limpiarlo para que solo se use una vez
+            var state = this.initialState;
+            this.initialState = null;
+            return state;
         }
     }
 }

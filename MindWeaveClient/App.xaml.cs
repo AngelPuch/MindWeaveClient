@@ -17,7 +17,6 @@ using System.Windows;
 using MindWeaveClient.Services;
 using NavigationService = MindWeaveClient.Utilities.Implementations.NavigationService;
 
-
 namespace MindWeaveClient
 {
     public partial class App : Application
@@ -37,16 +36,17 @@ namespace MindWeaveClient
             var audioService = ServiceProvider.GetRequiredService<IAudioService>();
             audioService.initialize();
 
+            // Suscribir a invitaciones globales a través del servicio
             var invitationService = ServiceProvider.GetRequiredService<IInvitationService>();
             invitationService.subscribeToGlobalInvites();
 
             var authWindow = ServiceProvider.GetService<AuthenticationWindow>();
             authWindow.Show();
-
         }
 
         private void ConfigureServices(IServiceCollection services)
         {
+            // Servicios WCF
             services.AddSingleton<IAuthenticationService, MindWeaveClient.Services.Implementations.AuthenticationService>();
             services.AddSingleton<IProfileService, MindWeaveClient.Services.Implementations.ProfileService>();
             services.AddSingleton<IMatchmakingService, MindWeaveClient.Services.Implementations.MatchmakingService>();
@@ -55,6 +55,7 @@ namespace MindWeaveClient
             services.AddSingleton<IPuzzleService, Services.Implementations.PuzzleService>();
             services.AddSingleton<IInvitationService, InvitationService>();
 
+            // Servicios de utilidades
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
@@ -62,6 +63,7 @@ namespace MindWeaveClient
             services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
             services.AddSingleton<IAudioService, AudioService>();
 
+            // Validadores
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();
             services.AddTransient<GuestJoinValidator>();
@@ -70,6 +72,7 @@ namespace MindWeaveClient
             services.AddTransient<VerificationValidator>();
             services.AddTransient<EditProfileValidator>();
 
+            // ViewModels
             services.AddTransient<LoginViewModel>();
             services.AddTransient<CreateAccountViewModel>();
             services.AddTransient<GuestJoinViewModel>();
@@ -84,6 +87,7 @@ namespace MindWeaveClient
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<SocialViewModel>();
 
+            // Vistas (Pages)
             services.AddTransient<LoginPage>();
             services.AddTransient<CreateAccountPage>();
             services.AddTransient<GuestJoinPage>();
@@ -97,21 +101,50 @@ namespace MindWeaveClient
             services.AddTransient<SelectionPuzzlePage>();
             services.AddTransient<SocialPage>();
 
+            // Ventanas
             services.AddTransient<AuthenticationWindow>();
             services.AddTransient<MainWindow>();
             services.AddTransient<SettingsWindow>();
             services.AddTransient<GameWindow>();
         }
 
-
-
         protected override void OnExit(ExitEventArgs e)
         {
+            // Detener audio
             ServiceProvider.GetService<IAudioService>()?.Dispose();
+
+            // Desuscribir de invitaciones globales
             ServiceProvider.GetService<IInvitationService>()?.unsubscribeFromGlobalInvites();
-            ServiceProvider.GetService<ISocialService>()?.disconnectAsync(SessionService.Username);
+
+            // Desconectar servicios
+            var socialService = ServiceProvider.GetService<ISocialService>();
+            if (socialService != null)
+            {
+                try
+                {
+                    socialService.disconnectAsync(SessionService.Username).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError($"Error disconnecting social service: {ex.Message}");
+                }
+            }
+
             ServiceProvider.GetService<IMatchmakingService>()?.disconnect();
-            ServiceProvider.GetService<IChatService>()?.disconnectAsync();
+
+            var chatService = ServiceProvider.GetService<IChatService>();
+            if (chatService != null)
+            {
+                try
+                {
+                    chatService.disconnectAsync().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError($"Error disconnecting chat service: {ex.Message}");
+                }
+            }
+
             base.OnExit(e);
         }
     }

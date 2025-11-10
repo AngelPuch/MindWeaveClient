@@ -12,6 +12,7 @@ namespace MindWeaveClient.Services.Implementations
         private SocialManagerClient proxy;
         private SocialCallbackHandler callbackHandler;
         private InstanceContext instanceContext;
+        private string currentUsername;
 
         public event Action<string, bool> FriendStatusChanged;
         public event Action<string> FriendRequestReceived;
@@ -20,14 +21,18 @@ namespace MindWeaveClient.Services.Implementations
 
         public async Task connectAsync(string username)
         {
-            if (proxy != null && proxy.State == CommunicationState.Opened)
+            // Si ya estamos conectados con el mismo usuario, no hacer nada
+            if (proxy != null &&
+                proxy.State == CommunicationState.Opened &&
+                currentUsername == username)
             {
                 return;
             }
 
+            // Si existe un proxy en cualquier otro estado, limpiarlo primero
             if (proxy != null)
             {
-                proxy.Abort();
+                cleanupProxy();
             }
 
             try
@@ -42,15 +47,12 @@ namespace MindWeaveClient.Services.Implementations
                 callbackHandler.LobbyInviteReceived += onLobbyInviteReceived;
 
                 await proxy.connectAsync(username);
+                currentUsername = username;
             }
             catch (Exception ex)
             {
-                if (proxy != null)
-                {
-                    proxy.Abort();
-                    proxy = null;
-                }
-                throw;
+                cleanupProxy();
+                throw new InvalidOperationException("Failed to connect to social service.", ex);
             }
         }
 
@@ -58,6 +60,7 @@ namespace MindWeaveClient.Services.Implementations
         {
             if (proxy == null || proxy.State != CommunicationState.Opened)
             {
+                cleanupProxy();
                 return;
             }
 
@@ -66,48 +69,46 @@ namespace MindWeaveClient.Services.Implementations
                 await proxy.disconnectAsync(username);
                 proxy.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                proxy.Abort();
+                proxy?.Abort();
             }
             finally
             {
-                if (callbackHandler != null)
-                {
-                    callbackHandler.FriendStatusChanged -= onFriendStatusChanged;
-                    callbackHandler.FriendRequestReceived -= onFriendRequestReceived;
-                    callbackHandler.FriendResponseReceived -= onFriendResponseReceived;
-                    callbackHandler.LobbyInviteReceived -= onLobbyInviteReceived;
-                }
-                proxy = null;
-                callbackHandler = null;
-                instanceContext = null;
+                cleanupProxy();
             }
         }
+
         public async Task<FriendDto[]> getFriendsListAsync(string username)
         {
             return await executeSafeAsync(async () => await proxy.getFriendsListAsync(username));
         }
+
         public async Task<FriendRequestInfoDto[]> getFriendRequestsAsync(string username)
         {
             return await executeSafeAsync(async () => await proxy.getFriendRequestsAsync(username));
         }
+
         public async Task<PlayerSearchResultDto[]> searchPlayersAsync(string username, string query)
         {
             return await executeSafeAsync(async () => await proxy.searchPlayersAsync(username, query));
         }
+
         public async Task<OperationResultDto> sendFriendRequestAsync(string username, string targetUsername)
         {
             return await executeSafeAsync(async () => await proxy.sendFriendRequestAsync(username, targetUsername));
         }
+
         public async Task<OperationResultDto> respondToFriendRequestAsync(string username, string requesterUsername, bool accept)
         {
             return await executeSafeAsync(async () => await proxy.respondToFriendRequestAsync(username, requesterUsername, accept));
         }
+
         public async Task<OperationResultDto> removeFriendAsync(string username, string friendUsername)
         {
             return await executeSafeAsync(async () => await proxy.removeFriendAsync(username, friendUsername));
         }
+
         private void onFriendStatusChanged(string friendUsername, bool isOnline)
         {
             FriendStatusChanged?.Invoke(friendUsername, isOnline);
@@ -134,16 +135,53 @@ namespace MindWeaveClient.Services.Implementations
             {
                 throw new InvalidOperationException("Social service is not connected.");
             }
+
             try
             {
                 return await call();
             }
-            catch (Exception ex)
+            catch (CommunicationException ex)
             {
-                proxy.Abort();
-                proxy = null;
+                cleanupProxy();
                 throw new InvalidOperationException("Lost connection to social service.", ex);
             }
+            catch (TimeoutException ex)
+            {
+                cleanupProxy();
+                throw new InvalidOperationException("Social service request timed out.", ex);
+            }
+        }
+
+        private void cleanupProxy()
+        {
+            if (callbackHandler != null)
+            {
+                callbackHandler.FriendStatusChanged -= onFriendStatusChanged;
+                callbackHandler.FriendRequestReceived -= onFriendRequestReceived;
+                callbackHandler.FriendResponseReceived -= onFriendResponseReceived;
+                callbackHandler.LobbyInviteReceived -= onLobbyInviteReceived;
+            }
+
+            if (proxy != null)
+            {
+                try
+                {
+                    if (proxy.State != CommunicationState.Closed &&
+                        proxy.State != CommunicationState.Closing)
+                    {
+                        proxy.Abort();
+                    }
+                }
+                catch
+                {
+                    // Ignorar errores al abortar
+                }
+            }
+
+            proxy = null;
+            callbackHandler = null;
+            instanceContext = null;
+            currentUsername = null;
         }
     }
 }

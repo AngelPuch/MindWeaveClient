@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.ViewModel.Game;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using MindWeaveClient.Utilities.Abstractions;
 
 namespace MindWeaveClient.View.Game
 {
@@ -22,10 +12,33 @@ namespace MindWeaveClient.View.Game
         public GameWindow(INavigationService navigationService, LobbyPage startPage)
         {
             InitializeComponent();
-            this.navigationService = navigationService;
 
+            this.navigationService = navigationService;
             this.navigationService.initialize(GameFrame);
             GameFrame.Content = startPage;
+
+            // Suscribirse al evento Closing para limpiar recursos
+            this.Closing += GameWindow_Closing;
+
+            Trace.TraceInformation("GameWindow initialized");
+        }
+
+        private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Trace.TraceInformation("GameWindow closing - cleaning up lobby resources");
+
+            // Si hay una LobbyPage activa, limpiar su ViewModel
+            var lobbyPage = GameFrame?.Content as LobbyPage;
+            if (lobbyPage?.DataContext is LobbyViewModel lobbyViewModel)
+            {
+                // No cancelar el cierre, pero hacer cleanup
+                lobbyViewModel.cleanup();
+                Trace.TraceInformation("LobbyViewModel cleanup completed from window closing");
+            }
+
+            // Si hay otras páginas con recursos que limpiar, hacerlo aquí
+
+            this.Closing -= GameWindow_Closing;
         }
     }
 }
