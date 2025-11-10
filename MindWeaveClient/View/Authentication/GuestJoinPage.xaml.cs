@@ -1,13 +1,7 @@
-﻿using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.View.Game;
-using MindWeaveClient.View.Main;
-using MindWeaveClient.ViewModel.Authentication;
-using System;
+﻿using MindWeaveClient.ViewModel.Authentication;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MindWeaveClient.Services;
 
 namespace MindWeaveClient.View.Authentication
 {

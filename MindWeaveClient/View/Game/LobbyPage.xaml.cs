@@ -1,7 +1,4 @@
-﻿using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.ViewModel.Game;
-using System;
-using System.Windows;
+﻿using MindWeaveClient.ViewModel.Game;
 using System.Windows.Controls;
 
 namespace MindWeaveClient.View.Game

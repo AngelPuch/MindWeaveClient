@@ -46,18 +46,16 @@ namespace MindWeaveClient.ViewModel.Main
                 joinLobbyCode = value?.Trim() ?? string.Empty;
                 OnPropertyChanged();
 
-                // Marcar como tocado cuando el usuario escribe
                 if (!string.IsNullOrEmpty(joinLobbyCode))
                 {
-                    MarkAsTouched(nameof(JoinLobbyCode));
+                    markAsTouched(nameof(JoinLobbyCode));
                 }
 
-                Validate(validator, this, "JoinLobby");
+                validate(validator, this, "JoinLobby");
                 OnPropertyChanged(nameof(JoinLobbyCodeError));
             }
         }
 
-        // Propiedad para obtener el primer error visible del campo
         public string JoinLobbyCodeError
         {
             get
@@ -100,8 +98,7 @@ namespace MindWeaveClient.ViewModel.Main
             SettingsCommand = new RelayCommand(p => executeShowSettings(), p => !IsBusy);
             JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
 
-            // Validar inicialmente pero sin marcar como tocado
-            Validate(validator, this, "JoinLobby");
+            validate(validator, this, "JoinLobby");
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
@@ -116,8 +113,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task executeJoinLobbyAsync()
         {
-            // Al intentar unirse, marcar el campo como tocado para mostrar errores
-            MarkAsTouched(nameof(JoinLobbyCode));
+            markAsTouched(nameof(JoinLobbyCode));
 
             if (HasErrors) return;
 

@@ -61,6 +61,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Cannot accept invitation while already in a game..
+        /// </summary>
+        public static string CannotAcceptInviteAlreadyInGame {
+            get {
+                return ResourceManager.GetString("CannotAcceptInviteAlreadyInGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Cannot connect...service..
         /// </summary>
         public static string CannotConnectMatchmaking {

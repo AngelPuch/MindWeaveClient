@@ -5,7 +5,6 @@ using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,15 +15,15 @@ namespace MindWeaveClient.ViewModel.Main
     public class FriendDtoDisplay : BaseViewModel
     {
         private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
-        private bool _isOnlineValue;
+        private bool isOnlineValue;
 
         public string Username { get; set; }
         public string AvatarPath { get; set; }
 
         public bool IsOnline
         {
-            get => _isOnlineValue;
-            set { _isOnlineValue = value; OnPropertyChanged(); }
+            get => isOnlineValue;
+            set { isOnlineValue = value; OnPropertyChanged(); }
         }
 
         public FriendDtoDisplay(FriendDto dto)
@@ -39,16 +38,14 @@ namespace MindWeaveClient.ViewModel.Main
 
     public class SocialViewModel : BaseViewModel
     {
-        private readonly INavigationService _navigationService;
-        private readonly IDialogService _dialogService;
-        private readonly ISocialService _socialService;
+        private readonly IDialogService dialogService;
+        private readonly ISocialService socialService;
 
-        private string _searchQueryValue;
-        private bool _isFriendsListCheckedValue = true;
-        private bool _isAddFriendCheckedValue;
-        private bool _isRequestsCheckedValue;
-        private bool _isBusyValue;
-        private readonly string _currentUserUsername;
+        private string searchQueryValue;
+        private bool isFriendsListCheckedValue = true;
+        private bool isAddFriendCheckedValue;
+        private bool isRequestsCheckedValue;
+        private readonly string currentUserUsername;
 
         public ObservableCollection<FriendDtoDisplay> FriendsList { get; } = new ObservableCollection<FriendDtoDisplay>();
         public ObservableCollection<PlayerSearchResultDto> SearchResults { get; } = new ObservableCollection<PlayerSearchResultDto>();
@@ -56,21 +53,21 @@ namespace MindWeaveClient.ViewModel.Main
 
         public string SearchQuery
         {
-            get => _searchQueryValue;
+            get => searchQueryValue;
             set
             {
-                _searchQueryValue = value;
+                searchQueryValue = value;
                 OnPropertyChanged();
-                raiseCanExecuteChanged();
+                RaiseCanExecuteChangedOnCommands();
             }
         }
 
         public bool IsFriendsListChecked
         {
-            get => _isFriendsListCheckedValue;
+            get => isFriendsListCheckedValue;
             set
             {
-                _isFriendsListCheckedValue = value;
+                isFriendsListCheckedValue = value;
                 OnPropertyChanged();
                 if (value) LoadFriendsListCommand.Execute(null);
             }
@@ -78,10 +75,10 @@ namespace MindWeaveClient.ViewModel.Main
 
         public bool IsAddFriendChecked
         {
-            get => _isAddFriendCheckedValue;
+            get => isAddFriendCheckedValue;
             set
             {
-                _isAddFriendCheckedValue = value;
+                isAddFriendCheckedValue = value;
                 OnPropertyChanged();
                 if (value) { SearchResults.Clear(); SearchQuery = ""; }
             }
@@ -89,23 +86,12 @@ namespace MindWeaveClient.ViewModel.Main
 
         public bool IsRequestsChecked
         {
-            get => _isRequestsCheckedValue;
+            get => isRequestsCheckedValue;
             set
             {
-                _isRequestsCheckedValue = value;
+                isRequestsCheckedValue = value;
                 OnPropertyChanged();
                 if (value) LoadRequestsCommand.Execute(null);
-            }
-        }
-
-        public bool IsBusy
-        {
-            get => _isBusyValue;
-            private set
-            {
-                _isBusyValue = value;
-                OnPropertyChanged();
-                raiseCanExecuteChanged();
             }
         }
 
@@ -123,10 +109,10 @@ namespace MindWeaveClient.ViewModel.Main
             IDialogService dialogService,
             ISocialService socialService)
         {
-            _navigationService = navigationService;
-            _dialogService = dialogService;
-            _socialService = socialService;
-            _currentUserUsername = SessionService.Username;
+            var navigationService1 = navigationService;
+            this.dialogService = dialogService;
+            this.socialService = socialService;
+            currentUserUsername = SessionService.Username;
 
             LoadFriendsListCommand = new RelayCommand(async (param) => await executeLoadFriendsListAsync(), (param) => !IsBusy);
             LoadRequestsCommand = new RelayCommand(async (param) => await executeLoadRequestsAsync(), (param) => !IsBusy);
@@ -135,37 +121,35 @@ namespace MindWeaveClient.ViewModel.Main
             AcceptRequestCommand = new RelayCommand(async (param) => await executeRespondRequestAsync(param as FriendRequestInfoDto, true), (param) => !IsBusy && param is FriendRequestInfoDto);
             DeclineRequestCommand = new RelayCommand(async (param) => await executeRespondRequestAsync(param as FriendRequestInfoDto, false), (param) => !IsBusy && param is FriendRequestInfoDto);
             RemoveFriendCommand = new RelayCommand(async (param) => await executeRemoveFriendAsync(param as FriendDtoDisplay), (param) => !IsBusy && param is FriendDtoDisplay);
-            BackCommand = new RelayCommand((param) => _navigationService.goBack());
+            BackCommand = new RelayCommand((param) => navigationService1.goBack());
 
-            // Suscribirse a eventos pero NO conectar aquí
             subscribeToEvents();
 
-            // Cargar datos iniciales
             if (IsFriendsListChecked) LoadFriendsListCommand.Execute(null);
             else if (IsRequestsChecked) LoadRequestsCommand.Execute(null);
         }
 
         private void subscribeToEvents()
         {
-            _socialService.FriendRequestReceived += handleFriendRequestReceived;
-            _socialService.FriendResponseReceived += handleFriendResponseReceived;
-            _socialService.FriendStatusChanged += handleFriendStatusChanged;
+            socialService.FriendRequestReceived += handleFriendRequestReceived;
+            socialService.FriendResponseReceived += handleFriendResponseReceived;
+            socialService.FriendStatusChanged += handleFriendStatusChanged;
         }
 
         private void unsubscribeFromEvents()
         {
-            _socialService.FriendRequestReceived -= handleFriendRequestReceived;
-            _socialService.FriendResponseReceived -= handleFriendResponseReceived;
-            _socialService.FriendStatusChanged -= handleFriendStatusChanged;
+            socialService.FriendRequestReceived -= handleFriendRequestReceived;
+            socialService.FriendResponseReceived -= handleFriendResponseReceived;
+            socialService.FriendStatusChanged -= handleFriendStatusChanged;
         }
 
         private async Task executeLoadFriendsListAsync()
         {
-            setBusy(true);
+            SetBusy(true);
             FriendsList.Clear();
             try
             {
-                FriendDto[] friends = await _socialService.getFriendsListAsync(_currentUserUsername);
+                FriendDto[] friends = await socialService.getFriendsListAsync(currentUserUsername);
                 if (friends != null)
                 {
                     foreach (var friendDto in friends)
@@ -180,17 +164,17 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
         private async Task executeLoadRequestsAsync()
         {
-            setBusy(true);
+            SetBusy(true);
             ReceivedRequests.Clear();
             try
             {
-                FriendRequestInfoDto[] requests = await _socialService.getFriendRequestsAsync(_currentUserUsername);
+                FriendRequestInfoDto[] requests = await socialService.getFriendRequestsAsync(currentUserUsername);
                 if (requests != null)
                 {
                     foreach (var req in requests) ReceivedRequests.Add(req);
@@ -202,17 +186,17 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
         private async Task executeSearchAsync()
         {
-            setBusy(true);
+            SetBusy(true);
             SearchResults.Clear();
             try
             {
-                PlayerSearchResultDto[] results = await _socialService.searchPlayersAsync(_currentUserUsername, SearchQuery);
+                PlayerSearchResultDto[] results = await socialService.searchPlayersAsync(currentUserUsername, SearchQuery);
                 if (results != null)
                 {
                     foreach (var user in results) SearchResults.Add(user);
@@ -224,26 +208,26 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
         private async Task executeSendRequestAsync(PlayerSearchResultDto targetUser)
         {
             if (targetUser == null) return;
-            setBusy(true);
+            SetBusy(true);
             try
             {
-                OperationResultDto result = await _socialService.sendFriendRequestAsync(_currentUserUsername, targetUser.username);
+                OperationResultDto result = await socialService.sendFriendRequestAsync(currentUserUsername, targetUser.username);
 
                 if (result.success)
                 {
-                    _dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
                     SearchResults.Remove(targetUser);
                 }
                 else
                 {
-                    _dialogService.showWarning(result.message, Lang.WarningTitle);
+                    dialogService.showWarning(result.message, Lang.WarningTitle);
                 }
             }
             catch (Exception ex)
@@ -252,21 +236,21 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
         private async Task executeRespondRequestAsync(FriendRequestInfoDto request, bool accept)
         {
             if (request == null) return;
-            setBusy(true);
+            SetBusy(true);
             try
             {
-                OperationResultDto result = await _socialService.respondToFriendRequestAsync(_currentUserUsername, request.requesterUsername, accept);
+                OperationResultDto result = await socialService.respondToFriendRequestAsync(currentUserUsername, request.requesterUsername, accept);
 
                 if (result.success)
                 {
-                    _dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
                     ReceivedRequests.Remove(request);
                     if (accept && IsFriendsListChecked)
                     {
@@ -275,7 +259,7 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    _dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -284,7 +268,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
@@ -292,25 +276,25 @@ namespace MindWeaveClient.ViewModel.Main
         {
             if (friendToRemove == null) return;
 
-            bool confirmResult = _dialogService.showConfirmation(
+            bool confirmResult = dialogService.showConfirmation(
                 string.Format(Lang.SocialConfirmRemove, friendToRemove.Username),
                 Lang.SocialConfirmRemoveTitle);
 
             if (!confirmResult) return;
 
-            setBusy(true);
+            SetBusy(true);
             try
             {
-                OperationResultDto result = await _socialService.removeFriendAsync(_currentUserUsername, friendToRemove.Username);
+                OperationResultDto result = await socialService.removeFriendAsync(currentUserUsername, friendToRemove.Username);
 
                 if (result.success)
                 {
-                    _dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
                     FriendsList.Remove(friendToRemove);
                 }
                 else
                 {
-                    _dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -319,7 +303,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                setBusy(false);
+                SetBusy(false);
             }
         }
 
@@ -331,7 +315,7 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     await executeLoadRequestsAsync();
                 }
-                _dialogService.showInfo(
+                dialogService.showInfo(
                     string.Format(Lang.SocialInfoNewRequest, fromUsername),
                     Lang.SocialInfoNewRequestTitle);
             });
@@ -347,13 +331,13 @@ namespace MindWeaveClient.ViewModel.Main
                     {
                         await executeLoadFriendsListAsync();
                     }
-                    _dialogService.showInfo(
+                    dialogService.showInfo(
                         string.Format(Lang.SocialInfoRequestAccepted, fromUsername),
                         Lang.SocialInfoNewFriendTitle);
                 }
                 else
                 {
-                    _dialogService.showInfo(
+                    dialogService.showInfo(
                         string.Format(Lang.SocialInfoRequestDeclined, fromUsername),
                         Lang.SocialInfoRequestDeclinedTitle);
                 }
@@ -374,29 +358,14 @@ namespace MindWeaveClient.ViewModel.Main
             });
         }
 
-        private void setBusy(bool busy)
-        {
-            IsBusy = busy;
-            raiseCanExecuteChanged();
-        }
-
-        private void raiseCanExecuteChanged()
-        {
-            Application.Current?.Dispatcher?.Invoke(() =>
-                CommandManager.InvalidateRequerySuggested());
-        }
-
         private void handleError(string message, Exception ex)
         {
-            Trace.TraceError($"Error in {nameof(SocialViewModel)}: {message} | Exception: {ex}");
-            _dialogService.showError(message, Lang.ErrorTitle);
+            dialogService.showError(message, Lang.ErrorTitle);
         }
 
         public void cleanup()
         {
-            // Solo desuscribirse de eventos, NO desconectar el servicio
             unsubscribeFromEvents();
-            Trace.TraceInformation($"SocialViewModel cleaned up for user {_currentUserUsername}");
         }
     }
 }

@@ -37,9 +37,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(LobbyCode));
+                    markAsTouched(nameof(LobbyCode));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(LobbyCodeError));
             }
         }
@@ -53,9 +53,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(GuestEmail));
+                    markAsTouched(nameof(GuestEmail));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(GuestEmailError));
             }
         }
@@ -69,9 +69,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(DesiredUsername));
+                    markAsTouched(nameof(DesiredUsername));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(DesiredUsernameError));
             }
         }
@@ -108,7 +108,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         public GuestJoinViewModel()
         {
             this.validator = new GuestJoinValidator();
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         public GuestJoinViewModel(
@@ -129,7 +129,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canExecuteJoin());
             GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
 
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         private bool canExecuteJoin()
@@ -144,7 +144,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeJoinAsGuestAsync()
         {
-            MarkAllAsTouched();
+            markAllAsTouched();
 
             if (HasErrors) return;
 
@@ -161,17 +161,17 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 GuestJoinServiceResultDto serviceResult = await matchmakingService.joinLobbyAsGuestAsync(joinRequest);
 
-                if (serviceResult.wcfResult.success && serviceResult.wcfResult.initialLobbyState != null)
+                if (serviceResult.WcfResult.success && serviceResult.WcfResult.initialLobbyState != null)
                 {
-                    currentLobbyService.setInitialState(serviceResult.wcfResult.initialLobbyState);
+                    currentLobbyService.setInitialState(serviceResult.WcfResult.initialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
                     windowNavigationService.closeWindow<AuthenticationWindow>();
                 }
                 else
                 {
-                    dialogService.showError(serviceResult.wcfResult.message ?? "Unexpected error", Lang.ErrorTitle);
+                    dialogService.showError(serviceResult.WcfResult.message, Lang.ErrorTitle);
 
-                    if (!serviceResult.didMatchmakingConnect)
+                    if (!serviceResult.DidMatchmakingConnect)
                     {
                         matchmakingService.disconnect();
                     }

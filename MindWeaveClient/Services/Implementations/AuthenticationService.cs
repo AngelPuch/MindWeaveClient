@@ -28,8 +28,6 @@ namespace MindWeaveClient.Services.Implementations
             if (result.operationResult.success)
             {
                 SessionService.setSession(result.username, result.avatarPath);
-
-                // Conectar el servicio social una sola vez
                 bool socialConnected = await connectSocialServiceAsync(result.username);
 
                 return new LoginServiceResultDto(result, socialConnected, true);

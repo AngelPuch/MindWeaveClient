@@ -21,7 +21,6 @@ namespace MindWeaveClient.Services.Implementations
 
         public async Task connectAsync(string username)
         {
-            // Si ya estamos conectados con el mismo usuario, no hacer nada
             if (proxy != null &&
                 proxy.State == CommunicationState.Opened &&
                 currentUsername == username)
@@ -29,7 +28,6 @@ namespace MindWeaveClient.Services.Implementations
                 return;
             }
 
-            // Si existe un proxy en cualquier otro estado, limpiarlo primero
             if (proxy != null)
             {
                 cleanupProxy();
@@ -174,7 +172,7 @@ namespace MindWeaveClient.Services.Implementations
                 }
                 catch
                 {
-                    // Ignorar errores al abortar
+                    // ignored
                 }
             }
 

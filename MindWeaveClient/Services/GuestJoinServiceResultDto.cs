@@ -4,13 +4,13 @@ namespace MindWeaveClient.Services
 {
     public class GuestJoinServiceResultDto
     {
-        public GuestJoinResultDto wcfResult { get; }
-        public bool didMatchmakingConnect { get; }
+        public GuestJoinResultDto WcfResult { get; }
+        public bool DidMatchmakingConnect { get; }
 
         public GuestJoinServiceResultDto(GuestJoinResultDto wcfResult, bool matchmakingConnected = true)
         {
-            this.wcfResult = wcfResult;
-            this.didMatchmakingConnect = matchmakingConnected;
+            this.WcfResult = wcfResult;
+            this.DidMatchmakingConnect = matchmakingConnected;
         }
     }
 }

@@ -41,9 +41,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(FirstName));
+                    markAsTouched(nameof(FirstName));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(FirstNameError));
             }
         }
@@ -57,9 +57,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(LastName));
+                    markAsTouched(nameof(LastName));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(LastNameError));
             }
         }
@@ -73,9 +73,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(Username));
+                    markAsTouched(nameof(Username));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(UsernameError));
             }
         }
@@ -89,9 +89,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(Email));
+                    markAsTouched(nameof(Email));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(EmailError));
             }
         }
@@ -105,9 +105,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (value.HasValue)
                 {
-                    MarkAsTouched(nameof(BirthDate));
+                    markAsTouched(nameof(BirthDate));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(BirthDateError));
             }
         }
@@ -121,9 +121,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(Password));
+                    markAsTouched(nameof(Password));
                 }
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(PasswordError));
             }
         }
@@ -135,8 +135,8 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 isFemale = value;
                 OnPropertyChanged();
-                MarkAsTouched(nameof(IsFemale));
-                Validate(validator, this);
+                markAsTouched(nameof(IsFemale));
+                validate(validator, this);
                 OnPropertyChanged(nameof(GenderError));
             }
         }
@@ -148,8 +148,8 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 isMale = value;
                 OnPropertyChanged();
-                MarkAsTouched(nameof(IsFemale));
-                Validate(validator, this);
+                markAsTouched(nameof(IsFemale));
+                validate(validator, this);
                 OnPropertyChanged(nameof(GenderError));
             }
         }
@@ -161,8 +161,8 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 isOther = value;
                 OnPropertyChanged();
-                MarkAsTouched(nameof(IsFemale));
-                Validate(validator, this);
+                markAsTouched(nameof(IsFemale));
+                validate(validator, this);
                 OnPropertyChanged(nameof(GenderError));
             }
         }
@@ -174,8 +174,8 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 isPreferNotToSay = value;
                 OnPropertyChanged();
-                MarkAsTouched(nameof(IsFemale));
-                Validate(validator, this);
+                markAsTouched(nameof(IsFemale));
+                validate(validator, this);
                 OnPropertyChanged(nameof(GenderError));
             }
         }
@@ -249,7 +249,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         public CreateAccountViewModel()
         {
             this.validator = new CreateAccountValidator();
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         public CreateAccountViewModel(
@@ -266,7 +266,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             SignUpCommand = new RelayCommand(async (param) => await executeSignUp(), (param) => canExecuteSignUp());
             GoToLoginCommand = new RelayCommand((param) => executeGoToLogin());
 
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         private bool canExecuteSignUp()
@@ -276,7 +276,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeSignUp()
         {
-            MarkAllAsTouched();
+            markAllAsTouched();
 
             if (HasErrors)
             {

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MindWeaveClient.Services;
-using MindWeaveClient.Services.Abstractions;
+﻿using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using System.Windows;
 

@@ -29,12 +29,11 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentMatchService currentMatchService;
-        private readonly ICurrentLobbyService currentLobbyService;
 
         private LobbyStateDto lobbyState;
         private bool isChatConnected;
         private string currentChatMessage = string.Empty;
-        private bool isCleaningUp = false;
+        private bool isCleaningUp;
 
         public bool IsGuestUser => SessionService.IsGuest;
         public string LobbyCode { get; private set; } = "Joining...";
@@ -83,7 +82,6 @@ namespace MindWeaveClient.ViewModel.Game
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
-            this.currentLobbyService = currentLobbyService;
             this.currentMatchService = currentMatchService;
 
             LeaveLobbyCommand = new RelayCommand(async p => await executeLeaveLobby(), p => !IsBusy);
@@ -98,7 +96,7 @@ namespace MindWeaveClient.ViewModel.Game
 
             subscribeToServiceEvents();
 
-            var initialState = this.currentLobbyService.getInitialState();
+            var initialState = currentLobbyService.getInitialState();
             if (initialState != null)
             {
                 handleLobbyStateUpdated(initialState);
@@ -197,19 +195,14 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
-                dialogService.showError(string.Format(Lang.KickedMessage ?? "You were kicked: {0}", reason), Lang.KickedTitle ?? "Kicked");
+                dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
 
                 await cleanupAndUnsubscribeAsync();
                 matchmakingService.disconnect();
 
-                // Cerrar GameWindow y volver a MainWindow
-                var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
-                if (gameWindow != null)
-                {
-                    windowNavigationService.closeWindowFromContext(gameWindow);
-                }
-
                 windowNavigationService.openWindow<MainWindow>();
+                windowNavigationService.closeWindow<GameWindow>();
+
             });
         }
 
@@ -230,7 +223,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception)
             {
-                dialogService.showError(Lang.ChatConnectError ?? "Failed to connect to chat", Lang.ErrorTitle);
+                dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
                 IsChatConnected = false;
             }
         }
@@ -262,18 +255,13 @@ namespace MindWeaveClient.ViewModel.Game
                 await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
                 await cleanupAndUnsubscribeAsync();
 
-                // Cerrar GameWindow y abrir MainWindow
-                var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
-                if (gameWindow != null)
-                {
-                    windowNavigationService.closeWindowFromContext(gameWindow);
-                }
 
+                windowNavigationService.closeWindow<GameWindow>();
                 windowNavigationService.openWindow<MainWindow>();
             }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorLeavingLobby ?? "Error leaving lobby", ex);
+                handleError(Lang.ErrorLeavingLobby, ex);
                 SetBusy(false);
             }
         }
@@ -282,7 +270,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             if (Players.Count != 4)
             {
-                dialogService.showError(Lang.Need4PlayersError ?? "Need 4 players", Lang.ErrorTitle);
+                dialogService.showError(Lang.Need4PlayersError, Lang.ErrorTitle);
                 return;
             }
 
@@ -293,7 +281,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                handleError(Lang.GameStartError ?? "Error starting game", ex);
+                handleError(Lang.GameStartError, ex);
                 SetBusy(false);
             }
         }
@@ -303,8 +291,8 @@ namespace MindWeaveClient.ViewModel.Game
             if (!(parameter is string playerToKick)) return;
 
             var confirm = dialogService.showConfirmation(
-                string.Format(Lang.KickPlayerMessage ?? "Kick {0}?", playerToKick),
-                Lang.KickPlayerTitle ?? "Kick Player"
+                string.Format(Lang.KickPlayerMessage, playerToKick),
+                Lang.KickPlayerTitle
             );
 
             if (!confirm) return;
@@ -316,7 +304,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorKickingPlayer ?? "Error kicking player", ex);
+                handleError(Lang.ErrorKickingPlayer, ex);
                 SetBusy(false);
             }
         }
@@ -340,12 +328,12 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await matchmakingService.inviteToLobbyAsync(SessionService.Username, friendToInvite.Username, LobbyCode);
                 dialogService.showInfo(
-                    string.Format(Lang.InviteSentBody ?? "Invite sent to {0}", friendToInvite.Username),
-                    Lang.InviteSentTitle ?? "Invite Sent");
+                    string.Format(Lang.InviteSentBody, friendToInvite.Username),
+                    Lang.InviteSentTitle);
             }
             catch (Exception ex)
             {
-                handleError(Lang.SendInviteError ?? "Error sending invite", ex);
+                handleError(Lang.SendInviteError, ex);
             }
             finally
             {
@@ -373,7 +361,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                handleError(Lang.LoadFriendsError ?? "Error loading friends", ex);
+                handleError(Lang.LoadFriendsError, ex);
             }
             finally
             {
@@ -387,7 +375,7 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 if (string.IsNullOrWhiteSpace(guestEmail) || !Regex.IsMatch(guestEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    dialogService.showError(Lang.GlobalErrorInvalidEmailFormat ?? "Invalid email", Lang.ErrorTitle);
+                    dialogService.showError(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle);
                     return;
                 }
 
@@ -403,12 +391,12 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     await matchmakingService.inviteGuestByEmailAsync(invitationData);
                     dialogService.showInfo(
-                        string.Format(Lang.InviteSentBody ?? "Invite sent to {0}", guestEmail),
-                        Lang.InviteSentTitle ?? "Invite Sent");
+                        string.Format(Lang.InviteSentBody, guestEmail),
+                        Lang.InviteSentTitle);
                 }
                 catch (Exception ex)
                 {
-                    handleError(Lang.GuestInviteError ?? "Error inviting guest", ex);
+                    handleError(Lang.GuestInviteError, ex);
                 }
                 finally
                 {
@@ -434,7 +422,7 @@ namespace MindWeaveClient.ViewModel.Game
             catch (Exception ex)
             {
                 dialogService.showError(
-                    string.Format(Lang.SendChatError ?? "Error sending message: {0}", ex.Message),
+                    string.Format(Lang.SendChatError, ex.Message),
                     Lang.ErrorTitle);
 
                 await disconnectFromChatAsync();
@@ -447,20 +435,15 @@ namespace MindWeaveClient.ViewModel.Game
             dialogService.showError($"{message}: {ex.Message}", Lang.ErrorTitle);
         }
 
-        // Método público para cleanup cuando la página/ventana se cierra
-        public async void cleanup()
+        public async Task cleanup()
         {
             if (isCleaningUp) return;
 
-            Trace.TraceInformation("LobbyViewModel cleanup called");
-
-            // Si aún estamos en el lobby, salir apropiadamente
             if (!string.IsNullOrEmpty(LobbyCode) && LobbyCode != "Joining...")
             {
                 try
                 {
                     await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
-                    Trace.TraceInformation($"Left lobby {LobbyCode} during cleanup");
                 }
                 catch (Exception ex)
                 {

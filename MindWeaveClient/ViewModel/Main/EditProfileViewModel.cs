@@ -8,10 +8,8 @@ using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Main
@@ -38,7 +36,6 @@ namespace MindWeaveClient.ViewModel.Main
         private string currentPasswordValue;
         private string newPasswordValue;
         private string confirmPasswordValue;
-        private bool isBusyValue;
 
         public string FirstName
         {
@@ -49,7 +46,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(FirstName));
+                    markAsTouched(nameof(FirstName));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(FirstNameError));
@@ -65,7 +62,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(LastName));
+                    markAsTouched(nameof(LastName));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(LastNameError));
@@ -81,7 +78,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (value.HasValue)
                 {
-                    MarkAsTouched(nameof(DateOfBirth));
+                    markAsTouched(nameof(DateOfBirth));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(DateOfBirthError));
@@ -97,7 +94,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (value != null)
                 {
-                    MarkAsTouched(nameof(SelectedGender));
+                    markAsTouched(nameof(SelectedGender));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(SelectedGenderError));
@@ -144,7 +141,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(CurrentPassword));
+                    markAsTouched(nameof(CurrentPassword));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(CurrentPasswordError));
@@ -160,7 +157,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(NewPassword));
+                    markAsTouched(nameof(NewPassword));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(NewPasswordError));
@@ -176,7 +173,7 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(ConfirmPassword));
+                    markAsTouched(nameof(ConfirmPassword));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(ConfirmPasswordError));
@@ -246,15 +243,6 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        public bool IsBusy
-        {
-            get => isBusyValue;
-            private set
-            {
-                setBusy(value);
-            }
-        }
-
         public bool CanSaveChanges => !HasErrors && !IsBusy && !IsChangePasswordSectionVisible;
 
         public bool CanSaveNewPassword => !HasErrors && !IsBusy && IsChangePasswordSectionVisible;
@@ -285,7 +273,7 @@ namespace MindWeaveClient.ViewModel.Main
             CancelChangePasswordCommand = new RelayCommand(executeCancelChangePassword, p => !IsBusy);
 
             Genders = new ObservableCollection<GenderDto>();
-            loadEditableData();
+            _ = loadEditableData();
         }
 
         public void refreshAvatar()
@@ -299,8 +287,8 @@ namespace MindWeaveClient.ViewModel.Main
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
-            
-            ClearTouchedState();
+
+            clearTouchedState();
         }
 
         private void executeCancelChangePassword(object parameter)
@@ -309,16 +297,16 @@ namespace MindWeaveClient.ViewModel.Main
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
-            
-            ClearTouchedState();
+
+            clearTouchedState();
         }
 
         private async Task executeSaveNewPasswordAsync()
         {
-            MarkAsTouched(nameof(CurrentPassword));
-            MarkAsTouched(nameof(NewPassword));
-            MarkAsTouched(nameof(ConfirmPassword));
-            
+            markAsTouched(nameof(CurrentPassword));
+            markAsTouched(nameof(NewPassword));
+            markAsTouched(nameof(ConfirmPassword));
+
             if (HasErrors) return;
 
             setBusy(true);
@@ -373,7 +361,7 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     dialogService.showWarning(Lang.ErrorFailedToLoadProfile, Lang.WarningTitle);
                 }
-                
+
                 validateCurrentStep();
             }
             catch (Exception ex)
@@ -389,11 +377,11 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task saveProfileChangesAsync()
         {
-            MarkAsTouched(nameof(FirstName));
-            MarkAsTouched(nameof(LastName));
-            MarkAsTouched(nameof(DateOfBirth));
-            MarkAsTouched(nameof(SelectedGender));
-            
+            markAsTouched(nameof(FirstName));
+            markAsTouched(nameof(LastName));
+            markAsTouched(nameof(DateOfBirth));
+            markAsTouched(nameof(SelectedGender));
+
             if (HasErrors) return;
 
             var updatedProfile = new UserProfileForEditDto
@@ -432,8 +420,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void setBusy(bool value)
         {
-            isBusyValue = value;
-            OnPropertyChanged(nameof(IsBusy));
+            SetBusy(value);
             raiseCanExecuteChanged();
         }
 
@@ -441,11 +428,11 @@ namespace MindWeaveClient.ViewModel.Main
         {
             if (IsChangePasswordSectionVisible)
             {
-                Validate(validator, this, PASSWORD_RULESET_NAME);
+                validate(validator, this, PASSWORD_RULESET_NAME);
             }
             else
             {
-                Validate(validator, this, PROFILE_RULESET_NAME);
+                validate(validator, this, PROFILE_RULESET_NAME);
             }
             raiseCanExecuteChanged();
         }
@@ -454,12 +441,10 @@ namespace MindWeaveClient.ViewModel.Main
         {
             OnPropertyChanged(nameof(CanSaveChanges));
             OnPropertyChanged(nameof(CanSaveNewPassword));
-            Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
         private void handleError(string message, Exception ex)
         {
-            Trace.TraceError($"Error in {nameof(EditProfileViewModel)}: {message} | Exception: {ex}");
             dialogService.showError(message, Lang.ErrorTitle);
         }
     }

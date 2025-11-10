@@ -27,28 +27,11 @@ namespace MindWeaveClient.Utilities.Implementations
             dialog.Owner = owner;
             dialog.ShowDialog();
         }
-
-        public void closeWindowFromContext(object context)
-        {
-            var window = findWindowByContext(context);
-            window?.Close();
-        }
-
+        
         public void closeWindow<T>() where T : Window
         {
             Window windowToClose = Application.Current.Windows.OfType<T>().FirstOrDefault();
             windowToClose?.Close();
-        }
-
-        private Window findWindowByContext(object context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            return Application.Current.Windows.OfType<Window>()
-                .FirstOrDefault(w => w.DataContext == context);
         }
 
     }

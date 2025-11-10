@@ -1,5 +1,4 @@
-﻿using System;
-using MindWeaveClient.ViewModel.Authentication;
+﻿using MindWeaveClient.ViewModel.Authentication;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;

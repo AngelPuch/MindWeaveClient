@@ -16,8 +16,8 @@ namespace MindWeaveClient.ViewModel
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
 
         public bool CanExecute(object parameter)
@@ -30,7 +30,7 @@ namespace MindWeaveClient.ViewModel
             execute(parameter);
         }
 
-        public void RaiseCanExecuteChanged()
+        public void raiseCanExecuteChanged()
         {
             CommandManager.InvalidateRequerySuggested();
         }

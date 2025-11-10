@@ -63,7 +63,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(Email));
+                    markAsTouched(nameof(Email));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(EmailError));
@@ -80,7 +80,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(VerificationCode));
+                    markAsTouched(nameof(VerificationCode));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(VerificationCodeError));
@@ -97,7 +97,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(NewPassword));
+                    markAsTouched(nameof(NewPassword));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(NewPasswordError));
@@ -114,7 +114,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(ConfirmPassword));
+                    markAsTouched(nameof(ConfirmPassword));
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(ConfirmPasswordError));
@@ -192,7 +192,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         {
             if (!isResend)
             {
-                MarkAsTouched(nameof(Email));
+                markAsTouched(nameof(Email));
                 if (HasErrors) return;
             }
 
@@ -211,7 +211,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
 
-                        ClearTouchedState();
+                        clearTouchedState();
                         validateCurrentStep();
                     }
                 }
@@ -236,7 +236,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private Task executeVerifyCodeAsync()
         {
-            MarkAsTouched(nameof(VerificationCode));
+            markAsTouched(nameof(VerificationCode));
             if (HasErrors) return Task.CompletedTask;
 
             SetBusy(true);
@@ -247,7 +247,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             NewPassword = "";
             ConfirmPassword = "";
 
-            ClearTouchedState();
+            clearTouchedState();
             validateCurrentStep();
 
             SetBusy(false);
@@ -256,8 +256,8 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeSavePasswordAsync()
         {
-            MarkAsTouched(nameof(NewPassword));
-            MarkAsTouched(nameof(ConfirmPassword));
+            markAsTouched(nameof(NewPassword));
+            markAsTouched(nameof(ConfirmPassword));
 
             if (HasErrors) return;
 
@@ -282,7 +282,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
 
-                        ClearTouchedState();
+                        clearTouchedState();
                         validateCurrentStep();
                     }
                 }
@@ -309,7 +309,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep2Visible = true;
                 IsStep3Visible = false;
 
-                ClearTouchedState();
+                clearTouchedState();
                 validateCurrentStep();
             }
             else if (IsStep2Visible)
@@ -318,7 +318,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep2Visible = false;
                 IsStep3Visible = false;
 
-                ClearTouchedState();
+                clearTouchedState();
                 validateCurrentStep();
             }
             else
@@ -331,15 +331,15 @@ namespace MindWeaveClient.ViewModel.Authentication
         {
             if (IsStep1Visible)
             {
-                Validate(validator, this, "Step1");
+                validate(validator, this, "Step1");
             }
             else if (IsStep2Visible)
             {
-                Validate(validator, this, "Step2");
+                validate(validator, this, "Step2");
             }
             else if (IsStep3Visible)
             {
-                Validate(validator, this, "Step3");
+                validate(validator, this, "Step3");
             }
         }
 

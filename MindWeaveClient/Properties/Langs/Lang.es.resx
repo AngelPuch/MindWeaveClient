@@ -762,4 +762,8 @@
   <data name="CreditsContent" xml:space="preserve">
     <value>Mind Weave\nDesarrollado por:\nAldo Antonio Campos Gómez\nAngel Jonathan Puch Hernández\n\n© 2025</value>
   </data>
+  <data name="CannotAcceptInviteAlreadyInGame" xml:space="preserve">
+    <value>No se puede aceptar una invitación mientras ya se está dentro de una partida.
+</value>
+  </data>
 </root>

@@ -14,7 +14,6 @@ namespace MindWeaveClient.ViewModel.Main
     {
         private readonly IProfileService profileService;
         private readonly IDialogService dialogService;
-        private readonly INavigationService navigationService;
 
         private string welcomeMessage;
         private string username;
@@ -52,15 +51,15 @@ namespace MindWeaveClient.ViewModel.Main
         {
             this.profileService = profileService;
             this.dialogService = dialogService;
-            this.navigationService = navigationService;
+            var navigationService1 = navigationService;
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
-            BackCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
-            EditProfileCommand = new RelayCommand(p => this.navigationService.navigateTo<EditProfilePage>(), p => !IsBusy);
+            BackCommand = new RelayCommand(p => navigationService1.goBack(), p => !IsBusy);
+            EditProfileCommand = new RelayCommand(p => navigationService1.navigateTo<EditProfilePage>(), p => !IsBusy);
 
             Username = SessionService.Username ?? Lang.GlobalLbLoading;
-            WelcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), Username.ToUpper());
+            WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {Username.ToUpper()}!";
             AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
             Achievements = new ObservableCollection<AchievementDto>();
 
@@ -93,7 +92,7 @@ namespace MindWeaveClient.ViewModel.Main
                 if (profileData != null)
                 {
                     Username = profileData.username;
-                    WelcomeMessage = string.Format("{0} {1}!", Lang.ProfileLbHi.TrimEnd('!'), profileData.username.ToUpper());
+                    WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {profileData.username.ToUpper()}!";
                     AvatarSource = profileData.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
                     FirstName = profileData.firstName ?? Lang.GlobalLbNotSpecified;

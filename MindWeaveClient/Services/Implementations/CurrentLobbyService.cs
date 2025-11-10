@@ -14,7 +14,6 @@ namespace MindWeaveClient.Services.Implementations
 
         public LobbyStateDto getInitialState()
         {
-            // Devolver el estado y luego limpiarlo para que solo se use una vez
             var state = this.initialState;
             this.initialState = null;
             return state;

@@ -1,5 +1,4 @@
-﻿// MindWeaveClient/View/Dialogs/GuestInputDialog.xaml.cs
-using System.Windows;
+﻿using System.Windows;
 
 namespace MindWeaveClient.View.Dialogs
 {
@@ -10,17 +9,14 @@ namespace MindWeaveClient.View.Dialogs
         public GuestInputDialog()
         {
             InitializeComponent();
-            // Opcional: Poner el foco en el TextBox al abrir
             Loaded += (s, e) => EmailTextBox.Focus();
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             GuestEmail = EmailTextBox.Text;
-            this.DialogResult = true; // Indica que se aceptó
+            this.DialogResult = true;
             this.Close();
         }
-
-        // El botón Cancelar cerrará la ventana automáticamente debido a IsCancel="True"
     }
 }

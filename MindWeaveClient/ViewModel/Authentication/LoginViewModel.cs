@@ -18,7 +18,7 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private string email;
         private string password;
-        private bool showUnverifiedControls = false;
+        private bool showUnverifiedControls;
 
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
@@ -36,10 +36,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(Email));
+                    markAsTouched(nameof(Email));
                 }
 
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(EmailError));
             }
         }
@@ -54,10 +54,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(Password));
+                    markAsTouched(nameof(Password));
                 }
 
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(PasswordError));
             }
         }
@@ -115,7 +115,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             GuestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
             ResendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
 
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         private bool canExecuteLogin()
@@ -125,7 +125,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeLoginAsync()
         {
-            MarkAllAsTouched();
+            markAllAsTouched();
 
             if (HasErrors)
             {
@@ -137,14 +137,14 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 LoginServiceResultDto serviceResult = await authenticationService.loginAsync(Email, Password);
 
-                if (serviceResult.wcfLoginResult.operationResult.success)
+                if (serviceResult.WcfLoginResult.operationResult.success)
                 {
-                    if (!serviceResult.isSocialServiceConnected)
+                    if (!serviceResult.IsSocialServiceConnected)
                     {
                         dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle);
                     }
 
-                    if (!serviceResult.isMatchmakingServiceConnected)
+                    if (!serviceResult.IsMatchmakingServiceConnected)
                     {
                         dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle);
                     }
@@ -154,13 +154,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    if (serviceResult.wcfLoginResult.resultCode == "ACCOUNT_NOT_VERIFIED")
+                    if (serviceResult.WcfLoginResult.resultCode == "ACCOUNT_NOT_VERIFIED")
                     {
                         ShowUnverifiedControls = true;
                     }
                     else
                     {
-                        dialogService.showError(serviceResult.wcfLoginResult.operationResult.message, Lang.ErrorTitle);
+                        dialogService.showError(serviceResult.WcfLoginResult.operationResult.message, Lang.ErrorTitle);
                     }
                 }
             }

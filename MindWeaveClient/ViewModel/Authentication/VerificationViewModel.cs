@@ -44,10 +44,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (!string.IsNullOrEmpty(value))
                 {
-                    MarkAsTouched(nameof(VerificationCode));
+                    markAsTouched(nameof(VerificationCode));
                 }
 
-                Validate(validator, this);
+                validate(validator, this);
                 OnPropertyChanged(nameof(VerificationCodeError));
             }
         }
@@ -68,7 +68,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         public VerificationViewModel()
         {
             this.validator = new VerificationValidator();
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         public VerificationViewModel(
@@ -88,7 +88,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             GoBackCommand = new RelayCommand((param) => executeGoBack());
             ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
 
-            Validate(validator, this);
+            validate(validator, this);
         }
 
         private bool canExecuteVerify()
@@ -98,7 +98,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeVerifyAsync()
         {
-            MarkAsTouched(nameof(VerificationCode));
+            markAsTouched(nameof(VerificationCode));
 
             if (HasErrors) return;
 
@@ -151,7 +151,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                     dialogService.showInfo(Lang.InfoMsgResendSuccessBody, Lang.InfoMsgResendSuccessTitle);
 
                     VerificationCode = string.Empty;
-                    ClearTouchedState();
+                    clearTouchedState();
                 }
                 else
                 {

@@ -12,7 +12,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Main
@@ -28,7 +27,6 @@ namespace MindWeaveClient.ViewModel.Main
 
         private ObservableCollection<PuzzleDisplayInfo> availablePuzzles = new ObservableCollection<PuzzleDisplayInfo>();
         private PuzzleDisplayInfo selectedPuzzle;
-        private bool isBusyValue;
 
         public ObservableCollection<PuzzleDisplayInfo> AvailablePuzzles
         {
@@ -43,14 +41,8 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 selectedPuzzle = value;
                 OnPropertyChanged();
-                (ConfirmAndCreateLobbyCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                (ConfirmAndCreateLobbyCommand as RelayCommand)?.raiseCanExecuteChanged();
             }
-        }
-
-        public bool IsBusy
-        {
-            get => isBusyValue;
-            private set { setBusy(value); }
         }
 
         public ICommand LoadPuzzlesCommand { get; }
@@ -142,13 +134,12 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                IsBusy = false;
+                SetBusy(false);
             }
         }
 
         private async Task executeUploadImageAsync()
         {
-
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
@@ -215,7 +206,6 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.success && result.initialLobbyState != null)
                 {
-                    Debug.WriteLine("Antes de que se pase el estado del lobby");
                     Debug.WriteLine(result.initialLobbyState.lobbyId);
                     currentLobbyService.setInitialState(result.initialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
@@ -233,28 +223,13 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                IsBusy = false;
+                SetBusy(false);
             }
         }
 
         private void executeCancel()
         {
             navigationService.goBack();
-        }
-
-        private void raiseCanExecuteChangedForAllCommands()
-        {
-            Application.Current.Dispatcher.Invoke(() => CommandManager.InvalidateRequerySuggested());
-        }
-
-        private void setBusy(bool value)
-        {
-            if (isBusyValue != value)
-            {
-                isBusyValue = value;
-                OnPropertyChanged(nameof(IsBusy));
-                raiseCanExecuteChangedForAllCommands();
-            }
         }
     }
 }

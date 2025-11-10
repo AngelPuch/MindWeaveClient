@@ -42,21 +42,13 @@ namespace MindWeaveClient.ViewModel
             Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
         }
 
-        // Sistema de errores
         private readonly Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
-
-        // Sistema de campos tocados
         private readonly HashSet<string> touchedProperties = new HashSet<string>();
-
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        // HasErrors ahora considera solo los campos tocados
         public bool HasErrors => errors.Any(e => touchedProperties.Contains(e.Key));
 
-        /// <summary>
-        /// Verifica si un campo específico tiene errores que deben mostrarse
-        /// </summary>
-        protected bool HasVisibleErrors(string propertyName)
+        protected bool hasVisibleErrors(string propertyName)
         {
             return touchedProperties.Contains(propertyName) &&
                    errors.ContainsKey(propertyName) &&
@@ -70,7 +62,6 @@ namespace MindWeaveClient.ViewModel
                 return errors.Values.SelectMany(list => list);
             }
 
-            // Solo devolver errores si el campo ha sido tocado
             if (touchedProperties.Contains(propertyName))
             {
                 return errors.ContainsKey(propertyName) ? errors[propertyName] : null;
@@ -79,10 +70,7 @@ namespace MindWeaveClient.ViewModel
             return null;
         }
 
-        /// <summary>
-        /// Marca una propiedad como "tocada" para empezar a mostrar sus errores
-        /// </summary>
-        protected void MarkAsTouched(string propertyName)
+        protected void markAsTouched(string propertyName)
         {
             if (!touchedProperties.Contains(propertyName))
             {
@@ -91,22 +79,16 @@ namespace MindWeaveClient.ViewModel
             }
         }
 
-        /// <summary>
-        /// Marca todas las propiedades como tocadas (útil al intentar submit)
-        /// </summary>
-        protected void MarkAllAsTouched()
+        protected void markAllAsTouched()
         {
             var allProperties = errors.Keys.ToList();
             foreach (var prop in allProperties)
             {
-                MarkAsTouched(prop);
+                markAsTouched(prop);
             }
         }
 
-        /// <summary>
-        /// Limpia el estado de touched (útil al resetear el formulario)
-        /// </summary>
-        protected void ClearTouchedState()
+        protected void clearTouchedState()
         {
             var propertiesToClear = touchedProperties.ToList();
             touchedProperties.Clear();
@@ -117,7 +99,7 @@ namespace MindWeaveClient.ViewModel
             }
         }
 
-        protected void Validate<TViewModel>(IValidator<TViewModel> validator, TViewModel viewModel, string ruleSet = null)
+        protected void validate<TViewModel>(IValidator<TViewModel> validator, TViewModel viewModel, string ruleSet = null)
             where TViewModel : class
         {
             ValidationResult validationResult;

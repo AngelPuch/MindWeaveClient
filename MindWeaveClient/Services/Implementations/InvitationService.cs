@@ -16,7 +16,7 @@ namespace MindWeaveClient.Services.Implementations
         private readonly ICurrentLobbyService currentLobbyService;
         private readonly ISocialService socialService;
 
-        private bool isProcessingInvite = false;
+        private bool isProcessingInvite;
 
         public InvitationService(
             IDialogService dialogService,
@@ -44,25 +44,21 @@ namespace MindWeaveClient.Services.Implementations
 
         private async void onLobbyInviteReceived(string fromUsername, string lobbyId)
         {
-            // Prevenir procesamiento duplicado
             if (isProcessingInvite)
             {
-                System.Diagnostics.Trace.TraceWarning("Already processing an invite, ignoring duplicate.");
                 return;
             }
 
-            // Ignorar auto-invitaciones
             if (fromUsername.Equals(SessionService.Username, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            // Verificar si ya está en un lobby o juego
             var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
             if (gameWindow != null)
             {
                 dialogService.showWarning(
-                    "Cannot accept invite while in a game.",
+                    Lang.CannotAcceptInviteAlreadyInGame,
                     Lang.WarningTitle);
                 return;
             }
@@ -72,13 +68,13 @@ namespace MindWeaveClient.Services.Implementations
             try
             {
                 string message = string.Format(
-                    Lang.InviteReceivedBody ?? "You received an invitation from {0} to join lobby {1}. Do you want to join?",
+                    Lang.InviteReceivedBody,
                     fromUsername,
                     lobbyId);
 
-                bool result = dialogService.showConfirmation(message, Lang.InviteReceivedTitle ?? "Lobby Invitation");
+                bool result = dialogService.showConfirmation(message, Lang.InviteReceivedTitle);
 
-                if (result == true)
+                if (result)
                 {
                     await joinLobbyFromInvite(lobbyId);
                 }
@@ -95,37 +91,21 @@ namespace MindWeaveClient.Services.Implementations
             {
                 if (string.IsNullOrEmpty(SessionService.Username))
                 {
-                    dialogService.showError(Lang.ErrorTitle, Lang.ErrorSessionExpired ?? "Session expired");
+                    dialogService.showError(Lang.ErrorTitle, Lang.ErrorSessionExpired);
                     return;
                 }
 
-                // Unirse al lobby
                 await matchmakingService.joinLobbyAsync(SessionService.Username, lobbyId);
-
-                // Limpiar el estado inicial del lobby (se recibirá por callback)
                 currentLobbyService.setInitialState(null);
-
-                // Navegar a la ventana de juego
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    var mainWindow = Application.Current.Windows
-                        .OfType<View.Main.MainWindow>()
-                        .FirstOrDefault();
-
-                    if (mainWindow != null)
-                    {
-                        windowNavigationService.closeWindowFromContext(mainWindow);
-                    }
-
                     windowNavigationService.openWindow<GameWindow>();
+                    windowNavigationService.closeWindow<View.Main.MainWindow>();
                 });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError($"Error joining lobby from invite: {ex.Message}");
-                dialogService.showError(
-                    Lang.ErrorTitle,
-                    Lang.ErrorJoiningLobby ?? $"Failed to join lobby: {ex.Message}");
+                dialogService.showError(Lang.ErrorJoiningLobby + ex.Message, Lang.ErrorTitle);
 
                 matchmakingService.disconnect();
             }

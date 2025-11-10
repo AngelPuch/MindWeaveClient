@@ -61,7 +61,7 @@
                                                     Margin="10"
                                                     BorderBrush="Transparent"
                                                     BorderThickness="4">
-                                                <Ellipse>
+                                                <Ellipse Width="120" Height="120">
                                                     <Ellipse.Fill>
                                                         <ImageBrush ImageSource="{Binding ImagePath}" Stretch="UniformToFill"/>
                                                     </Ellipse.Fill>
