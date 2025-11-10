@@ -129,8 +129,6 @@
     <Compile Include="Services\Abstractions\IPuzzleService.cs" />
     <Compile Include="Services\Abstractions\ISocialService.cs" />
     <Compile Include="Services\Callbacks\ChatCallbackHandler.cs" />
-    <Compile Include="Services\Callbacks\GameEventAggregator.cs" />
-    <Compile Include="Services\ChatServiceClientManager.cs" />
     <Compile Include="Services\GuestJoinServiceResultDto.cs" />
     <Compile Include="Services\Implementations\AuthenticationService.cs" />
     <Compile Include="Services\Implementations\ChatService.cs" />
@@ -143,14 +141,14 @@
     <Compile Include="Services\Implementations\SocialService.cs" />
     <Compile Include="Services\LoginServiceResultDto.cs" />
     <Compile Include="Services\Callbacks\MatchmakingCallbackHandler.cs" />
-    <Compile Include="Services\MatchmakingServiceClientManager.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Services\Callbacks\SocialCallbackHandler.cs" />
-    <Compile Include="Services\SocialServiceClientManager.cs" />
+    <Compile Include="Utilities\Abstractions\IAudioService.cs" />
     <Compile Include="Utilities\Abstractions\IDialogService.cs" />
     <Compile Include="Utilities\Abstractions\INavigationService.cs" />
     <Compile Include="Utilities\Abstractions\IWindowNavigationService.cs" />
     <Compile Include="Utilities\AudioManager.cs" />
+    <Compile Include="Utilities\Implementations\AudioService.cs" />
     <Compile Include="Utilities\Implementations\DialogService.cs" />
     <Compile Include="Utilities\Implementations\NavigationService.cs" />
     <Compile Include="Utilities\Implementations\WindowNavigationService.cs" />

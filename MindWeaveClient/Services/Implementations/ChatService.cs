@@ -14,6 +14,9 @@ namespace MindWeaveClient.Services.Implementations
         private ChatCallbackHandler callbackHandler;
         private InstanceContext instanceContext;
 
+        private string connectedUsername;
+        private string connectedLobbyId;
+
         public event Action<ChatMessageDto> OnMessageReceived;
 
         public bool isConnected()
@@ -25,7 +28,12 @@ namespace MindWeaveClient.Services.Implementations
         {
             if (isConnected())
             {
-                return;
+                if (connectedUsername == username && connectedLobbyId == lobbyId)
+                {
+                    return;
+                }
+
+                await disconnectAsync();
             }
 
             if (proxy != null)
@@ -42,6 +50,9 @@ namespace MindWeaveClient.Services.Implementations
                 callbackHandler.OnMessageReceivedEvent += handleMessageReceived;
 
                 await Task.Run(() => proxy.joinLobbyChat(username, lobbyId));
+
+                connectedUsername = username;
+                connectedLobbyId = lobbyId;
             }
             catch (Exception ex)
             {
@@ -50,13 +61,28 @@ namespace MindWeaveClient.Services.Implementations
                     proxy.Abort();
                     proxy = null;
                 }
+                connectedUsername = null;
+                connectedLobbyId = null;
                 throw;
+            }
+        }
+
+        public async Task disconnectAsync()
+        {
+            if (!string.IsNullOrEmpty(connectedUsername) && !string.IsNullOrEmpty(connectedLobbyId))
+            {
+                await disconnectAsync(connectedUsername, connectedLobbyId);
             }
         }
 
         public async Task disconnectAsync(string username, string lobbyId)
         {
             if (!isConnected())
+            {
+                return;
+            }
+
+            if (username != connectedUsername || lobbyId != connectedLobbyId)
             {
                 return;
             }
@@ -79,6 +105,8 @@ namespace MindWeaveClient.Services.Implementations
                 proxy = null;
                 callbackHandler = null;
                 instanceContext = null;
+                connectedUsername = null;
+                connectedLobbyId = null;
             }
         }
 
@@ -97,6 +125,8 @@ namespace MindWeaveClient.Services.Implementations
             {
                 proxy.Abort();
                 proxy = null;
+                connectedUsername = null;
+                connectedLobbyId = null;
                 throw;
             }
         }

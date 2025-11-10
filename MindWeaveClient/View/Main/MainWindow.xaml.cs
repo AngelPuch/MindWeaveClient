@@ -21,20 +21,11 @@ namespace MindWeaveClient.View.Main
             this.navigationService.navigateTo<MainMenuPage>();
 
             this.Loaded += mainWindow_Loaded;
-            this.Closing += mainWindow_Closing;
         }
 
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             invitationService.subscribeToGlobalInvites();
-        }
-
-        private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            SocialServiceClientManager.instance.Disconnect();
-            MatchmakingServiceClientManager.instance.Disconnect();
-            ChatServiceClientManager.instance.Disconnect();
-            SessionService.ClearSession();
         }
     }
 }

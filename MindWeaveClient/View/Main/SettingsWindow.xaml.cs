@@ -1,17 +1,19 @@
-﻿using MindWeaveClient.ViewModel.Main;
-using System.Windows;
+﻿using System.Windows;
+using MindWeaveClient.ViewModel.Main;
 
-namespace MindWeaveClient.View.Settings
+namespace MindWeaveClient.View.Main
 {
-    /// <summary>
-    /// Interaction logic for SettingsWindow.xaml
-    /// </summary>
     public partial class SettingsWindow : Window
     {
-        public SettingsWindow()
+        public SettingsWindow(SettingsViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext = new SettingsViewModel(this);
+            this.DataContext = viewModel;
+
+            viewModel.setCloseAction(
+                (result) => { this.DialogResult = result; },
+                this.Close
+            );
         }
 
     }

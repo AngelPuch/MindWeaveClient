@@ -8,16 +8,17 @@ namespace MindWeaveClient.Services
         public static string AvatarPath { get; private set; }
         public static bool IsGuest { get; private set; }
         public static string PendingVerificationEmail { get; set; }
+
         public static event EventHandler AvatarPathChanged;
 
-        public static void SetSession(string username, string avatarPath, bool isGuest = false)
+        public static void setSession(string username, string avatarPath, bool isGuest = false)
         {
             SessionService.Username = username;
             SessionService.AvatarPath = avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
             SessionService.IsGuest = isGuest;
         }
 
-        public static void UpdateAvatarPath(string newAvatarPath)
+        public static void updateAvatarPath(string newAvatarPath)
         {
             if (!IsGuest)
             {
@@ -26,7 +27,7 @@ namespace MindWeaveClient.Services
             }
         }
 
-        public static void ClearSession()
+        public static void clearSession()
         {
             Username = null;
             AvatarPath = null;

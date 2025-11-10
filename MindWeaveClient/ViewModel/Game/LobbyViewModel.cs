@@ -3,11 +3,8 @@ using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
-using MindWeaveClient.Services.Callbacks;
-using MindWeaveClient.Services.Implementations;
 using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
@@ -37,22 +34,21 @@ namespace MindWeaveClient.ViewModel.Game
 
         private LobbyStateDto lobbyState;
         private bool isChatConnected;
+        private string currentChatMessage = string.Empty;
 
         public bool IsGuestUser => SessionService.IsGuest;
         public string LobbyCode { get; private set; } = "Joining...";
         public string HostUsername { get; private set; } = "Loading...";
         public bool IsHost => lobbyState?.hostUsername == SessionService.Username;
         public LobbySettingsDto CurrentSettings { get; private set; }
-
         public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
         public ObservableCollection<FriendDtoDisplay> OnlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
         public ObservableCollection<ChatMessageDisplayViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
 
-        private string _currentChatMessage = string.Empty;
         public string CurrentChatMessage
         {
-            get => _currentChatMessage;
-            set { _currentChatMessage = value; OnPropertyChanged(); }
+            get => currentChatMessage;
+            set { currentChatMessage = value; OnPropertyChanged(); }
         }
 
         public bool IsChatConnected

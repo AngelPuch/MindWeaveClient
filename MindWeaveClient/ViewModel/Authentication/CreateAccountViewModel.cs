@@ -2,7 +2,6 @@
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
@@ -181,7 +180,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        // Propiedades para obtener el primer error visible de cada campo
         public string FirstNameError
         {
             get
@@ -268,7 +266,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             SignUpCommand = new RelayCommand(async (param) => await executeSignUp(), (param) => canExecuteSignUp());
             GoToLoginCommand = new RelayCommand((param) => executeGoToLogin());
 
-            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
 
@@ -279,7 +276,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeSignUp()
         {
-            // Al intentar hacer sign up, marcar todos los campos como tocados para mostrar errores
             MarkAllAsTouched();
 
             if (HasErrors)
@@ -295,7 +291,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 lastName = this.LastName,
                 username = this.Username,
                 email = this.Email,
-                dateOfBirth = this.BirthDate.Value,
+                dateOfBirth = BirthDate.Value,
                 genderId = getSelectedGenderId()
             };
 

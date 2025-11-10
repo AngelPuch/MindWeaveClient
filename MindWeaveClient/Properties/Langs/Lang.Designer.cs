@@ -79,6 +79,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Mind Weave\nDeveloped by:\nAldo Antonio Campos Gómez\nAngel Jonathan Puch Hernández\n\n© 2025.
+        /// </summary>
+        public static string CreditsContent {
+            get {
+                return ResourceManager.GetString("CreditsContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Easy (25 Pcs).
         /// </summary>
         public static string DifficultyOptEasy {
@@ -1281,6 +1290,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ProfileUpdateSuccess {
             get {
                 return ResourceManager.GetString("ProfileUpdateSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Language changed. The application needs to restart to apply changes. Restart now?.
+        /// </summary>
+        public static string RestartRequiredMessage {
+            get {
+                return ResourceManager.GetString("RestartRequiredMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Restart Required.
+        /// </summary>
+        public static string RestartRequiredTitle {
+            get {
+                return ResourceManager.GetString("RestartRequiredTitle", resourceCulture);
             }
         }
         

@@ -5,7 +5,6 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
-using MindWeaveClient.View.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,12 +137,12 @@ namespace MindWeaveClient.ViewModel.Main
             catch (EndpointNotFoundException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
-                MatchmakingServiceClientManager.instance.Disconnect();
+                matchmakingService.disconnect();
             }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorMsgGuestJoinFailed, ex);
-                MatchmakingServiceClientManager.instance.Disconnect();
+                matchmakingService.disconnect();
             }
             finally
             {

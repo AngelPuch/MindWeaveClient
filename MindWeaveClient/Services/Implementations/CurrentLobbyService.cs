@@ -6,7 +6,7 @@ namespace MindWeaveClient.Services.Implementations
     public class CurrentLobbyService : ICurrentLobbyService
     {
         private LobbyStateDto initialState;
-        private bool hasBeenRetrieved = false;
+        private bool hasBeenRetrieved;
 
         public void setInitialState(LobbyStateDto initialState)
         {

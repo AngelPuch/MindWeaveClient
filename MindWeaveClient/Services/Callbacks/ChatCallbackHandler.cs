@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using MindWeaveClient.ChatManagerService;
 
 namespace MindWeaveClient.Services.Callbacks

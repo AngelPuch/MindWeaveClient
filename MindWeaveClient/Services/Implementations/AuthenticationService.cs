@@ -1,7 +1,6 @@
 ﻿using MindWeaveClient.AuthenticationService;
 using MindWeaveClient.Services.Abstractions;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Implementations
@@ -23,14 +22,11 @@ namespace MindWeaveClient.Services.Implementations
                 email = email,
                 password = password
             };
-            LoginResultDto result = await executeSafeAsync(async (client) =>
-            {
-                return await client.loginAsync(loginCredentials);
-            });
+            LoginResultDto result = await executeSafeAsync(async (client) => await client.loginAsync(loginCredentials));
 
             if (result.operationResult.success)
             {
-                SessionService.SetSession(result.username, result.avatarPath);
+                SessionService.setSession(result.username, result.avatarPath);
 
                 bool socialConnected = await connectSocialServiceAsync(result.username);
                 return new LoginServiceResultDto(result, socialConnected, true);
@@ -90,7 +86,6 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"Failed to connect SocialService: {ex.Message}");
                 return false;
             }
         }

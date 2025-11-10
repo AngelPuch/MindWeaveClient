@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.Utilities;
+using MindWeaveClient.Utilities.Abstractions;
+using System;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -20,10 +21,16 @@ namespace MindWeaveClient.ViewModel.Main
 
     public class SettingsViewModel : BaseViewModel
     {
+        private readonly IAudioService audioService;
+        private readonly IDialogService dialogService;
+
         private double musicVolumeValue;
         private double soundEffectsVolumeValue;
         private LanguageOption selectedLanguageValue;
         private List<LanguageOption> availableLanguagesValue;
+
+        private Action<bool?> setDialogResultAction;
+        private Action closeWindowAction;
 
         public double MusicVolume
         {
@@ -32,7 +39,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 musicVolumeValue = value;
                 OnPropertyChanged();
-                AudioManager.setMusicVolume(value / 100.0);
+                audioService.setMusicVolume(value / 100.0);
             }
         }
 
@@ -43,37 +50,51 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 soundEffectsVolumeValue = value;
                 OnPropertyChanged();
-                AudioManager.setSoundEffectsVolume(value / 100.0);
+                audioService.setSoundEffectsVolume(value / 100.0);
             }
         }
 
         public LanguageOption SelectedLanguage
         {
             get => selectedLanguageValue;
-            set { selectedLanguageValue = value; OnPropertyChanged(); }
+            set
+            {
+                selectedLanguageValue = value;
+                OnPropertyChanged();
+            }
         }
 
         public List<LanguageOption> AvailableLanguages
         {
             get => availableLanguagesValue;
-            private set { availableLanguagesValue = value; OnPropertyChanged(); }
+            private set
+            {
+                availableLanguagesValue = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand ShowCreditsCommand { get; }
 
-        private Window currentWindow;
-
-        public SettingsViewModel(Window window)
+        public SettingsViewModel(IAudioService audioService, IDialogService dialogService)
         {
-            currentWindow = window;
+            this.audioService = audioService;
+            this.dialogService = dialogService;
+
             loadSettings();
             initializeLanguages();
 
             SaveCommand = new RelayCommand(p => executeSave());
             CancelCommand = new RelayCommand(p => executeCancel());
             ShowCreditsCommand = new RelayCommand(p => executeShowCredits());
+        }
+
+        public void setCloseAction(Action<bool?> setDialogResultAction, Action closeWindowAction)
+        {
+            this.setDialogResultAction = setDialogResultAction;
+            this.closeWindowAction = closeWindowAction;
         }
 
         private void initializeLanguages()
@@ -90,11 +111,11 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void loadSettings()
         {
-            MusicVolume = Properties.Settings.Default.MusicVolumeSetting;
-            SoundEffectsVolume = Properties.Settings.Default.SoundEffectsVolumeSetting;
+            musicVolumeValue = Properties.Settings.Default.MusicVolumeSetting;
+            soundEffectsVolumeValue = Properties.Settings.Default.SoundEffectsVolumeSetting;
 
-            AudioManager.setMusicVolume(MusicVolume / 100.0);
-            AudioManager.setSoundEffectsVolume(SoundEffectsVolume / 100.0);
+            OnPropertyChanged(nameof(MusicVolume));
+            OnPropertyChanged(nameof(SoundEffectsVolume));
         }
 
         private void executeSave()
@@ -104,48 +125,47 @@ namespace MindWeaveClient.ViewModel.Main
             string previousLanguageCode = Properties.Settings.Default.languageCode;
             Properties.Settings.Default.languageCode = SelectedLanguage.Code;
             Properties.Settings.Default.Save();
-            AudioManager.setMusicVolume(MusicVolume / 100.0);
-            AudioManager.setSoundEffectsVolume(SoundEffectsVolume / 100.0);
 
             if (previousLanguageCode != SelectedLanguage.Code)
             {
                 applyLanguageChange();
             }
-            if (currentWindow != null)
-            {
-                currentWindow.DialogResult = true;
-                currentWindow.Close();
-            }
+
+            setDialogResultAction?.Invoke(true);
+            closeWindowAction?.Invoke();
         }
 
         private void applyLanguageChange()
         {
-            MessageBoxResult result = MessageBox.Show(
-                "Language changed. The application needs to restart to apply changes. Restart now?",
-                "Restart Required",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Information);
+            bool restartTime = dialogService.showConfirmation(
+                Lang.RestartRequiredMessage,
+                Lang.RestartRequiredTitle
+            );
 
-            if (result == MessageBoxResult.Yes)
+            if (restartTime)
             {
                 System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
                 Application.Current.Shutdown();
             }
         }
 
-
         private void executeCancel()
         {
-            if (currentWindow != null)
-            {
-                currentWindow.DialogResult = false;
-                currentWindow.Close();
-            }
+            loadSettings();
+
+            audioService.setMusicVolume(MusicVolume / 100.0);
+            audioService.setSoundEffectsVolume(SoundEffectsVolume / 100.0);
+
+            setDialogResultAction?.Invoke(false);
+            closeWindowAction?.Invoke();
         }
 
         private void executeShowCredits()
         {
-            MessageBox.Show("Mind Weave\nDeveloped by:\nAldo Antonio Campos Gómez\nAngel Jonathan Puch Hernández\n\n© 2025", "Credits"); // TODO: Añadir a Lang.resx
+            dialogService.showInfo(
+                Lang.CreditsContent,
+                Lang.SettingsBtnCredits
+            );
         }
     }
 }

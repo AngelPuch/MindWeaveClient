@@ -42,7 +42,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 verificationCode = value;
                 OnPropertyChanged();
 
-                // Marcar como tocado cuando el usuario escribe
                 if (!string.IsNullOrEmpty(value))
                 {
                     MarkAsTouched(nameof(VerificationCode));
@@ -53,7 +52,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
-        // Propiedad para obtener el primer error visible del campo
         public string VerificationCodeError
         {
             get
@@ -90,7 +88,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             GoBackCommand = new RelayCommand((param) => executeGoBack());
             ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
 
-            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
 
@@ -101,7 +98,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeVerifyAsync()
         {
-            // Al intentar verificar, marcar el campo como tocado para mostrar errores
             MarkAsTouched(nameof(VerificationCode));
 
             if (HasErrors) return;
@@ -154,7 +150,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     dialogService.showInfo(Lang.InfoMsgResendSuccessBody, Lang.InfoMsgResendSuccessTitle);
 
-                    // Limpiar el código y el estado touched al reenviar
                     VerificationCode = string.Empty;
                     ClearTouchedState();
                 }

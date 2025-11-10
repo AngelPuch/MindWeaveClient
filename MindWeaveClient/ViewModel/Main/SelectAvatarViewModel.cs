@@ -151,7 +151,7 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.success)
                 {
-                    SessionService.UpdateAvatarPath(SelectedAvatar.ImagePath);
+                    SessionService.updateAvatarPath(SelectedAvatar.ImagePath);
                     _dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
                     _navigationService.goBack();
                 }

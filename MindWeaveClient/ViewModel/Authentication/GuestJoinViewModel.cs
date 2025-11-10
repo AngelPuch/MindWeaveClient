@@ -28,8 +28,6 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentLobbyService currentLobbyService;
 
-        public event EventHandler<GuestJoinResultDto> JoinSuccess;
-
         public string LobbyCode
         {
             get => lobbyCode;
@@ -77,8 +75,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged(nameof(DesiredUsernameError));
             }
         }
-
-        // Propiedades para obtener el primer error visible de cada campo
         public string LobbyCodeError
         {
             get
@@ -133,7 +129,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canExecuteJoin());
             GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
 
-            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
 
@@ -149,7 +144,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeJoinAsGuestAsync()
         {
-            // Al intentar unirse, marcar todos los campos como tocados para mostrar errores
             MarkAllAsTouched();
 
             if (HasErrors) return;

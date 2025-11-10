@@ -183,7 +183,6 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        // Propiedades de error para el modo Profile
         public string FirstNameError
         {
             get
@@ -220,7 +219,6 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        // Propiedades de error para el modo Password
         public string CurrentPasswordError
         {
             get
@@ -290,7 +288,7 @@ namespace MindWeaveClient.ViewModel.Main
             loadEditableData();
         }
 
-        public void RefreshAvatar()
+        public void refreshAvatar()
         {
             AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
         }
@@ -302,7 +300,6 @@ namespace MindWeaveClient.ViewModel.Main
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
             
-            // Limpiar el estado touched al cambiar de sección
             ClearTouchedState();
         }
 
@@ -313,13 +310,11 @@ namespace MindWeaveClient.ViewModel.Main
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
             
-            // Limpiar el estado touched al volver a la sección de perfil
             ClearTouchedState();
         }
 
         private async Task executeSaveNewPasswordAsync()
         {
-            // Marcar todos los campos de contraseña como touched
             MarkAsTouched(nameof(CurrentPassword));
             MarkAsTouched(nameof(NewPassword));
             MarkAsTouched(nameof(ConfirmPassword));
@@ -351,7 +346,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private async void loadEditableData()
+        private async Task loadEditableData()
         {
             setBusy(true);
             try
@@ -379,7 +374,6 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showWarning(Lang.ErrorFailedToLoadProfile, Lang.WarningTitle);
                 }
                 
-                // No marcar campos como touched al cargar datos iniciales
                 validateCurrentStep();
             }
             catch (Exception ex)
@@ -395,7 +389,6 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task saveProfileChangesAsync()
         {
-            // Marcar todos los campos de perfil como touched
             MarkAsTouched(nameof(FirstName));
             MarkAsTouched(nameof(LastName));
             MarkAsTouched(nameof(DateOfBirth));

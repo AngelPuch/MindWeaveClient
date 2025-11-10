@@ -8,7 +8,6 @@ using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
-using MindWeaveClient.View.Settings;
 using MindWeaveClient.ViewModel.Authentication;
 using MindWeaveClient.ViewModel.Game;
 using MindWeaveClient.ViewModel.Main;
@@ -35,7 +34,8 @@ namespace MindWeaveClient
             ConfigureServices(services);
             ServiceProvider = services.BuildServiceProvider();
 
-            AudioManager.Initialize();
+            var audioService = ServiceProvider.GetRequiredService<IAudioService>();
+            audioService.initialize();
 
             var invitationService = ServiceProvider.GetRequiredService<IInvitationService>();
             invitationService.subscribeToGlobalInvites();
@@ -60,6 +60,7 @@ namespace MindWeaveClient
             services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
             services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
             services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
+            services.AddSingleton<IAudioService, AudioService>();
 
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();
@@ -106,11 +107,11 @@ namespace MindWeaveClient
 
         protected override void OnExit(ExitEventArgs e)
         {
-            AudioManager.stopMusic();
+            ServiceProvider.GetService<IAudioService>()?.Dispose();
             ServiceProvider.GetService<IInvitationService>()?.unsubscribeFromGlobalInvites();
             ServiceProvider.GetService<ISocialService>()?.disconnectAsync(SessionService.Username);
             ServiceProvider.GetService<IMatchmakingService>()?.disconnect();
-            ServiceProvider.GetService<IChatService>()?.disconnect();
+            ServiceProvider.GetService<IChatService>()?.disconnectAsync();
             base.OnExit(e);
         }
     }

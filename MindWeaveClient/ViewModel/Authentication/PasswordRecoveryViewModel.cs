@@ -1,7 +1,6 @@
 ﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
@@ -121,8 +120,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged(nameof(ConfirmPasswordError));
             }
         }
-
-        // Propiedades para obtener el primer error visible de cada campo
         public string EmailError
         {
             get
@@ -195,7 +192,6 @@ namespace MindWeaveClient.ViewModel.Authentication
         {
             if (!isResend)
             {
-                // Marcar campo de email como tocado al intentar enviar
                 MarkAsTouched(nameof(Email));
                 if (HasErrors) return;
             }
@@ -215,7 +211,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
 
-                        // Limpiar el estado touched del paso anterior
                         ClearTouchedState();
                         validateCurrentStep();
                     }
@@ -241,7 +236,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private Task executeVerifyCodeAsync()
         {
-            // Marcar campo de código como tocado al intentar verificar
             MarkAsTouched(nameof(VerificationCode));
             if (HasErrors) return Task.CompletedTask;
 
@@ -253,7 +247,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             NewPassword = "";
             ConfirmPassword = "";
 
-            // Limpiar el estado touched del paso anterior
             ClearTouchedState();
             validateCurrentStep();
 
@@ -263,7 +256,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeSavePasswordAsync()
         {
-            // Marcar campos de contraseña como tocados al intentar guardar
             MarkAsTouched(nameof(NewPassword));
             MarkAsTouched(nameof(ConfirmPassword));
 
@@ -290,7 +282,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
 
-                        // Limpiar el estado touched al retroceder
                         ClearTouchedState();
                         validateCurrentStep();
                     }
@@ -318,7 +309,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep2Visible = true;
                 IsStep3Visible = false;
 
-                // Limpiar el estado touched al retroceder
                 ClearTouchedState();
                 validateCurrentStep();
             }
@@ -328,7 +318,6 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep2Visible = false;
                 IsStep3Visible = false;
 
-                // Limpiar el estado touched al retroceder
                 ClearTouchedState();
                 validateCurrentStep();
             }

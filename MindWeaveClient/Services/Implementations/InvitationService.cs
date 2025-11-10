@@ -31,12 +31,12 @@ namespace MindWeaveClient.Services.Implementations
 
         public void subscribeToGlobalInvites()
         {
-            socialService.OnLobbyInviteReceived += onLobbyInviteReceived;
+            socialService.LobbyInviteReceived += onLobbyInviteReceived;
         }
 
         public void unsubscribeFromGlobalInvites()
         {
-            socialService.OnLobbyInviteReceived -= onLobbyInviteReceived;
+            socialService.LobbyInviteReceived -= onLobbyInviteReceived;
         }
 
         private async void onLobbyInviteReceived(string fromUsername, string lobbyId)

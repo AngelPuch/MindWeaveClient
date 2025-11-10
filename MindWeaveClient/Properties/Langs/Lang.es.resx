@@ -753,4 +753,13 @@
   <data name="SocialInfoRequestDeclinedTitle" xml:space="preserve">
     <value>Solicitud Rechazada</value>
   </data>
+  <data name="RestartRequiredTitle" xml:space="preserve">
+    <value>Reinicio Requerido</value>
+  </data>
+  <data name="RestartRequiredMessage" xml:space="preserve">
+    <value>El idioma ha cambiado. La aplicación necesita reiniciarse para aplicar los cambios. ¿Reiniciar ahora?</value>
+  </data>
+  <data name="CreditsContent" xml:space="preserve">
+    <value>Mind Weave\nDesarrollado por:\nAldo Antonio Campos Gómez\nAngel Jonathan Puch Hernández\n\n© 2025</value>
+  </data>
 </root>

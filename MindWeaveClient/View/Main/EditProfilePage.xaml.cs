@@ -17,7 +17,7 @@ namespace MindWeaveClient.View.Main
         {
             if (this.DataContext is EditProfileViewModel vm)
             {
-                vm.RefreshAvatar();
+                vm.refreshAvatar();
             }
         }
     }

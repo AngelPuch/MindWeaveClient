@@ -34,14 +34,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 email = value;
                 OnPropertyChanged();
 
-                // Marcar como tocado cuando el usuario escribe
                 if (!string.IsNullOrEmpty(value))
                 {
                     MarkAsTouched(nameof(Email));
                 }
 
                 Validate(validator, this);
-                OnPropertyChanged(nameof(EmailError)); // Notificar cambio en error
+                OnPropertyChanged(nameof(EmailError));
             }
         }
 
@@ -53,18 +52,16 @@ namespace MindWeaveClient.ViewModel.Authentication
                 password = value;
                 OnPropertyChanged();
 
-                // Marcar como tocado cuando el usuario escribe
                 if (!string.IsNullOrEmpty(value))
                 {
                     MarkAsTouched(nameof(Password));
                 }
 
                 Validate(validator, this);
-                OnPropertyChanged(nameof(PasswordError)); // Notificar cambio en error
+                OnPropertyChanged(nameof(PasswordError));
             }
         }
 
-        // Propiedades para obtener el primer error visible
         public string EmailError
         {
             get
@@ -118,7 +115,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             GuestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
             ResendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
 
-            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
 
@@ -129,7 +125,6 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeLoginAsync()
         {
-            // Al intentar login, marcar todos los campos como tocados para mostrar errores
             MarkAllAsTouched();
 
             if (HasErrors)

@@ -12,6 +12,8 @@ namespace MindWeaveClient.Services.Abstractions
 
         Task connectAsync(string username, string lobbyId);
 
+        Task disconnectAsync();
+
         Task disconnectAsync(string username, string lobbyId);
 
         Task sendLobbyMessageAsync(string username, string lobbyId, string message);

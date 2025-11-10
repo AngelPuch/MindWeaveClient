@@ -753,4 +753,13 @@
   <data name="SocialInfoRequestDeclinedTitle" xml:space="preserve">
     <value>Request Declined</value>
   </data>
+  <data name="RestartRequiredTitle" xml:space="preserve">
+    <value>Restart Required</value>
+  </data>
+  <data name="RestartRequiredMessage" xml:space="preserve">
+    <value>Language changed. The application needs to restart to apply changes. Restart now?</value>
+  </data>
+  <data name="CreditsContent" xml:space="preserve">
+    <value>Mind Weave\nDeveloped by:\nAldo Antonio Campos Gómez\nAngel Jonathan Puch Hernández\n\n© 2025</value>
+  </data>
 </root>

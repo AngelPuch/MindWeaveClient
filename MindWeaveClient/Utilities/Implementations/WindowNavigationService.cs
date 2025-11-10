@@ -2,9 +2,7 @@
 using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace MindWeaveClient.Utilities.Implementations
 {
