@@ -1,33 +1,37 @@
-﻿using MindWeaveClient.ViewModel.Main; 
+﻿using MindWeaveClient.ViewModel.Main;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input; 
+using System.Windows.Input;
 
 namespace MindWeaveClient.View.Main
 {
     public partial class SocialPage : Page
     {
-        private SocialViewModel _viewModel;
-
-        public SocialPage()
+        public SocialPage(SocialViewModel viewModel)
         {
             InitializeComponent();
-            _viewModel = new SocialViewModel(() => NavigationService?.GoBack());
-            DataContext = _viewModel;
+            this.DataContext = viewModel;
 
-            Unloaded += SocialPage_Unloaded;
+            this.Unloaded += SocialPage_Unloaded;
         }
 
-        private void SocialPage_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+        private void SocialPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            _viewModel?.cleanup();
-            Unloaded -= SocialPage_Unloaded;
+            if (this.DataContext is SocialViewModel vm)
+            {
+                vm.cleanup();
+            }
+            this.Unloaded -= SocialPage_Unloaded;
         }
 
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && _viewModel.SearchCommand.CanExecute(null))
+            if (e.Key == Key.Enter)
             {
-                _viewModel.SearchCommand.Execute(null);
+                if (this.DataContext is SocialViewModel vm && vm.SearchCommand.CanExecute(null))
+                {
+                    vm.SearchCommand.Execute(null);
+                }
             }
         }
     }

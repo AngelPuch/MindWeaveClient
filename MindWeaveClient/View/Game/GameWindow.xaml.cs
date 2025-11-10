@@ -25,7 +25,7 @@ namespace MindWeaveClient.View.Game
             this.navigationService = navigationService;
 
             this.navigationService.initialize(GameFrame);
-            this.navigationService.navigateTo<LobbyPage>();
+            GameFrame.Content = startPage;
         }
     }
 }

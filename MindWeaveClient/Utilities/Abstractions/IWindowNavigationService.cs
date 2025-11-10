@@ -22,5 +22,6 @@ namespace MindWeaveClient.Utilities.Abstractions
         /// </summary>
         /// <param name="viewModelContext">The ViewModel whose window should be closed.</param>
         void closeWindowFromContext(object viewModelContext);
+        void closeWindow<T>() where T : Window;
     }
 }

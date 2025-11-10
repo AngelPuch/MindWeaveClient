@@ -6,9 +6,10 @@ using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using MindWeaveClient.Services;
 
@@ -32,21 +33,221 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly CreateAccountValidator validator;
         private readonly INavigationService navigationService;
 
-        public string FirstName { get => firstName; set { firstName = value; OnPropertyChanged(); Validate(validator, this); } }
-        public string LastName { get => lastName; set { lastName = value; OnPropertyChanged(); Validate(validator, this); } }
-        public string Username { get => username; set { username = value; OnPropertyChanged(); Validate(validator, this); } }
-        public string Email { get => email; set { email = value; OnPropertyChanged(); Validate(validator, this); } }
-        public DateTime? BirthDate { get => birthDate; set { birthDate = value; OnPropertyChanged(); Validate(validator, this); } }
-        public string Password { get => password; set { password = value; OnPropertyChanged(); Validate(validator, this); } }
+        public string FirstName
+        {
+            get => firstName;
+            set
+            {
+                firstName = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(FirstName));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(FirstNameError));
+            }
+        }
 
-        public bool IsFemale { get => isFemale; set { isFemale = value; OnPropertyChanged(); Validate(validator, this); } }
-        public bool IsMale { get => isMale; set { isMale = value; OnPropertyChanged(); Validate(validator, this); } }
-        public bool IsOther { get => isOther; set { isOther = value; OnPropertyChanged(); Validate(validator, this); } }
-        public bool IsPreferNotToSay { get => isPreferNotToSay; set { isPreferNotToSay = value; OnPropertyChanged(); Validate(validator, this); } }
+        public string LastName
+        {
+            get => lastName;
+            set
+            {
+                lastName = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(LastName));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(LastNameError));
+            }
+        }
+
+        public string Username
+        {
+            get => username;
+            set
+            {
+                username = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(Username));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(UsernameError));
+            }
+        }
+
+        public string Email
+        {
+            get => email;
+            set
+            {
+                email = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(Email));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(EmailError));
+            }
+        }
+
+        public DateTime? BirthDate
+        {
+            get => birthDate;
+            set
+            {
+                birthDate = value;
+                OnPropertyChanged();
+                if (value.HasValue)
+                {
+                    MarkAsTouched(nameof(BirthDate));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(BirthDateError));
+            }
+        }
+
+        public string Password
+        {
+            get => password;
+            set
+            {
+                password = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(Password));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(PasswordError));
+            }
+        }
+
+        public bool IsFemale
+        {
+            get => isFemale;
+            set
+            {
+                isFemale = value;
+                OnPropertyChanged();
+                MarkAsTouched(nameof(IsFemale));
+                Validate(validator, this);
+                OnPropertyChanged(nameof(GenderError));
+            }
+        }
+
+        public bool IsMale
+        {
+            get => isMale;
+            set
+            {
+                isMale = value;
+                OnPropertyChanged();
+                MarkAsTouched(nameof(IsFemale));
+                Validate(validator, this);
+                OnPropertyChanged(nameof(GenderError));
+            }
+        }
+
+        public bool IsOther
+        {
+            get => isOther;
+            set
+            {
+                isOther = value;
+                OnPropertyChanged();
+                MarkAsTouched(nameof(IsFemale));
+                Validate(validator, this);
+                OnPropertyChanged(nameof(GenderError));
+            }
+        }
+
+        public bool IsPreferNotToSay
+        {
+            get => isPreferNotToSay;
+            set
+            {
+                isPreferNotToSay = value;
+                OnPropertyChanged();
+                MarkAsTouched(nameof(IsFemale));
+                Validate(validator, this);
+                OnPropertyChanged(nameof(GenderError));
+            }
+        }
+
+        // Propiedades para obtener el primer error visible de cada campo
+        public string FirstNameError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(FirstName)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string LastNameError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(LastName)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string UsernameError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(Username)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string EmailError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(Email)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string BirthDateError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(BirthDate)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string PasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(Password)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string GenderError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(IsFemale)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
 
         public ICommand SignUpCommand { get; }
         public ICommand GoToLoginCommand { get; }
-        
+
         public CreateAccountViewModel()
         {
             this.validator = new CreateAccountValidator();
@@ -67,9 +268,10 @@ namespace MindWeaveClient.ViewModel.Authentication
             SignUpCommand = new RelayCommand(async (param) => await executeSignUp(), (param) => canExecuteSignUp());
             GoToLoginCommand = new RelayCommand((param) => executeGoToLogin());
 
+            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
-        
+
         private bool canExecuteSignUp()
         {
             return !IsBusy && !HasErrors;
@@ -77,6 +279,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeSignUp()
         {
+            // Al intentar hacer sign up, marcar todos los campos como tocados para mostrar errores
+            MarkAllAsTouched();
+
             if (HasErrors)
             {
                 return;

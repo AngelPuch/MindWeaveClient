@@ -1,20 +1,35 @@
 ﻿using MindWeaveClient.MatchmakingService;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Abstractions
 {
     public interface IMatchmakingService
     {
+        event Action<LobbyStateDto> OnLobbyStateUpdated;
+        event Action<string, List<string>> OnMatchFound;
+        event Action<string> OnLobbyCreationFailed;
+        event Action<string> OnKicked;
+
         Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings);
+
         Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request);
+
         Task joinLobbyAsync(string username, string lobbyCode);
+
         Task leaveLobbyAsync(string username, string lobbyId);
+
         Task startGameAsync(string hostUsername, string lobbyId);
+
         Task kickPlayerAsync(string hostUsername, string playerToKick, string lobbyId);
+
         Task inviteToLobbyAsync(string inviter, string invited, string lobbyId);
+
         Task inviteGuestByEmailAsync(GuestInvitationDto invitationData);
+
         Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId);
-        bool connect();
+
         void disconnect();
     }
 }

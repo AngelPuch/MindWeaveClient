@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using MindWeaveClient.SocialManagerService;
 
@@ -14,7 +13,6 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void notifyFriendRequest(string fromUsername)
         {
-            Debug.WriteLine($"Callback: Friend request received from {fromUsername}");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 FriendRequestReceived?.Invoke(fromUsername);
@@ -23,7 +21,6 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void notifyFriendResponse(string fromUsername, bool accepted)
         {
-            Debug.WriteLine($"Callback: Friend response from {fromUsername}. Accepted: {accepted}");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 FriendResponseReceived?.Invoke(fromUsername, accepted);
@@ -32,7 +29,6 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void notifyFriendStatusChanged(string friendUsername, bool isOnline)
         {
-            Debug.WriteLine($"Callback: Friend status changed for {friendUsername}. Online: {isOnline}");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 FriendStatusChanged?.Invoke(friendUsername, isOnline);
@@ -41,7 +37,6 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void notifyLobbyInvite(string fromUsername, string lobbyId)
         {
-            Debug.WriteLine($"Callback: Lobby invite received from {fromUsername} for lobby {lobbyId}");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 LobbyInviteReceived?.Invoke(fromUsername, lobbyId);

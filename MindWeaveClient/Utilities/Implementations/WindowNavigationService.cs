@@ -2,6 +2,7 @@
 using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,41 +30,28 @@ namespace MindWeaveClient.Utilities.Implementations
             dialog.ShowDialog();
         }
 
-        public void closeWindowFromContext(object viewModelContext)
+        public void closeWindowFromContext(object context)
         {
-            if (viewModelContext == null)
-            {
-                return;
-            }
-
-            var window = Application.Current.Windows.OfType<Window>()
-                .FirstOrDefault(w => w.DataContext == viewModelContext);
-
-            if (window == null)
-            {
-                window = Application.Current.Windows.OfType<Window>()
-                    .FirstOrDefault(w => w.FindName("AuthenticationFrame") != null ||
-                                         w.FindName("MainFrame") != null);
-
-                if (window != null && window.Content is Frame frame)
-                {
-                    if (frame.Content is Page page && page.DataContext == viewModelContext)
-                    {
-                        window.Close();
-                        return;
-                    }
-                }
-
-                window = Application.Current.Windows.OfType<Window>()
-                    .FirstOrDefault(w => w.IsActive && w.DataContext != null);
-
-                if (window != null && window.DataContext == viewModelContext)
-                {
-                    window.Close();
-                }
-            }
-
+            var window = findWindowByContext(context);
             window?.Close();
         }
+
+        public void closeWindow<T>() where T : Window
+        {
+            Window windowToClose = Application.Current.Windows.OfType<T>().FirstOrDefault();
+            windowToClose?.Close();
+        }
+
+        private Window findWindowByContext(object context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            return Application.Current.Windows.OfType<Window>()
+                .FirstOrDefault(w => w.DataContext == context);
+        }
+
     }
 }

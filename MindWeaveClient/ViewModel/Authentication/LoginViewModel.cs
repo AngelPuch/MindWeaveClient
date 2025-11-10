@@ -3,6 +3,8 @@ using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Authentication;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -31,7 +33,15 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 email = value;
                 OnPropertyChanged();
+
+                // Marcar como tocado cuando el usuario escribe
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(Email));
+                }
+
                 Validate(validator, this);
+                OnPropertyChanged(nameof(EmailError)); // Notificar cambio en error
             }
         }
 
@@ -42,7 +52,34 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 password = value;
                 OnPropertyChanged();
+
+                // Marcar como tocado cuando el usuario escribe
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(Password));
+                }
+
                 Validate(validator, this);
+                OnPropertyChanged(nameof(PasswordError)); // Notificar cambio en error
+            }
+        }
+
+        // Propiedades para obtener el primer error visible
+        public string EmailError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(Email)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string PasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(Password)) as List<string>;
+                return errors?.FirstOrDefault();
             }
         }
 
@@ -55,17 +92,12 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
             }
         }
-        
+
         public ICommand LoginCommand { get; }
         public ICommand SignUpCommand { get; }
         public ICommand ForgotPasswordCommand { get; }
         public ICommand GuestLoginCommand { get; }
         public ICommand ResendVerificationCommand { get; }
-
-        public LoginViewModel()
-        {
-
-        }
 
         public LoginViewModel(
             IAuthenticationService authenticationService,
@@ -74,7 +106,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService)
         {
-
             this.authenticationService = authenticationService;
             this.dialogService = dialogService;
             this.validator = validator;
@@ -87,9 +118,9 @@ namespace MindWeaveClient.ViewModel.Authentication
             GuestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
             ResendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
 
+            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
-
 
         private bool canExecuteLogin()
         {
@@ -98,6 +129,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeLoginAsync()
         {
+            // Al intentar login, marcar todos los campos como tocados para mostrar errores
+            MarkAllAsTouched();
+
             if (HasErrors)
             {
                 return;
@@ -114,14 +148,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                     {
                         dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle);
                     }
+
                     if (!serviceResult.isMatchmakingServiceConnected)
                     {
                         dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle);
                     }
 
                     windowNavigationService.openWindow<MainWindow>();
-                    windowNavigationService.closeWindowFromContext(this);
-
+                    windowNavigationService.closeWindow<AuthenticationWindow>();
                 }
                 else
                 {

@@ -214,11 +214,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error loading friends list..
+        /// </summary>
+        public static string ErrorLoadingFriends {
+            get {
+                return ResourceManager.GetString("ErrorLoadingFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error loading puzzles.
         /// </summary>
         public static string ErrorLoadingPuzzles {
             get {
                 return ResourceManager.GetString("ErrorLoadingPuzzles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error loading friend requests..
+        /// </summary>
+        public static string ErrorLoadingRequests {
+            get {
+                return ResourceManager.GetString("ErrorLoadingRequests", resourceCulture);
             }
         }
         
@@ -295,11 +313,47 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error removing friend..
+        /// </summary>
+        public static string ErrorRemovingFriend {
+            get {
+                return ResourceManager.GetString("ErrorRemovingFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error responding to request..
+        /// </summary>
+        public static string ErrorRespondingRequest {
+            get {
+                return ResourceManager.GetString("ErrorRespondingRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error searching players..
+        /// </summary>
+        public static string ErrorSearchingPlayer {
+            get {
+                return ResourceManager.GetString("ErrorSearchingPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Failed to send the guest invitation. Please try again..
         /// </summary>
         public static string ErrorSendingGuestInvitation {
             get {
                 return ResourceManager.GetString("ErrorSendingGuestInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error sending friend request..
+        /// </summary>
+        public static string ErrorSendingRequest {
+            get {
+                return ResourceManager.GetString("ErrorSendingRequest", resourceCulture);
             }
         }
         
@@ -1492,6 +1546,78 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to remove {0}?.
+        /// </summary>
+        public static string SocialConfirmRemove {
+            get {
+                return ResourceManager.GetString("SocialConfirmRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Confirm Removal.
+        /// </summary>
+        public static string SocialConfirmRemoveTitle {
+            get {
+                return ResourceManager.GetString("SocialConfirmRemoveTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a New Friend!.
+        /// </summary>
+        public static string SocialInfoNewFriendTitle {
+            get {
+                return ResourceManager.GetString("SocialInfoNewFriendTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You have received a new friend request from {0}..
+        /// </summary>
+        public static string SocialInfoNewRequest {
+            get {
+                return ResourceManager.GetString("SocialInfoNewRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a New Friend Request.
+        /// </summary>
+        public static string SocialInfoNewRequestTitle {
+            get {
+                return ResourceManager.GetString("SocialInfoNewRequestTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a {0} has accepted your friend request..
+        /// </summary>
+        public static string SocialInfoRequestAccepted {
+            get {
+                return ResourceManager.GetString("SocialInfoRequestAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a {0} has declined your friend request..
+        /// </summary>
+        public static string SocialInfoRequestDeclined {
+            get {
+                return ResourceManager.GetString("SocialInfoRequestDeclined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Request Declined.
+        /// </summary>
+        public static string SocialInfoRequestDeclinedTitle {
+            get {
+                return ResourceManager.GetString("SocialInfoRequestDeclinedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Offline.
         /// </summary>
         public static string SocialLbOffline {
@@ -1542,6 +1668,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SocialLbSentRequests {
             get {
                 return ResourceManager.GetString("SocialLbSentRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Remove friend.
+        /// </summary>
+        public static string SocialToolTipRemoveFriend {
+            get {
+                return ResourceManager.GetString("SocialToolTipRemoveFriend", resourceCulture);
             }
         }
         

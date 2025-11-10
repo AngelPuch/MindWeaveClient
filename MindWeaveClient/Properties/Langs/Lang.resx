@@ -708,4 +708,49 @@
   <data name="PostMatchBtnMainMenu" xml:space="preserve">
     <value>Main Menu</value>
   </data>
+  <data name="SocialToolTipRemoveFriend" xml:space="preserve">
+    <value>Remove friend</value>
+  </data>
+  <data name="ErrorLoadingFriends" xml:space="preserve">
+    <value>Error loading friends list.</value>
+  </data>
+  <data name="ErrorLoadingRequests" xml:space="preserve">
+    <value>Error loading friend requests.</value>
+  </data>
+  <data name="ErrorSearchingPlayer" xml:space="preserve">
+    <value>Error searching players.</value>
+  </data>
+  <data name="ErrorSendingRequest" xml:space="preserve">
+    <value>Error sending friend request.</value>
+  </data>
+  <data name="ErrorRespondingRequest" xml:space="preserve">
+    <value>Error responding to request.</value>
+  </data>
+  <data name="SocialConfirmRemove" xml:space="preserve">
+    <value>Are you sure you want to remove {0}?</value>
+  </data>
+  <data name="SocialConfirmRemoveTitle" xml:space="preserve">
+    <value>Confirm Removal</value>
+  </data>
+  <data name="ErrorRemovingFriend" xml:space="preserve">
+    <value>Error removing friend.</value>
+  </data>
+  <data name="SocialInfoNewRequest" xml:space="preserve">
+    <value>You have received a new friend request from {0}.</value>
+  </data>
+  <data name="SocialInfoNewRequestTitle" xml:space="preserve">
+    <value>New Friend Request</value>
+  </data>
+  <data name="SocialInfoRequestAccepted" xml:space="preserve">
+    <value>{0} has accepted your friend request.</value>
+  </data>
+  <data name="SocialInfoNewFriendTitle" xml:space="preserve">
+    <value>New Friend!</value>
+  </data>
+  <data name="SocialInfoRequestDeclined" xml:space="preserve">
+    <value>{0} has declined your friend request.</value>
+  </data>
+  <data name="SocialInfoRequestDeclinedTitle" xml:space="preserve">
+    <value>Request Declined</value>
+  </data>
 </root>

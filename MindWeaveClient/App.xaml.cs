@@ -15,6 +15,7 @@ using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Threading;
 using System.Windows;
+using MindWeaveClient.Services;
 using NavigationService = MindWeaveClient.Utilities.Implementations.NavigationService;
 
 
@@ -107,7 +108,7 @@ namespace MindWeaveClient
         {
             AudioManager.stopMusic();
             ServiceProvider.GetService<IInvitationService>()?.unsubscribeFromGlobalInvites();
-            ServiceProvider.GetService<ISocialService>()?.disconnect();
+            ServiceProvider.GetService<ISocialService>()?.disconnectAsync(SessionService.Username);
             ServiceProvider.GetService<IMatchmakingService>()?.disconnect();
             ServiceProvider.GetService<IChatService>()?.disconnect();
             base.OnExit(e);

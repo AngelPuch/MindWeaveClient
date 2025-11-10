@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -32,10 +33,12 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentMatchService currentMatchService;
+        private readonly ICurrentLobbyService currentLobbyService;
+
+        private LobbyStateDto lobbyState;
+        private bool isChatConnected;
 
         public bool IsGuestUser => SessionService.IsGuest;
-        private LobbyStateDto lobbyState;
-
         public string LobbyCode { get; private set; } = "Joining...";
         public string HostUsername { get; private set; } = "Loading...";
         public bool IsHost => lobbyState?.hostUsername == SessionService.Username;
@@ -45,11 +48,17 @@ namespace MindWeaveClient.ViewModel.Game
         public ObservableCollection<FriendDtoDisplay> OnlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
         public ObservableCollection<ChatMessageDisplayViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
 
-        private string currentChatMessage = string.Empty;
+        private string _currentChatMessage = string.Empty;
         public string CurrentChatMessage
         {
-            get => currentChatMessage;
-            set { currentChatMessage = value; OnPropertyChanged(); ((RelayCommand)SendMessageCommand).RaiseCanExecuteChanged(); }
+            get => _currentChatMessage;
+            set { _currentChatMessage = value; OnPropertyChanged(); }
+        }
+
+        public bool IsChatConnected
+        {
+            get => isChatConnected;
+            set { isChatConnected = value; OnPropertyChanged(); }
         }
 
         public ICommand LeaveLobbyCommand { get; }
@@ -78,24 +87,25 @@ namespace MindWeaveClient.ViewModel.Game
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
+            this.currentLobbyService = currentLobbyService;
             this.currentMatchService = currentMatchService;
 
-            LeaveLobbyCommand = new RelayCommand(executeLeaveLobby, param => !IsBusy);
-            StartGameCommand = new RelayCommand(executeStartGame, param => IsHost && !IsBusy && !IsGuestUser);
-            InviteFriendCommand = new RelayCommand(executeInviteFriend, canInviteFriend);
-            KickPlayerCommand = new RelayCommand(executeKickPlayer, p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
-            UploadImageCommand = new RelayCommand(p => dialogService.showInfo("La carga de imágenes personalizadas aún no está implementada.", "Info"), param => IsHost && !IsBusy && !IsGuestUser);
-            ChangeSettingsCommand = new RelayCommand(p => dialogService.showInfo("El cambio de ajustes de partida aún no está implementado.", "Info"), param => IsHost && !IsBusy && !IsGuestUser);
+            LeaveLobbyCommand = new RelayCommand(async p => await executeLeaveLobby(), p => !IsBusy);
+            StartGameCommand = new RelayCommand(async p => await executeStartGame(), p => IsHost && !IsBusy && !IsGuestUser);
+            InviteFriendCommand = new RelayCommand(async p => await executeInviteFriend(p), canInviteFriend);
+            KickPlayerCommand = new RelayCommand(async p => await executeKickPlayer(p), p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
+            UploadImageCommand = new RelayCommand(p => dialogService.showInfo("La carga de imágenes personalizadas aún no está implementada.", "Info"), p => IsHost && !IsBusy && !IsGuestUser);
+            ChangeSettingsCommand = new RelayCommand(p => dialogService.showInfo("El cambio de ajustes de partida aún no está implementado.", "Info"), p => IsHost && !IsBusy && !IsGuestUser);
             RefreshFriendsCommand = new RelayCommand(async p => await executeRefreshFriendsAsync(), p => IsHost && !IsBusy && !IsGuestUser);
-            SendMessageCommand = new RelayCommand(executeSendMessage, canExecuteSendMessage);
+            SendMessageCommand = new RelayCommand(async p => await executeSendMessage(), canExecuteSendMessage);
             InviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => IsHost && !IsBusy && !IsGuestUser);
 
-            subscribeToAggregator();
+            subscribeToServiceEvents();
 
-            var initialState = currentLobbyService.getInitialState();
+            var initialState = this.currentLobbyService.getInitialState();
             if (initialState != null)
             {
-                onLobbyStateUpdated(initialState);
+                handleLobbyStateUpdated(initialState);
             }
             else
             {
@@ -110,96 +120,145 @@ namespace MindWeaveClient.ViewModel.Game
             OnPropertyChanged(nameof(IsGuestUser));
         }
 
-        private void subscribeToAggregator()
+        private void subscribeToServiceEvents()
         {
-            GameEventAggregator.OnLobbyStateUpdated += onLobbyStateUpdated;
-            GameEventAggregator.OnMatchFound += onMatchFound;
-            GameEventAggregator.OnLobbyJoinFailed += onKickedOrFailed;
-            GameEventAggregator.OnChatMessageReceived += onChatMessageReceived;
+            matchmakingService.OnLobbyStateUpdated += handleLobbyStateUpdated;
+            matchmakingService.OnMatchFound += handleMatchFound;
+            matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
+            matchmakingService.OnKicked += handleKickedOrFailed;
+            chatService.OnMessageReceived += onChatMessageReceived;
         }
 
-        private void unsubscribeFromAggregator()
+        private async Task cleanupAndUnsubscribeAsync()
         {
-            GameEventAggregator.OnLobbyStateUpdated -= onLobbyStateUpdated;
-            GameEventAggregator.OnMatchFound -= onMatchFound;
-            GameEventAggregator.OnLobbyJoinFailed -= onKickedOrFailed;
-            GameEventAggregator.OnChatMessageReceived -= onChatMessageReceived;
+            matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
+            matchmakingService.OnMatchFound -= handleMatchFound;
+            matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
+            matchmakingService.OnKicked -= handleKickedOrFailed;
+            chatService.OnMessageReceived -= onChatMessageReceived;
+
+            await disconnectFromChatAsync();
         }
 
-        private void onLobbyStateUpdated(LobbyStateDto newState)
+        private void handleLobbyStateUpdated(LobbyStateDto newState)
         {
-            bool isInitialJoin = string.IsNullOrEmpty(this.LobbyCode) || this.LobbyCode == "Joining...";
-
-            SetBusy(false);
-
-            this.lobbyState = newState;
-            LobbyCode = newState.lobbyId;
-            HostUsername = newState.hostUsername;
-            CurrentSettings = newState.currentSettingsDto;
-
-            var playersToRemove = Players.Except(newState.players).ToList();
-            var playersToAdd = newState.players.Except(Players).ToList();
-            foreach (var p in playersToRemove) Players.Remove(p);
-            foreach (var p in playersToAdd) Players.Add(p);
-
-            OnPropertyChanged(nameof(LobbyCode));
-            OnPropertyChanged(nameof(HostUsername));
-            OnPropertyChanged(nameof(CurrentSettings));
-            OnPropertyChanged(nameof(IsHost));
-            OnPropertyChanged(nameof(IsGuestUser));
-
-            if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
+            Application.Current.Dispatcher.Invoke(async () =>
             {
-                connectToChat(newState.lobbyId);
-            }
-        }
+                bool isInitialJoin = string.IsNullOrEmpty(this.LobbyCode) || this.LobbyCode == "Joining...";
 
-        private void onMatchFound(string matchId, List<string> playerUsernames)
-        {
-            if (playerUsernames != null && playerUsernames.Contains(SessionService.Username))
-            {
                 SetBusy(false);
-                cleanupAndUnsubscribe();
-                currentMatchService.setMatchId(matchId);
 
-                navigationService.navigateTo<GamePage>();
-            }
+                lobbyState = newState;
+                LobbyCode = newState.lobbyId;
+                HostUsername = newState.hostUsername;
+                CurrentSettings = newState.currentSettingsDto;
+
+                var playersToRemove = Players.Except(newState.players).ToList();
+                var playersToAdd = newState.players.Except(Players).ToList();
+                foreach (var p in playersToRemove) Players.Remove(p);
+                foreach (var p in playersToAdd) Players.Add(p);
+
+                OnPropertyChanged(nameof(LobbyCode));
+                OnPropertyChanged(nameof(HostUsername));
+                OnPropertyChanged(nameof(CurrentSettings));
+                OnPropertyChanged(nameof(IsHost));
+                OnPropertyChanged(nameof(IsGuestUser));
+
+                CommandManager.InvalidateRequerySuggested();
+
+                if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
+                {
+                    await connectToChatAsync(newState.lobbyId);
+                }
+            });
         }
 
-        private void onKickedOrFailed(string reason)
+        private void handleMatchFound(string matchId, List<string> playerUsernames)
         {
-            dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
-            cleanupAndUnsubscribe();
-            windowNavigationService.openWindow<MainWindow>();
-            windowNavigationService.closeWindowFromContext(this);
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                if (playerUsernames != null && playerUsernames.Contains(SessionService.Username))
+                {
+                    SetBusy(false);
+                    await cleanupAndUnsubscribeAsync();
+                    currentMatchService.setMatchId(matchId);
+                    navigationService.navigateTo<GamePage>();
+                }
+            });
+        }
+
+        private void handleKickedOrFailed(string reason)
+        {
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
+                await cleanupAndUnsubscribeAsync();
+
+                matchmakingService.disconnect();
+
+                windowNavigationService.openWindow<MainWindow>();
+                windowNavigationService.closeWindowFromContext(this);
+            });
         }
 
         private void onChatMessageReceived(ChatMessageDto messageDto)
         {
-            ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
+            });
         }
 
-        private async void executeLeaveLobby(object parameter)
+        private async Task connectToChatAsync(string lobbyIdToConnect)
+        {
+            try
+            {
+                await chatService.connectAsync(SessionService.Username, lobbyIdToConnect);
+                IsChatConnected = true;
+            }
+            catch (Exception)
+            {
+                dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
+                IsChatConnected = false;
+            }
+        }
+
+        private async Task disconnectFromChatAsync()
+        {
+            if (IsChatConnected)
+            {
+                try
+                {
+                    await chatService.disconnectAsync(SessionService.Username, LobbyCode);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Failed to disconnect chat cleanly: {ex.Message}");
+                }
+                finally
+                {
+                    IsChatConnected = false;
+                }
+            }
+        }
+        private async Task executeLeaveLobby()
         {
             SetBusy(true);
             try
             {
                 await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
-                cleanupAndUnsubscribe();
+                await cleanupAndUnsubscribeAsync();
                 windowNavigationService.openWindow<MainWindow>();
                 windowNavigationService.closeWindowFromContext(this);
             }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorLeavingLobby, ex);
-            }
-            finally
-            {
                 SetBusy(false);
             }
         }
 
-        private async void executeStartGame(object parameter)
+        private async Task executeStartGame()
         {
             if (Players.Count != 4)
             {
@@ -219,7 +278,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private async void executeKickPlayer(object parameter)
+        private async Task executeKickPlayer(object parameter)
         {
             if (!(parameter is string playerToKick)) return;
 
@@ -229,6 +288,7 @@ namespace MindWeaveClient.ViewModel.Game
             );
 
             if (!confirm) return;
+            SetBusy(true);
 
             try
             {
@@ -237,6 +297,7 @@ namespace MindWeaveClient.ViewModel.Game
             catch (Exception ex)
             {
                 handleError(Lang.ErrorKickingPlayer, ex);
+                SetBusy(false);
             }
         }
 
@@ -250,10 +311,11 @@ namespace MindWeaveClient.ViewModel.Game
             return false;
         }
 
-        private async void executeInviteFriend(object parameter)
+        private async Task executeInviteFriend(object parameter)
         {
             if (!(parameter is FriendDtoDisplay friendToInvite)) return;
-
+            
+            SetBusy(true);
             try
             {
                 await matchmakingService.inviteToLobbyAsync(SessionService.Username, friendToInvite.Username, LobbyCode);
@@ -262,6 +324,10 @@ namespace MindWeaveClient.ViewModel.Game
             catch (Exception ex)
             {
                 handleError(Lang.SendInviteError, ex);
+            }
+            finally
+            {
+                SetBusy(false);
             }
         }
 
@@ -327,28 +393,48 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private void connectToChat(string lobbyIdToConnect)
+        private async Task connectToChat(string lobbyIdToConnect)
         {
-            if (!chatService.connect(SessionService.Username, lobbyIdToConnect))
+            try
+            {
+                await chatService.connectAsync(SessionService.Username, lobbyIdToConnect);
+                IsChatConnected = true;
+            }
+            catch (Exception)
             {
                 dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
+                IsChatConnected = false;
+            }
+
+        }
+
+        private async Task disconnectFromChat()
+        {
+            if (IsChatConnected)
+            {
+                try
+                {
+                    await chatService.disconnectAsync(SessionService.Username, LobbyCode);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Failed to disconnect chat cleanly: {ex.Message}");
+                }
+                finally
+                {
+                    IsChatConnected = false;
+                }
             }
         }
 
-        private void disconnectFromChat()
-        {
-            chatService.disconnect();
-        }
 
         private bool canExecuteSendMessage(object parameter)
         {
-            return !string.IsNullOrWhiteSpace(CurrentChatMessage) && chatService.isConnected();
+            return !string.IsNullOrWhiteSpace(CurrentChatMessage) && IsChatConnected;
         }
 
-        private async void executeSendMessage(object parameter)
+        private async Task executeSendMessage()
         {
-            if (!canExecuteSendMessage(parameter)) return;
-
             string messageToSend = CurrentChatMessage;
             CurrentChatMessage = string.Empty;
 
@@ -360,15 +446,9 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 dialogService.showError(string.Format(Lang.SendChatError, ex.Message), Lang.ErrorTitle);
 
-                disconnectFromChat();
-                connectToChat(LobbyCode);
+                await disconnectFromChatAsync();
+                await connectToChatAsync(LobbyCode);
             }
-        }
-
-        private void cleanupAndUnsubscribe()
-        {
-            unsubscribeFromAggregator();
-            disconnectFromChat();
         }
 
         private void handleError(string message, Exception ex)

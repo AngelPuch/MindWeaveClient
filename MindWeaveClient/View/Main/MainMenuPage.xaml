@@ -19,6 +19,7 @@
             <Setter Property="Foreground" Value="#e74c3c"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="MinHeight" Value="15"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
 
@@ -43,14 +44,27 @@
             <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>
         </Grid.Background>
 
-        <TextBlock Text="{x:Static lang:Lang.GlobalLbGameName}" Foreground="#2c3e50" FontSize="80" FontWeight="ExtraBold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,60,0,0">
+        <!-- Título del juego -->
+        <TextBlock Text="{x:Static lang:Lang.GlobalLbGameName}" 
+                   Foreground="#2c3e50" 
+                   FontSize="80" 
+                   FontWeight="ExtraBold" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top" 
+                   Margin="0,60,0,0">
             <TextBlock.Effect>
                 <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="5" Opacity="0.4"/>
             </TextBlock.Effect>
         </TextBlock>
 
-        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,50,0" Width="200">
-            <Ellipse Width="150" Height="150" Stroke="{StaticResource PrimaryColor}" StrokeThickness="4">
+        <!-- Panel de perfil del jugador -->
+        <StackPanel HorizontalAlignment="Right" 
+                    VerticalAlignment="Center" 
+                    Margin="0,0,50,0" 
+                    Width="200">
+            <Ellipse Width="150" Height="150" 
+                     Stroke="{StaticResource PrimaryColor}" 
+                     StrokeThickness="4">
                 <Ellipse.Fill>
                     <ImageBrush ImageSource="{Binding PlayerAvatarPath}" Stretch="UniformToFill"/>
                 </Ellipse.Fill>
@@ -58,37 +72,61 @@
                     <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="3" Opacity="0.5"/>
                 </Ellipse.Effect>
             </Ellipse>
-            <TextBlock Text="{Binding PlayerUsername}" Foreground="#2c3e50" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,15,0,0"/>
-            <Button Content="{x:Static lang:Lang.MainMenuBtnProfile}" Command="{Binding ProfileCommand}" Style="{StaticResource SecondaryButtonStyle}"/>
+            <TextBlock Text="{Binding PlayerUsername}" 
+                       Foreground="#2c3e50" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,15,0,0"/>
+            <Button Content="{x:Static lang:Lang.MainMenuBtnProfile}" 
+                    Command="{Binding ProfileCommand}" 
+                    Style="{StaticResource SecondaryButtonStyle}"/>
         </StackPanel>
 
+        <!-- Contenedor principal de acciones -->
+        <StackPanel HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Margin="0,80,0,0">
 
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <!-- Fila de acciones principales -->
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="0,0,0,20">
 
+                <!-- Crear Lobby -->
                 <Border Style="{StaticResource ActionContainerStyle}">
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{x:Static lang:Lang.MainMenuBtnCreateLobby}" Foreground="#2c3e50" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-                        <Button Content="{x:Static lang:Lang.GlobalBtnPlay}" Style="{StaticResource PrimaryButtonStyle}"
+                        <TextBlock Text="{x:Static lang:Lang.MainMenuBtnCreateLobby}" 
+                                   Foreground="#2c3e50" 
+                                   FontSize="20" 
+                                   FontWeight="Bold" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,0,0,20"/>
+                        <Button Content="{x:Static lang:Lang.GlobalBtnPlay}" 
+                                Style="{StaticResource PrimaryButtonStyle}"
                                 Command="{Binding CreateLobbyCommand}"/>
                     </StackPanel>
                 </Border>
 
+                <!-- Unirse a Lobby -->
                 <Border Style="{StaticResource ActionContainerStyle}">
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{x:Static lang:Lang.MainMenuLbJoinCodePrompt}"
-                                   Foreground="#2c3e50" FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                   Foreground="#2c3e50" 
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,0,0,10"/>
 
-                        <TextBox x:Name="lobbyCodeTextBox"
-                                 Text="{Binding JoinLobbyCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                        <TextBox Text="{Binding JoinLobbyCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                                  Style="{StaticResource AuthInputBoxStyle}"
                                  MaxLength="6"
-                                 HorizontalContentAlignment="Center" FontSize="18" FontWeight="Bold"
+                                 HorizontalContentAlignment="Center" 
+                                 FontSize="18" 
+                                 FontWeight="Bold"
                                  Margin="0,0,0,5" />
 
                         <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
-                                   Text="{Binding ElementName=lobbyCodeTextBox, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Text="{Binding JoinLobbyCodeError}"
                                    Margin="0,0,0,10"/>
 
                         <Button Content="{x:Static lang:Lang.MainMenuBtnJoin}"
@@ -99,20 +137,29 @@
                 </Border>
             </StackPanel>
 
+            <!-- Botones secundarios -->
             <StackPanel HorizontalAlignment="Center">
                 <Button Content="{x:Static lang:Lang.GlobalCommonSocial}"
-                        Style="{StaticResource SecondaryButtonStyle}" Width="620"
+                        Style="{StaticResource SecondaryButtonStyle}" 
+                        Width="620"
                         Command="{Binding SocialCommand}"/>
                 <Button Content="{x:Static lang:Lang.GlobalCommonSettings}"
-                        Style="{StaticResource SecondaryButtonStyle}" Width="620"
+                        Style="{StaticResource SecondaryButtonStyle}" 
+                        Width="620"
                         Command="{Binding SettingsCommand}"/>
             </StackPanel>
         </StackPanel>
 
-        <Border Background="#88000000" CornerRadius="10"
+        <!-- Indicador de Busy -->
+        <Border Background="#88000000" 
+                CornerRadius="10"
                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
-                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20">
-            <TextBlock Text="{x:Static lang:Lang.GlobalProcessing}" Foreground="White" FontSize="16"/>
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                Padding="20">
+            <TextBlock Text="{x:Static lang:Lang.GlobalProcessing}" 
+                       Foreground="White" 
+                       FontSize="16"/>
         </Border>
 
     </Grid>

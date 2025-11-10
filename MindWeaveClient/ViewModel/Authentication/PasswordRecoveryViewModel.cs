@@ -5,10 +5,11 @@ using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -23,21 +24,140 @@ namespace MindWeaveClient.ViewModel.Authentication
         private bool isStep2Visible;
         private bool isStep3Visible;
 
-        public bool IsStep1Visible { get => isStep1Visible; set { isStep1Visible = value; OnPropertyChanged(); } }
-        public bool IsStep2Visible { get => isStep2Visible; set { isStep2Visible = value; OnPropertyChanged(); } }
-        public bool IsStep3Visible { get => isStep3Visible; set { isStep3Visible = value; OnPropertyChanged(); } }
+        public bool IsStep1Visible
+        {
+            get => isStep1Visible;
+            set
+            {
+                isStep1Visible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsStep2Visible
+        {
+            get => isStep2Visible;
+            set
+            {
+                isStep2Visible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsStep3Visible
+        {
+            get => isStep3Visible;
+            set
+            {
+                isStep3Visible = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string email;
-        public string Email { get => email; set { email = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string Email
+        {
+            get => email;
+            set
+            {
+                email = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(Email));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(EmailError));
+            }
+        }
 
         private string verificationCode;
-        public string VerificationCode { get => verificationCode; set { verificationCode = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string VerificationCode
+        {
+            get => verificationCode;
+            set
+            {
+                verificationCode = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(VerificationCode));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(VerificationCodeError));
+            }
+        }
 
         private string newPassword;
-        public string NewPassword { get => newPassword; set { newPassword = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string NewPassword
+        {
+            get => newPassword;
+            set
+            {
+                newPassword = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(NewPassword));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(NewPasswordError));
+            }
+        }
 
         private string confirmPassword;
-        public string ConfirmPassword { get => confirmPassword; set { confirmPassword = value; OnPropertyChanged(); validateCurrentStep(); } }
+        public string ConfirmPassword
+        {
+            get => confirmPassword;
+            set
+            {
+                confirmPassword = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(ConfirmPassword));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(ConfirmPasswordError));
+            }
+        }
+
+        // Propiedades para obtener el primer error visible de cada campo
+        public string EmailError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(Email)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string VerificationCodeError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(VerificationCode)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string NewPasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(NewPassword)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string ConfirmPasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(ConfirmPassword)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
 
         public ICommand SendCodeCommand { get; }
         public ICommand VerifyCodeCommand { get; }
@@ -71,11 +191,12 @@ namespace MindWeaveClient.ViewModel.Authentication
             validateCurrentStep();
         }
 
-
         private async Task executeSendCodeAsync(bool isResend = false)
         {
             if (!isResend)
             {
+                // Marcar campo de email como tocado al intentar enviar
+                MarkAsTouched(nameof(Email));
                 if (HasErrors) return;
             }
 
@@ -93,6 +214,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                         IsStep2Visible = true;
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
+
+                        // Limpiar el estado touched del paso anterior
+                        ClearTouchedState();
                         validateCurrentStep();
                     }
                 }
@@ -117,6 +241,8 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private Task executeVerifyCodeAsync()
         {
+            // Marcar campo de código como tocado al intentar verificar
+            MarkAsTouched(nameof(VerificationCode));
             if (HasErrors) return Task.CompletedTask;
 
             SetBusy(true);
@@ -126,6 +252,9 @@ namespace MindWeaveClient.ViewModel.Authentication
             IsStep3Visible = true;
             NewPassword = "";
             ConfirmPassword = "";
+
+            // Limpiar el estado touched del paso anterior
+            ClearTouchedState();
             validateCurrentStep();
 
             SetBusy(false);
@@ -134,6 +263,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeSavePasswordAsync()
         {
+            // Marcar campos de contraseña como tocados al intentar guardar
+            MarkAsTouched(nameof(NewPassword));
+            MarkAsTouched(nameof(ConfirmPassword));
+
             if (HasErrors) return;
 
             SetBusy(true);
@@ -156,6 +289,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                         IsStep2Visible = true;
                         IsStep3Visible = false;
                         VerificationCode = string.Empty;
+
+                        // Limpiar el estado touched al retroceder
+                        ClearTouchedState();
                         validateCurrentStep();
                     }
                 }
@@ -181,6 +317,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep1Visible = false;
                 IsStep2Visible = true;
                 IsStep3Visible = false;
+
+                // Limpiar el estado touched al retroceder
+                ClearTouchedState();
                 validateCurrentStep();
             }
             else if (IsStep2Visible)
@@ -188,6 +327,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep1Visible = true;
                 IsStep2Visible = false;
                 IsStep3Visible = false;
+
+                // Limpiar el estado touched al retroceder
+                ClearTouchedState();
                 validateCurrentStep();
             }
             else

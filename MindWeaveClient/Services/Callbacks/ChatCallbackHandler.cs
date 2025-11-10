@@ -1,16 +1,16 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using MindWeaveClient.ChatManagerService;
 
 namespace MindWeaveClient.Services.Callbacks
 {
     public class ChatCallbackHandler : IChatManagerCallback
     {
+        public event Action<ChatMessageDto> OnMessageReceivedEvent;
+
         public void receiveLobbyMessage(ChatMessageDto message)
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                GameEventAggregator.raiseChatMessageReceived(message);
-            });
+            OnMessageReceivedEvent?.Invoke(message);
         }
     }
 }

@@ -54,6 +54,8 @@ namespace MindWeaveClient.ViewModel.Main
             this.dialogService = dialogService;
             this.navigationService = navigationService;
 
+            SessionService.AvatarPathChanged += OnAvatarPathChanged;
+
             BackCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
             EditProfileCommand = new RelayCommand(p => this.navigationService.navigateTo<EditProfilePage>(), p => !IsBusy);
 
@@ -64,6 +66,17 @@ namespace MindWeaveClient.ViewModel.Main
 
             loadProfileDataAsync();
         }
+
+        private void OnAvatarPathChanged(object sender, EventArgs e)
+        {
+            AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+        }
+
+        ~ProfileViewModel()
+        {
+            SessionService.AvatarPathChanged -= OnAvatarPathChanged;
+        }
+
 
         private async void loadProfileDataAsync()
         {

@@ -15,20 +15,43 @@
             <Setter Property="Foreground" Value="#e74c3c"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="MinHeight" Value="15"/>
         </Style>
     </Page.Resources>
 
     <Grid>
-        <Border Width="400" MinHeight="450" Background="#CCFFFFFF" CornerRadius="25"
-                VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border Width="400" 
+                MinHeight="450" 
+                Background="#CCFFFFFF" 
+                CornerRadius="25"
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center">
             <Border.Effect>
-                <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="30" Opacity="0.6"/>
+                <DropShadowEffect Color="Black" 
+                                  ShadowDepth="0" 
+                                  BlurRadius="30" 
+                                  Opacity="0.6"/>
             </Border.Effect>
 
             <StackPanel VerticalAlignment="Center" Margin="40">
-                <TextBlock Text="{x:Static language:Lang.VerificationAccountLbTitle}" Foreground="#2c3e50" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15" TextWrapping="Wrap" TextAlignment="Center"/>
-                <TextBlock Text="{x:Static language:Lang.VerificationAccountLbInstructions}" Foreground="#2c3e50" TextWrapping="Wrap" Margin="0,0,0,25" TextAlignment="Center"/>
+                <!-- Título -->
+                <TextBlock Text="{x:Static language:Lang.VerificationAccountLbTitle}" 
+                           Foreground="#2c3e50" 
+                           FontSize="32" 
+                           FontWeight="Bold" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,15" 
+                           TextWrapping="Wrap" 
+                           TextAlignment="Center"/>
 
+                <!-- Instrucciones -->
+                <TextBlock Text="{x:Static language:Lang.VerificationAccountLbInstructions}" 
+                           Foreground="#2c3e50" 
+                           TextWrapping="Wrap" 
+                           Margin="0,0,0,25" 
+                           TextAlignment="Center"/>
+
+                <!-- Campo de código de verificación -->
                 <TextBox Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
                          Style="{StaticResource AuthInputBoxStyle}" 
                          MaxLength="6" 
@@ -37,14 +60,24 @@
                          PreviewTextInput="CodeTextBox_PreviewTextInput"/>
 
                 <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}"
-                           Text="{Binding Errors[VerificationCode][0]}"
+                           Text="{Binding VerificationCodeError}"
                            HorizontalAlignment="Center"/>
 
-                <Button Command="{Binding VerifyCommand}" Content="{x:Static language:Lang.VerificationAccountBtnVerify}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,30,0,10" />
+                <!-- Botón Verify -->
+                <Button Command="{Binding VerifyCommand}" 
+                        Content="{x:Static language:Lang.VerificationAccountBtnVerify}" 
+                        Style="{StaticResource PrimaryButtonStyle}" 
+                        Margin="0,30,0,10" />
 
-                <Button Content="{x:Static language:Lang.VerificationCodeResend}" Style="{StaticResource LinkButtonStyle}" Command="{Binding ResendCodeCommand}" />
+                <!-- Botón Resend Code -->
+                <Button Content="{x:Static language:Lang.VerificationCodeResend}" 
+                        Style="{StaticResource LinkButtonStyle}" 
+                        Command="{Binding ResendCodeCommand}" />
 
-                <Button Command="{Binding GoBackCommand}" Content="{x:Static language:Lang.GlobalBtnBack}" Style="{StaticResource LinkButtonStyle}" />
+                <!-- Botón Back -->
+                <Button Command="{Binding GoBackCommand}" 
+                        Content="{x:Static language:Lang.GlobalBtnBack}" 
+                        Style="{StaticResource LinkButtonStyle}" />
             </StackPanel>
         </Border>
     </Grid>

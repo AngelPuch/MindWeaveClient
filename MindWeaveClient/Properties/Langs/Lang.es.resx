@@ -708,4 +708,49 @@
   <data name="PostMatchBtnMainMenu" xml:space="preserve">
     <value>Menú Principal</value>
   </data>
+  <data name="SocialToolTipRemoveFriend" xml:space="preserve">
+    <value>Eliminar amigo</value>
+  </data>
+  <data name="ErrorLoadingFriends" xml:space="preserve">
+    <value>Error al cargar la lista de amigos.</value>
+  </data>
+  <data name="ErrorLoadingRequests" xml:space="preserve">
+    <value>Error al cargar las solicitudes de amistad.</value>
+  </data>
+  <data name="ErrorSearchingPlayer" xml:space="preserve">
+    <value>Error al buscar jugadores.</value>
+  </data>
+  <data name="ErrorSendingRequest" xml:space="preserve">
+    <value>Error al enviar la solicitud de amistad.</value>
+  </data>
+  <data name="ErrorRespondingRequest" xml:space="preserve">
+    <value>Error al responder a la solicitud.</value>
+  </data>
+  <data name="SocialConfirmRemove" xml:space="preserve">
+    <value>¿Estás seguro de que quieres eliminar a {0}?</value>
+  </data>
+  <data name="SocialConfirmRemoveTitle" xml:space="preserve">
+    <value>Confirmar Eliminación</value>
+  </data>
+  <data name="ErrorRemovingFriend" xml:space="preserve">
+    <value>Error al eliminar al amigo.</value>
+  </data>
+  <data name="SocialInfoNewRequest" xml:space="preserve">
+    <value>Has recibido una nueva solicitud de amistad de {0}.</value>
+  </data>
+  <data name="SocialInfoNewRequestTitle" xml:space="preserve">
+    <value>Nueva Solicitud de Amistad</value>
+  </data>
+  <data name="SocialInfoRequestAccepted" xml:space="preserve">
+    <value>{0} ha aceptado tu solicitud de amistad.</value>
+  </data>
+  <data name="SocialInfoNewFriendTitle" xml:space="preserve">
+    <value>¡Nuevo Amigo!</value>
+  </data>
+  <data name="SocialInfoRequestDeclined" xml:space="preserve">
+    <value>{0} ha rechazado tu solicitud de amistad.</value>
+  </data>
+  <data name="SocialInfoRequestDeclinedTitle" xml:space="preserve">
+    <value>Solicitud Rechazada</value>
+  </data>
 </root>

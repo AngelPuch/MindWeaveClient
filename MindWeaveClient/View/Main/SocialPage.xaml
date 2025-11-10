@@ -5,7 +5,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
       xmlns:vm="clr-namespace:MindWeaveClient.ViewModel.Main"
-      xmlns:local_vm="clr-namespace:MindWeaveClient.ViewModel.Main"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type=vm:SocialViewModel, IsDesignTimeCreatable=False}"
       d:DesignHeight="720" d:DesignWidth="1280"
@@ -114,7 +113,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding IsFriendsListChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl ItemsSource="{Binding FriendsList}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type local_vm:FriendDtoDisplay}">
+                                <DataTemplate DataType="{x:Type vm:FriendDtoDisplay}">
                                     <Border Style="{StaticResource SocialListItemStyle}">
                                         <Grid>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -128,7 +127,7 @@
 
                                             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource FriendStatusTemplate}" />
 
-                                            <Button Content="X" ToolTip="Remove Friend"
+                                            <Button Content="X" ToolTip="{x:Static language:Lang.SocialToolTipRemoveFriend}"
                                                     Command="{Binding DataContext.RemoveFriendCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                     CommandParameter="{Binding}"
                                                     Style="{StaticResource SecondaryButtonStyle}"

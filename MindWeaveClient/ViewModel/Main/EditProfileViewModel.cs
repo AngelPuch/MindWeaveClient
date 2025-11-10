@@ -6,7 +6,9 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Main;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +18,10 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class EditProfileViewModel : BaseViewModel
     {
+        private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
+        private const string PROFILE_RULESET_NAME = "Profile";
+        private const string PASSWORD_RULESET_NAME = "Password";
+
         private readonly INavigationService navigationService;
         private readonly IProfileService profileService;
         private readonly IDialogService dialogService;
@@ -34,20 +40,225 @@ namespace MindWeaveClient.ViewModel.Main
         private string confirmPasswordValue;
         private bool isBusyValue;
 
-        public string FirstName { get => firstNameValue; set { firstNameValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public string LastName { get => lastNameValue; set { lastNameValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public DateTime? DateOfBirth { get => dateOfBirthValue; set { dateOfBirthValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public GenderDto SelectedGender { get => selectedGenderValue; set { selectedGenderValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public ObservableCollection<GenderDto> Genders { get => gendersValue; set { gendersValue = value; OnPropertyChanged(); } }
-        public string AvatarSource { get => avatarSourceValue; set { avatarSourceValue = value; OnPropertyChanged(); } }
+        public string FirstName
+        {
+            get => firstNameValue;
+            set
+            {
+                firstNameValue = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(FirstName));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(FirstNameError));
+            }
+        }
 
-        public bool IsChangePasswordSectionVisible { get => isChangePasswordSectionVisibleValue; set { isChangePasswordSectionVisibleValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public string CurrentPassword { get => currentPasswordValue; set { currentPasswordValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public string NewPassword { get => newPasswordValue; set { newPasswordValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public string ConfirmPassword { get => confirmPasswordValue; set { confirmPasswordValue = value; OnPropertyChanged(); validateCurrentStep(); } }
-        public bool IsBusy { get => isBusyValue; private set { setBusy(value); } }
+        public string LastName
+        {
+            get => lastNameValue;
+            set
+            {
+                lastNameValue = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(LastName));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(LastNameError));
+            }
+        }
+
+        public DateTime? DateOfBirth
+        {
+            get => dateOfBirthValue;
+            set
+            {
+                dateOfBirthValue = value;
+                OnPropertyChanged();
+                if (value.HasValue)
+                {
+                    MarkAsTouched(nameof(DateOfBirth));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(DateOfBirthError));
+            }
+        }
+
+        public GenderDto SelectedGender
+        {
+            get => selectedGenderValue;
+            set
+            {
+                selectedGenderValue = value;
+                OnPropertyChanged();
+                if (value != null)
+                {
+                    MarkAsTouched(nameof(SelectedGender));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(SelectedGenderError));
+            }
+        }
+
+        public ObservableCollection<GenderDto> Genders
+        {
+            get => gendersValue;
+            set
+            {
+                gendersValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string AvatarSource
+        {
+            get => avatarSourceValue;
+            set
+            {
+                avatarSourceValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsChangePasswordSectionVisible
+        {
+            get => isChangePasswordSectionVisibleValue;
+            set
+            {
+                isChangePasswordSectionVisibleValue = value;
+                OnPropertyChanged();
+                validateCurrentStep();
+            }
+        }
+
+        public string CurrentPassword
+        {
+            get => currentPasswordValue;
+            set
+            {
+                currentPasswordValue = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(CurrentPassword));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(CurrentPasswordError));
+            }
+        }
+
+        public string NewPassword
+        {
+            get => newPasswordValue;
+            set
+            {
+                newPasswordValue = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(NewPassword));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(NewPasswordError));
+            }
+        }
+
+        public string ConfirmPassword
+        {
+            get => confirmPasswordValue;
+            set
+            {
+                confirmPasswordValue = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(ConfirmPassword));
+                }
+                validateCurrentStep();
+                OnPropertyChanged(nameof(ConfirmPasswordError));
+            }
+        }
+
+        // Propiedades de error para el modo Profile
+        public string FirstNameError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(FirstName)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string LastNameError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(LastName)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string DateOfBirthError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(DateOfBirth)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string SelectedGenderError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(SelectedGender)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        // Propiedades de error para el modo Password
+        public string CurrentPasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(CurrentPassword)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string NewPasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(NewPassword)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string ConfirmPasswordError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(ConfirmPassword)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public bool IsBusy
+        {
+            get => isBusyValue;
+            private set
+            {
+                setBusy(value);
+            }
+        }
 
         public bool CanSaveChanges => !HasErrors && !IsBusy && !IsChangePasswordSectionVisible;
+
         public bool CanSaveNewPassword => !HasErrors && !IsBusy && IsChangePasswordSectionVisible;
 
         public ICommand SaveChangesCommand { get; }
@@ -79,12 +290,20 @@ namespace MindWeaveClient.ViewModel.Main
             loadEditableData();
         }
 
+        public void RefreshAvatar()
+        {
+            AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
+        }
+
         private void executeShowChangePassword(object parameter)
         {
             IsChangePasswordSectionVisible = true;
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
+            
+            // Limpiar el estado touched al cambiar de sección
+            ClearTouchedState();
         }
 
         private void executeCancelChangePassword(object parameter)
@@ -93,10 +312,18 @@ namespace MindWeaveClient.ViewModel.Main
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
+            
+            // Limpiar el estado touched al volver a la sección de perfil
+            ClearTouchedState();
         }
 
         private async Task executeSaveNewPasswordAsync()
         {
+            // Marcar todos los campos de contraseña como touched
+            MarkAsTouched(nameof(CurrentPassword));
+            MarkAsTouched(nameof(NewPassword));
+            MarkAsTouched(nameof(ConfirmPassword));
+            
             if (HasErrors) return;
 
             setBusy(true);
@@ -129,7 +356,7 @@ namespace MindWeaveClient.ViewModel.Main
             setBusy(true);
             try
             {
-                AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+                AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
                 var profileData = await profileService.getPlayerProfileForEditAsync(SessionService.Username);
 
                 if (profileData != null)
@@ -151,6 +378,8 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     dialogService.showWarning(Lang.ErrorFailedToLoadProfile, Lang.WarningTitle);
                 }
+                
+                // No marcar campos como touched al cargar datos iniciales
                 validateCurrentStep();
             }
             catch (Exception ex)
@@ -166,6 +395,12 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task saveProfileChangesAsync()
         {
+            // Marcar todos los campos de perfil como touched
+            MarkAsTouched(nameof(FirstName));
+            MarkAsTouched(nameof(LastName));
+            MarkAsTouched(nameof(DateOfBirth));
+            MarkAsTouched(nameof(SelectedGender));
+            
             if (HasErrors) return;
 
             var updatedProfile = new UserProfileForEditDto
@@ -202,11 +437,6 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        public void RefreshAvatar()
-        {
-            AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-        }
-
         private void setBusy(bool value)
         {
             isBusyValue = value;
@@ -218,11 +448,11 @@ namespace MindWeaveClient.ViewModel.Main
         {
             if (IsChangePasswordSectionVisible)
             {
-                Validate(validator, this, "Password");
+                Validate(validator, this, PASSWORD_RULESET_NAME);
             }
             else
             {
-                Validate(validator, this, "Profile");
+                Validate(validator, this, PROFILE_RULESET_NAME);
             }
             raiseCanExecuteChanged();
         }
@@ -236,7 +466,8 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void handleError(string message, Exception ex)
         {
-            dialogService.showError(message , Lang.ErrorTitle);
+            Trace.TraceError($"Error in {nameof(EditProfileViewModel)}: {message} | Exception: {ex}");
+            dialogService.showError(message, Lang.ErrorTitle);
         }
     }
 }

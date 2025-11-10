@@ -36,19 +36,25 @@
                            HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding AvailableAvatars}"
-                                  HorizontalAlignment="Center">
-                        <ItemsControl.ItemsPanel>
+                    <ListBox ItemsSource="{Binding AvailableAvatars}"
+                             SelectedItem="{Binding SelectedAvatar, Mode=TwoWay}"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel/>
                             </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                        </ListBox.ItemsPanel>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <RadioButton GroupName="Avatars" IsChecked="{Binding IsSelected, Mode=TwoWay}" Style="{x:Null}">
-                                    <RadioButton.Template>
-                                        <ControlTemplate TargetType="RadioButton">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
                                             <Border x:Name="border"
                                                     Width="120" Height="120" 
                                                     CornerRadius="60"
@@ -62,23 +68,16 @@
                                                 </Ellipse>
                                             </Border>
                                             <ControlTemplate.Triggers>
-                                                <Trigger Property="IsChecked" Value="True">
+                                                <Trigger Property="IsSelected" Value="True">
                                                     <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
-                                    </RadioButton.Template>
-                                </RadioButton>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-                                <EventSetter Event="GotFocus" Handler="OnAvatarSelected"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </ScrollViewer>
 
                 <Grid Grid.Row="2" Margin="0,30,0,0">
@@ -88,7 +87,8 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Grid.Column="0" Command="{Binding CancelCommand}" Content="{x:Static language:Lang.GlobalBtnCancel}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"/>
-                    <Button Grid.Column="1" Command="{Binding SaveSelectionCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"/>
+
+                    <Button Grid.Column="1" Command="{Binding SaveSelectionCommand}" Content="{x:Static language:Lang.EditProfileBtnSaveChanges}" Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0" IsEnabled="{Binding CanSave}"/>
                 </Grid>
             </Grid>
         </Border>

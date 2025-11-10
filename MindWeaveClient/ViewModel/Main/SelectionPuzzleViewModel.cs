@@ -3,15 +3,17 @@ using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.PuzzleManagerService;
 using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.Services.Abstractions;
-using MindWeaveClient.Utilities.Abstractions;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -213,10 +215,11 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.success && result.initialLobbyState != null)
                 {
+                    Debug.WriteLine("Antes de que se pase el estado del lobby");
+                    Debug.WriteLine(result.initialLobbyState.lobbyId);
                     currentLobbyService.setInitialState(result.initialLobbyState);
-
                     windowNavigationService.openWindow<GameWindow>();
-                    windowNavigationService.closeWindowFromContext(this);
+                    windowNavigationService.closeWindow<MainWindow>();
                 }
                 else
                 {

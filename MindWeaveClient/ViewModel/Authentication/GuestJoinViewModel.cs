@@ -1,14 +1,17 @@
 ﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
-using MindWeaveClient.Services; 
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Validators;
+using MindWeaveClient.View.Authentication;
+using MindWeaveClient.View.Game;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -30,19 +33,77 @@ namespace MindWeaveClient.ViewModel.Authentication
         public string LobbyCode
         {
             get => lobbyCode;
-            set { lobbyCode = value; OnPropertyChanged(); Validate(validator, this); }
+            set
+            {
+                lobbyCode = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(LobbyCode));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(LobbyCodeError));
+            }
         }
 
         public string GuestEmail
         {
             get => guestEmail;
-            set { guestEmail = value; OnPropertyChanged(); Validate(validator, this); }
+            set
+            {
+                guestEmail = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(GuestEmail));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(GuestEmailError));
+            }
         }
 
         public string DesiredUsername
         {
             get => desiredUsername;
-            set { desiredUsername = value; OnPropertyChanged(); Validate(validator, this); }
+            set
+            {
+                desiredUsername = value;
+                OnPropertyChanged();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(DesiredUsername));
+                }
+                Validate(validator, this);
+                OnPropertyChanged(nameof(DesiredUsernameError));
+            }
+        }
+
+        // Propiedades para obtener el primer error visible de cada campo
+        public string LobbyCodeError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(LobbyCode)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string GuestEmailError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(GuestEmail)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
+        }
+
+        public string DesiredUsernameError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(DesiredUsername)) as List<string>;
+                return errors?.FirstOrDefault();
+            }
         }
 
         public ICommand JoinAsGuestCommand { get; }
@@ -72,6 +133,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canExecuteJoin());
             GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
 
+            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
 
@@ -87,6 +149,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeJoinAsGuestAsync()
         {
+            // Al intentar unirse, marcar todos los campos como tocados para mostrar errores
+            MarkAllAsTouched();
+
             if (HasErrors) return;
 
             SetBusy(true);
@@ -106,7 +171,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     currentLobbyService.setInitialState(serviceResult.wcfResult.initialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
-                    windowNavigationService.closeWindowFromContext(this);
+                    windowNavigationService.closeWindow<AuthenticationWindow>();
                 }
                 else
                 {

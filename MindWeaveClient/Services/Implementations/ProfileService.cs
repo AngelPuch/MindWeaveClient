@@ -1,5 +1,7 @@
 ﻿using MindWeaveClient.ProfileService;
 using MindWeaveClient.Services.Abstractions;
+using System;
+using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Implementations
@@ -14,6 +16,16 @@ namespace MindWeaveClient.Services.Implementations
                 PlayerProfileViewDto profileData = await client.getPlayerProfileViewAsync(username);
                 client.Close();
                 return profileData;
+            }
+            catch (CommunicationException)
+            {
+                client.Abort();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                client.Abort();
+                throw;
             }
             catch
             {
@@ -31,6 +43,16 @@ namespace MindWeaveClient.Services.Implementations
                 client.Close();
                 return result;
             }
+            catch (CommunicationException)
+            {
+                client.Abort();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                client.Abort();
+                throw;
+            }
             catch
             {
                 client.Abort();
@@ -47,6 +69,16 @@ namespace MindWeaveClient.Services.Implementations
                 client.Close();
                 return result;
             }
+            catch (CommunicationException)
+            {
+                client.Abort();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                client.Abort();
+                throw;
+            }
             catch
             {
                 client.Abort();
@@ -62,6 +94,42 @@ namespace MindWeaveClient.Services.Implementations
                 OperationResultDto result = await client.changePasswordAsync(username, currentPassword, newPassword);
                 client.Close();
                 return result;
+            }
+            catch (CommunicationException)
+            {
+                client.Abort();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                client.Abort();
+                throw;
+            }
+            catch
+            {
+                client.Abort();
+                throw;
+            }
+        }
+
+        public async Task<OperationResultDto> updateAvatarPathAsync(string username, string avatarPath)
+        {
+            var client = new ProfileManagerClient();
+            try
+            {
+                OperationResultDto result = await client.updateAvatarPathAsync(username, avatarPath);
+                client.Close();
+                return result;
+            }
+            catch (CommunicationException)
+            {
+                client.Abort();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                client.Abort();
+                throw;
             }
             catch
             {

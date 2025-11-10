@@ -1,4 +1,6 @@
-﻿namespace MindWeaveClient.Services
+﻿using System;
+
+namespace MindWeaveClient.Services
 {
     public static class SessionService
     {
@@ -6,6 +8,7 @@
         public static string AvatarPath { get; private set; }
         public static bool IsGuest { get; private set; }
         public static string PendingVerificationEmail { get; set; }
+        public static event EventHandler AvatarPathChanged;
 
         public static void SetSession(string username, string avatarPath, bool isGuest = false)
         {
@@ -19,6 +22,7 @@
             if (!IsGuest)
             {
                 AvatarPath = newAvatarPath;
+                AvatarPathChanged?.Invoke(null, EventArgs.Empty);
             }
         }
 

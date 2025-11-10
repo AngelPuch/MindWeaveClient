@@ -6,6 +6,8 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -22,7 +24,15 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly INavigationService navigationService;
         private readonly VerificationValidator validator;
 
-        public string Email { get => email; set { email = value; OnPropertyChanged(); } }
+        public string Email
+        {
+            get => email;
+            set
+            {
+                email = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string VerificationCode
         {
@@ -31,7 +41,25 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 verificationCode = value;
                 OnPropertyChanged();
+
+                // Marcar como tocado cuando el usuario escribe
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MarkAsTouched(nameof(VerificationCode));
+                }
+
                 Validate(validator, this);
+                OnPropertyChanged(nameof(VerificationCodeError));
+            }
+        }
+
+        // Propiedad para obtener el primer error visible del campo
+        public string VerificationCodeError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(VerificationCode)) as List<string>;
+                return errors?.FirstOrDefault();
             }
         }
 
@@ -58,11 +86,11 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             this.Email = SessionService.PendingVerificationEmail;
 
-
             VerifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
             GoBackCommand = new RelayCommand((param) => executeGoBack());
             ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
 
+            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this);
         }
 
@@ -73,6 +101,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private async Task executeVerifyAsync()
         {
+            // Al intentar verificar, marcar el campo como tocado para mostrar errores
+            MarkAsTouched(nameof(VerificationCode));
+
             if (HasErrors) return;
 
             SetBusy(true);
@@ -122,6 +153,10 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.success)
                 {
                     dialogService.showInfo(Lang.InfoMsgResendSuccessBody, Lang.InfoMsgResendSuccessTitle);
+
+                    // Limpiar el código y el estado touched al reenviar
+                    VerificationCode = string.Empty;
+                    ClearTouchedState();
                 }
                 else
                 {

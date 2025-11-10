@@ -7,6 +7,8 @@ using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.View.Settings;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +26,17 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly ICurrentLobbyService currentLobbyService;
 
         public string PlayerUsername { get; }
-        public string PlayerAvatarPath { get; }
+
+        private string playerAvatarPath;
+        public string PlayerAvatarPath
+        {
+            get => playerAvatarPath;
+            set
+            {
+                playerAvatarPath = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string joinLobbyCode = string.Empty;
         public string JoinLobbyCode
@@ -34,7 +46,25 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 joinLobbyCode = value?.Trim() ?? string.Empty;
                 OnPropertyChanged();
+
+                // Marcar como tocado cuando el usuario escribe
+                if (!string.IsNullOrEmpty(joinLobbyCode))
+                {
+                    MarkAsTouched(nameof(JoinLobbyCode));
+                }
+
                 Validate(validator, this, "JoinLobby");
+                OnPropertyChanged(nameof(JoinLobbyCodeError));
+            }
+        }
+
+        // Propiedad para obtener el primer error visible del campo
+        public string JoinLobbyCodeError
+        {
+            get
+            {
+                var errors = GetErrors(nameof(JoinLobbyCode)) as List<string>;
+                return errors?.FirstOrDefault();
             }
         }
 
@@ -59,6 +89,9 @@ namespace MindWeaveClient.ViewModel.Main
             this.windowNavigationService = windowNavigationService;
             this.currentLobbyService = currentLobbyService;
 
+            SessionService.AvatarPathChanged += OnAvatarPathChanged;
+
+
             PlayerUsername = SessionService.Username;
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
@@ -68,21 +101,35 @@ namespace MindWeaveClient.ViewModel.Main
             SettingsCommand = new RelayCommand(p => executeShowSettings(), p => !IsBusy);
             JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
 
+            // Validar inicialmente pero sin marcar como tocado
             Validate(validator, this, "JoinLobby");
+        }
+
+        private void OnAvatarPathChanged(object sender, EventArgs e)
+        {
+            PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+        }
+
+        ~MainMenuViewModel()
+        {
+            SessionService.AvatarPathChanged -= OnAvatarPathChanged;
         }
 
         private async Task executeJoinLobbyAsync()
         {
+            // Al intentar unirse, marcar el campo como tocado para mostrar errores
+            MarkAsTouched(nameof(JoinLobbyCode));
+
             if (HasErrors) return;
 
             SetBusy(true);
             try
             {
                 await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
-                currentLobbyService.setInitialState(null);
+                //currentLobbyService.setInitialState(null);
 
                 windowNavigationService.openWindow<GameWindow>();
-                windowNavigationService.closeWindowFromContext(this);
+                windowNavigationService.closeWindow<MainWindow>();
             }
             catch (InvalidOperationException ex)
             {
