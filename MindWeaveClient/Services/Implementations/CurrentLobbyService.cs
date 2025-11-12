@@ -18,5 +18,7 @@ namespace MindWeaveClient.Services.Implementations
             this.initialState = null;
             return state;
         }
+
+      
     }
 }

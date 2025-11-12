@@ -161,9 +161,9 @@ namespace MindWeaveClient.ViewModel.Main
                         var newPuzzleInfo = new PuzzleDisplayInfo(
                             uploadResult.newPuzzleId,
                             fileName,
-                            openFileDialog.FileName
+                            openFileDialog.FileName,
+                            openFileDialog.FileName 
                         );
-
                         AvailablePuzzles.Add(newPuzzleInfo);
                         executeSelectPuzzle(newPuzzleInfo);
 
@@ -193,6 +193,30 @@ namespace MindWeaveClient.ViewModel.Main
             }
 
             SetBusy(true);
+
+            byte[] puzzleBytes = null;
+            int? puzzleId = null;
+
+            if (SelectedPuzzle.IsUploaded)
+            {
+               
+                try
+                {
+                    puzzleBytes = File.ReadAllBytes(SelectedPuzzle.LocalFilePath);
+                    puzzleId = SelectedPuzzle.PuzzleId; 
+                }
+                catch (Exception ex)
+                {
+                    dialogService.showError($"Error reading uploaded file: {ex.Message}", Lang.ErrorTitle);
+                    SetBusy(false);
+                    return;
+                }
+            }
+            else
+            {
+                
+                puzzleId = SelectedPuzzle.PuzzleId;
+            }
 
             var settings = new LobbySettingsDto
             {

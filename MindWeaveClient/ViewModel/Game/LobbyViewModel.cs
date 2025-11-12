@@ -17,6 +17,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO; 
+using System.Windows.Media; 
+using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -36,6 +39,7 @@ namespace MindWeaveClient.ViewModel.Game
         private bool isCleaningUp;
 
         public bool IsGuestUser => SessionService.IsGuest;
+        public ImageSource PuzzleImage { get; private set; }
         public string LobbyCode { get; private set; } = "Joining...";
         public string HostUsername { get; private set; } = "Loading...";
         public bool IsHost => lobbyState?.hostUsername == SessionService.Username;
@@ -157,6 +161,30 @@ namespace MindWeaveClient.ViewModel.Game
                 HostUsername = newState.hostUsername;
                 CurrentSettings = newState.currentSettingsDto;
 
+                if (newState.currentSettingsDto?.customPuzzleImage != null && newState.currentSettingsDto.customPuzzleImage.Length > 0)
+                {
+                    PuzzleImage = convertBytesToImageSource(newState.currentSettingsDto.customPuzzleImage);
+                }
+                else if (!string.IsNullOrEmpty(newState.puzzleImagePath))
+                {
+                    string rawPath = newState.puzzleImagePath;
+                    string finalPath = rawPath.StartsWith("/") ? rawPath : $"/Resources/Images/Puzzles/{rawPath}";
+                    try
+                    {
+                        PuzzleImage = new BitmapImage(new Uri(finalPath, UriKind.Relative));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceError("Failed to load pre-loaded puzzle image: " + ex.Message);
+                        PuzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative)); // Fallback
+                    }
+                }
+                else
+                {
+                    PuzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+                }
+
+                OnPropertyChanged(nameof(PuzzleImage));
                 var playersToRemove = Players.Except(newState.players).ToList();
                 var playersToAdd = newState.players.Except(Players).ToList();
                 foreach (var p in playersToRemove) Players.Remove(p);
@@ -175,6 +203,32 @@ namespace MindWeaveClient.ViewModel.Game
                     await connectToChatAsync(newState.lobbyId);
                 }
             });
+        }
+
+        private ImageSource convertBytesToImageSource(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0) return null;
+            try
+            {
+                var bitmapImage = new BitmapImage();
+                using (var memStream = new MemoryStream(imageBytes))
+                {
+                    memStream.Position = 0;
+                    bitmapImage.BeginInit();
+                    bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.UriSource = null;
+                    bitmapImage.StreamSource = memStream;
+                    bitmapImage.EndInit();
+                }
+                bitmapImage.Freeze(); 
+                return bitmapImage;
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Failed to convert byte array to ImageSource: " + ex.Message);
+                return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative)); // Fallback
+            }
         }
 
         private void handleMatchFound(string matchId, List<string> playerUsernames)

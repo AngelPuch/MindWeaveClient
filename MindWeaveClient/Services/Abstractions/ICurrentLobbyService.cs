@@ -7,5 +7,7 @@ namespace MindWeaveClient.Services.Abstractions
         void setInitialState(LobbyStateDto initialState);
 
         LobbyStateDto getInitialState();
+
+    
     }
 }

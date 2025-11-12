@@ -27,6 +27,7 @@
       <xs:element minOccurs="0" name="hostUsername" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="lobbyId" nillable="true" type="xs:string" />
       <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="players" nillable="true" type="q2:ArrayOfstring" />
+      <xs:element minOccurs="0" name="puzzleImagePath" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="LobbyStateDto" nillable="true" type="tns:LobbyStateDto" />

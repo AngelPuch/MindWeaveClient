@@ -257,6 +257,9 @@ namespace MindWeaveClient.MatchmakingService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string[] playersField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string puzzleImagePathField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -315,6 +318,19 @@ namespace MindWeaveClient.MatchmakingService {
                 if ((object.ReferenceEquals(this.playersField, value) != true)) {
                     this.playersField = value;
                     this.RaisePropertyChanged("players");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string puzzleImagePath {
+            get {
+                return this.puzzleImagePathField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.puzzleImagePathField, value) != true)) {
+                    this.puzzleImagePathField = value;
+                    this.RaisePropertyChanged("puzzleImagePath");
                 }
             }
         }
