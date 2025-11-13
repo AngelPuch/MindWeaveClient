@@ -14,7 +14,9 @@ namespace MindWeaveClient.ViewModel
         public ImageSource PuzzleImage { get; }
 
         public bool IsUploaded { get; }
-        public string LocalFilePath { get; } 
+        public string LocalFilePath { get; }
+
+        public byte[] PuzzleBytes { get; }
 
         public bool IsSelected
         {
@@ -22,13 +24,14 @@ namespace MindWeaveClient.ViewModel
             set { isSelected = value; OnPropertyChanged(); }
         }
 
-       
-        public PuzzleDisplayInfo(int puzzleId, string name, ImageSource puzzleImage, bool isUploaded, string localFilePath = null)
+
+        public PuzzleDisplayInfo(int puzzleId, string name, ImageSource puzzleImage, bool isUploaded, byte[] puzzleBytes = null, string localFilePath = null)
         {
             this.PuzzleId = puzzleId;
             this.Name = name;
-            this.PuzzleImage = puzzleImage; 
+            this.PuzzleImage = puzzleImage;
             this.IsUploaded = isUploaded;
+            this.PuzzleBytes = puzzleBytes;
             this.LocalFilePath = localFilePath; 
             this.IsSelected = false;
         }
