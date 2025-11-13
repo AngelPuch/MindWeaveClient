@@ -24,7 +24,13 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] imageBytesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string imagePathField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool isUploadedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string nameField;
@@ -43,6 +49,19 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] imageBytes {
+            get {
+                return this.imageBytesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.imageBytesField, value) != true)) {
+                    this.imageBytesField = value;
+                    this.RaisePropertyChanged("imageBytes");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string imagePath {
             get {
                 return this.imagePathField;
@@ -51,6 +70,19 @@ namespace MindWeaveClient.PuzzleManagerService {
                 if ((object.ReferenceEquals(this.imagePathField, value) != true)) {
                     this.imagePathField = value;
                     this.RaisePropertyChanged("imagePath");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool isUploaded {
+            get {
+                return this.isUploadedField;
+            }
+            set {
+                if ((this.isUploadedField.Equals(value) != true)) {
+                    this.isUploadedField = value;
+                    this.RaisePropertyChanged("isUploaded");
                 }
             }
         }

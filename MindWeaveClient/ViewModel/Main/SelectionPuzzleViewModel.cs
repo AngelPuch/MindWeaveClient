@@ -13,6 +13,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media; 
+using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -113,16 +115,29 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     foreach (var pzlDto in puzzlesFromServer)
                     {
-                        string clientImagePath = pzlDto.imagePath;
-                        if (!string.IsNullOrEmpty(clientImagePath) && !clientImagePath.StartsWith("/"))
+                        ImageSource puzzleImage;
+
+                        if (pzlDto.isUploaded && pzlDto.imageBytes != null)
                         {
-                            clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.imagePath}";
+                            puzzleImage = convertBytesToImageSource(pzlDto.imageBytes);
+                        }
+                        else if (pzlDto.isUploaded)
+                        {
+
+                            puzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+                        }
+                        else
+                        {
+                            string clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.imagePath}";
+                            puzzleImage = new BitmapImage(new Uri(clientImagePath, UriKind.Relative));
                         }
 
                         AvailablePuzzles.Add(new PuzzleDisplayInfo(
                             pzlDto.puzzleId,
                             pzlDto.name,
-                            clientImagePath
+                            puzzleImage,
+                            pzlDto.isUploaded,
+                            null 
                         ));
                     }
                     OnPropertyChanged(nameof(AvailablePuzzles));
@@ -130,7 +145,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (Exception ex)
             {
-                dialogService.showError(Lang.ErrorLoadingPuzzles, Lang.ErrorTitle);
+                dialogService.showError(Lang.ErrorLoadingPuzzles + ": " + ex.Message, Lang.ErrorTitle);
             }
             finally
             {
@@ -154,16 +169,27 @@ namespace MindWeaveClient.ViewModel.Main
                     byte[] imageBytes = File.ReadAllBytes(openFileDialog.FileName);
                     string fileName = Path.GetFileName(openFileDialog.FileName);
 
+                    if (imageBytes.Length > 2147483647)
+                    {
+                        dialogService.showError("Image file is too large.", Lang.UploadFailed);
+                        SetBusy(false);
+                        return;
+                    }
+
                     UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
 
                     if (uploadResult.success)
                     {
+                        ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
                         var newPuzzleInfo = new PuzzleDisplayInfo(
                             uploadResult.newPuzzleId,
                             fileName,
-                            openFileDialog.FileName,
+                            puzzleImage, 
+                            true,
                             openFileDialog.FileName 
                         );
+                        
+
                         AvailablePuzzles.Add(newPuzzleInfo);
                         executeSelectPuzzle(newPuzzleInfo);
 
@@ -176,7 +202,7 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 catch (Exception ex)
                 {
-                    dialogService.showError(Lang.ErrorUploadingImage, Lang.ErrorTitle);
+                    dialogService.showError(Lang.ErrorUploadingImage + ": " + ex.Message, Lang.ErrorTitle);
                 }
                 finally
                 {
@@ -195,15 +221,14 @@ namespace MindWeaveClient.ViewModel.Main
             SetBusy(true);
 
             byte[] puzzleBytes = null;
-            int? puzzleId = null;
+            int? puzzleId = SelectedPuzzle.PuzzleId;
 
-            if (SelectedPuzzle.IsUploaded)
+            
+            if (SelectedPuzzle.IsUploaded && !string.IsNullOrEmpty(SelectedPuzzle.LocalFilePath))
             {
-               
                 try
                 {
                     puzzleBytes = File.ReadAllBytes(SelectedPuzzle.LocalFilePath);
-                    puzzleId = SelectedPuzzle.PuzzleId; 
                 }
                 catch (Exception ex)
                 {
@@ -212,16 +237,13 @@ namespace MindWeaveClient.ViewModel.Main
                     return;
                 }
             }
-            else
-            {
-                
-                puzzleId = SelectedPuzzle.PuzzleId;
-            }
+
 
             var settings = new LobbySettingsDto
             {
-                preloadedPuzzleId = SelectedPuzzle.PuzzleId,
-                customPuzzleImage = null
+                preloadedPuzzleId = puzzleId,
+                customPuzzleImage = puzzleBytes,
+                difficultyId = 1
             };
 
             try
@@ -242,7 +264,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (Exception ex)
             {
-                dialogService.showError(Lang.FailedToCreateLobby, Lang.ErrorTitle);
+                dialogService.showError(Lang.FailedToCreateLobby + ": " + ex.Message, Lang.ErrorTitle);
                 matchmakingService.disconnect();
             }
             finally
@@ -251,9 +273,40 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
+        private ImageSource convertBytesToImageSource(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0) return null;
+            try
+            {
+                var bitmapImage = new BitmapImage();
+                using (var memStream = new MemoryStream(imageBytes))
+                {
+                    memStream.Position = 0;
+                    bitmapImage.BeginInit();
+                    bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.UriSource = null;
+                    bitmapImage.StreamSource = memStream;
+                    bitmapImage.EndInit();
+                }
+                bitmapImage.Freeze(); 
+                return bitmapImage;
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Failed to convert byte array to ImageSource: " + ex.Message);
+                return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+            }
+        }
+
+
+
         private void executeCancel()
         {
             navigationService.goBack();
         }
     }
+
+
+
 }

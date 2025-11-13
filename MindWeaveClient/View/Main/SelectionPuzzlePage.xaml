@@ -26,7 +26,7 @@
                                 <DropShadowEffect ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
                             </Border.Effect>
                             <Grid>
-                                <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                <Image Source="{Binding PuzzleImage}" Stretch="UniformToFill"/>
                                 <Border Background="#AA000000" VerticalAlignment="Bottom" Padding="5">
                                     <TextBlock Text="{Binding Name}" Foreground="White" TextTrimming="CharacterEllipsis" TextAlignment="Center"/>
                                 </Border>

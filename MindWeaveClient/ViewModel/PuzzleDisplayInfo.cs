@@ -1,4 +1,7 @@
-﻿namespace MindWeaveClient.ViewModel
+﻿using System;
+using System.Windows.Media; // <-- ¡ASEGÚRATE DE QUE ESTE USING ESTÉ PRESENTE!
+
+namespace MindWeaveClient.ViewModel
 {
     public class PuzzleDisplayInfo : BaseViewModel
     {
@@ -6,7 +9,9 @@
 
         public int PuzzleId { get; }
         public string Name { get; }
-        public string ImagePath { get; }
+
+
+        public ImageSource PuzzleImage { get; }
 
         public bool IsUploaded { get; }
         public string LocalFilePath { get; } 
@@ -17,23 +22,15 @@
             set { isSelected = value; OnPropertyChanged(); }
         }
 
-        public PuzzleDisplayInfo(int puzzleId, string name, string imagePath)
+       
+        public PuzzleDisplayInfo(int puzzleId, string name, ImageSource puzzleImage, bool isUploaded, string localFilePath = null)
         {
             this.PuzzleId = puzzleId;
             this.Name = name;
-            this.ImagePath = imagePath;
-            this.IsSelected = false;
-            this.IsUploaded = false;
-            this.LocalFilePath = null;
-        }
-        public PuzzleDisplayInfo(int puzzleId, string name, string uiImagePath, string localFilePath)
-        {
-            this.PuzzleId = puzzleId;
-            this.Name = name;
-            this.ImagePath = uiImagePath;
+            this.PuzzleImage = puzzleImage; 
+            this.IsUploaded = isUploaded;
             this.LocalFilePath = localFilePath; 
             this.IsSelected = false;
-            this.IsUploaded = true; 
         }
     }
 }
