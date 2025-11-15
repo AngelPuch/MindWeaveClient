@@ -210,6 +210,242 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PuzzleDefinitionDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.P" +
+        "uzzle")]
+    [System.SerializableAttribute()]
+    public partial class PuzzleDefinitionDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] fullImageBytesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto[] piecesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int puzzleHeightField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int puzzleWidthField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] fullImageBytes {
+            get {
+                return this.fullImageBytesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.fullImageBytesField, value) != true)) {
+                    this.fullImageBytesField = value;
+                    this.RaisePropertyChanged("fullImageBytes");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto[] pieces {
+            get {
+                return this.piecesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.piecesField, value) != true)) {
+                    this.piecesField = value;
+                    this.RaisePropertyChanged("pieces");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int puzzleHeight {
+            get {
+                return this.puzzleHeightField;
+            }
+            set {
+                if ((this.puzzleHeightField.Equals(value) != true)) {
+                    this.puzzleHeightField = value;
+                    this.RaisePropertyChanged("puzzleHeight");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int puzzleWidth {
+            get {
+                return this.puzzleWidthField;
+            }
+            set {
+                if ((this.puzzleWidthField.Equals(value) != true)) {
+                    this.puzzleWidthField = value;
+                    this.RaisePropertyChanged("puzzleWidth");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PuzzlePieceDefinitionDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.P" +
+        "uzzle")]
+    [System.SerializableAttribute()]
+    public partial class PuzzlePieceDefinitionDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double correctXField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double correctYField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int heightField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int pieceIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int sourceXField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int sourceYField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int widthField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double correctX {
+            get {
+                return this.correctXField;
+            }
+            set {
+                if ((this.correctXField.Equals(value) != true)) {
+                    this.correctXField = value;
+                    this.RaisePropertyChanged("correctX");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double correctY {
+            get {
+                return this.correctYField;
+            }
+            set {
+                if ((this.correctYField.Equals(value) != true)) {
+                    this.correctYField = value;
+                    this.RaisePropertyChanged("correctY");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int height {
+            get {
+                return this.heightField;
+            }
+            set {
+                if ((this.heightField.Equals(value) != true)) {
+                    this.heightField = value;
+                    this.RaisePropertyChanged("height");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int pieceId {
+            get {
+                return this.pieceIdField;
+            }
+            set {
+                if ((this.pieceIdField.Equals(value) != true)) {
+                    this.pieceIdField = value;
+                    this.RaisePropertyChanged("pieceId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int sourceX {
+            get {
+                return this.sourceXField;
+            }
+            set {
+                if ((this.sourceXField.Equals(value) != true)) {
+                    this.sourceXField = value;
+                    this.RaisePropertyChanged("sourceX");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int sourceY {
+            get {
+                return this.sourceYField;
+            }
+            set {
+                if ((this.sourceYField.Equals(value) != true)) {
+                    this.sourceYField = value;
+                    this.RaisePropertyChanged("sourceY");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int width {
+            get {
+                return this.widthField;
+            }
+            set {
+                if ((this.widthField.Equals(value) != true)) {
+                    this.widthField = value;
+                    this.RaisePropertyChanged("width");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="PuzzleManagerService.IPuzzleManager")]
     public interface IPuzzleManager {
@@ -225,6 +461,12 @@ namespace MindWeaveClient.PuzzleManagerService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImage", ReplyAction="http://tempuri.org/IPuzzleManager/uploadPuzzleImageResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.UploadResultDto> uploadPuzzleImageAsync(string username, byte[] imageBytes, string fileName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition", ReplyAction="http://tempuri.org/IPuzzleManager/GetPuzzleDefinitionResponse")]
+        MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto GetPuzzleDefinition(int puzzleId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition", ReplyAction="http://tempuri.org/IPuzzleManager/GetPuzzleDefinitionResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto> GetPuzzleDefinitionAsync(int puzzleId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -268,6 +510,14 @@ namespace MindWeaveClient.PuzzleManagerService {
         
         public System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.UploadResultDto> uploadPuzzleImageAsync(string username, byte[] imageBytes, string fileName) {
             return base.Channel.uploadPuzzleImageAsync(username, imageBytes, fileName);
+        }
+        
+        public MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto GetPuzzleDefinition(int puzzleId) {
+            return base.Channel.GetPuzzleDefinition(puzzleId);
+        }
+        
+        public System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto> GetPuzzleDefinitionAsync(int puzzleId) {
+            return base.Channel.GetPuzzleDefinitionAsync(puzzleId);
         }
     }
 }

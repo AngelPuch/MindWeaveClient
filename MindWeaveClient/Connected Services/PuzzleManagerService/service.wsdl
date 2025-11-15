@@ -53,6 +53,12 @@
   <wsdl:message name="IPuzzleManager_uploadPuzzleImage_OutputMessage">
     <wsdl:part name="parameters" element="tns:uploadPuzzleImageResponse" />
   </wsdl:message>
+  <wsdl:message name="IPuzzleManager_GetPuzzleDefinition_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPuzzleDefinition" />
+  </wsdl:message>
+  <wsdl:message name="IPuzzleManager_GetPuzzleDefinition_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPuzzleDefinitionResponse" />
+  </wsdl:message>
   <wsdl:portType name="IPuzzleManager">
     <wsdl:operation name="getAvailablePuzzles">
       <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/getAvailablePuzzles" message="tns:IPuzzleManager_getAvailablePuzzles_InputMessage" />
@@ -61,6 +67,10 @@
     <wsdl:operation name="uploadPuzzleImage">
       <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImage" message="tns:IPuzzleManager_uploadPuzzleImage_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImageResponse" message="tns:IPuzzleManager_uploadPuzzleImage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPuzzleDefinition">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition" message="tns:IPuzzleManager_GetPuzzleDefinition_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinitionResponse" message="tns:IPuzzleManager_GetPuzzleDefinition_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IPuzzleManager" type="tns:IPuzzleManager">
@@ -78,6 +88,15 @@
     </wsdl:operation>
     <wsdl:operation name="uploadPuzzleImage">
       <soap12:operation soapAction="http://tempuri.org/IPuzzleManager/uploadPuzzleImage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPuzzleDefinition">
+      <soap12:operation soapAction="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

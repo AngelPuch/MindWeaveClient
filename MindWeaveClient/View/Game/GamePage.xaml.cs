@@ -22,7 +22,6 @@ namespace MindWeaveClient.View.Game
             InitializeComponent();
         }
 
-
         private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pieceImage = sender as Image;

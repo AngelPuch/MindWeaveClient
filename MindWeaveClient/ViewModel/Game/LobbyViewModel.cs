@@ -233,8 +233,10 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void HandleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
-
-            navigationService.navigateTo<GamePage>(); 
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                navigationService.navigateTo<GamePage>();
+            });
         }
 
         private void handleKickedOrFailed(string reason)

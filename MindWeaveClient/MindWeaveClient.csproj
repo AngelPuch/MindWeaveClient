@@ -422,6 +422,9 @@
     <None Include="Connected Services\ProfileService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\PuzzleManagerService\MindWeaveClient.PuzzleManagerService.PuzzleInfoDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
