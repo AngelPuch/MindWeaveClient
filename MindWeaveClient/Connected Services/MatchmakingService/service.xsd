@@ -112,8 +112,10 @@
   <xs:element name="matchFound">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="matchId" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="lobbyCode" nillable="true" type="xs:string" />
         <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="players" nillable="true" type="q7:ArrayOfstring" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" minOccurs="0" name="settings" nillable="true" type="q8:LobbySettingsDto" />
+        <xs:element minOccurs="0" name="puzzleImagePath" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -134,7 +136,7 @@
   <xs:element name="onGameStarted">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" minOccurs="0" name="puzzleDefinition" nillable="true" type="q8:PuzzleDefinitionDto" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" minOccurs="0" name="puzzleDefinition" nillable="true" type="q9:PuzzleDefinitionDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

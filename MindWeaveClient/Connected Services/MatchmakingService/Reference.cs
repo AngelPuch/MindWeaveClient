@@ -809,7 +809,7 @@ namespace MindWeaveClient.MatchmakingService {
         void updateLobbyState(MindWeaveClient.MatchmakingService.LobbyStateDto lobbyStateDto);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/matchFound")]
-        void matchFound(string matchId, string[] players);
+        void matchFound(string lobbyCode, string[] players, MindWeaveClient.MatchmakingService.LobbySettingsDto settings, string puzzleImagePath);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/lobbyCreationFailed")]
         void lobbyCreationFailed(string reason);

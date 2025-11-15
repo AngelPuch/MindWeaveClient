@@ -14,6 +14,10 @@ using System;
 using System.Threading;
 using System.Windows;
 using NavigationService = MindWeaveClient.Utilities.Implementations.NavigationService;
+using MindWeaveClient.Services.Callbacks;
+using MindWeaveClient.MatchmakingService;
+using MindWeaveClient.SocialManagerService;
+using MindWeaveClient.ChatManagerService;
 
 namespace MindWeaveClient
 {
@@ -43,6 +47,15 @@ namespace MindWeaveClient
 
         private void configureServices(IServiceCollection services)
         {
+            services.AddSingleton<IChatManagerCallback, ChatCallbackHandler>();
+            services.AddSingleton<ISocialManagerCallback, SocialCallbackHandler>();
+            services.AddSingleton<IMatchmakingManagerCallback>(provider =>
+                new MatchmakingCallbackHandler(
+                    provider.GetRequiredService<ICurrentMatchService>(),
+                    provider.GetRequiredService<IDialogService>()
+                )
+            );
+
             services.AddSingleton<IAuthenticationService, MindWeaveClient.Services.Implementations.AuthenticationService>();
             services.AddSingleton<IProfileService, MindWeaveClient.Services.Implementations.ProfileService>();
             services.AddSingleton<IMatchmakingService, MindWeaveClient.Services.Implementations.MatchmakingService>();
@@ -54,12 +67,9 @@ namespace MindWeaveClient
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
-            services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
             services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
             services.AddSingleton<IAudioService, AudioService>();
-
-            
-
+            services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
 
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();

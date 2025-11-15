@@ -121,7 +121,7 @@ namespace MindWeaveClient.ViewModel.Game
         private void subscribeToServiceEvents()
         {
             matchmakingService.OnLobbyStateUpdated += handleLobbyStateUpdated;
-            matchmakingService.OnMatchFound += handleMatchFound;
+            matchmakingService.OnMatchFound += HandleMatchFound;
             matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
             matchmakingService.OnKicked += handleKickedOrFailed;
             chatService.OnMessageReceived += onChatMessageReceived;
@@ -135,7 +135,7 @@ namespace MindWeaveClient.ViewModel.Game
             try
             {
                 matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-                matchmakingService.OnMatchFound -= handleMatchFound;
+                matchmakingService.OnMatchFound -= HandleMatchFound;
                 matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
                 matchmakingService.OnKicked -= handleKickedOrFailed;
                 chatService.OnMessageReceived -= onChatMessageReceived;
@@ -231,18 +231,10 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private void handleMatchFound(string matchId, List<string> playerUsernames)
+        private void HandleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
-            Application.Current.Dispatcher.Invoke(async () =>
-            {
-                if (playerUsernames != null && playerUsernames.Contains(SessionService.Username))
-                {
-                    SetBusy(false);
-                    await cleanupAndUnsubscribeAsync();
-                    currentMatchService.setMatchId(matchId);
-                    navigationService.navigateTo<GamePage>();
-                }
-            });
+
+            navigationService.navigateTo<GamePage>(); 
         }
 
         private void handleKickedOrFailed(string reason)
@@ -322,11 +314,11 @@ namespace MindWeaveClient.ViewModel.Game
 
         private async Task executeStartGame()
         {
-            if (Players.Count != 4)
-            {
-                dialogService.showError(Lang.Need4PlayersError, Lang.ErrorTitle);
-                return;
-            }
+           // if (Players.Count != 4)
+           // {
+            //    dialogService.showError(Lang.Need4PlayersError, Lang.ErrorTitle);
+           //     return;
+          // }
 
             SetBusy(true);
             try

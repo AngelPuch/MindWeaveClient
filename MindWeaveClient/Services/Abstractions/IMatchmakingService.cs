@@ -8,7 +8,7 @@ namespace MindWeaveClient.Services.Abstractions
     public interface IMatchmakingService
     {
         event Action<LobbyStateDto> OnLobbyStateUpdated;
-        event Action<string, List<string>> OnMatchFound;
+        event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
         event Action<string> OnLobbyCreationFailed;
         event Action<string> OnKicked;
 

@@ -1,7 +1,7 @@
 ﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
-using MindWeaveClient.Services.Callbacks;
+using MindWeaveClient.Services.Callbacks; 
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
@@ -12,14 +12,21 @@ namespace MindWeaveClient.Services.Implementations
     public class MatchmakingService : IMatchmakingService
     {
         private MatchmakingManagerClient proxy;
-        private MatchmakingCallbackHandler callbackHandler;
+        private IMatchmakingManagerCallback callbackHandler; 
         private InstanceContext instanceContext;
 
+       
         public event Action<LobbyStateDto> OnLobbyStateUpdated;
-        public event Action<string, List<string>> OnMatchFound;
+        public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
         public event Action<string> OnLobbyCreationFailed;
         public event Action<string> OnKicked;
 
+        public MatchmakingService(IMatchmakingManagerCallback callbackHandler)
+        {
+            this.callbackHandler = callbackHandler;
+        }
+
+       
         private void ensureClientIsCreated()
         {
             if (proxy != null && proxy.State != CommunicationState.Closed)
@@ -31,36 +38,47 @@ namespace MindWeaveClient.Services.Implementations
                 proxy.Abort();
             }
 
-            callbackHandler = new MatchmakingCallbackHandler();
+            
             instanceContext = new InstanceContext(callbackHandler);
             proxy = new MatchmakingManagerClient(instanceContext);
 
-            callbackHandler.OnLobbyStateUpdatedEvent += handleLobbyStateUpdated;
-            callbackHandler.OnMatchFoundEvent += handleMatchFound;
-            callbackHandler.OnLobbyCreationFailedEvent += handleLobbyCreationFailed;
-            callbackHandler.OnKickedEvent += handleKicked;
+           
+            if (callbackHandler is MatchmakingCallbackHandler handler)
+            {
+                handler.OnLobbyStateUpdatedEvent += handleLobbyStateUpdated;
+                handler.OnMatchFoundEvent += handleMatchFound; 
+                handler.OnLobbyCreationFailedEvent += handleLobbyCreationFailed;
+                handler.OnKickedEvent += handleKicked;
+            }
         }
+
         private void handleLobbyStateUpdated(LobbyStateDto state)
         {
             OnLobbyStateUpdated?.Invoke(state);
         }
-        private void handleMatchFound(string matchId, List<string> players)
+
+        private void handleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
-            OnMatchFound?.Invoke(matchId, players);
+            OnMatchFound?.Invoke(lobbyCode, players, settings, puzzleImagePath);
         }
+
         private void handleLobbyCreationFailed(string reason)
         {
             OnLobbyCreationFailed?.Invoke(reason);
         }
+
         private void handleKicked(string reason)
         {
             OnKicked?.Invoke(reason);
         }
+
+      
         public async Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings)
         {
             ensureClientIsCreated();
             return await executeSafeAsync(async () => await proxy.createLobbyAsync(hostUsername, settings));
         }
+
         public async Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request)
         {
             ensureClientIsCreated();
@@ -72,6 +90,7 @@ namespace MindWeaveClient.Services.Implementations
             }
             return new GuestJoinServiceResultDto(wcfResult, true);
         }
+
         public async Task joinLobbyAsync(string username, string lobbyCode)
         {
             ensureClientIsCreated();
@@ -89,26 +108,32 @@ namespace MindWeaveClient.Services.Implementations
             });
             disconnect();
         }
+
         public async Task startGameAsync(string hostUsername, string lobbyId)
         {
             await executeOneWaySafeAsync(() => proxy.startGame(hostUsername, lobbyId));
         }
+
         public async Task kickPlayerAsync(string hostUsername, string playerToKick, string lobbyId)
         {
             await executeOneWaySafeAsync(() => proxy.kickPlayer(hostUsername, playerToKick, lobbyId));
         }
+
         public async Task inviteToLobbyAsync(string inviter, string invited, string lobbyId)
         {
             await executeOneWaySafeAsync(() => proxy.inviteToLobby(inviter, invited, lobbyId));
         }
+
         public async Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId)
         {
             await executeOneWaySafeAsync(() => proxy.changeDifficulty(hostUsername, lobbyId, newDifficultyId));
         }
+
         public async Task inviteGuestByEmailAsync(GuestInvitationDto invitationData)
         {
             await executeOneWaySafeAsync(() => proxy.inviteGuestByEmail(invitationData));
         }
+
         public void disconnect()
         {
             if (proxy == null) return;
@@ -117,21 +142,20 @@ namespace MindWeaveClient.Services.Implementations
                 if (proxy.State == CommunicationState.Opened) proxy.Close();
                 else proxy.Abort();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 proxy.Abort();
             }
             finally
             {
-                if (callbackHandler != null)
+                if (callbackHandler != null && callbackHandler is MatchmakingCallbackHandler handler)
                 {
-                    callbackHandler.OnLobbyStateUpdatedEvent -= handleLobbyStateUpdated;
-                    callbackHandler.OnMatchFoundEvent -= handleMatchFound;
-                    callbackHandler.OnLobbyCreationFailedEvent -= handleLobbyCreationFailed;
-                    callbackHandler.OnKickedEvent -= handleKicked;
+                    handler.OnLobbyStateUpdatedEvent -= handleLobbyStateUpdated;
+                    handler.OnMatchFoundEvent -= handleMatchFound;
+                    handler.OnLobbyCreationFailedEvent -= handleLobbyCreationFailed;
+                    handler.OnKickedEvent -= handleKicked;
                 }
                 proxy = null;
-                callbackHandler = null;
                 instanceContext = null;
             }
         }
@@ -170,11 +194,14 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
+        
+        
         public async Task sendPiecePlacedAsync(int pieceId)
         {
             ensureClientIsCreated();
             await executeSafeTaskAsync(async () => await proxy.sendPiecePlacedAsync(pieceId));
         }
+        
 
         private async Task executeSafeTaskAsync(Func<Task> call)
         {
@@ -184,7 +211,7 @@ namespace MindWeaveClient.Services.Implementations
             }
             try
             {
-                await call.Invoke(); 
+                await call.Invoke();
             }
             catch (Exception)
             {
@@ -192,6 +219,5 @@ namespace MindWeaveClient.Services.Implementations
                 throw;
             }
         }
-
     }
 }
