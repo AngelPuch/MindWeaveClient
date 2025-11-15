@@ -60,25 +60,30 @@ namespace MindWeaveClient.ViewModel.Game
             }
 
             PiecesCollection.Clear();
+            Random randomGenerator = new Random();
+            double randomX = randomGenerator.Next(0, 300); 
+            double randomY = randomGenerator.Next(0, 300); 
             foreach (var pieceDef in puzzleDto.pieces)
             {
                 var pieceViewModel = new PuzzlePieceViewModel(
-                    fullImage, pieceDef.pieceId,
-                    pieceDef.sourceX, pieceDef.sourceY,
-                    pieceDef.width, pieceDef.height,
-                    pieceDef.correctX, pieceDef.correctY
-                );
+                fullImage, pieceDef.pieceId,
+                pieceDef.sourceX, pieceDef.sourceY,
+                pieceDef.width, pieceDef.height,
+                pieceDef.correctX, pieceDef.correctY,
+                randomX, 
+                randomY
+        );
                 PiecesCollection.Add(pieceViewModel);
             }
         }
 
-        private void executeSendPiecePlaced(object pieceIdObject)
+        private async void executeSendPiecePlaced(object pieceIdObject)
         {
             if (pieceIdObject is int pieceId)
             {
                 try
                 {
-                    matchmakingService.sendPiecePlaced(pieceId);
+                    await matchmakingService.sendPiecePlacedAsync(pieceId);
                 }
                 catch (Exception ex)
                 {

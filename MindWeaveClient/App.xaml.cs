@@ -10,7 +10,6 @@ using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Authentication;
 using MindWeaveClient.ViewModel.Game;
 using MindWeaveClient.ViewModel.Main;
-using MindWeaveClient.ViewModel.Puzzle;
 using System;
 using System.Threading;
 using System.Windows;

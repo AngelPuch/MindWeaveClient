@@ -165,6 +165,7 @@
     <Compile Include="ViewModel\Authentication\VerificationViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\Game\ChatMessageDisplayViewModel.cs" />
+    <Compile Include="ViewModel\Game\GameViewModel.cs" />
     <Compile Include="ViewModel\Game\LobbyViewModel.cs" />
     <Compile Include="ViewModel\Main\EditProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
@@ -173,8 +174,8 @@
     <Compile Include="ViewModel\Main\SelectionPuzzleViewModel.cs" />
     <Compile Include="ViewModel\Main\SettingsViewModel.cs" />
     <Compile Include="ViewModel\Main\SocialViewModel.cs" />
-    <Compile Include="ViewModel\PuzzleDisplayInfo.cs" />
-    <Compile Include="ViewModel\PuzzlePieceViewModel.cs" />
+    <Compile Include="ViewModel\Puzzle\PuzzleDisplayInfo.cs" />
+    <Compile Include="ViewModel\Puzzle\PuzzlePieceViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
@@ -381,6 +382,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Puzzle.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">

@@ -170,17 +170,28 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        public void sendPiecePlaced(int pieceId)
+        public async Task sendPiecePlacedAsync(int pieceId)
         {
+            ensureClientIsCreated();
+            await executeSafeTaskAsync(async () => await proxy.sendPiecePlacedAsync(pieceId));
+        }
+
+        private async Task executeSafeTaskAsync(Func<Task> call)
+        {
+            if (proxy == null || proxy.State == CommunicationState.Faulted)
+            {
+                throw new InvalidOperationException(Lang.ErrorMsgServerOffline);
+            }
             try
             {
-                // Esta llamada fallará hasta que hagas el Paso 3.3
-                _client.sendPiecePlacedAsync(pieceId); // Usamos Async para no bloquear
+                await call.Invoke(); 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _dialogService.showError(ex.Message, "Error");
+                proxy.Abort(); proxy = null;
+                throw;
             }
         }
+
     }
 }

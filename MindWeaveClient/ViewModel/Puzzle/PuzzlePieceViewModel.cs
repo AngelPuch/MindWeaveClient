@@ -43,7 +43,8 @@ namespace MindWeaveClient.ViewModel
             BitmapSource fullImage, 
             int id,
             int sourceX, int sourceY, int width, int height, 
-            double correctX, double correctY)
+            double correctX, double correctY,
+            double initialX, double initialY)
         {
             this.PieceId = id;
             this.CorrectPosition = new Point(correctX, correctY);
@@ -61,4 +62,4 @@ namespace MindWeaveClient.ViewModel
             this.ZIndex = 0;
         }
     }
-}
+} 
