@@ -31,5 +31,7 @@ namespace MindWeaveClient.Services.Abstractions
         Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId);
 
         void disconnect();
+
+        void sendPiecePlaced(int pieceId);
     }
 }

@@ -10,6 +10,7 @@ using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Authentication;
 using MindWeaveClient.ViewModel.Game;
 using MindWeaveClient.ViewModel.Main;
+using MindWeaveClient.ViewModel.Puzzle;
 using System;
 using System.Threading;
 using System.Windows;
@@ -58,6 +59,9 @@ namespace MindWeaveClient
             services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
             services.AddSingleton<IAudioService, AudioService>();
 
+            
+
+
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();
             services.AddTransient<GuestJoinValidator>();
@@ -79,6 +83,7 @@ namespace MindWeaveClient
             services.AddTransient<SelectionPuzzleViewModel>();
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<SocialViewModel>();
+            services.AddTransient<GameViewModel>();
 
             services.AddTransient<LoginPage>();
             services.AddTransient<CreateAccountPage>();
@@ -92,6 +97,7 @@ namespace MindWeaveClient
             services.AddTransient<SelectAvatarPage>();
             services.AddTransient<SelectionPuzzlePage>();
             services.AddTransient<SocialPage>();
+            services.AddTransient<GamePage>();
 
             services.AddTransient<AuthenticationWindow>();
             services.AddTransient<MainWindow>();

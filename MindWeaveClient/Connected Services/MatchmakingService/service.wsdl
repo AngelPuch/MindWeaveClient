@@ -40,6 +40,7 @@
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IMatchmakingManager_createLobby_InputMessage">
@@ -75,6 +76,12 @@
   <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_OutputMessage">
     <wsdl:part name="parameters" element="tns:joinLobbyAsGuestResponse" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_sendPiecePlaced_InputMessage">
+    <wsdl:part name="parameters" element="tns:sendPiecePlaced" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_sendPiecePlaced_OutputMessage">
+    <wsdl:part name="parameters" element="tns:sendPiecePlacedResponse" />
+  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_updateLobbyState_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:updateLobbyState" />
   </wsdl:message>
@@ -86,6 +93,9 @@
   </wsdl:message>
   <wsdl:message name="IMatchmakingManager_kickedFromLobby_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:kickedFromLobby" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onGameStarted_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onGameStarted" />
   </wsdl:message>
   <wsdl:portType name="IMatchmakingManager">
     <wsdl:operation name="createLobby">
@@ -117,6 +127,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest" message="tns:IMatchmakingManager_joinLobbyAsGuest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse" message="tns:IMatchmakingManager_joinLobbyAsGuest_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="sendPiecePlaced">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/sendPiecePlaced" message="tns:IMatchmakingManager_sendPiecePlaced_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/sendPiecePlacedResponse" message="tns:IMatchmakingManager_sendPiecePlaced_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/updateLobbyState" message="tns:IMatchmakingManager_updateLobbyState_OutputCallbackMessage" />
     </wsdl:operation>
@@ -128,6 +142,9 @@
     </wsdl:operation>
     <wsdl:operation name="kickedFromLobby">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/kickedFromLobby" message="tns:IMatchmakingManager_kickedFromLobby_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onGameStarted">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onGameStarted" message="tns:IMatchmakingManager_onGameStarted_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
@@ -194,6 +211,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="sendPiecePlaced">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/sendPiecePlaced" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/updateLobbyState" style="document" />
       <wsdl:output>
@@ -214,6 +240,12 @@
     </wsdl:operation>
     <wsdl:operation name="kickedFromLobby">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/kickedFromLobby" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onGameStarted">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onGameStarted" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

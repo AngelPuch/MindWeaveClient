@@ -1,4 +1,6 @@
 ﻿
+using MindWeaveClient.MatchmakingService;
+
 namespace MindWeaveClient.Services.Abstractions
 {
     public interface ICurrentMatchService
@@ -6,5 +8,8 @@ namespace MindWeaveClient.Services.Abstractions
         void setMatchId(string matchId);
 
         string getMatchId();
+
+        PuzzleDefinitionDto getCurrentPuzzle();
+        void setPuzzle(PuzzleDefinitionDto puzzle);
     }
 }

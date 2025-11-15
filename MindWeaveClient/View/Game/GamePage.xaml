@@ -13,6 +13,7 @@
         <SolidColorBrush x:Key="Player2Color" Color="#E74C3C"/>
         <SolidColorBrush x:Key="Player3Color" Color="#2ECC71"/>
         <SolidColorBrush x:Key="Player4Color" Color="#F1C40F"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#85C1E9"/>
     </Page.Resources>
 
     <Grid>
@@ -26,58 +27,94 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Top player list -->
+            <!-- TOP PLAYER LIST -->
             <Border Grid.Row="0" Background="#A52E3A4E" Margin="20,20,20,0" CornerRadius="15">
                 <Border.Effect>
                     <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
                 </Border.Effect>
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+
                     <Border Background="#2E3A4E" BorderBrush="{StaticResource Player1Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="30" Height="30" Fill="{StaticResource Player1Color}"/>
                             <TextBlock Text="Hyelo" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Border>
+
                     <Border Background="#2E3A4E" BorderBrush="{StaticResource Player2Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="30" Height="30" Fill="{StaticResource Player2Color}"/>
                             <TextBlock Text="Puch" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Border>
+
                     <Border Background="#2E3A4E" BorderBrush="{StaticResource Player3Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="30" Height="30" Fill="{StaticResource Player3Color}"/>
                             <TextBlock Text="NoobMaster69" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Border>
+
                     <Border Background="#2E3A4E" BorderBrush="{StaticResource Player4Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="30" Height="30" Fill="{StaticResource Player4Color}"/>
                             <TextBlock Text="Xca Rodri" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Border>
+
                 </StackPanel>
             </Border>
 
-            <!-- Main content area -->
+            <!-- MAIN AREA -->
             <Grid Grid.Row="1" Margin="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="280"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Game board -->
+                <!-- GAME BOARD (PUZZLE AREA) -->
                 <Border Grid.Column="0" Background="#A52E3A4E" CornerRadius="15">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
                     </Border.Effect>
-                    <TextBlock Text="[ Game Board / Puzzle Area ]"
-                               Foreground="Gray" FontSize="30"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <!-- ItemsControl con Canvas y piezas movibles -->
+                    <ItemsControl ItemsSource="{Binding PiecesCollection}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas Width="{Binding PuzzleWidth}"
+                                        Height="{Binding PuzzleHeight}"
+                                        Background="#222"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding PieceImage}"
+                                       Width="{Binding PieceImage.Width}"
+                                       Height="{Binding PieceImage.Height}"
+                                       Stretch="Fill"
+                                       MouseLeftButtonDown="Piece_MouseLeftButtonDown"
+                                       MouseLeftButtonUp="Piece_MouseLeftButtonUp"
+                                       MouseMove="Piece_MouseMove"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                <Setter Property="Panel.ZIndex" Value="{Binding ZIndex}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+
+                    </ItemsControl>
                 </Border>
 
-                <!-- Right sidebar -->
+                <!-- RIGHT SIDEBAR -->
                 <StackPanel Grid.Column="1" Margin="20,0,0,0">
+
                     <Border Background="#A52E3A4E" CornerRadius="15" Padding="20" Margin="0,0,0,10">
                         <Border.Effect>
                             <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
@@ -101,8 +138,10 @@
                             </Viewbox>
                         </StackPanel>
                     </Border>
+
                 </StackPanel>
             </Grid>
+
         </Grid>
     </Grid>
 </Page>

@@ -169,5 +169,18 @@ namespace MindWeaveClient.Services.Implementations
                 throw;
             }
         }
+
+        public void sendPiecePlaced(int pieceId)
+        {
+            try
+            {
+                // Esta llamada fallará hasta que hagas el Paso 3.3
+                _client.sendPiecePlacedAsync(pieceId); // Usamos Async para no bloquear
+            }
+            catch (Exception ex)
+            {
+                _dialogService.showError(ex.Message, "Error");
+            }
+        }
     }
 }
