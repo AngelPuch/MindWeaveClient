@@ -53,11 +53,11 @@
   <wsdl:message name="IPuzzleManager_uploadPuzzleImage_OutputMessage">
     <wsdl:part name="parameters" element="tns:uploadPuzzleImageResponse" />
   </wsdl:message>
-  <wsdl:message name="IPuzzleManager_GetPuzzleDefinition_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetPuzzleDefinition" />
+  <wsdl:message name="IPuzzleManager_getPuzzleDefinition_InputMessage">
+    <wsdl:part name="parameters" element="tns:getPuzzleDefinition" />
   </wsdl:message>
-  <wsdl:message name="IPuzzleManager_GetPuzzleDefinition_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetPuzzleDefinitionResponse" />
+  <wsdl:message name="IPuzzleManager_getPuzzleDefinition_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getPuzzleDefinitionResponse" />
   </wsdl:message>
   <wsdl:portType name="IPuzzleManager">
     <wsdl:operation name="getAvailablePuzzles">
@@ -68,9 +68,9 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImage" message="tns:IPuzzleManager_uploadPuzzleImage_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImageResponse" message="tns:IPuzzleManager_uploadPuzzleImage_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetPuzzleDefinition">
-      <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition" message="tns:IPuzzleManager_GetPuzzleDefinition_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinitionResponse" message="tns:IPuzzleManager_GetPuzzleDefinition_OutputMessage" />
+    <wsdl:operation name="getPuzzleDefinition">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinition" message="tns:IPuzzleManager_getPuzzleDefinition_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinitionResponse" message="tns:IPuzzleManager_getPuzzleDefinition_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IPuzzleManager" type="tns:IPuzzleManager">
@@ -95,8 +95,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetPuzzleDefinition">
-      <soap12:operation soapAction="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition" style="document" />
+    <wsdl:operation name="getPuzzleDefinition">
+      <soap12:operation soapAction="http://tempuri.org/IPuzzleManager/getPuzzleDefinition" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -111,7 +111,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://localhost:8734/MindWeaveServer/Services/PuzzleManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>ALDO\tonyz</Upn>
+          <Upn>LAPTOP\Dell</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

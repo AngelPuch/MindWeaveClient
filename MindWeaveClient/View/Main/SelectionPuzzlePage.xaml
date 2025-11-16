@@ -105,6 +105,22 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" 
+                                VerticalAlignment="Center" HorizontalAlignment="Left"
+                                Margin="0">
+                        <TextBlock Text="{x:Static lang:Lang.LobbyLbDifficulty}" 
+                                   FontWeight="SemiBold" FontSize="16" 
+                                   Foreground="#2c3e50" VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
+
+                        <ComboBox SelectedIndex="{Binding SelectedDifficultyIndex, Mode=TwoWay}"
+                                  Width="180" VerticalAlignment="Center">
+                            <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptEasy}"/>
+                            <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptMedium}"/>
+                            <ComboBoxItem Content="{x:Static lang:Lang.DifficultyOptHard}"/>
+                        </ComboBox>
+                    </StackPanel>
+
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="{x:Static lang:Lang.GlobalBtnCancel}"
                                 Command="{Binding CancelCommand}"

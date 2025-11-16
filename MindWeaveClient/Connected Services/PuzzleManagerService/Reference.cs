@@ -462,11 +462,11 @@ namespace MindWeaveClient.PuzzleManagerService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImage", ReplyAction="http://tempuri.org/IPuzzleManager/uploadPuzzleImageResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.UploadResultDto> uploadPuzzleImageAsync(string username, byte[] imageBytes, string fileName);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition", ReplyAction="http://tempuri.org/IPuzzleManager/GetPuzzleDefinitionResponse")]
-        MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto GetPuzzleDefinition(int puzzleId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinition", ReplyAction="http://tempuri.org/IPuzzleManager/getPuzzleDefinitionResponse")]
+        MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto getPuzzleDefinition(int puzzleId, int difficultyId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/GetPuzzleDefinition", ReplyAction="http://tempuri.org/IPuzzleManager/GetPuzzleDefinitionResponse")]
-        System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto> GetPuzzleDefinitionAsync(int puzzleId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinition", ReplyAction="http://tempuri.org/IPuzzleManager/getPuzzleDefinitionResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto> getPuzzleDefinitionAsync(int puzzleId, int difficultyId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -512,12 +512,12 @@ namespace MindWeaveClient.PuzzleManagerService {
             return base.Channel.uploadPuzzleImageAsync(username, imageBytes, fileName);
         }
         
-        public MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto GetPuzzleDefinition(int puzzleId) {
-            return base.Channel.GetPuzzleDefinition(puzzleId);
+        public MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto getPuzzleDefinition(int puzzleId, int difficultyId) {
+            return base.Channel.getPuzzleDefinition(puzzleId, difficultyId);
         }
         
-        public System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto> GetPuzzleDefinitionAsync(int puzzleId) {
-            return base.Channel.GetPuzzleDefinitionAsync(puzzleId);
+        public System.Threading.Tasks.Task<MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto> getPuzzleDefinitionAsync(int puzzleId, int difficultyId) {
+            return base.Channel.getPuzzleDefinitionAsync(puzzleId, difficultyId);
         }
     }
 }

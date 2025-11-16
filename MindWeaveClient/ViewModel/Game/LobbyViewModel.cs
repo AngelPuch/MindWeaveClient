@@ -64,8 +64,6 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand StartGameCommand { get; }
         public ICommand InviteFriendCommand { get; }
         public ICommand KickPlayerCommand { get; }
-        public ICommand UploadImageCommand { get; }
-        public ICommand ChangeSettingsCommand { get; }
         public ICommand RefreshFriendsCommand { get; }
         public ICommand SendMessageCommand { get; }
         public ICommand InviteGuestCommand { get; }
@@ -92,8 +90,6 @@ namespace MindWeaveClient.ViewModel.Game
             StartGameCommand = new RelayCommand(async p => await executeStartGame(), p => IsHost && !IsBusy && !IsGuestUser);
             InviteFriendCommand = new RelayCommand(async p => await executeInviteFriend(p), canInviteFriend);
             KickPlayerCommand = new RelayCommand(async p => await executeKickPlayer(p), p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
-            UploadImageCommand = new RelayCommand(p => dialogService.showInfo("La carga de imágenes personalizadas aún no está implementada.", "Info"), p => IsHost && !IsBusy && !IsGuestUser);
-            ChangeSettingsCommand = new RelayCommand(p => dialogService.showInfo("El cambio de ajustes de partida aún no está implementado.", "Info"), p => IsHost && !IsBusy && !IsGuestUser);
             RefreshFriendsCommand = new RelayCommand(async p => await executeRefreshFriendsAsync(), p => IsHost && !IsBusy && !IsGuestUser);
             SendMessageCommand = new RelayCommand(async p => await executeSendMessage(), canExecuteSendMessage);
             InviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => IsHost && !IsBusy && !IsGuestUser);

@@ -13,7 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media; 
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Main
@@ -30,6 +30,8 @@ namespace MindWeaveClient.ViewModel.Main
         private ObservableCollection<PuzzleDisplayInfo> availablePuzzles = new ObservableCollection<PuzzleDisplayInfo>();
         private PuzzleDisplayInfo selectedPuzzle;
 
+        private int selectedDifficultyIndex;
+
         public ObservableCollection<PuzzleDisplayInfo> AvailablePuzzles
         {
             get => availablePuzzles;
@@ -45,6 +47,12 @@ namespace MindWeaveClient.ViewModel.Main
                 OnPropertyChanged();
                 (ConfirmAndCreateLobbyCommand as RelayCommand)?.raiseCanExecuteChanged();
             }
+        }
+
+        public int SelectedDifficultyIndex
+        {
+            get => selectedDifficultyIndex;
+            set { selectedDifficultyIndex = value; OnPropertyChanged(); }
         }
 
         public ICommand LoadPuzzlesCommand { get; }
@@ -67,6 +75,8 @@ namespace MindWeaveClient.ViewModel.Main
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
             this.currentLobbyService = currentLobbyService;
+
+            SelectedDifficultyIndex = 0;
 
             LoadPuzzlesCommand = new RelayCommand(async p => await executeLoadPuzzlesAsync(), p => !IsBusy);
             UploadImageCommand = new RelayCommand(async p => await executeUploadImageAsync(), p => !IsBusy);
@@ -116,12 +126,12 @@ namespace MindWeaveClient.ViewModel.Main
                     foreach (var pzlDto in puzzlesFromServer)
                     {
                         ImageSource puzzleImage;
-                        byte[] puzzleBytes = null; 
+                        byte[] puzzleBytes = null;
 
                         if (pzlDto.isUploaded && pzlDto.imageBytes != null)
                         {
                             puzzleImage = convertBytesToImageSource(pzlDto.imageBytes);
-                            puzzleBytes = pzlDto.imageBytes; 
+                            puzzleBytes = pzlDto.imageBytes;
                         }
                         else if (pzlDto.isUploaded)
                         {
@@ -133,13 +143,13 @@ namespace MindWeaveClient.ViewModel.Main
                             puzzleImage = new BitmapImage(new Uri(clientImagePath, UriKind.Relative));
                         }
 
-                        
+
                         AvailablePuzzles.Add(new PuzzleDisplayInfo(
                             pzlDto.puzzleId,
                             pzlDto.name,
                             puzzleImage,
                             pzlDto.isUploaded,
-                            puzzleBytes 
+                            puzzleBytes
                         ));
                     }
                     OnPropertyChanged(nameof(AvailablePuzzles));
@@ -180,7 +190,7 @@ namespace MindWeaveClient.ViewModel.Main
 
                     UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
 
-                    if(uploadResult.success)
+                    if (uploadResult.success)
                     {
                         ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
                         var newPuzzleInfo = new PuzzleDisplayInfo(
@@ -189,7 +199,7 @@ namespace MindWeaveClient.ViewModel.Main
                             puzzleImage,
                             true,
                             imageBytes,
-                            openFileDialog.FileName 
+                            openFileDialog.FileName
                         );
 
 
@@ -225,15 +235,15 @@ namespace MindWeaveClient.ViewModel.Main
             SetBusy(true);
 
             byte[] puzzleBytes = null;
-            int? puzzleId = SelectedPuzzle.PuzzleId; 
+            int? puzzleId = SelectedPuzzle.PuzzleId;
 
 
-            
+
             if (SelectedPuzzle.IsUploaded)
             {
                 puzzleBytes = SelectedPuzzle.PuzzleBytes;
 
-              
+
                 if (puzzleBytes == null || puzzleBytes.Length == 0)
                 {
                     dialogService.showError($"Error reading puzzle file bytes for ID {puzzleId}.", Lang.ErrorTitle);
@@ -246,7 +256,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 preloadedPuzzleId = puzzleId,
                 customPuzzleImage = puzzleBytes,
-                difficultyId = 1
+                difficultyId = SelectedDifficultyIndex + 1
             };
 
             try
@@ -292,7 +302,7 @@ namespace MindWeaveClient.ViewModel.Main
                     bitmapImage.StreamSource = memStream;
                     bitmapImage.EndInit();
                 }
-                bitmapImage.Freeze(); 
+                bitmapImage.Freeze();
                 return bitmapImage;
             }
             catch (Exception ex)
@@ -309,7 +319,4 @@ namespace MindWeaveClient.ViewModel.Main
             navigationService.goBack();
         }
     }
-
-
-
 }

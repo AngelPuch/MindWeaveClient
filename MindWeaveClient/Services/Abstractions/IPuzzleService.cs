@@ -8,5 +8,7 @@ namespace MindWeaveClient.Services.Abstractions
         Task<PuzzleInfoDto[]> getAvailablePuzzlesAsync();
 
         Task<UploadResultDto> uploadPuzzleImageAsync(string username, byte[] imageBytes, string fileName);
+
+        Task<PuzzleDefinitionDto> getPuzzleDefinitionAsync(int puzzleId, int difficultyId);
     }
 }

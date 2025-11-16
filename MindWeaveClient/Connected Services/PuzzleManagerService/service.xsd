@@ -29,17 +29,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetPuzzleDefinition">
+  <xs:element name="getPuzzleDefinition">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="puzzleId" type="xs:int" />
+        <xs:element minOccurs="0" name="difficultyId" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetPuzzleDefinitionResponse">
+  <xs:element name="getPuzzleDefinitionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" minOccurs="0" name="GetPuzzleDefinitionResult" nillable="true" type="q3:PuzzleDefinitionDto" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" minOccurs="0" name="getPuzzleDefinitionResult" nillable="true" type="q3:PuzzleDefinitionDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

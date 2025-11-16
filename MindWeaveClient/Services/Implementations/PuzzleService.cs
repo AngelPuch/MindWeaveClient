@@ -37,5 +37,21 @@ namespace MindWeaveClient.Services.Implementations
                 throw;
             }
         }
+
+        public async Task<PuzzleDefinitionDto> getPuzzleDefinitionAsync(int puzzleId, int difficultyId)
+        {
+            PuzzleManagerClient client = new PuzzleManagerClient();
+            try
+            {
+                PuzzleDefinitionDto result = await client.getPuzzleDefinitionAsync(puzzleId, difficultyId);
+                client.Close();
+                return result;
+            }
+            catch
+            {
+                client.Abort();
+                throw;
+            }
+        }
     }
 }
