@@ -54,6 +54,8 @@ namespace MindWeaveClient.ViewModel.Game
             set { puzzleHeight = value; OnPropertyChanged(); }
         }
 
+        private bool _puzzleLoaded = false;
+
         public GameViewModel(
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
@@ -68,23 +70,42 @@ namespace MindWeaveClient.ViewModel.Game
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
 
+            // Inicializar scores primero
+            initializePlayerScores();
+
+            // Suscribirse a eventos
             currentMatchService.PuzzleReady += OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
+
+            // Intentar cargar el puzzle si ya está disponible
+            tryLoadExistingPuzzle();
+        }
+
+        private void tryLoadExistingPuzzle()
+        {
+            var puzzleDto = currentMatchService.getCurrentPuzzle();
+            if (puzzleDto != null && !_puzzleLoaded)
+            {
+                LoadPuzzle(puzzleDto);
+            }
         }
 
         private void OnPuzzleReady()
         {
-            // El evento es llamado por el hilo del callback. Usar Dispatcher.
             App.Current.Dispatcher.Invoke(() =>
             {
+                if (_puzzleLoaded)
+                {
+                    Trace.WriteLine("Puzzle already loaded, skipping OnPuzzleReady");
+                    return;
+                }
+
                 var puzzleDto = currentMatchService.getCurrentPuzzle();
                 if (puzzleDto != null)
                 {
-
-                    initializePlayerScores();
                     LoadPuzzle(puzzleDto);
                 }
             });
@@ -94,7 +115,12 @@ namespace MindWeaveClient.ViewModel.Game
         {
             PlayerScores.Clear();
             MyPlayer = null;
-            if (currentMatchService.Players == null) return;
+
+            if (currentMatchService.Players == null || !currentMatchService.Players.Any())
+            {
+                Trace.WriteLine("No players available yet for score initialization");
+                return;
+            }
 
             foreach (var username in currentMatchService.Players)
             {
@@ -109,7 +135,6 @@ namespace MindWeaveClient.ViewModel.Game
                     Score = 0
                 };
 
-
                 PlayerScores.Add(newPlayerVM);
 
                 if (tempId == SessionService.PlayerId)
@@ -122,15 +147,17 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void LoadPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzleDto)
         {
-            if (PiecesCollection.Any())
+            if (_puzzleLoaded)
             {
-                // Ya cargamos el puzzle, no hacer nada.
+                Trace.WriteLine("Puzzle already loaded, skipping LoadPuzzle");
                 return;
             }
 
-            SetBusy(true); // Ocultar "cargando"
+            SetBusy(true);
             try
             {
+                Trace.WriteLine($"Loading puzzle with {puzzleDto.pieces?.Length ?? 0} pieces");
+
                 PuzzleWidth = puzzleDto.puzzleWidth;
                 PuzzleHeight = puzzleDto.puzzleHeight;
                 OnPropertyChanged(nameof(PuzzleWidth));
@@ -144,6 +171,12 @@ namespace MindWeaveClient.ViewModel.Game
                 }
 
                 PiecesCollection.Clear();
+
+                if (puzzleDto.pieces == null || puzzleDto.pieces.Length == 0)
+                {
+                    dialogService.showError("Error: No hay piezas en la definición del puzzle.", "Error Crítico");
+                    return;
+                }
 
                 foreach (var pieceDef in puzzleDto.pieces)
                 {
@@ -163,10 +196,14 @@ namespace MindWeaveClient.ViewModel.Game
                     );
                     PiecesCollection.Add(pieceViewModel);
                 }
+
+                _puzzleLoaded = true;
+                Trace.WriteLine($"Puzzle loaded successfully with {PiecesCollection.Count} pieces");
             }
             catch (Exception ex)
             {
                 dialogService.showError($"Error al procesar el puzzle: {ex.Message}", "Error Crítico");
+                Trace.TraceError($"LoadPuzzle error: {ex}");
             }
             finally
             {
@@ -181,9 +218,8 @@ namespace MindWeaveClient.ViewModel.Game
 
             try
             {
-                // Notificar al servidor que estamos arrastrando esta pieza
                 await matchmakingService.requestPieceDragAsync(
-                    currentMatchService.LobbyId, // Necesitamos el LobbyCode
+                    currentMatchService.LobbyId,
                     piece.PieceId
                 );
             }
@@ -200,7 +236,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             try
             {
-                // Notificar al servidor dónde soltamos la pieza
                 await matchmakingService.requestPieceDropAsync(
                     currentMatchService.LobbyId,
                     piece.PieceId,
@@ -211,14 +246,11 @@ namespace MindWeaveClient.ViewModel.Game
             catch (Exception ex)
             {
                 dialogService.showError(ex.Message, "Error de red");
-                // Si fallamos, devolvemos la pieza a su origen
                 piece.X = piece.OriginalX;
                 piece.Y = piece.OriginalY;
             }
         }
 
-        // (Opcional pero recomendado) Si el jugador suelta la pieza
-        // fuera del tablero, deberíamos llamar a 'Release'
         public async Task releasePiece(PuzzlePieceViewModel piece)
         {
             if (piece == null)
@@ -226,20 +258,16 @@ namespace MindWeaveClient.ViewModel.Game
 
             try
             {
-                // Notificar al servidor que "cancelamos" el drag
                 await matchmakingService.requestPieceReleaseAsync(
                     currentMatchService.LobbyId,
                     piece.PieceId
                 );
-                // El callback 'OnPieceDragReleased' se encargará de mover la pieza
-                // a su 'OriginalX/Y' en todos los clientes.
             }
             catch (Exception ex)
             {
                 dialogService.showError(ex.Message, "Error de red");
             }
         }
-
 
         private BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
         {
@@ -260,7 +288,11 @@ namespace MindWeaveClient.ViewModel.Game
                 bitmapImage.Freeze();
                 return bitmapImage;
             }
-            catch (Exception) { return null; }
+            catch (Exception ex)
+            {
+                Trace.TraceError($"convertBytesToBitmapSource error: {ex}");
+                return null;
+            }
         }
 
         private void OnServerPieceDragStarted(int pieceId, int playerId)
@@ -270,7 +302,6 @@ namespace MindWeaveClient.ViewModel.Game
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null && !piece.IsPlaced)
                 {
-                    // Comprobar si soy yo quien arrastra
                     bool amIDragging = (playerId == SessionService.PlayerId);
                     piece.IsHeldByOther = !amIDragging;
                 }
@@ -284,13 +315,13 @@ namespace MindWeaveClient.ViewModel.Game
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null)
                 {
-                    piece.X = correctX; // Posición final y correcta
+                    piece.X = correctX;
                     piece.Y = correctY;
-                    piece.IsPlaced = true; // ¡Snap! Esto la deshabilita
+                    piece.IsPlaced = true;
                     piece.IsHeldByOther = false;
+                    piece.ZIndex = -1;
                 }
 
-                // Actualizar puntuación
                 var player = PlayerScores.FirstOrDefault(p => p.PlayerId == scoringPlayerId);
                 if (player != null)
                 {
@@ -306,9 +337,9 @@ namespace MindWeaveClient.ViewModel.Game
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null && !piece.IsPlaced)
                 {
-                    piece.X = newX; // Actualizar a la nueva posición "flotante"
+                    piece.X = newX;
                     piece.Y = newY;
-                    piece.IsHeldByOther = false; // Ya no está "sostenida"
+                    piece.IsHeldByOther = false;
                 }
             });
         }
@@ -321,13 +352,11 @@ namespace MindWeaveClient.ViewModel.Game
                 if (piece != null && !piece.IsPlaced)
                 {
                     piece.IsHeldByOther = false;
-
                     piece.X = piece.OriginalX;
                     piece.Y = piece.OriginalY;
                 }
             });
         }
-
 
         public void Cleanup()
         {
