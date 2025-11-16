@@ -13,10 +13,10 @@ namespace MindWeaveClient.Services.Abstractions
 
         event EventHandler OnMatchFound;
 
-        void InitializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath);
+        void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath);
 
-        PuzzleDefinitionDto getCurrentPuzzle();
-        void setPuzzle(PuzzleDefinitionDto puzzle);
+        PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle();
+        void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle);
         void setMatchId(string matchId); 
         string getMatchId();
     }

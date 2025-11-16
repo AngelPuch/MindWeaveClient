@@ -117,7 +117,7 @@ namespace MindWeaveClient.ViewModel.Game
         private void subscribeToServiceEvents()
         {
             matchmakingService.OnLobbyStateUpdated += handleLobbyStateUpdated;
-            matchmakingService.OnMatchFound += HandleMatchFound;
+            matchmakingService.OnMatchFound += handleMatchFound;
             matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
             matchmakingService.OnKicked += handleKickedOrFailed;
             chatService.OnMessageReceived += onChatMessageReceived;
@@ -131,7 +131,7 @@ namespace MindWeaveClient.ViewModel.Game
             try
             {
                 matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-                matchmakingService.OnMatchFound -= HandleMatchFound;
+                matchmakingService.OnMatchFound -= handleMatchFound;
                 matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
                 matchmakingService.OnKicked -= handleKickedOrFailed;
                 chatService.OnMessageReceived -= onChatMessageReceived;
@@ -227,10 +227,11 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private void HandleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
+        private void handleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                currentMatchService.initializeMatch(lobbyCode, players, settings, puzzleImagePath);
                 navigationService.navigateTo<GamePage>();
             });
         }

@@ -1,51 +1,96 @@
 ﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.ViewModel.Game; // <-- Asegúrate de tener este
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using MindWeaveClient.PuzzleManagerService;
 using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Game
 {
-    // ¡ESTA ES LA CLASE QUE "INVENTÉ"!
     public class GameViewModel : BaseViewModel
     {
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
+        private readonly IPuzzleService puzzleService;
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
-        public int PuzzleWidth { get; set; }
-        public int PuzzleHeight { get; set; }
+
+        private int _puzzleWidth;
+        public int PuzzleWidth
+        {
+            get => _puzzleWidth;
+            set { _puzzleWidth = value; OnPropertyChanged(); }
+        }
+
+        private int _puzzleHeight;
+        public int PuzzleHeight
+        {
+            get => _puzzleHeight;
+            set { _puzzleHeight = value; OnPropertyChanged(); }
+        }
 
         public ICommand SendPiecePlacedCommand { get; }
 
         public GameViewModel(
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            IPuzzleService puzzleService)
         {
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
-            this.PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
+            this.puzzleService = puzzleService;
+
+            PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
 
             SendPiecePlacedCommand = new RelayCommand(executeSendPiecePlaced);
-            LoadPuzzle();
+            loadPuzzleAsync();
         }
 
-        private void LoadPuzzle()
+        private async void loadPuzzleAsync()
         {
-            PuzzleDefinitionDto puzzleDto = currentMatchService.getCurrentPuzzle();
-            if (puzzleDto == null)
+            LobbySettingsDto settings = currentMatchService.CurrentSettings;
+
+            if (settings == null || !settings.preloadedPuzzleId.HasValue)
             {
-                dialogService.showError("Error: No se pudo cargar la definición del puzzle.", "Error Crítico");
+                dialogService.showError("Error: No se pudieron cargar los ajustes de la partida.", "Error Crítico");
                 return;
             }
+            int puzzleId = settings.preloadedPuzzleId.Value;
+            int difficultyId = settings.difficultyId;
+
+            PuzzleManagerService.PuzzleDefinitionDto puzzleDto = null;
+
+            try
+            {
+                SetBusy(true);
+                puzzleDto = await puzzleService.getPuzzleDefinitionAsync(puzzleId, difficultyId);
+                currentMatchService.setPuzzle(puzzleDto);
+            }
+            catch (Exception ex)
+            {
+                dialogService.showError("Error: No se pudo cargar la definición del puzzle desde el servidor.", "Error Crítico");
+                return;
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+
+
+            if (puzzleDto == null)
+            {
+                dialogService.showError("Error: El servidor no devolvió una definición de puzzle.", "Error Crítico");
+                return;
+            }
+
+
 
             PuzzleWidth = puzzleDto.puzzleWidth;
             PuzzleHeight = puzzleDto.puzzleHeight;
@@ -61,10 +106,11 @@ namespace MindWeaveClient.ViewModel.Game
 
             PiecesCollection.Clear();
             Random randomGenerator = new Random();
-            double randomX = randomGenerator.Next(0, 300); 
-            double randomY = randomGenerator.Next(0, 300); 
             foreach (var pieceDef in puzzleDto.pieces)
             {
+                double randomX = randomGenerator.Next(0, 300);
+                double randomY = randomGenerator.Next(0, 300);
+
                 var pieceViewModel = new PuzzlePieceViewModel(
                 fullImage, pieceDef.pieceId,
                 pieceDef.sourceX, pieceDef.sourceY,

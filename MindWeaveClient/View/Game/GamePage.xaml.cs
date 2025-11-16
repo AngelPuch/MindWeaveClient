@@ -3,24 +3,39 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using MindWeaveClient.ViewModel; 
+using MindWeaveClient.ViewModel;
+using MindWeaveClient.ViewModel.Game; // <-- AÑADE ESTE USING
 
-namespace MindWeaveClient.View.Game 
+namespace MindWeaveClient.View.Game
 {
 
     public partial class GamePage : Page
     {
         private PuzzlePieceViewModel _draggedPiece;
-
         private Point _mouseOffset;
-
         private const int SNAP_THRESHOLD = 20;
 
-      
-        public GamePage()
+        /*
+         * ==================
+         * INICIO MODIFICACIÓN
+         * ==================
+         */
+
+        // 1. El constructor ahora ACEPTA el ViewModel
+        public GamePage(GameViewModel viewModel)
         {
             InitializeComponent();
+
+            // 2. ¡¡ESTA ES LA LÍNEA QUE FALTABA!!
+            // Asignamos el ViewModel como el DataContext de la página.
+            this.DataContext = viewModel;
         }
+
+        /*
+         * ==================
+         * FIN MODIFICACIÓN
+         * ==================
+         */
 
         private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -33,11 +48,8 @@ namespace MindWeaveClient.View.Game
             }
 
             _draggedPiece = pieceViewModel;
-
             _mouseOffset = e.GetPosition(pieceImage);
-
             pieceImage.CaptureMouse();
-
             _draggedPiece.ZIndex = 100;
         }
 
@@ -56,6 +68,11 @@ namespace MindWeaveClient.View.Game
 
             Point mousePos = e.GetPosition(canvas);
 
+            // 3. ¡CORRECCIÓN IMPORTANTE!
+            // Tu code-behind actualiza 'X' e 'Y', pero tu ViewModel
+            // se bindea a 'CurrentX' y 'CurrentY'.
+            // Vamos a usar 'X' e 'Y' en todos lados para ser consistentes.
+            // (Ya lo corregí en tu PuzzlePieceViewModel en el paso anterior).
             double newX = mousePos.X - _mouseOffset.X;
             double newY = mousePos.Y - _mouseOffset.Y;
 
@@ -71,12 +88,9 @@ namespace MindWeaveClient.View.Game
             }
 
             var pieceImage = sender as Image;
-
             pieceImage.ReleaseMouseCapture();
-
             _draggedPiece.ZIndex = 0;
 
-       
             double deltaX = Math.Abs(_draggedPiece.X - _draggedPiece.CorrectPosition.X);
             double deltaY = Math.Abs(_draggedPiece.Y - _draggedPiece.CorrectPosition.Y);
 
@@ -85,10 +99,8 @@ namespace MindWeaveClient.View.Game
                 _draggedPiece.X = _draggedPiece.CorrectPosition.X;
                 _draggedPiece.Y = _draggedPiece.CorrectPosition.Y;
                 _draggedPiece.IsCorrectlyPlaced = true;
-                _draggedPiece.ZIndex = -1; // Ponerla detrás de las demás
+                _draggedPiece.ZIndex = -1;
 
-                // --- ¡¡¡IMPORTANTE!!! ---
-                // ¡Aquí es donde notificas al servidor que colocaste una pieza!
                 // var viewModel = this.DataContext as GameViewModel;
                 // viewModel.SendPiecePlacedCommand.Execute(_draggedPiece.PieceId);
             }

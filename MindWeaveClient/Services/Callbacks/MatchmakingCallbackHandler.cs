@@ -54,15 +54,41 @@ namespace MindWeaveClient.Services.Callbacks
 
             if (_currentMatchService != null)
             {
-                _currentMatchService.InitializeMatch(lobbyCode, playerList, settings, puzzleImagePath);
+                _currentMatchService.initializeMatch(lobbyCode, playerList, settings, puzzleImagePath);
             }
 
             OnMatchFoundEvent?.Invoke(lobbyCode, playerList, settings, puzzleImagePath);
         }
 
-        public void onGameStarted(PuzzleDefinitionDto puzzleDefinition)
+        public void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition)
         {
-            _currentMatchService?.setPuzzle(puzzleDefinition);
+            if (puzzleDefinition == null || _currentMatchService == null)
+            {
+                return;
+            }
+
+            // 1. Creamos el nuevo DTO del tipo 'PuzzleManagerService'
+            var puzzleManagerDto = new MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto
+            {
+                fullImageBytes = puzzleDefinition.fullImageBytes,
+                puzzleHeight = puzzleDefinition.puzzleHeight,
+                puzzleWidth = puzzleDefinition.puzzleWidth,
+
+                // 2. Mapeamos la lista de piezas una por una
+                pieces = puzzleDefinition.pieces.Select(piece =>
+                    new MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto
+                    {
+                        pieceId = piece.pieceId,
+                        sourceX = piece.sourceX,
+                        sourceY = piece.sourceY,
+                        width = piece.width,
+                        height = piece.height,
+                        correctX = piece.correctX,
+                        correctY = piece.correctY
+                    }).ToArray() // Convertimos el resultado a un array
+            };
+
+            _currentMatchService?.setPuzzle(puzzleManagerDto);
         }
 
         public void updateLobbyState(LobbyStateDto lobbyStateDto)

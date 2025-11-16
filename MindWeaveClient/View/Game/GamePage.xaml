@@ -27,7 +27,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- TOP PLAYER LIST -->
             <Border Grid.Row="0" Background="#A52E3A4E" Margin="20,20,20,0" CornerRadius="15">
                 <Border.Effect>
                     <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
@@ -66,20 +65,17 @@
                 </StackPanel>
             </Border>
 
-            <!-- MAIN AREA -->
             <Grid Grid.Row="1" Margin="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="280"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- GAME BOARD (PUZZLE AREA) -->
                 <Border Grid.Column="0" Background="#A52E3A4E" CornerRadius="15">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
                     </Border.Effect>
 
-                    <!-- ItemsControl con Canvas y piezas movibles -->
                     <ItemsControl ItemsSource="{Binding PiecesCollection}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -92,9 +88,10 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Image Source="{Binding PieceImage}"
-                                       Width="{Binding PieceImage.Width}"
-                                       Height="{Binding PieceImage.Height}"
+                                       Width="{Binding Width}"
+                                       Height="{Binding Height}"
                                        Stretch="Fill"
+                                       Cursor="Hand"
                                        MouseLeftButtonDown="Piece_MouseLeftButtonDown"
                                        MouseLeftButtonUp="Piece_MouseLeftButtonUp"
                                        MouseMove="Piece_MouseMove"/>
@@ -112,7 +109,6 @@
                     </ItemsControl>
                 </Border>
 
-                <!-- RIGHT SIDEBAR -->
                 <StackPanel Grid.Column="1" Margin="20,0,0,0">
 
                     <Border Background="#A52E3A4E" CornerRadius="15" Padding="20" Margin="0,0,0,10">

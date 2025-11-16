@@ -8,7 +8,7 @@ namespace MindWeaveClient.Services.Implementations
     public class CurrentMatchService : ICurrentMatchService
     {
         private string matchId;
-        private PuzzleDefinitionDto currentPuzzle;
+        private PuzzleManagerService.PuzzleDefinitionDto currentPuzzle;
 
         public string LobbyId { get; private set; }
         public List<string> Players { get; private set; }
@@ -17,7 +17,7 @@ namespace MindWeaveClient.Services.Implementations
 
         public event EventHandler OnMatchFound;
 
-        public void InitializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
+        public void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
             this.LobbyId = lobbyId;
             this.Players = players;
@@ -29,12 +29,12 @@ namespace MindWeaveClient.Services.Implementations
             OnMatchFound?.Invoke(this, EventArgs.Empty);
         }
 
-        public PuzzleDefinitionDto getCurrentPuzzle()
+        public PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle()
         {
             return currentPuzzle;
         }
 
-        public void setPuzzle(PuzzleDefinitionDto puzzle)
+        public void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle)
         {
             this.currentPuzzle = puzzle;
         }
