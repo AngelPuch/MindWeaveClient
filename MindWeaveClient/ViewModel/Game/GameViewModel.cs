@@ -38,6 +38,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
+        public PlayerScoreViewModel MyPlayer { get; private set; }
 
         private int puzzleWidth;
         public int PuzzleWidth
@@ -67,8 +68,6 @@ namespace MindWeaveClient.ViewModel.Game
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
 
-            initializePlayerScores();
-
             currentMatchService.PuzzleReady += OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
@@ -84,6 +83,8 @@ namespace MindWeaveClient.ViewModel.Game
                 var puzzleDto = currentMatchService.getCurrentPuzzle();
                 if (puzzleDto != null)
                 {
+
+                    initializePlayerScores();
                     LoadPuzzle(puzzleDto);
                 }
             });
@@ -92,6 +93,7 @@ namespace MindWeaveClient.ViewModel.Game
         private void initializePlayerScores()
         {
             PlayerScores.Clear();
+            MyPlayer = null;
             if (currentMatchService.Players == null) return;
 
             foreach (var username in currentMatchService.Players)
@@ -100,13 +102,22 @@ namespace MindWeaveClient.ViewModel.Game
                     ? SessionService.PlayerId
                     : -Math.Abs(username.GetHashCode() % 1000000);
 
-                PlayerScores.Add(new PlayerScoreViewModel
+                var newPlayerVM = new PlayerScoreViewModel
                 {
                     PlayerId = tempId,
                     Username = username,
                     Score = 0
-                });
+                };
+
+
+                PlayerScores.Add(newPlayerVM);
+
+                if (tempId == SessionService.PlayerId)
+                {
+                    MyPlayer = newPlayerVM;
+                }
             }
+            OnPropertyChanged(nameof(MyPlayer));
         }
 
         private void LoadPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzleDto)
@@ -208,7 +219,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         // (Opcional pero recomendado) Si el jugador suelta la pieza
         // fuera del tablero, deberíamos llamar a 'Release'
-        public async Task ReleasePiece(PuzzlePieceViewModel piece)
+        public async Task releasePiece(PuzzlePieceViewModel piece)
         {
             if (piece == null)
                 return;

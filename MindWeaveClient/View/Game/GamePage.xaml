@@ -140,7 +140,7 @@
                             <Viewbox Stretch="Uniform" Height="80">
                                 <TextBlock Foreground="{StaticResource PrimaryColor}" FontWeight="Bold">
                                     <TextBlock.Text>
-                                        <Binding Path="PlayerScores[0].Score" StringFormat="{}{0} pts" />
+                                        <Binding Path="MyPlayer.Score" StringFormat="{}{0} pts" />
                                     </TextBlock.Text>
                                 </TextBlock>
                             </Viewbox>

@@ -22,6 +22,8 @@ namespace MindWeaveClient.Services.Callbacks
         public static event Action<int, double, double, int, int> PiecePlacedHandler;
         public static event Action<int, double, double> PieceMovedHandler;
         public static event Action<int> PieceDragReleasedHandler;
+        public static event Action OnGameStartedNavigation;
+
 
         public MatchmakingCallbackHandler(
             ICurrentMatchService currentMatchService,
@@ -93,6 +95,7 @@ namespace MindWeaveClient.Services.Callbacks
             };
 
             currentMatchService?.setPuzzle(puzzleManagerDto);
+            OnGameStartedNavigation?.Invoke();
         }
 
         public void updateLobbyState(LobbyStateDto lobbyStateDto)

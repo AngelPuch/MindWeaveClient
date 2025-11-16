@@ -3,6 +3,7 @@ using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
@@ -12,12 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO; 
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.IO; 
 using System.Windows.Media; 
 using System.Windows.Media.Imaging;
 
@@ -117,12 +118,19 @@ namespace MindWeaveClient.ViewModel.Game
         private void subscribeToServiceEvents()
         {
             matchmakingService.OnLobbyStateUpdated += handleLobbyStateUpdated;
-            matchmakingService.OnMatchFound += handleMatchFound;
+            MatchmakingCallbackHandler.OnGameStartedNavigation += handleGameStarted;
             matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
             matchmakingService.OnKicked += handleKickedOrFailed;
             chatService.OnMessageReceived += onChatMessageReceived;
         }
 
+        private void handleGameStarted()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                navigationService.navigateTo<GamePage>();
+            });
+        }
         private async Task cleanupAndUnsubscribeAsync()
         {
             if (isCleaningUp) return;
@@ -131,10 +139,11 @@ namespace MindWeaveClient.ViewModel.Game
             try
             {
                 matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-                matchmakingService.OnMatchFound -= handleMatchFound;
+                MatchmakingCallbackHandler.OnGameStartedNavigation -= handleGameStarted;
                 matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
                 matchmakingService.OnKicked -= handleKickedOrFailed;
                 chatService.OnMessageReceived -= onChatMessageReceived;
+
 
                 await disconnectFromChatAsync();
             }
