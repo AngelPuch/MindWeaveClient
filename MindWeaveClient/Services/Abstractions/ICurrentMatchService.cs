@@ -12,6 +12,7 @@ namespace MindWeaveClient.Services.Abstractions
         string PuzzleImagePath { get; }
 
         event EventHandler OnMatchFound;
+        event Action PuzzleReady;
 
         void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath);
 

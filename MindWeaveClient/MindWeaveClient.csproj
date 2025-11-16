@@ -210,6 +210,9 @@
     <Compile Include="View\Game\PostMatchResultsPage.xaml.cs">
       <DependentUpon>PostMatchResultsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Game\PuzzlePieceView.xaml.cs">
+      <DependentUpon>PuzzlePieceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Main\EditProfilePage.xaml.cs">
       <DependentUpon>EditProfilePage.xaml</DependentUpon>
     </Compile>
@@ -283,6 +286,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Game\PostMatchResultsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Game\PuzzlePieceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

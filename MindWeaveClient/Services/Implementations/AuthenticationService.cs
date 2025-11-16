@@ -27,7 +27,7 @@ namespace MindWeaveClient.Services.Implementations
 
             if (result.operationResult.success)
             {
-                SessionService.setSession(result.username, result.avatarPath);
+                SessionService.setSession(result.playerId, result.username, result.avatarPath);
                 bool socialConnected = await connectSocialServiceAsync(result.username);
 
                 return new LoginServiceResultDto(result, socialConnected, true);

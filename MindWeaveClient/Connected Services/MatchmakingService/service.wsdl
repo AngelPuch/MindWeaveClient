@@ -76,11 +76,14 @@
   <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_OutputMessage">
     <wsdl:part name="parameters" element="tns:joinLobbyAsGuestResponse" />
   </wsdl:message>
-  <wsdl:message name="IMatchmakingManager_sendPiecePlaced_InputMessage">
-    <wsdl:part name="parameters" element="tns:sendPiecePlaced" />
+  <wsdl:message name="IMatchmakingManager_requestPieceDrag_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceDrag" />
   </wsdl:message>
-  <wsdl:message name="IMatchmakingManager_sendPiecePlaced_OutputMessage">
-    <wsdl:part name="parameters" element="tns:sendPiecePlacedResponse" />
+  <wsdl:message name="IMatchmakingManager_requestPieceDrop_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceDrop" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_requestPieceRelease_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceRelease" />
   </wsdl:message>
   <wsdl:message name="IMatchmakingManager_updateLobbyState_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:updateLobbyState" />
@@ -96,6 +99,18 @@
   </wsdl:message>
   <wsdl:message name="IMatchmakingManager_onGameStarted_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:onGameStarted" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPieceDragStarted_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPieceDragStarted" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPiecePlaced_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPiecePlaced" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPieceMoved_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPieceMoved" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPieceDragReleased_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPieceDragReleased" />
   </wsdl:message>
   <wsdl:portType name="IMatchmakingManager">
     <wsdl:operation name="createLobby">
@@ -127,9 +142,14 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest" message="tns:IMatchmakingManager_joinLobbyAsGuest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse" message="tns:IMatchmakingManager_joinLobbyAsGuest_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="sendPiecePlaced">
-      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/sendPiecePlaced" message="tns:IMatchmakingManager_sendPiecePlaced_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/sendPiecePlacedResponse" message="tns:IMatchmakingManager_sendPiecePlaced_OutputMessage" />
+    <wsdl:operation name="requestPieceDrag">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceDrag" message="tns:IMatchmakingManager_requestPieceDrag_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceDrop">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceDrop" message="tns:IMatchmakingManager_requestPieceDrop_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceRelease">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceRelease" message="tns:IMatchmakingManager_requestPieceRelease_InputMessage" />
     </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/updateLobbyState" message="tns:IMatchmakingManager_updateLobbyState_OutputCallbackMessage" />
@@ -145,6 +165,18 @@
     </wsdl:operation>
     <wsdl:operation name="onGameStarted">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onGameStarted" message="tns:IMatchmakingManager_onGameStarted_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragStarted">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceDragStarted" message="tns:IMatchmakingManager_onPieceDragStarted_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPiecePlaced">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPiecePlaced" message="tns:IMatchmakingManager_onPiecePlaced_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPieceMoved">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceMoved" message="tns:IMatchmakingManager_onPieceMoved_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragReleased">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceDragReleased" message="tns:IMatchmakingManager_onPieceDragReleased_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
@@ -211,14 +243,23 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="sendPiecePlaced">
-      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/sendPiecePlaced" style="document" />
+    <wsdl:operation name="requestPieceDrag">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceDrag" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceDrop">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceDrop" style="document" />
+      <wsdl:input>
         <soap12:body use="literal" />
-      </wsdl:output>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceRelease">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceRelease" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="updateLobbyState">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/updateLobbyState" style="document" />
@@ -246,6 +287,30 @@
     </wsdl:operation>
     <wsdl:operation name="onGameStarted">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onGameStarted" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragStarted">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPieceDragStarted" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPiecePlaced">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPiecePlaced" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPieceMoved">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPieceMoved" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragReleased">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPieceDragReleased" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

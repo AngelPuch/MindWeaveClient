@@ -11,20 +11,24 @@ namespace MindWeaveClient.Services.Callbacks
     [CallbackBehavior(UseSynchronizationContext = false)]
     public class MatchmakingCallbackHandler : IMatchmakingManagerCallback
     {
-        private readonly ICurrentMatchService _currentMatchService;
-        private readonly IDialogService _dialogService;
+        private readonly ICurrentMatchService currentMatchService;
+        private readonly IDialogService dialogService;
   
         public event Action<LobbyStateDto> OnLobbyStateUpdatedEvent;
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFoundEvent;
         public event Action<string> OnLobbyCreationFailedEvent;
         public event Action<string> OnKickedEvent;
+        public static event Action<int, int> PieceDragStartedHandler;
+        public static event Action<int, double, double, int, int> PiecePlacedHandler;
+        public static event Action<int, double, double> PieceMovedHandler;
+        public static event Action<int> PieceDragReleasedHandler;
 
         public MatchmakingCallbackHandler(
             ICurrentMatchService currentMatchService,
             IDialogService dialogService)
         {
-            _currentMatchService = currentMatchService;
-            _dialogService = dialogService;
+            this.currentMatchService = currentMatchService;
+            this.dialogService = dialogService;
         }
 
 
@@ -34,7 +38,7 @@ namespace MindWeaveClient.Services.Callbacks
 
             App.Current.Dispatcher.Invoke(() =>
             {
-                _dialogService.showInfo(reason, Properties.Langs.Lang.KickedMessage);
+                dialogService.showInfo(reason, Properties.Langs.Lang.KickedMessage);
             });
         }
 
@@ -44,7 +48,7 @@ namespace MindWeaveClient.Services.Callbacks
 
             App.Current.Dispatcher.Invoke(() =>
             {
-                _dialogService.showError(reason, Properties.Langs.Lang.ErrorTitle);
+                dialogService.showError(reason, Properties.Langs.Lang.ErrorTitle);
             });
         }
 
@@ -52,9 +56,9 @@ namespace MindWeaveClient.Services.Callbacks
         {
             List<string> playerList = players?.ToList() ?? new List<string>();
 
-            if (_currentMatchService != null)
+            if (currentMatchService != null)
             {
-                _currentMatchService.initializeMatch(lobbyCode, playerList, settings, puzzleImagePath);
+                currentMatchService.initializeMatch(lobbyCode, playerList, settings, puzzleImagePath);
             }
 
             OnMatchFoundEvent?.Invoke(lobbyCode, playerList, settings, puzzleImagePath);
@@ -62,39 +66,59 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition)
         {
-            if (puzzleDefinition == null || _currentMatchService == null)
+            if (puzzleDefinition == null || currentMatchService == null)
             {
                 return;
             }
 
-            // 1. Creamos el nuevo DTO del tipo 'PuzzleManagerService'
             var puzzleManagerDto = new MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto
             {
                 fullImageBytes = puzzleDefinition.fullImageBytes,
                 puzzleHeight = puzzleDefinition.puzzleHeight,
                 puzzleWidth = puzzleDefinition.puzzleWidth,
 
-                // 2. Mapeamos la lista de piezas una por una
                 pieces = puzzleDefinition.pieces.Select(piece =>
                     new MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto
                     {
-                        pieceId = piece.pieceId,
-                        sourceX = piece.sourceX,
-                        sourceY = piece.sourceY,
-                        width = piece.width,
-                        height = piece.height,
-                        correctX = piece.correctX,
-                        correctY = piece.correctY
-                    }).ToArray() // Convertimos el resultado a un array
+                        PieceId = piece.PieceId,
+                        SourceX = piece.SourceX,
+                        SourceY = piece.SourceY,
+                        Width = piece.Width,
+                        Height = piece.Height,
+                        CorrectX = piece.CorrectX,
+                        CorrectY = piece.CorrectY,
+                        InitialX = piece.InitialX,
+                        InitialY = piece.InitialY
+                    }).ToArray()
             };
 
-            _currentMatchService?.setPuzzle(puzzleManagerDto);
+            currentMatchService?.setPuzzle(puzzleManagerDto);
         }
 
         public void updateLobbyState(LobbyStateDto lobbyStateDto)
         {
   
             OnLobbyStateUpdatedEvent?.Invoke(lobbyStateDto);
+        }
+
+        public void onPieceDragStarted(int pieceId, int playerId)
+        {
+            PieceDragStartedHandler?.Invoke(pieceId, playerId);
+        }
+
+        public void onPiecePlaced(int pieceId, double correctX, double correctY, int scoringPlayerId, int newScore)
+        {
+            PiecePlacedHandler?.Invoke(pieceId, correctX, correctY, scoringPlayerId, newScore);
+        }
+
+        public void onPieceMoved(int pieceId, double newX, double newY)
+        {
+            PieceMovedHandler?.Invoke(pieceId, newX, newY);
+        }
+
+        public void onPieceDragReleased(int pieceId)
+        {
+            PieceDragReleasedHandler?.Invoke(pieceId);
         }
     }
 }

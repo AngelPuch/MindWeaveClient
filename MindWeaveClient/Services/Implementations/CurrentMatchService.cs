@@ -16,6 +16,7 @@ namespace MindWeaveClient.Services.Implementations
         public string PuzzleImagePath { get; private set; }
 
         public event EventHandler OnMatchFound;
+        public event Action PuzzleReady;
 
         public void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
@@ -37,6 +38,7 @@ namespace MindWeaveClient.Services.Implementations
         public void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle)
         {
             this.currentPuzzle = puzzle;
+            PuzzleReady?.Invoke();
         }
 
         public void setMatchId(string matchId)

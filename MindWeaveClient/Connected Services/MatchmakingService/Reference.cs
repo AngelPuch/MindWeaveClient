@@ -168,6 +168,9 @@ namespace MindWeaveClient.MatchmakingService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyStateField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int playerIdField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string assignedGuestUsername {
             get {
@@ -190,6 +193,19 @@ namespace MindWeaveClient.MatchmakingService {
                 if ((object.ReferenceEquals(this.initialLobbyStateField, value) != true)) {
                     this.initialLobbyStateField = value;
                     this.RaisePropertyChanged("initialLobbyState");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int playerId {
+            get {
+                return this.playerIdField;
+            }
+            set {
+                if ((this.playerIdField.Equals(value) != true)) {
+                    this.playerIdField = value;
+                    this.RaisePropertyChanged("playerId");
                 }
             }
         }
@@ -606,25 +622,31 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double correctXField;
+        private double CorrectXField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double correctYField;
+        private double CorrectYField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int heightField;
+        private int HeightField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int pieceIdField;
+        private double InitialXField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int sourceXField;
+        private double InitialYField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int sourceYField;
+        private int PieceIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int widthField;
+        private int SourceXField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int SourceYField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int WidthField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -637,92 +659,118 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double correctX {
+        public double CorrectX {
             get {
-                return this.correctXField;
+                return this.CorrectXField;
             }
             set {
-                if ((this.correctXField.Equals(value) != true)) {
-                    this.correctXField = value;
-                    this.RaisePropertyChanged("correctX");
+                if ((this.CorrectXField.Equals(value) != true)) {
+                    this.CorrectXField = value;
+                    this.RaisePropertyChanged("CorrectX");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double correctY {
+        public double CorrectY {
             get {
-                return this.correctYField;
+                return this.CorrectYField;
             }
             set {
-                if ((this.correctYField.Equals(value) != true)) {
-                    this.correctYField = value;
-                    this.RaisePropertyChanged("correctY");
+                if ((this.CorrectYField.Equals(value) != true)) {
+                    this.CorrectYField = value;
+                    this.RaisePropertyChanged("CorrectY");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int height {
+        public int Height {
             get {
-                return this.heightField;
+                return this.HeightField;
             }
             set {
-                if ((this.heightField.Equals(value) != true)) {
-                    this.heightField = value;
-                    this.RaisePropertyChanged("height");
+                if ((this.HeightField.Equals(value) != true)) {
+                    this.HeightField = value;
+                    this.RaisePropertyChanged("Height");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int pieceId {
+        public double InitialX {
             get {
-                return this.pieceIdField;
+                return this.InitialXField;
             }
             set {
-                if ((this.pieceIdField.Equals(value) != true)) {
-                    this.pieceIdField = value;
-                    this.RaisePropertyChanged("pieceId");
+                if ((this.InitialXField.Equals(value) != true)) {
+                    this.InitialXField = value;
+                    this.RaisePropertyChanged("InitialX");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int sourceX {
+        public double InitialY {
             get {
-                return this.sourceXField;
+                return this.InitialYField;
             }
             set {
-                if ((this.sourceXField.Equals(value) != true)) {
-                    this.sourceXField = value;
-                    this.RaisePropertyChanged("sourceX");
+                if ((this.InitialYField.Equals(value) != true)) {
+                    this.InitialYField = value;
+                    this.RaisePropertyChanged("InitialY");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int sourceY {
+        public int PieceId {
             get {
-                return this.sourceYField;
+                return this.PieceIdField;
             }
             set {
-                if ((this.sourceYField.Equals(value) != true)) {
-                    this.sourceYField = value;
-                    this.RaisePropertyChanged("sourceY");
+                if ((this.PieceIdField.Equals(value) != true)) {
+                    this.PieceIdField = value;
+                    this.RaisePropertyChanged("PieceId");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int width {
+        public int SourceX {
             get {
-                return this.widthField;
+                return this.SourceXField;
             }
             set {
-                if ((this.widthField.Equals(value) != true)) {
-                    this.widthField = value;
-                    this.RaisePropertyChanged("width");
+                if ((this.SourceXField.Equals(value) != true)) {
+                    this.SourceXField = value;
+                    this.RaisePropertyChanged("SourceX");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int SourceY {
+            get {
+                return this.SourceYField;
+            }
+            set {
+                if ((this.SourceYField.Equals(value) != true)) {
+                    this.SourceYField = value;
+                    this.RaisePropertyChanged("SourceY");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Width {
+            get {
+                return this.WidthField;
+            }
+            set {
+                if ((this.WidthField.Equals(value) != true)) {
+                    this.WidthField = value;
+                    this.RaisePropertyChanged("Width");
                 }
             }
         }
@@ -795,11 +843,23 @@ namespace MindWeaveClient.MatchmakingService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest", ReplyAction="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.MatchmakingService.GuestJoinResultDto> joinLobbyAsGuestAsync(MindWeaveClient.MatchmakingService.GuestJoinRequestDto joinRequest);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMatchmakingManager/sendPiecePlaced", ReplyAction="http://tempuri.org/IMatchmakingManager/sendPiecePlacedResponse")]
-        void sendPiecePlaced(int pieceId);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceDrag")]
+        void requestPieceDrag(string lobbyCode, int pieceId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMatchmakingManager/sendPiecePlaced", ReplyAction="http://tempuri.org/IMatchmakingManager/sendPiecePlacedResponse")]
-        System.Threading.Tasks.Task sendPiecePlacedAsync(int pieceId);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceDrag")]
+        System.Threading.Tasks.Task requestPieceDragAsync(string lobbyCode, int pieceId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceDrop")]
+        void requestPieceDrop(string lobbyCode, int pieceId, double newX, double newY);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceDrop")]
+        System.Threading.Tasks.Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceRelease")]
+        void requestPieceRelease(string lobbyCode, int pieceId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceRelease")]
+        System.Threading.Tasks.Task requestPieceReleaseAsync(string lobbyCode, int pieceId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -819,6 +879,18 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onGameStarted")]
         void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceDragStarted")]
+        void onPieceDragStarted(int pieceId, int playerId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPiecePlaced")]
+        void onPiecePlaced(int pieceId, double correctX, double correctY, int scoringPlayerId, int newScore);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceMoved")]
+        void onPieceMoved(int pieceId, double newX, double newY);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceDragReleased")]
+        void onPieceDragReleased(int pieceId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -921,12 +993,28 @@ namespace MindWeaveClient.MatchmakingService {
             return base.Channel.joinLobbyAsGuestAsync(joinRequest);
         }
         
-        public void sendPiecePlaced(int pieceId) {
-            base.Channel.sendPiecePlaced(pieceId);
+        public void requestPieceDrag(string lobbyCode, int pieceId) {
+            base.Channel.requestPieceDrag(lobbyCode, pieceId);
         }
         
-        public System.Threading.Tasks.Task sendPiecePlacedAsync(int pieceId) {
-            return base.Channel.sendPiecePlacedAsync(pieceId);
+        public System.Threading.Tasks.Task requestPieceDragAsync(string lobbyCode, int pieceId) {
+            return base.Channel.requestPieceDragAsync(lobbyCode, pieceId);
+        }
+        
+        public void requestPieceDrop(string lobbyCode, int pieceId, double newX, double newY) {
+            base.Channel.requestPieceDrop(lobbyCode, pieceId, newX, newY);
+        }
+        
+        public System.Threading.Tasks.Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY) {
+            return base.Channel.requestPieceDropAsync(lobbyCode, pieceId, newX, newY);
+        }
+        
+        public void requestPieceRelease(string lobbyCode, int pieceId) {
+            base.Channel.requestPieceRelease(lobbyCode, pieceId);
+        }
+        
+        public System.Threading.Tasks.Task requestPieceReleaseAsync(string lobbyCode, int pieceId) {
+            return base.Channel.requestPieceReleaseAsync(lobbyCode, pieceId);
         }
     }
 }

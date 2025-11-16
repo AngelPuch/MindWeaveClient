@@ -53,6 +53,7 @@
         <xs:sequence>
           <xs:element minOccurs="0" name="assignedGuestUsername" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="initialLobbyState" nillable="true" type="tns:LobbyStateDto" />
+          <xs:element minOccurs="0" name="playerId" type="xs:int" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

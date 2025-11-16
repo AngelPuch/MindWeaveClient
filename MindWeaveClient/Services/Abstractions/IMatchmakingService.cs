@@ -32,6 +32,10 @@ namespace MindWeaveClient.Services.Abstractions
 
         void disconnect();
 
-        Task sendPiecePlacedAsync(int pieceId);
+        Task requestPieceDragAsync(string lobbyCode, int pieceId);
+
+        Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY);
+
+        Task requestPieceReleaseAsync(string lobbyCode, int pieceId);
     }
 }

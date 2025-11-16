@@ -86,7 +86,7 @@ namespace MindWeaveClient.Services.Implementations
 
             if (wcfResult.success && wcfResult.initialLobbyState != null)
             {
-                SessionService.setSession(wcfResult.assignedGuestUsername, null, true);
+                SessionService.setSession(wcfResult.playerId, wcfResult.assignedGuestUsername, null, true);
             }
             return new GuestJoinServiceResultDto(wcfResult, true);
         }
@@ -132,6 +132,25 @@ namespace MindWeaveClient.Services.Implementations
         public async Task inviteGuestByEmailAsync(GuestInvitationDto invitationData)
         {
             await executeOneWaySafeAsync(() => proxy.inviteGuestByEmail(invitationData));
+        }
+
+        public async Task requestPieceDragAsync(string lobbyCode, int pieceId)
+        {
+            ensureClientIsCreated(); 
+            await executeSafeTaskAsync(async () => await proxy.requestPieceDragAsync(lobbyCode, pieceId));
+
+        }
+
+        public async Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY)
+        {
+            ensureClientIsCreated();
+            await executeSafeTaskAsync(async () => await proxy.requestPieceDropAsync(lobbyCode, pieceId, newX, newY));
+        }
+
+        public async Task requestPieceReleaseAsync(string lobbyCode, int pieceId)
+        {
+            ensureClientIsCreated();
+            await executeSafeTaskAsync(async () => await proxy.requestPieceReleaseAsync(lobbyCode, pieceId));
         }
 
         public void disconnect()
@@ -194,14 +213,6 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        
-        
-        public async Task sendPiecePlacedAsync(int pieceId)
-        {
-            ensureClientIsCreated();
-            await executeSafeTaskAsync(async () => await proxy.sendPiecePlacedAsync(pieceId));
-        }
-        
 
         private async Task executeSafeTaskAsync(Func<Task> call)
         {

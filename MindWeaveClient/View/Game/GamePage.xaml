@@ -3,9 +3,14 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:local="clr-namespace:MindWeaveClient.View.Game"
       xmlns:lang="clr-namespace:MindWeaveClient.Properties.Langs"
+      
+      xmlns:local="clr-namespace:MindWeaveClient.View.Game"
+      xmlns:viewModel="clr-namespace:MindWeaveClient.ViewModel.Game"
+      xmlns:puzzleVM="clr-namespace:MindWeaveClient.ViewModel.Puzzle"
+
       mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance Type=viewModel:GameViewModel}"
       Title="Mind Weave - In Game">
 
     <Page.Resources>
@@ -32,37 +37,40 @@
                     <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
                 </Border.Effect>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <ItemsControl ItemsSource="{Binding PlayerScores}" HorizontalAlignment="Center" Margin="10">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
-                    <Border Background="#2E3A4E" BorderBrush="{StaticResource Player1Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="{StaticResource Player1Color}"/>
-                            <TextBlock Text="Hyelo" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                        </StackPanel>
-                    </Border>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:PlayerScoreViewModel}">
+                            <Border Background="#2E3A4E" 
+                                    BorderBrush="{StaticResource Player1Color}" 
+                                    BorderThickness="2" 
+                                    CornerRadius="25" 
+                                    Padding="15,8" 
+                                    Margin="10,0" 
+                                    MinWidth="150">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="{StaticResource Player1Color}"/>
+                                    <TextBlock Text="{Binding Username}" 
+                                               Foreground="White" 
+                                               FontWeight="Bold" 
+                                               VerticalAlignment="Center" 
+                                               Margin="10,0,0,0"/>
+                                    <TextBlock Foreground="Gray" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0">
+                                        <TextBlock.Text>
+                                            <Binding Path="Score" StringFormat="{}{0} pts" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-                    <Border Background="#2E3A4E" BorderBrush="{StaticResource Player2Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="{StaticResource Player2Color}"/>
-                            <TextBlock Text="Puch" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="#2E3A4E" BorderBrush="{StaticResource Player3Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="{StaticResource Player3Color}"/>
-                            <TextBlock Text="NoobMaster69" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="#2E3A4E" BorderBrush="{StaticResource Player4Color}" BorderThickness="2" CornerRadius="25" Padding="15,8" Margin="10,0" MinWidth="150">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="{StaticResource Player4Color}"/>
-                            <TextBlock Text="Xca Rodri" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                </StackPanel>
             </Border>
 
             <Grid Grid.Row="1" Margin="20">
@@ -71,7 +79,8 @@
                     <ColumnDefinition Width="280"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Background="#A52E3A4E" CornerRadius="15">
+                <Border Grid.Column="0" Background="#A52E3A4E" CornerRadius="15"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
                     </Border.Effect>
@@ -86,15 +95,14 @@
                         </ItemsControl.ItemsPanel>
 
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding PieceImage}"
-                                       Width="{Binding Width}"
-                                       Height="{Binding Height}"
-                                       Stretch="Fill"
-                                       Cursor="Hand"
-                                       MouseLeftButtonDown="Piece_MouseLeftButtonDown"
-                                       MouseLeftButtonUp="Piece_MouseLeftButtonUp"
-                                       MouseMove="Piece_MouseMove"/>
+                            <DataTemplate DataType="{x:Type puzzleVM:PuzzlePieceViewModel}">
+                                <local:PuzzlePieceView 
+                                    DataContext="{Binding}"
+                                    Cursor="Hand"
+                                    
+                                    MouseLeftButtonDown="Piece_MouseLeftButtonDown"
+                                    MouseMove="Piece_MouseMove"
+                                    MouseLeftButtonUp="Piece_MouseLeftButtonUp" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
@@ -130,14 +138,17 @@
                         <StackPanel>
                             <TextBlock Text="{x:Static lang:Lang.InGameLbScore}" Foreground="White" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
                             <Viewbox Stretch="Uniform" Height="80">
-                                <TextBlock Text="560 pts" Foreground="{StaticResource PrimaryColor}" FontWeight="Bold"/>
+                                <TextBlock Foreground="{StaticResource PrimaryColor}" FontWeight="Bold">
+                                    <TextBlock.Text>
+                                        <Binding Path="PlayerScores[0].Score" StringFormat="{}{0} pts" />
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Viewbox>
                         </StackPanel>
                     </Border>
 
                 </StackPanel>
             </Grid>
-
         </Grid>
     </Grid>
 </Page>

@@ -1,14 +1,46 @@
-﻿using System.Windows;
+﻿// --- Archivo COMPLETO Y ACTUALIZADO ---
+
+using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace MindWeaveClient.ViewModel
+// El namespace debe ser este, según tu estructura de archivos
+namespace MindWeaveClient.ViewModel.Puzzle
 {
     public class PuzzlePieceViewModel : BaseViewModel
     {
         public CroppedBitmap PieceImage { get; set; }
         public int PieceId { get; }
         public Point CorrectPosition { get; }
-        public bool IsCorrectlyPlaced { get; set; } // Deberías implementar OnPropertyChanged si esto cambia la UI
+
+        // --- PROPIEDADES NUEVAS Y MODIFICADAS ---
+
+        // Guarda la posición inicial ("bandeja") para poder regresar la pieza
+        public double OriginalX { get; }
+        public double OriginalY { get; }
+
+        // Reemplaza 'IsCorrectlyPlaced'. Se activa por el servidor.
+        private bool _isPlaced;
+        public bool IsPlaced
+        {
+            get => _isPlaced;
+            set
+            {
+                _isPlaced = value;
+                OnPropertyChanged();
+                // Si está colocada, no puede estar "sostenida"
+                if (value) IsHeldByOther = false;
+            }
+        }
+
+        // Se activa cuando OTRO jugador está arrastrando esta pieza
+        private bool _isHeldByOther;
+        public bool IsHeldByOther
+        {
+            get => _isHeldByOther;
+            set { _isHeldByOther = value; OnPropertyChanged(); }
+        }
+
+        // --- FIN DE PROPIEDADES NUEVAS ---
 
         private double _x;
         public double X
@@ -31,36 +63,40 @@ namespace MindWeaveClient.ViewModel
             set { _zIndex = value; OnPropertyChanged(); }
         }
 
-        // === INICIO MODIFICACIÓN ===
-        // 1. Añade las propiedades para almacenar el tamaño
         public int Width { get; private set; }
         public int Height { get; private set; }
-        // === FIN MODIFICACIÓN ===
 
+
+        // --- CONSTRUCTOR MODIFICADO ---
+        // Se añaden 'originalX' y 'originalY' al final
         public PuzzlePieceViewModel(
             BitmapSource fullImage,
             int pieceId,
             int sourceX, int sourceY,
-            int width, int height, // <-- Estos valores ya los estás recibiendo
+            int width, int height,
             double correctX, double correctY,
-            double startX, double startY)
+            double startX, double startY,
+            double originalX, double originalY) // <-- Añadidos
         {
             PieceId = pieceId;
             CorrectPosition = new Point(correctX, correctY);
-            IsCorrectlyPlaced = false;
 
-            // === INICIO MODIFICACIÓN ===
-            // 2. Asigna los valores a las nuevas propiedades
+            // Inicializar los campos
+            _isPlaced = false;
+            _isHeldByOther = false;
+
             this.Width = width;
             this.Height = height;
-            // === FIN MODIFICACIÓN ===
 
-            // Esta parte (la creación de la imagen) está perfecta
+            // Guardar la posición de la "bandeja"
+            this.OriginalX = originalX;
+            this.OriginalY = originalY;
+
             Int32Rect cropRect = new Int32Rect(sourceX, sourceY, width, height);
             PieceImage = new CroppedBitmap(fullImage, cropRect);
-            PieceImage.Freeze(); // Buena práctica para rendimiento
+            PieceImage.Freeze();
 
-            // Esta parte también está perfecta
+            // La posición actual (X, Y) empieza donde dice 'startX' y 'startY'
             X = startX;
             Y = startY;
             ZIndex = 0;

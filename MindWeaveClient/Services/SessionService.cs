@@ -4,6 +4,7 @@ namespace MindWeaveClient.Services
 {
     public static class SessionService
     {
+        public static int PlayerId { get; private set; }
         public static string Username { get; private set; }
         public static string AvatarPath { get; private set; }
         public static bool IsGuest { get; private set; }
@@ -11,8 +12,9 @@ namespace MindWeaveClient.Services
 
         public static event EventHandler AvatarPathChanged;
 
-        public static void setSession(string username, string avatarPath, bool isGuest = false)
+        public static void setSession(int playerId, string username, string avatarPath, bool isGuest = false)
         {
+            SessionService.PlayerId = playerId;
             SessionService.Username = username;
             SessionService.AvatarPath = avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
             SessionService.IsGuest = isGuest;
@@ -29,6 +31,7 @@ namespace MindWeaveClient.Services
 
         public static void clearSession()
         {
+            PlayerId = 0;
             Username = null;
             AvatarPath = null;
             IsGuest = false;
