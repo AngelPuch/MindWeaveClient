@@ -13,7 +13,6 @@ namespace MindWeaveClient.View.Game
         private PuzzlePieceViewModel _draggedPiece;
         private Point _mouseOffset;
 
-        // Constructor corregido (¡este ya lo tienes bien!)
         public GamePage(GameViewModel viewModel)
         {
             InitializeComponent();
@@ -23,13 +22,10 @@ namespace MindWeaveClient.View.Game
 
         private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // --- INICIO CORRECCIÓN 1 ---
-            // El 'sender' es el UserControl (PuzzlePieceView), no la Imagen.
             var pieceView = sender as PuzzlePieceView;
             if (pieceView == null) return;
 
             var pieceViewModel = pieceView.DataContext as PuzzlePieceViewModel;
-            // --- FIN CORRECCIÓN 1 ---
 
             if (pieceViewModel == null || pieceViewModel.IsPlaced || pieceViewModel.IsHeldByOther)
             {
@@ -37,20 +33,14 @@ namespace MindWeaveClient.View.Game
             }
 
             _draggedPiece = pieceViewModel;
-
-            // --- INICIO CORRECCIÓN 2 ---
-            // Obtenemos el offset relativo al UserControl (la pieza)
             _mouseOffset = e.GetPosition(pieceView);
-            // Capturamos el mouse en el UserControl
             pieceView.CaptureMouse();
-            // --- FIN CORRECCIÓN 2 ---
-
             _draggedPiece.ZIndex = 100;
 
             var viewModel = this.DataContext as GameViewModel;
             viewModel?.startDraggingPiece(_draggedPiece);
 
-            e.Handled = true; // Prevenimos que el evento se propague
+            e.Handled = true;
         }
 
         private void Piece_MouseMove(object sender, MouseEventArgs e)
@@ -60,8 +50,6 @@ namespace MindWeaveClient.View.Game
                 return;
             }
 
-            // El 'sender' es el PuzzlePieceView que capturó el mouse.
-            // Necesitamos encontrar el Canvas padre para obtener la posición absoluta.
             var canvas = FindVisualParent<Canvas>(sender as DependencyObject);
             if (canvas == null)
             {
@@ -70,7 +58,6 @@ namespace MindWeaveClient.View.Game
 
             Point mousePos = e.GetPosition(canvas);
 
-            // Esta lógica es correcta: Posición del mouse en el canvas MENOS el offset
             double newX = mousePos.X - _mouseOffset.X;
             double newY = mousePos.Y - _mouseOffset.Y;
 
@@ -85,24 +72,46 @@ namespace MindWeaveClient.View.Game
                 return;
             }
 
-            // --- INICIO CORRECCIÓN 3 ---
-            // El 'sender' es el UserControl (PuzzlePieceView)
             var pieceView = sender as PuzzlePieceView;
             if (pieceView == null) return;
 
-            // Soltamos la captura del mouse
             pieceView.ReleaseMouseCapture();
-            // --- FIN CORRECCIÓN 3 ---
-
             _draggedPiece.ZIndex = 0;
-
-            // Esta lógica es perfecta.
-            // Notificamos al ViewModel, que notificará al servidor.
             var viewModel = this.DataContext as GameViewModel;
-            viewModel?.DropPiece(_draggedPiece, _draggedPiece.X, _draggedPiece.Y);
+
+            // --- INICIO DE LA LÓGICA DEL "IMÁN" (PASO 3) ---
+
+            const double SNAP_TOLERANCE = 10.0;
+
+            double currentX = _draggedPiece.X;
+            double currentY = _draggedPiece.Y;
+
+            double correctX = _draggedPiece.CorrectX;
+            double correctY = _draggedPiece.CorrectY;
+
+            bool isSnap = Math.Abs(correctX - currentX) < SNAP_TOLERANCE &&
+                          Math.Abs(correctY - currentY) < SNAP_TOLERANCE;
+
+            if (isSnap)
+            {
+                // 1. EFECTO IMÁN: Mueve la pieza a su lugar final exacto
+                _draggedPiece.X = correctX;
+                _draggedPiece.Y = correctY;
+
+                // 2. Notifica al servidor la posición CORRECTA
+                viewModel?.DropPiece(_draggedPiece, correctX, correctY);
+            }
+            else
+            {
+                // 1. NO HAY SNAP: La pieza se queda donde está
+                // 2. Notifica al servidor la posición "flotante"
+                viewModel?.DropPiece(_draggedPiece, currentX, currentY);
+            }
+
+            // --- FIN DE LA LÓGICA DEL "IMÁN" ---
 
             _draggedPiece = null;
-            e.Handled = true; // Prevenimos que el evento se propague
+            e.Handled = true;
         }
 
 
@@ -119,10 +128,9 @@ namespace MindWeaveClient.View.Game
 
         private void GamePage_Unloaded(object sender, RoutedEventArgs e)
         {
-            // Esta lógica de limpieza es perfecta.
             if (this.DataContext is GameViewModel vm)
             {
-                vm.Cleanup();
+                vm.cleanup();
             }
             this.Unloaded -= GamePage_Unloaded;
         }

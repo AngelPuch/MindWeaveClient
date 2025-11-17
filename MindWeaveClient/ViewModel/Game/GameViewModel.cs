@@ -70,17 +70,14 @@ namespace MindWeaveClient.ViewModel.Game
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
 
-            // Inicializar scores primero
             initializePlayerScores();
 
-            // Suscribirse a eventos
             currentMatchService.PuzzleReady += OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
 
-            // Intentar cargar el puzzle si ya está disponible
             tryLoadExistingPuzzle();
         }
 
@@ -358,7 +355,7 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        public void Cleanup()
+        public void cleanup()
         {
             currentMatchService.PuzzleReady -= OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler -= OnServerPieceDragStarted;
