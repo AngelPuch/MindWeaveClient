@@ -315,6 +315,9 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> BottomNeighborIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private double CorrectXField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -330,13 +333,22 @@ namespace MindWeaveClient.PuzzleManagerService {
         private double InitialYField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> LeftNeighborIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int PieceIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> RightNeighborIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int SourceXField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int SourceYField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> TopNeighborIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int WidthField;
@@ -348,6 +360,19 @@ namespace MindWeaveClient.PuzzleManagerService {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> BottomNeighborId {
+            get {
+                return this.BottomNeighborIdField;
+            }
+            set {
+                if ((this.BottomNeighborIdField.Equals(value) != true)) {
+                    this.BottomNeighborIdField = value;
+                    this.RaisePropertyChanged("BottomNeighborId");
+                }
             }
         }
         
@@ -417,6 +442,19 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> LeftNeighborId {
+            get {
+                return this.LeftNeighborIdField;
+            }
+            set {
+                if ((this.LeftNeighborIdField.Equals(value) != true)) {
+                    this.LeftNeighborIdField = value;
+                    this.RaisePropertyChanged("LeftNeighborId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int PieceId {
             get {
                 return this.PieceIdField;
@@ -425,6 +463,19 @@ namespace MindWeaveClient.PuzzleManagerService {
                 if ((this.PieceIdField.Equals(value) != true)) {
                     this.PieceIdField = value;
                     this.RaisePropertyChanged("PieceId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> RightNeighborId {
+            get {
+                return this.RightNeighborIdField;
+            }
+            set {
+                if ((this.RightNeighborIdField.Equals(value) != true)) {
+                    this.RightNeighborIdField = value;
+                    this.RaisePropertyChanged("RightNeighborId");
                 }
             }
         }
@@ -451,6 +502,19 @@ namespace MindWeaveClient.PuzzleManagerService {
                 if ((this.SourceYField.Equals(value) != true)) {
                     this.SourceYField = value;
                     this.RaisePropertyChanged("SourceY");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> TopNeighborId {
+            get {
+                return this.TopNeighborIdField;
+            }
+            set {
+                if ((this.TopNeighborIdField.Equals(value) != true)) {
+                    this.TopNeighborIdField = value;
+                    this.RaisePropertyChanged("TopNeighborId");
                 }
             }
         }

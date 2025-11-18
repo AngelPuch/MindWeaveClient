@@ -85,10 +85,11 @@
                         <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
                     </Border.Effect>
 
-                    <ItemsControl ItemsSource="{Binding PiecesCollection}">
+                    <ItemsControl x:Name="PuzzleItemsControl" ItemsSource="{Binding PiecesCollection}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas Width="{Binding PuzzleWidth}"
+                                <Canvas x:Name="PuzzleCanvas" 
+                                        Width="{Binding PuzzleWidth}"
                                         Height="{Binding PuzzleHeight}"
                                         Background="#222"/>
                             </ItemsPanelTemplate>

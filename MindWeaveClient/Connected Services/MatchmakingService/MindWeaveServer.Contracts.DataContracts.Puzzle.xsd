@@ -17,14 +17,18 @@
   <xs:element name="ArrayOfPuzzlePieceDefinitionDto" nillable="true" type="tns:ArrayOfPuzzlePieceDefinitionDto" />
   <xs:complexType name="PuzzlePieceDefinitionDto">
     <xs:sequence>
+      <xs:element minOccurs="0" name="BottomNeighborId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CorrectX" type="xs:double" />
       <xs:element minOccurs="0" name="CorrectY" type="xs:double" />
       <xs:element minOccurs="0" name="Height" type="xs:int" />
       <xs:element minOccurs="0" name="InitialX" type="xs:double" />
       <xs:element minOccurs="0" name="InitialY" type="xs:double" />
+      <xs:element minOccurs="0" name="LeftNeighborId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="PieceId" type="xs:int" />
+      <xs:element minOccurs="0" name="RightNeighborId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="SourceX" type="xs:int" />
       <xs:element minOccurs="0" name="SourceY" type="xs:int" />
+      <xs:element minOccurs="0" name="TopNeighborId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Width" type="xs:int" />
     </xs:sequence>
   </xs:complexType>

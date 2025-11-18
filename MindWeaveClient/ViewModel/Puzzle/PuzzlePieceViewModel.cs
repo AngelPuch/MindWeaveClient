@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Puzzle
@@ -22,7 +23,10 @@ namespace MindWeaveClient.ViewModel.Puzzle
             {
                 isPlaced = value;
                 OnPropertyChanged();
-                if (value) IsHeldByOther = false;
+                if (value)
+                {
+                    IsHeldByOther = false;
+                }
             }
         }
 
@@ -30,32 +34,63 @@ namespace MindWeaveClient.ViewModel.Puzzle
         public bool IsHeldByOther
         {
             get => isHeldByOther;
-            set { isHeldByOther = value; OnPropertyChanged(); }
+            set
+            {
+                isHeldByOther = value;
+                OnPropertyChanged();
+            }
         }
 
         private double x;
         public double X
         {
             get => x;
-            set { x = value; OnPropertyChanged(); }
+            set
+            {
+                x = value;
+                OnPropertyChanged();
+            }
         }
 
         private double y;
         public double Y
         {
             get => y;
-            set { y = value; OnPropertyChanged(); }
+            set
+            {
+                y = value;
+                OnPropertyChanged();
+            }
         }
 
         private int zIndex;
         public int ZIndex
         {
             get => zIndex;
-            set { zIndex = value; OnPropertyChanged(); }
+            set
+            {
+                zIndex = value;
+                OnPropertyChanged();
+            }
         }
 
         public int Width { get; private set; }
         public int Height { get; private set; }
+
+        public int? TopNeighborId { get; }
+
+        public int? BottomNeighborId { get; }
+
+        public int? LeftNeighborId { get; }
+
+        public int? RightNeighborId { get; }
+
+        public List<PuzzlePieceViewModel> PieceGroup { get; set; }
+
+        public double DragOffsetX { get; set; }
+
+        public double DragOffsetY { get; set; }
+
 
         public PuzzlePieceViewModel(
             BitmapSource fullImage,
@@ -64,7 +99,11 @@ namespace MindWeaveClient.ViewModel.Puzzle
             int width, int height,
             double correctX, double correctY,
             double startX, double startY,
-            double originalX, double originalY)
+            double originalX, double originalY,
+            int? topNeighborId,
+            int? bottomNeighborId,
+            int? leftNeighborId,
+            int? rightNeighborId)
         {
             PieceId = pieceId;
 
@@ -87,6 +126,12 @@ namespace MindWeaveClient.ViewModel.Puzzle
             X = startX;
             Y = startY;
             ZIndex = 0;
+
+            this.TopNeighborId = topNeighborId;
+            this.BottomNeighborId = bottomNeighborId;
+            this.LeftNeighborId = leftNeighborId;
+            this.RightNeighborId = rightNeighborId;
+
         }
     }
 }

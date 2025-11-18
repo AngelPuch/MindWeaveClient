@@ -1,16 +1,14 @@
-﻿using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.PuzzleManagerService;
-using MindWeaveClient.Services;
+﻿using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Utilities.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.ViewModel.Puzzle;
 
@@ -25,7 +23,11 @@ namespace MindWeaveClient.ViewModel.Game
         public int Score
         {
             get => score;
-            set { score = value; OnPropertyChanged(); }
+            set
+            {
+                score = value;
+                OnPropertyChanged();
+            }
         }
     }
 
@@ -44,17 +46,25 @@ namespace MindWeaveClient.ViewModel.Game
         public int PuzzleWidth
         {
             get => puzzleWidth;
-            set { puzzleWidth = value; OnPropertyChanged(); }
+            set
+            {
+                puzzleWidth = value;
+                OnPropertyChanged();
+            }
         }
 
         private int puzzleHeight;
         public int PuzzleHeight
         {
             get => puzzleHeight;
-            set { puzzleHeight = value; OnPropertyChanged(); }
+            set
+            {
+                puzzleHeight = value;
+                OnPropertyChanged();
+            }
         }
 
-        private bool _puzzleLoaded = false;
+        private bool puzzleLoaded;
 
         public GameViewModel(
             ICurrentMatchService currentMatchService,
@@ -84,9 +94,9 @@ namespace MindWeaveClient.ViewModel.Game
         private void tryLoadExistingPuzzle()
         {
             var puzzleDto = currentMatchService.getCurrentPuzzle();
-            if (puzzleDto != null && !_puzzleLoaded)
+            if (puzzleDto != null && !puzzleLoaded)
             {
-                LoadPuzzle(puzzleDto);
+                loadPuzzle(puzzleDto);
             }
         }
 
@@ -94,7 +104,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                if (_puzzleLoaded)
+                if (puzzleLoaded)
                 {
                     Trace.WriteLine("Puzzle already loaded, skipping OnPuzzleReady");
                     return;
@@ -103,7 +113,7 @@ namespace MindWeaveClient.ViewModel.Game
                 var puzzleDto = currentMatchService.getCurrentPuzzle();
                 if (puzzleDto != null)
                 {
-                    LoadPuzzle(puzzleDto);
+                    loadPuzzle(puzzleDto);
                 }
             });
         }
@@ -125,26 +135,26 @@ namespace MindWeaveClient.ViewModel.Game
                     ? SessionService.PlayerId
                     : -Math.Abs(username.GetHashCode() % 1000000);
 
-                var newPlayerVM = new PlayerScoreViewModel
+                var newPlayerVm = new PlayerScoreViewModel
                 {
                     PlayerId = tempId,
                     Username = username,
                     Score = 0
                 };
 
-                PlayerScores.Add(newPlayerVM);
+                PlayerScores.Add(newPlayerVm);
 
                 if (tempId == SessionService.PlayerId)
                 {
-                    MyPlayer = newPlayerVM;
+                    MyPlayer = newPlayerVm;
                 }
             }
             OnPropertyChanged(nameof(MyPlayer));
         }
 
-        private void LoadPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzleDto)
+        private void loadPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzleDto)
         {
-            if (_puzzleLoaded)
+            if (puzzleLoaded)
             {
                 Trace.WriteLine("Puzzle already loaded, skipping LoadPuzzle");
                 return;
@@ -177,6 +187,7 @@ namespace MindWeaveClient.ViewModel.Game
 
                 foreach (var pieceDef in puzzleDto.pieces)
                 {
+                    // ✅ CORRECCIÓN: Pasar los neighbor IDs en las posiciones correctas
                     var pieceViewModel = new PuzzlePieceViewModel(
                         fullImage,
                         pieceDef.PieceId,
@@ -188,13 +199,28 @@ namespace MindWeaveClient.ViewModel.Game
                         pieceDef.CorrectY,
                         pieceDef.InitialX,
                         pieceDef.InitialY,
-                        pieceDef.InitialX,
-                        pieceDef.InitialY
+                        pieceDef.InitialX,          // originalX
+                        pieceDef.InitialY,          // originalY
+                        pieceDef.TopNeighborId,     // ✅ Ahora en la posición correcta
+                        pieceDef.BottomNeighborId,  // ✅ Ahora en la posición correcta
+                        pieceDef.LeftNeighborId,    // ✅ Ahora en la posición correcta
+                        pieceDef.RightNeighborId    // ✅ Ahora en la posición correcta
                     );
                     PiecesCollection.Add(pieceViewModel);
+
+                    // 🔍 DEBUG: Verificar que los vecinos se están asignando correctamente
+                    Trace.WriteLine($"Piece {pieceDef.PieceId} created with neighbors: " +
+                                    $"T={pieceDef.TopNeighborId}, B={pieceDef.BottomNeighborId}, " +
+                                    $"L={pieceDef.LeftNeighborId}, R={pieceDef.RightNeighborId}");
                 }
 
-                _puzzleLoaded = true;
+                // Inicializar cada pieza en su propio grupo
+                foreach (var piece in PiecesCollection)
+                {
+                    piece.PieceGroup = new List<PuzzlePieceViewModel> { piece };
+                }
+
+                puzzleLoaded = true;
                 Trace.WriteLine($"Puzzle loaded successfully with {PiecesCollection.Count} pieces");
             }
             catch (Exception ex)
@@ -211,7 +237,9 @@ namespace MindWeaveClient.ViewModel.Game
         public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
             if (piece == null || piece.IsPlaced || piece.IsHeldByOther)
+            {
                 return;
+            }
 
             try
             {
@@ -229,7 +257,9 @@ namespace MindWeaveClient.ViewModel.Game
         public async Task DropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
             if (piece == null)
+            {
                 return;
+            }
 
             try
             {
@@ -251,7 +281,9 @@ namespace MindWeaveClient.ViewModel.Game
         public async Task releasePiece(PuzzlePieceViewModel piece)
         {
             if (piece == null)
+            {
                 return;
+            }
 
             try
             {
@@ -268,7 +300,10 @@ namespace MindWeaveClient.ViewModel.Game
 
         private BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
         {
-            if (imageBytes == null || imageBytes.Length == 0) return null;
+            if (imageBytes == null || imageBytes.Length == 0)
+            {
+                return null;
+            }
             try
             {
                 var bitmapImage = new BitmapImage();
