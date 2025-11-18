@@ -287,26 +287,26 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             var userProfile = new UserProfileDto
             {
-                firstName = this.FirstName,
-                lastName = this.LastName,
-                username = this.Username,
-                email = this.Email,
-                dateOfBirth = BirthDate.Value,
-                genderId = getSelectedGenderId()
+                FirstName = this.FirstName,
+                LastName = this.LastName,
+                Username = this.Username,
+                Email = this.Email,
+                DateOfBirth = BirthDate.Value,
+                GenderId = getSelectedGenderId()
             };
 
             try
             {
                 OperationResultDto result = await authenticationService.registerAsync(userProfile, this.Password);
 
-                if (result.success)
+                if (result.Success)
                 {
                     SessionService.PendingVerificationEmail = this.Email;
                     navigationService.navigateTo<VerificationPage>();
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (EndpointNotFoundException ex)

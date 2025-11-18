@@ -9,11 +9,11 @@
   <xs:element name="ArrayOfPuzzleInfoDto" nillable="true" type="tns:ArrayOfPuzzleInfoDto" />
   <xs:complexType name="PuzzleInfoDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="imageBytes" nillable="true" type="xs:base64Binary" />
-      <xs:element minOccurs="0" name="imagePath" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="isUploaded" type="xs:boolean" />
-      <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="puzzleId" type="xs:int" />
+      <xs:element minOccurs="0" name="ImageBytes" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="ImagePath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsUploaded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PuzzleId" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PuzzleInfoDto" nillable="true" type="tns:PuzzleInfoDto" />
@@ -21,7 +21,7 @@
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" base="q1:OperationResultDto">
         <xs:sequence>
-          <xs:element minOccurs="0" name="newPuzzleId" type="xs:int" />
+          <xs:element minOccurs="0" name="NewPuzzleId" type="xs:int" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -29,10 +29,10 @@
   <xs:element name="UploadResultDto" nillable="true" type="tns:UploadResultDto" />
   <xs:complexType name="PuzzleDefinitionDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="fullImageBytes" nillable="true" type="xs:base64Binary" />
-      <xs:element minOccurs="0" name="pieces" nillable="true" type="tns:ArrayOfPuzzlePieceDefinitionDto" />
-      <xs:element minOccurs="0" name="puzzleHeight" type="xs:int" />
-      <xs:element minOccurs="0" name="puzzleWidth" type="xs:int" />
+      <xs:element minOccurs="0" name="FullImageBytes" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="Pieces" nillable="true" type="tns:ArrayOfPuzzlePieceDefinitionDto" />
+      <xs:element minOccurs="0" name="PuzzleHeight" type="xs:int" />
+      <xs:element minOccurs="0" name="PuzzleWidth" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PuzzleDefinitionDto" nillable="true" type="tns:PuzzleDefinitionDto" />

@@ -200,7 +200,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             try
             {
                 var result = await authenticationService.sendPasswordRecoveryCodeAsync(Email);
-                if (result.success)
+                if (result.Success)
                 {
                     dialogService.showInfo(Lang.ValidationPasswordRecoveryCodeSent, Lang.InfoMsgResendSuccessTitle);
 
@@ -217,7 +217,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (EndpointNotFoundException ex)
@@ -266,16 +266,16 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 var result = await authenticationService.resetPasswordWithCodeAsync(Email, VerificationCode, NewPassword);
 
-                if (result.success)
+                if (result.Success)
                 {
                     dialogService.showInfo(Lang.InfoMsgPasswordResetSuccessBody, Lang.InfoMsgPasswordResetSuccessTitle);
                     navigationService.navigateTo<LoginPage>();
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
 
-                    if (result.message.Contains(Lang.GlobalVerificationInvalidOrExpiredCode))
+                    if (result.Message.Contains(Lang.GlobalVerificationInvalidOrExpiredCode))
                     {
                         IsStep1Visible = false;
                         IsStep2Visible = true;

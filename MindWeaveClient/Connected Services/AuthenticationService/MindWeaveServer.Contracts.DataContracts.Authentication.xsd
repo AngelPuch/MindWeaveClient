@@ -3,30 +3,30 @@
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
   <xs:complexType name="LoginDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="email" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="LoginDto" nillable="true" type="tns:LoginDto" />
   <xs:complexType name="LoginResultDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="avatarPath" nillable="true" type="xs:string" />
-      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="operationResult" nillable="true" type="q1:OperationResultDto" />
-      <xs:element minOccurs="0" name="playerId" type="xs:int" />
-      <xs:element minOccurs="0" name="resultCode" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AvatarPath" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" minOccurs="0" name="OperationResult" nillable="true" type="q1:OperationResultDto" />
+      <xs:element minOccurs="0" name="PlayerId" type="xs:int" />
+      <xs:element minOccurs="0" name="ResultCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="LoginResultDto" nillable="true" type="tns:LoginResultDto" />
   <xs:complexType name="UserProfileDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="avatar" nillable="true" type="xs:base64Binary" />
-      <xs:element minOccurs="0" name="dateOfBirth" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="email" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="firstName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="genderId" type="xs:int" />
-      <xs:element minOccurs="0" name="lastName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Avatar" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="DateOfBirth" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FirstName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="GenderId" type="xs:int" />
+      <xs:element minOccurs="0" name="LastName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="UserProfileDto" nillable="true" type="tns:UserProfileDto" />

@@ -24,19 +24,19 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] imageBytesField;
+        private byte[] ImageBytesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string imagePathField;
+        private string ImagePathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool isUploadedField;
+        private bool IsUploadedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string nameField;
+        private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzleIdField;
+        private int PuzzleIdField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -49,66 +49,66 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] imageBytes {
+        public byte[] ImageBytes {
             get {
-                return this.imageBytesField;
+                return this.ImageBytesField;
             }
             set {
-                if ((object.ReferenceEquals(this.imageBytesField, value) != true)) {
-                    this.imageBytesField = value;
-                    this.RaisePropertyChanged("imageBytes");
+                if ((object.ReferenceEquals(this.ImageBytesField, value) != true)) {
+                    this.ImageBytesField = value;
+                    this.RaisePropertyChanged("ImageBytes");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string imagePath {
+        public string ImagePath {
             get {
-                return this.imagePathField;
+                return this.ImagePathField;
             }
             set {
-                if ((object.ReferenceEquals(this.imagePathField, value) != true)) {
-                    this.imagePathField = value;
-                    this.RaisePropertyChanged("imagePath");
+                if ((object.ReferenceEquals(this.ImagePathField, value) != true)) {
+                    this.ImagePathField = value;
+                    this.RaisePropertyChanged("ImagePath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool isUploaded {
+        public bool IsUploaded {
             get {
-                return this.isUploadedField;
+                return this.IsUploadedField;
             }
             set {
-                if ((this.isUploadedField.Equals(value) != true)) {
-                    this.isUploadedField = value;
-                    this.RaisePropertyChanged("isUploaded");
+                if ((this.IsUploadedField.Equals(value) != true)) {
+                    this.IsUploadedField = value;
+                    this.RaisePropertyChanged("IsUploaded");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string name {
+        public string Name {
             get {
-                return this.nameField;
+                return this.NameField;
             }
             set {
-                if ((object.ReferenceEquals(this.nameField, value) != true)) {
-                    this.nameField = value;
-                    this.RaisePropertyChanged("name");
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzleId {
+        public int PuzzleId {
             get {
-                return this.puzzleIdField;
+                return this.PuzzleIdField;
             }
             set {
-                if ((this.puzzleIdField.Equals(value) != true)) {
-                    this.puzzleIdField = value;
-                    this.RaisePropertyChanged("puzzleId");
+                if ((this.PuzzleIdField.Equals(value) != true)) {
+                    this.PuzzleIdField = value;
+                    this.RaisePropertyChanged("PuzzleId");
                 }
             }
         }
@@ -135,10 +135,10 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string messageField;
+        private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool successField;
+        private bool SuccessField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -151,27 +151,27 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string message {
+        public string Message {
             get {
-                return this.messageField;
+                return this.MessageField;
             }
             set {
-                if ((object.ReferenceEquals(this.messageField, value) != true)) {
-                    this.messageField = value;
-                    this.RaisePropertyChanged("message");
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool success {
+        public bool Success {
             get {
-                return this.successField;
+                return this.SuccessField;
             }
             set {
-                if ((this.successField.Equals(value) != true)) {
-                    this.successField = value;
-                    this.RaisePropertyChanged("success");
+                if ((this.SuccessField.Equals(value) != true)) {
+                    this.SuccessField = value;
+                    this.RaisePropertyChanged("Success");
                 }
             }
         }
@@ -194,17 +194,17 @@ namespace MindWeaveClient.PuzzleManagerService {
     public partial class UploadResultDto : MindWeaveClient.PuzzleManagerService.OperationResultDto {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int newPuzzleIdField;
+        private int NewPuzzleIdField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int newPuzzleId {
+        public int NewPuzzleId {
             get {
-                return this.newPuzzleIdField;
+                return this.NewPuzzleIdField;
             }
             set {
-                if ((this.newPuzzleIdField.Equals(value) != true)) {
-                    this.newPuzzleIdField = value;
-                    this.RaisePropertyChanged("newPuzzleId");
+                if ((this.NewPuzzleIdField.Equals(value) != true)) {
+                    this.NewPuzzleIdField = value;
+                    this.RaisePropertyChanged("NewPuzzleId");
                 }
             }
         }
@@ -221,16 +221,16 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] fullImageBytesField;
+        private byte[] FullImageBytesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto[] piecesField;
+        private MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto[] PiecesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzleHeightField;
+        private int PuzzleHeightField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzleWidthField;
+        private int PuzzleWidthField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -243,53 +243,53 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] fullImageBytes {
+        public byte[] FullImageBytes {
             get {
-                return this.fullImageBytesField;
+                return this.FullImageBytesField;
             }
             set {
-                if ((object.ReferenceEquals(this.fullImageBytesField, value) != true)) {
-                    this.fullImageBytesField = value;
-                    this.RaisePropertyChanged("fullImageBytes");
+                if ((object.ReferenceEquals(this.FullImageBytesField, value) != true)) {
+                    this.FullImageBytesField = value;
+                    this.RaisePropertyChanged("FullImageBytes");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto[] pieces {
+        public MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto[] Pieces {
             get {
-                return this.piecesField;
+                return this.PiecesField;
             }
             set {
-                if ((object.ReferenceEquals(this.piecesField, value) != true)) {
-                    this.piecesField = value;
-                    this.RaisePropertyChanged("pieces");
+                if ((object.ReferenceEquals(this.PiecesField, value) != true)) {
+                    this.PiecesField = value;
+                    this.RaisePropertyChanged("Pieces");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzleHeight {
+        public int PuzzleHeight {
             get {
-                return this.puzzleHeightField;
+                return this.PuzzleHeightField;
             }
             set {
-                if ((this.puzzleHeightField.Equals(value) != true)) {
-                    this.puzzleHeightField = value;
-                    this.RaisePropertyChanged("puzzleHeight");
+                if ((this.PuzzleHeightField.Equals(value) != true)) {
+                    this.PuzzleHeightField = value;
+                    this.RaisePropertyChanged("PuzzleHeight");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzleWidth {
+        public int PuzzleWidth {
             get {
-                return this.puzzleWidthField;
+                return this.PuzzleWidthField;
             }
             set {
-                if ((this.puzzleWidthField.Equals(value) != true)) {
-                    this.puzzleWidthField = value;
-                    this.RaisePropertyChanged("puzzleWidth");
+                if ((this.PuzzleWidthField.Equals(value) != true)) {
+                    this.PuzzleWidthField = value;
+                    this.RaisePropertyChanged("PuzzleWidth");
                 }
             }
         }

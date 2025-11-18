@@ -84,9 +84,9 @@ namespace MindWeaveClient.Services.Implementations
             ensureClientIsCreated();
             GuestJoinResultDto wcfResult = await executeSafeAsync(async () => await proxy.joinLobbyAsGuestAsync(request));
 
-            if (wcfResult.success && wcfResult.initialLobbyState != null)
+            if (wcfResult.Success && wcfResult.InitialLobbyState != null)
             {
-                SessionService.setSession(wcfResult.playerId, wcfResult.assignedGuestUsername, null, true);
+                SessionService.setSession(wcfResult.PlayerId, wcfResult.AssignedGuestUsername, null, true);
             }
             return new GuestJoinServiceResultDto(wcfResult, true);
         }

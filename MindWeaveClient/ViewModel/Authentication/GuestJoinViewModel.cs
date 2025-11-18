@@ -152,24 +152,24 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             var joinRequest = new GuestJoinRequestDto
             {
-                lobbyCode = this.LobbyCode.Trim(),
-                guestEmail = this.GuestEmail.Trim(),
-                desiredGuestUsername = this.DesiredUsername.Trim()
+                LobbyCode = this.LobbyCode.Trim(),
+                GuestEmail = this.GuestEmail.Trim(),
+                DesiredGuestUsername = this.DesiredUsername.Trim()
             };
 
             try
             {
                 GuestJoinServiceResultDto serviceResult = await matchmakingService.joinLobbyAsGuestAsync(joinRequest);
 
-                if (serviceResult.WcfResult.success && serviceResult.WcfResult.initialLobbyState != null)
+                if (serviceResult.WcfResult.Success && serviceResult.WcfResult.InitialLobbyState != null)
                 {
-                    currentLobbyService.setInitialState(serviceResult.WcfResult.initialLobbyState);
+                    currentLobbyService.setInitialState(serviceResult.WcfResult.InitialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
                     windowNavigationService.closeWindow<AuthenticationWindow>();
                 }
                 else
                 {
-                    dialogService.showError(serviceResult.WcfResult.message, Lang.ErrorTitle);
+                    dialogService.showError(serviceResult.WcfResult.Message, Lang.ErrorTitle);
 
                     if (!serviceResult.DidMatchmakingConnect)
                     {

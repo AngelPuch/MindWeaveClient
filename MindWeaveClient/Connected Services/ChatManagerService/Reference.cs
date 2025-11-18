@@ -24,13 +24,13 @@ namespace MindWeaveClient.ChatManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string contentField;
+        private string ContentField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string senderUsernameField;
+        private string SenderUsernameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime timestampField;
+        private System.DateTime TimestampField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -43,40 +43,40 @@ namespace MindWeaveClient.ChatManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string content {
+        public string Content {
             get {
-                return this.contentField;
+                return this.ContentField;
             }
             set {
-                if ((object.ReferenceEquals(this.contentField, value) != true)) {
-                    this.contentField = value;
-                    this.RaisePropertyChanged("content");
+                if ((object.ReferenceEquals(this.ContentField, value) != true)) {
+                    this.ContentField = value;
+                    this.RaisePropertyChanged("Content");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string senderUsername {
+        public string SenderUsername {
             get {
-                return this.senderUsernameField;
+                return this.SenderUsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.senderUsernameField, value) != true)) {
-                    this.senderUsernameField = value;
-                    this.RaisePropertyChanged("senderUsername");
+                if ((object.ReferenceEquals(this.SenderUsernameField, value) != true)) {
+                    this.SenderUsernameField = value;
+                    this.RaisePropertyChanged("SenderUsername");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime timestamp {
+        public System.DateTime Timestamp {
             get {
-                return this.timestampField;
+                return this.TimestampField;
             }
             set {
-                if ((this.timestampField.Equals(value) != true)) {
-                    this.timestampField = value;
-                    this.RaisePropertyChanged("timestamp");
+                if ((this.TimestampField.Equals(value) != true)) {
+                    this.TimestampField = value;
+                    this.RaisePropertyChanged("Timestamp");
                 }
             }
         }

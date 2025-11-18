@@ -137,7 +137,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 LoginServiceResultDto serviceResult = await authenticationService.loginAsync(Email, Password);
 
-                if (serviceResult.WcfLoginResult.operationResult.success)
+                if (serviceResult.WcfLoginResult.OperationResult.Success)
                 {
                     if (!serviceResult.IsSocialServiceConnected)
                     {
@@ -154,13 +154,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    if (serviceResult.WcfLoginResult.resultCode == "ACCOUNT_NOT_VERIFIED")
+                    if (serviceResult.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED")
                     {
                         ShowUnverifiedControls = true;
                     }
                     else
                     {
-                        dialogService.showError(serviceResult.WcfLoginResult.operationResult.message, Lang.ErrorTitle);
+                        dialogService.showError(serviceResult.WcfLoginResult.OperationResult.Message, Lang.ErrorTitle);
                     }
                 }
             }
@@ -185,14 +185,14 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 var result = await authenticationService.resendVerificationCodeAsync(Email);
 
-                if (result.success)
+                if (result.Success)
                 {
                     SessionService.PendingVerificationEmail = this.Email;
                     navigationService.navigateTo<VerificationPage>();
                 }
                 else
                 {
-                    handleError(result.message, null);
+                    handleError(result.Message, null);
                 }
             }
             catch (Exception ex)

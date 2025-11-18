@@ -24,13 +24,13 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] customPuzzleImageField;
+        private byte[] CustomPuzzleImageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int difficultyIdField;
+        private int DifficultyIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<int> preloadedPuzzleIdField;
+        private System.Nullable<int> PreloadedPuzzleIdField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -43,40 +43,40 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] customPuzzleImage {
+        public byte[] CustomPuzzleImage {
             get {
-                return this.customPuzzleImageField;
+                return this.CustomPuzzleImageField;
             }
             set {
-                if ((object.ReferenceEquals(this.customPuzzleImageField, value) != true)) {
-                    this.customPuzzleImageField = value;
-                    this.RaisePropertyChanged("customPuzzleImage");
+                if ((object.ReferenceEquals(this.CustomPuzzleImageField, value) != true)) {
+                    this.CustomPuzzleImageField = value;
+                    this.RaisePropertyChanged("CustomPuzzleImage");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int difficultyId {
+        public int DifficultyId {
             get {
-                return this.difficultyIdField;
+                return this.DifficultyIdField;
             }
             set {
-                if ((this.difficultyIdField.Equals(value) != true)) {
-                    this.difficultyIdField = value;
-                    this.RaisePropertyChanged("difficultyId");
+                if ((this.DifficultyIdField.Equals(value) != true)) {
+                    this.DifficultyIdField = value;
+                    this.RaisePropertyChanged("DifficultyId");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<int> preloadedPuzzleId {
+        public System.Nullable<int> PreloadedPuzzleId {
             get {
-                return this.preloadedPuzzleIdField;
+                return this.PreloadedPuzzleIdField;
             }
             set {
-                if ((this.preloadedPuzzleIdField.Equals(value) != true)) {
-                    this.preloadedPuzzleIdField = value;
-                    this.RaisePropertyChanged("preloadedPuzzleId");
+                if ((this.PreloadedPuzzleIdField.Equals(value) != true)) {
+                    this.PreloadedPuzzleIdField = value;
+                    this.RaisePropertyChanged("PreloadedPuzzleId");
                 }
             }
         }
@@ -104,10 +104,10 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string messageField;
+        private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool successField;
+        private bool SuccessField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -120,27 +120,27 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string message {
+        public string Message {
             get {
-                return this.messageField;
+                return this.MessageField;
             }
             set {
-                if ((object.ReferenceEquals(this.messageField, value) != true)) {
-                    this.messageField = value;
-                    this.RaisePropertyChanged("message");
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool success {
+        public bool Success {
             get {
-                return this.successField;
+                return this.SuccessField;
             }
             set {
-                if ((this.successField.Equals(value) != true)) {
-                    this.successField = value;
-                    this.RaisePropertyChanged("success");
+                if ((this.SuccessField.Equals(value) != true)) {
+                    this.SuccessField = value;
+                    this.RaisePropertyChanged("Success");
                 }
             }
         }
@@ -163,49 +163,49 @@ namespace MindWeaveClient.MatchmakingService {
     public partial class GuestJoinResultDto : MindWeaveClient.MatchmakingService.OperationResultDto {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string assignedGuestUsernameField;
+        private string AssignedGuestUsernameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyStateField;
+        private MindWeaveClient.MatchmakingService.LobbyStateDto InitialLobbyStateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int playerIdField;
+        private int PlayerIdField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string assignedGuestUsername {
+        public string AssignedGuestUsername {
             get {
-                return this.assignedGuestUsernameField;
+                return this.AssignedGuestUsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.assignedGuestUsernameField, value) != true)) {
-                    this.assignedGuestUsernameField = value;
-                    this.RaisePropertyChanged("assignedGuestUsername");
+                if ((object.ReferenceEquals(this.AssignedGuestUsernameField, value) != true)) {
+                    this.AssignedGuestUsernameField = value;
+                    this.RaisePropertyChanged("AssignedGuestUsername");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyState {
+        public MindWeaveClient.MatchmakingService.LobbyStateDto InitialLobbyState {
             get {
-                return this.initialLobbyStateField;
+                return this.InitialLobbyStateField;
             }
             set {
-                if ((object.ReferenceEquals(this.initialLobbyStateField, value) != true)) {
-                    this.initialLobbyStateField = value;
-                    this.RaisePropertyChanged("initialLobbyState");
+                if ((object.ReferenceEquals(this.InitialLobbyStateField, value) != true)) {
+                    this.InitialLobbyStateField = value;
+                    this.RaisePropertyChanged("InitialLobbyState");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int playerId {
+        public int PlayerId {
             get {
-                return this.playerIdField;
+                return this.PlayerIdField;
             }
             set {
-                if ((this.playerIdField.Equals(value) != true)) {
-                    this.playerIdField = value;
-                    this.RaisePropertyChanged("playerId");
+                if ((this.PlayerIdField.Equals(value) != true)) {
+                    this.PlayerIdField = value;
+                    this.RaisePropertyChanged("PlayerId");
                 }
             }
         }
@@ -219,33 +219,33 @@ namespace MindWeaveClient.MatchmakingService {
     public partial class LobbyCreationResultDto : MindWeaveClient.MatchmakingService.OperationResultDto {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyStateField;
+        private MindWeaveClient.MatchmakingService.LobbyStateDto InitialLobbyStateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lobbyCodeField;
+        private string LobbyCodeField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.MatchmakingService.LobbyStateDto initialLobbyState {
+        public MindWeaveClient.MatchmakingService.LobbyStateDto InitialLobbyState {
             get {
-                return this.initialLobbyStateField;
+                return this.InitialLobbyStateField;
             }
             set {
-                if ((object.ReferenceEquals(this.initialLobbyStateField, value) != true)) {
-                    this.initialLobbyStateField = value;
-                    this.RaisePropertyChanged("initialLobbyState");
+                if ((object.ReferenceEquals(this.InitialLobbyStateField, value) != true)) {
+                    this.InitialLobbyStateField = value;
+                    this.RaisePropertyChanged("InitialLobbyState");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lobbyCode {
+        public string LobbyCode {
             get {
-                return this.lobbyCodeField;
+                return this.LobbyCodeField;
             }
             set {
-                if ((object.ReferenceEquals(this.lobbyCodeField, value) != true)) {
-                    this.lobbyCodeField = value;
-                    this.RaisePropertyChanged("lobbyCode");
+                if ((object.ReferenceEquals(this.LobbyCodeField, value) != true)) {
+                    this.LobbyCodeField = value;
+                    this.RaisePropertyChanged("LobbyCode");
                 }
             }
         }
@@ -262,19 +262,19 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.MatchmakingService.LobbySettingsDto currentSettingsDtoField;
+        private MindWeaveClient.MatchmakingService.LobbySettingsDto CurrentSettingsDtoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string hostUsernameField;
+        private string HostUsernameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lobbyIdField;
+        private string LobbyIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string[] playersField;
+        private string[] PlayersField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string puzzleImagePathField;
+        private string PuzzleImagePathField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -287,66 +287,66 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.MatchmakingService.LobbySettingsDto currentSettingsDto {
+        public MindWeaveClient.MatchmakingService.LobbySettingsDto CurrentSettingsDto {
             get {
-                return this.currentSettingsDtoField;
+                return this.CurrentSettingsDtoField;
             }
             set {
-                if ((object.ReferenceEquals(this.currentSettingsDtoField, value) != true)) {
-                    this.currentSettingsDtoField = value;
-                    this.RaisePropertyChanged("currentSettingsDto");
+                if ((object.ReferenceEquals(this.CurrentSettingsDtoField, value) != true)) {
+                    this.CurrentSettingsDtoField = value;
+                    this.RaisePropertyChanged("CurrentSettingsDto");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string hostUsername {
+        public string HostUsername {
             get {
-                return this.hostUsernameField;
+                return this.HostUsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.hostUsernameField, value) != true)) {
-                    this.hostUsernameField = value;
-                    this.RaisePropertyChanged("hostUsername");
+                if ((object.ReferenceEquals(this.HostUsernameField, value) != true)) {
+                    this.HostUsernameField = value;
+                    this.RaisePropertyChanged("HostUsername");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lobbyId {
+        public string LobbyId {
             get {
-                return this.lobbyIdField;
+                return this.LobbyIdField;
             }
             set {
-                if ((object.ReferenceEquals(this.lobbyIdField, value) != true)) {
-                    this.lobbyIdField = value;
-                    this.RaisePropertyChanged("lobbyId");
+                if ((object.ReferenceEquals(this.LobbyIdField, value) != true)) {
+                    this.LobbyIdField = value;
+                    this.RaisePropertyChanged("LobbyId");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string[] players {
+        public string[] Players {
             get {
-                return this.playersField;
+                return this.PlayersField;
             }
             set {
-                if ((object.ReferenceEquals(this.playersField, value) != true)) {
-                    this.playersField = value;
-                    this.RaisePropertyChanged("players");
+                if ((object.ReferenceEquals(this.PlayersField, value) != true)) {
+                    this.PlayersField = value;
+                    this.RaisePropertyChanged("Players");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string puzzleImagePath {
+        public string PuzzleImagePath {
             get {
-                return this.puzzleImagePathField;
+                return this.PuzzleImagePathField;
             }
             set {
-                if ((object.ReferenceEquals(this.puzzleImagePathField, value) != true)) {
-                    this.puzzleImagePathField = value;
-                    this.RaisePropertyChanged("puzzleImagePath");
+                if ((object.ReferenceEquals(this.PuzzleImagePathField, value) != true)) {
+                    this.PuzzleImagePathField = value;
+                    this.RaisePropertyChanged("PuzzleImagePath");
                 }
             }
         }
@@ -372,13 +372,13 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string guestEmailField;
+        private string GuestEmailField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string inviterUsernameField;
+        private string InviterUsernameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lobbyCodeField;
+        private string LobbyCodeField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -391,40 +391,40 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string guestEmail {
+        public string GuestEmail {
             get {
-                return this.guestEmailField;
+                return this.GuestEmailField;
             }
             set {
-                if ((object.ReferenceEquals(this.guestEmailField, value) != true)) {
-                    this.guestEmailField = value;
-                    this.RaisePropertyChanged("guestEmail");
+                if ((object.ReferenceEquals(this.GuestEmailField, value) != true)) {
+                    this.GuestEmailField = value;
+                    this.RaisePropertyChanged("GuestEmail");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string inviterUsername {
+        public string InviterUsername {
             get {
-                return this.inviterUsernameField;
+                return this.InviterUsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.inviterUsernameField, value) != true)) {
-                    this.inviterUsernameField = value;
-                    this.RaisePropertyChanged("inviterUsername");
+                if ((object.ReferenceEquals(this.InviterUsernameField, value) != true)) {
+                    this.InviterUsernameField = value;
+                    this.RaisePropertyChanged("InviterUsername");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lobbyCode {
+        public string LobbyCode {
             get {
-                return this.lobbyCodeField;
+                return this.LobbyCodeField;
             }
             set {
-                if ((object.ReferenceEquals(this.lobbyCodeField, value) != true)) {
-                    this.lobbyCodeField = value;
-                    this.RaisePropertyChanged("lobbyCode");
+                if ((object.ReferenceEquals(this.LobbyCodeField, value) != true)) {
+                    this.LobbyCodeField = value;
+                    this.RaisePropertyChanged("LobbyCode");
                 }
             }
         }
@@ -450,13 +450,13 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string desiredGuestUsernameField;
+        private string DesiredGuestUsernameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string guestEmailField;
+        private string GuestEmailField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lobbyCodeField;
+        private string LobbyCodeField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -469,40 +469,40 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string desiredGuestUsername {
+        public string DesiredGuestUsername {
             get {
-                return this.desiredGuestUsernameField;
+                return this.DesiredGuestUsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.desiredGuestUsernameField, value) != true)) {
-                    this.desiredGuestUsernameField = value;
-                    this.RaisePropertyChanged("desiredGuestUsername");
+                if ((object.ReferenceEquals(this.DesiredGuestUsernameField, value) != true)) {
+                    this.DesiredGuestUsernameField = value;
+                    this.RaisePropertyChanged("DesiredGuestUsername");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string guestEmail {
+        public string GuestEmail {
             get {
-                return this.guestEmailField;
+                return this.GuestEmailField;
             }
             set {
-                if ((object.ReferenceEquals(this.guestEmailField, value) != true)) {
-                    this.guestEmailField = value;
-                    this.RaisePropertyChanged("guestEmail");
+                if ((object.ReferenceEquals(this.GuestEmailField, value) != true)) {
+                    this.GuestEmailField = value;
+                    this.RaisePropertyChanged("GuestEmail");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lobbyCode {
+        public string LobbyCode {
             get {
-                return this.lobbyCodeField;
+                return this.LobbyCodeField;
             }
             set {
-                if ((object.ReferenceEquals(this.lobbyCodeField, value) != true)) {
-                    this.lobbyCodeField = value;
-                    this.RaisePropertyChanged("lobbyCode");
+                if ((object.ReferenceEquals(this.LobbyCodeField, value) != true)) {
+                    this.LobbyCodeField = value;
+                    this.RaisePropertyChanged("LobbyCode");
                 }
             }
         }
@@ -528,16 +528,16 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] fullImageBytesField;
+        private byte[] FullImageBytesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.MatchmakingService.PuzzlePieceDefinitionDto[] piecesField;
+        private MindWeaveClient.MatchmakingService.PuzzlePieceDefinitionDto[] PiecesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzleHeightField;
+        private int PuzzleHeightField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzleWidthField;
+        private int PuzzleWidthField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -550,53 +550,53 @@ namespace MindWeaveClient.MatchmakingService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] fullImageBytes {
+        public byte[] FullImageBytes {
             get {
-                return this.fullImageBytesField;
+                return this.FullImageBytesField;
             }
             set {
-                if ((object.ReferenceEquals(this.fullImageBytesField, value) != true)) {
-                    this.fullImageBytesField = value;
-                    this.RaisePropertyChanged("fullImageBytes");
+                if ((object.ReferenceEquals(this.FullImageBytesField, value) != true)) {
+                    this.FullImageBytesField = value;
+                    this.RaisePropertyChanged("FullImageBytes");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.MatchmakingService.PuzzlePieceDefinitionDto[] pieces {
+        public MindWeaveClient.MatchmakingService.PuzzlePieceDefinitionDto[] Pieces {
             get {
-                return this.piecesField;
+                return this.PiecesField;
             }
             set {
-                if ((object.ReferenceEquals(this.piecesField, value) != true)) {
-                    this.piecesField = value;
-                    this.RaisePropertyChanged("pieces");
+                if ((object.ReferenceEquals(this.PiecesField, value) != true)) {
+                    this.PiecesField = value;
+                    this.RaisePropertyChanged("Pieces");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzleHeight {
+        public int PuzzleHeight {
             get {
-                return this.puzzleHeightField;
+                return this.PuzzleHeightField;
             }
             set {
-                if ((this.puzzleHeightField.Equals(value) != true)) {
-                    this.puzzleHeightField = value;
-                    this.RaisePropertyChanged("puzzleHeight");
+                if ((this.PuzzleHeightField.Equals(value) != true)) {
+                    this.PuzzleHeightField = value;
+                    this.RaisePropertyChanged("PuzzleHeight");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzleWidth {
+        public int PuzzleWidth {
             get {
-                return this.puzzleWidthField;
+                return this.PuzzleWidthField;
             }
             set {
-                if ((this.puzzleWidthField.Equals(value) != true)) {
-                    this.puzzleWidthField = value;
-                    this.RaisePropertyChanged("puzzleWidth");
+                if ((this.PuzzleWidthField.Equals(value) != true)) {
+                    this.PuzzleWidthField = value;
+                    this.RaisePropertyChanged("PuzzleWidth");
                 }
             }
         }

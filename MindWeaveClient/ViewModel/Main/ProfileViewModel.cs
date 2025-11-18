@@ -91,26 +91,26 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (profileData != null)
                 {
-                    Username = profileData.username;
-                    WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {profileData.username.ToUpper()}!";
-                    AvatarSource = profileData.avatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+                    Username = profileData.Username;
+                    WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {profileData.Username.ToUpper()}!";
+                    AvatarSource = profileData.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-                    FirstName = profileData.firstName ?? Lang.GlobalLbNotSpecified;
-                    LastName = profileData.lastName ?? Lang.GlobalLbNotSpecified;
-                    DateOfBirth = profileData.dateOfBirth?.ToString("dd/MM/yyyy") ?? Lang.GlobalLbNotSpecified;
-                    Gender = profileData.gender ?? Lang.GlobalLbNotSpecified;
+                    FirstName = profileData.FirstName ?? Lang.GlobalLbNotSpecified;
+                    LastName = profileData.LastName ?? Lang.GlobalLbNotSpecified;
+                    DateOfBirth = profileData.DateOfBirth?.ToString("dd/MM/yyyy") ?? Lang.GlobalLbNotSpecified;
+                    Gender = profileData.Gender ?? Lang.GlobalLbNotSpecified;
 
-                    if (profileData.stats != null)
+                    if (profileData.Stats != null)
                     {
-                        PuzzlesCompleted = profileData.stats.puzzlesCompleted;
-                        PuzzlesWon = profileData.stats.puzzlesWon;
-                        TotalPlaytime = $"{profileData.stats.totalPlaytime.Hours}H {profileData.stats.totalPlaytime.Minutes}m";
-                        HighestScore = profileData.stats.highestScore;
+                        PuzzlesCompleted = profileData.Stats.PuzzlesCompleted;
+                        PuzzlesWon = profileData.Stats.PuzzlesWon;
+                        TotalPlaytime = $"{profileData.Stats.TotalPlaytime.Hours}H {profileData.Stats.TotalPlaytime.Minutes}m";
+                        HighestScore = profileData.Stats.HighestScore;
                     }
 
-                    if (profileData.achievements != null)
+                    if (profileData.Achievements != null)
                     {
-                        Achievements = new ObservableCollection<AchievementDto>(profileData.achievements);
+                        Achievements = new ObservableCollection<AchievementDto>(profileData.Achievements);
                     }
                 }
             }

@@ -107,7 +107,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 OperationResultDto result = await authenticationService.verifyAccountAsync(Email, VerificationCode);
 
-                if (result.success)
+                if (result.Success)
                 {
                     dialogService.showInfo(Lang.InfoMsgVerifySuccessBody, Lang.InfoMsgVerifySuccessTitle);
                     SessionService.PendingVerificationEmail = null;
@@ -116,7 +116,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (EndpointNotFoundException ex)
@@ -146,7 +146,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 OperationResultDto result = await authenticationService.resendVerificationCodeAsync(Email);
 
-                if (result.success)
+                if (result.Success)
                 {
                     dialogService.showInfo(Lang.InfoMsgResendSuccessBody, Lang.InfoMsgResendSuccessTitle);
 
@@ -155,7 +155,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (EndpointNotFoundException ex)

@@ -24,10 +24,10 @@ namespace MindWeaveClient.AuthenticationService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string emailField;
+        private string EmailField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string passwordField;
+        private string PasswordField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -40,27 +40,27 @@ namespace MindWeaveClient.AuthenticationService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string email {
+        public string Email {
             get {
-                return this.emailField;
+                return this.EmailField;
             }
             set {
-                if ((object.ReferenceEquals(this.emailField, value) != true)) {
-                    this.emailField = value;
-                    this.RaisePropertyChanged("email");
+                if ((object.ReferenceEquals(this.EmailField, value) != true)) {
+                    this.EmailField = value;
+                    this.RaisePropertyChanged("Email");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string password {
+        public string Password {
             get {
-                return this.passwordField;
+                return this.PasswordField;
             }
             set {
-                if ((object.ReferenceEquals(this.passwordField, value) != true)) {
-                    this.passwordField = value;
-                    this.RaisePropertyChanged("password");
+                if ((object.ReferenceEquals(this.PasswordField, value) != true)) {
+                    this.PasswordField = value;
+                    this.RaisePropertyChanged("Password");
                 }
             }
         }
@@ -86,19 +86,19 @@ namespace MindWeaveClient.AuthenticationService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string avatarPathField;
+        private string AvatarPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.AuthenticationService.OperationResultDto operationResultField;
+        private MindWeaveClient.AuthenticationService.OperationResultDto OperationResultField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int playerIdField;
+        private int PlayerIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string resultCodeField;
+        private string ResultCodeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string usernameField;
+        private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -111,66 +111,66 @@ namespace MindWeaveClient.AuthenticationService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string avatarPath {
+        public string AvatarPath {
             get {
-                return this.avatarPathField;
+                return this.AvatarPathField;
             }
             set {
-                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
-                    this.avatarPathField = value;
-                    this.RaisePropertyChanged("avatarPath");
+                if ((object.ReferenceEquals(this.AvatarPathField, value) != true)) {
+                    this.AvatarPathField = value;
+                    this.RaisePropertyChanged("AvatarPath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.AuthenticationService.OperationResultDto operationResult {
+        public MindWeaveClient.AuthenticationService.OperationResultDto OperationResult {
             get {
-                return this.operationResultField;
+                return this.OperationResultField;
             }
             set {
-                if ((object.ReferenceEquals(this.operationResultField, value) != true)) {
-                    this.operationResultField = value;
-                    this.RaisePropertyChanged("operationResult");
+                if ((object.ReferenceEquals(this.OperationResultField, value) != true)) {
+                    this.OperationResultField = value;
+                    this.RaisePropertyChanged("OperationResult");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int playerId {
+        public int PlayerId {
             get {
-                return this.playerIdField;
+                return this.PlayerIdField;
             }
             set {
-                if ((this.playerIdField.Equals(value) != true)) {
-                    this.playerIdField = value;
-                    this.RaisePropertyChanged("playerId");
+                if ((this.PlayerIdField.Equals(value) != true)) {
+                    this.PlayerIdField = value;
+                    this.RaisePropertyChanged("PlayerId");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string resultCode {
+        public string ResultCode {
             get {
-                return this.resultCodeField;
+                return this.ResultCodeField;
             }
             set {
-                if ((object.ReferenceEquals(this.resultCodeField, value) != true)) {
-                    this.resultCodeField = value;
-                    this.RaisePropertyChanged("resultCode");
+                if ((object.ReferenceEquals(this.ResultCodeField, value) != true)) {
+                    this.ResultCodeField = value;
+                    this.RaisePropertyChanged("ResultCode");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string username {
+        public string Username {
             get {
-                return this.usernameField;
+                return this.UsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
-                    this.usernameField = value;
-                    this.RaisePropertyChanged("username");
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }
@@ -196,10 +196,10 @@ namespace MindWeaveClient.AuthenticationService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string messageField;
+        private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool successField;
+        private bool SuccessField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -212,27 +212,27 @@ namespace MindWeaveClient.AuthenticationService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string message {
+        public string Message {
             get {
-                return this.messageField;
+                return this.MessageField;
             }
             set {
-                if ((object.ReferenceEquals(this.messageField, value) != true)) {
-                    this.messageField = value;
-                    this.RaisePropertyChanged("message");
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool success {
+        public bool Success {
             get {
-                return this.successField;
+                return this.SuccessField;
             }
             set {
-                if ((this.successField.Equals(value) != true)) {
-                    this.successField = value;
-                    this.RaisePropertyChanged("success");
+                if ((this.SuccessField.Equals(value) != true)) {
+                    this.SuccessField = value;
+                    this.RaisePropertyChanged("Success");
                 }
             }
         }
@@ -258,25 +258,25 @@ namespace MindWeaveClient.AuthenticationService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] avatarField;
+        private byte[] AvatarField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime dateOfBirthField;
+        private System.DateTime DateOfBirthField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string emailField;
+        private string EmailField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string firstNameField;
+        private string FirstNameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int genderIdField;
+        private int GenderIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lastNameField;
+        private string LastNameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string usernameField;
+        private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -289,92 +289,92 @@ namespace MindWeaveClient.AuthenticationService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] avatar {
+        public byte[] Avatar {
             get {
-                return this.avatarField;
+                return this.AvatarField;
             }
             set {
-                if ((object.ReferenceEquals(this.avatarField, value) != true)) {
-                    this.avatarField = value;
-                    this.RaisePropertyChanged("avatar");
+                if ((object.ReferenceEquals(this.AvatarField, value) != true)) {
+                    this.AvatarField = value;
+                    this.RaisePropertyChanged("Avatar");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime dateOfBirth {
+        public System.DateTime DateOfBirth {
             get {
-                return this.dateOfBirthField;
+                return this.DateOfBirthField;
             }
             set {
-                if ((this.dateOfBirthField.Equals(value) != true)) {
-                    this.dateOfBirthField = value;
-                    this.RaisePropertyChanged("dateOfBirth");
+                if ((this.DateOfBirthField.Equals(value) != true)) {
+                    this.DateOfBirthField = value;
+                    this.RaisePropertyChanged("DateOfBirth");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string email {
+        public string Email {
             get {
-                return this.emailField;
+                return this.EmailField;
             }
             set {
-                if ((object.ReferenceEquals(this.emailField, value) != true)) {
-                    this.emailField = value;
-                    this.RaisePropertyChanged("email");
+                if ((object.ReferenceEquals(this.EmailField, value) != true)) {
+                    this.EmailField = value;
+                    this.RaisePropertyChanged("Email");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string firstName {
+        public string FirstName {
             get {
-                return this.firstNameField;
+                return this.FirstNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.firstNameField, value) != true)) {
-                    this.firstNameField = value;
-                    this.RaisePropertyChanged("firstName");
+                if ((object.ReferenceEquals(this.FirstNameField, value) != true)) {
+                    this.FirstNameField = value;
+                    this.RaisePropertyChanged("FirstName");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int genderId {
+        public int GenderId {
             get {
-                return this.genderIdField;
+                return this.GenderIdField;
             }
             set {
-                if ((this.genderIdField.Equals(value) != true)) {
-                    this.genderIdField = value;
-                    this.RaisePropertyChanged("genderId");
+                if ((this.GenderIdField.Equals(value) != true)) {
+                    this.GenderIdField = value;
+                    this.RaisePropertyChanged("GenderId");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lastName {
+        public string LastName {
             get {
-                return this.lastNameField;
+                return this.LastNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.lastNameField, value) != true)) {
-                    this.lastNameField = value;
-                    this.RaisePropertyChanged("lastName");
+                if ((object.ReferenceEquals(this.LastNameField, value) != true)) {
+                    this.LastNameField = value;
+                    this.RaisePropertyChanged("LastName");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string username {
+        public string Username {
             get {
-                return this.usernameField;
+                return this.UsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
-                    this.usernameField = value;
-                    this.RaisePropertyChanged("username");
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }

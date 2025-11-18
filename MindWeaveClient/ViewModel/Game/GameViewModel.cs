@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.ViewModel.Puzzle;
 
@@ -36,7 +37,6 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
-        private readonly IPuzzleService puzzleService;
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
@@ -69,13 +69,11 @@ namespace MindWeaveClient.ViewModel.Game
         public GameViewModel(
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
-            IDialogService dialogService,
-            IPuzzleService puzzleService)
+            IDialogService dialogService)
         {
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
-            this.puzzleService = puzzleService;
 
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
@@ -102,7 +100,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnPuzzleReady()
         {
-            App.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 if (puzzleLoaded)
                 {
@@ -163,14 +161,14 @@ namespace MindWeaveClient.ViewModel.Game
             SetBusy(true);
             try
             {
-                Trace.WriteLine($"Loading puzzle with {puzzleDto.pieces?.Length ?? 0} pieces");
+                Trace.WriteLine($"Loading puzzle with {puzzleDto.Pieces?.Length ?? 0} pieces");
 
-                PuzzleWidth = puzzleDto.puzzleWidth;
-                PuzzleHeight = puzzleDto.puzzleHeight;
+                PuzzleWidth = puzzleDto.PuzzleWidth;
+                PuzzleHeight = puzzleDto.PuzzleHeight;
                 OnPropertyChanged(nameof(PuzzleWidth));
                 OnPropertyChanged(nameof(PuzzleHeight));
 
-                BitmapSource fullImage = convertBytesToBitmapSource(puzzleDto.fullImageBytes);
+                BitmapSource fullImage = convertBytesToBitmapSource(puzzleDto.FullImageBytes);
                 if (fullImage == null)
                 {
                     dialogService.showError("Error: No se pudieron decodificar los bytes de la imagen.", "Error Crítico");
@@ -179,13 +177,13 @@ namespace MindWeaveClient.ViewModel.Game
 
                 PiecesCollection.Clear();
 
-                if (puzzleDto.pieces == null || puzzleDto.pieces.Length == 0)
+                if (puzzleDto.Pieces == null || puzzleDto.Pieces.Length == 0)
                 {
                     dialogService.showError("Error: No hay piezas en la definición del puzzle.", "Error Crítico");
                     return;
                 }
 
-                foreach (var pieceDef in puzzleDto.pieces)
+                foreach (var pieceDef in puzzleDto.Pieces)
                 {
                     // ✅ CORRECCIÓN: Pasar los neighbor IDs en las posiciones correctas
                     var pieceViewModel = new PuzzlePieceViewModel(
@@ -199,22 +197,20 @@ namespace MindWeaveClient.ViewModel.Game
                         pieceDef.CorrectY,
                         pieceDef.InitialX,
                         pieceDef.InitialY,
-                        pieceDef.InitialX,          // originalX
-                        pieceDef.InitialY,          // originalY
-                        pieceDef.TopNeighborId,     // ✅ Ahora en la posición correcta
-                        pieceDef.BottomNeighborId,  // ✅ Ahora en la posición correcta
-                        pieceDef.LeftNeighborId,    // ✅ Ahora en la posición correcta
-                        pieceDef.RightNeighborId    // ✅ Ahora en la posición correcta
+                        pieceDef.InitialX,         
+                        pieceDef.InitialY,         
+                        pieceDef.TopNeighborId,    
+                        pieceDef.BottomNeighborId, 
+                        pieceDef.LeftNeighborId,   
+                        pieceDef.RightNeighborId   
                     );
                     PiecesCollection.Add(pieceViewModel);
 
-                    // 🔍 DEBUG: Verificar que los vecinos se están asignando correctamente
                     Trace.WriteLine($"Piece {pieceDef.PieceId} created with neighbors: " +
                                     $"T={pieceDef.TopNeighborId}, B={pieceDef.BottomNeighborId}, " +
                                     $"L={pieceDef.LeftNeighborId}, R={pieceDef.RightNeighborId}");
                 }
 
-                // Inicializar cada pieza en su propio grupo
                 foreach (var piece in PiecesCollection)
                 {
                     piece.PieceGroup = new List<PuzzlePieceViewModel> { piece };
@@ -254,7 +250,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        public async Task DropPiece(PuzzlePieceViewModel piece, double newX, double newY)
+        public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
             if (piece == null)
             {
@@ -329,7 +325,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnServerPieceDragStarted(int pieceId, int playerId)
         {
-            App.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null && !piece.IsPlaced)
@@ -342,7 +338,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnServerPiecePlaced(int pieceId, double correctX, double correctY, int scoringPlayerId, int newScore)
         {
-            App.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null)
@@ -364,7 +360,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnServerPieceMoved(int pieceId, double newX, double newY)
         {
-            App.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null && !piece.IsPlaced)
@@ -378,7 +374,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnServerPieceDragReleased(int pieceId)
         {
-            App.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece != null && !piece.IsPlaced)

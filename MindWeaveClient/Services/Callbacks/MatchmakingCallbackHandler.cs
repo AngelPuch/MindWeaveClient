@@ -75,11 +75,11 @@ namespace MindWeaveClient.Services.Callbacks
 
             var puzzleManagerDto = new MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto
             {
-                fullImageBytes = puzzleDefinition.fullImageBytes,
-                puzzleHeight = puzzleDefinition.puzzleHeight,
-                puzzleWidth = puzzleDefinition.puzzleWidth,
+                FullImageBytes = puzzleDefinition.FullImageBytes,
+                PuzzleHeight = puzzleDefinition.PuzzleHeight,
+                PuzzleWidth = puzzleDefinition.PuzzleWidth,
 
-                pieces = puzzleDefinition.pieces.Select(piece =>
+                Pieces = puzzleDefinition.Pieces.Select(piece =>
                     new MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto
                     {
                         PieceId = piece.PieceId,

@@ -16,10 +16,10 @@ namespace MindWeaveClient.ViewModel.Game
 
         public ChatMessageDisplayViewModel(ChatMessageDto dto)
         {
-            SenderUsername = dto.senderUsername;
-            Content = dto.content;
-            Timestamp = dto.timestamp.ToLocalTime();
-            Alignment = dto.senderUsername.Equals(SessionService.Username, StringComparison.OrdinalIgnoreCase)
+            SenderUsername = dto.SenderUsername;
+            Content = dto.Content;
+            Timestamp = dto.Timestamp.ToLocalTime();
+            Alignment = dto.SenderUsername.Equals(SessionService.Username, StringComparison.OrdinalIgnoreCase)
                             ? HorizontalAlignment.Right
                             : HorizontalAlignment.Left;
             ReportMessageCommand = new RelayCommand(param => executeReportMessage(), param => canExecuteReportMessage());

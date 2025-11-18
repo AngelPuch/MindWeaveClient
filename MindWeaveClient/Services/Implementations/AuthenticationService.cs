@@ -18,17 +18,17 @@ namespace MindWeaveClient.Services.Implementations
         {
             var loginCredentials = new LoginDto
             {
-                email = email,
-                password = password
+                Email = email,
+                Password = password
             };
 
             LoginResultDto result = await executeSafeAsync(async (client) =>
                 await client.loginAsync(loginCredentials));
 
-            if (result.operationResult.success)
+            if (result.OperationResult.Success)
             {
-                SessionService.setSession(result.playerId, result.username, result.avatarPath);
-                bool socialConnected = await connectSocialServiceAsync(result.username);
+                SessionService.setSession(result.PlayerId, result.Username, result.AvatarPath);
+                bool socialConnected = await connectSocialServiceAsync(result.Username);
 
                 return new LoginServiceResultDto(result, socialConnected, true);
             }

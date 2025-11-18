@@ -10,7 +10,6 @@ using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO; 
@@ -32,7 +31,6 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
-        private readonly ICurrentMatchService currentMatchService;
 
         private LobbyStateDto lobbyState;
         private bool isChatConnected;
@@ -43,7 +41,7 @@ namespace MindWeaveClient.ViewModel.Game
         public ImageSource PuzzleImage { get; private set; }
         public string LobbyCode { get; private set; } = "Joining...";
         public string HostUsername { get; private set; } = "Loading...";
-        public bool IsHost => lobbyState?.hostUsername == SessionService.Username;
+        public bool IsHost => lobbyState?.HostUsername == SessionService.Username;
         public LobbySettingsDto CurrentSettings { get; private set; }
         public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
         public ObservableCollection<FriendDtoDisplay> OnlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
@@ -76,8 +74,7 @@ namespace MindWeaveClient.ViewModel.Game
             IDialogService dialogService,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            ICurrentLobbyService currentLobbyService,
-            ICurrentMatchService currentMatchService)
+            ICurrentLobbyService currentLobbyService)
         {
             this.matchmakingService = matchmakingService;
             this.socialService = socialService;
@@ -85,7 +82,6 @@ namespace MindWeaveClient.ViewModel.Game
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
-            this.currentMatchService = currentMatchService;
 
             LeaveLobbyCommand = new RelayCommand(async p => await executeLeaveLobby(), p => !IsBusy);
             StartGameCommand = new RelayCommand(async p => await executeStartGame(), p => IsHost && !IsBusy && !IsGuestUser);
@@ -162,17 +158,17 @@ namespace MindWeaveClient.ViewModel.Game
                 SetBusy(false);
 
                 lobbyState = newState;
-                LobbyCode = newState.lobbyId;
-                HostUsername = newState.hostUsername;
-                CurrentSettings = newState.currentSettingsDto;
+                LobbyCode = newState.LobbyId;
+                HostUsername = newState.HostUsername;
+                CurrentSettings = newState.CurrentSettingsDto;
 
-                if (newState.currentSettingsDto?.customPuzzleImage != null && newState.currentSettingsDto.customPuzzleImage.Length > 0)
+                if (newState.CurrentSettingsDto?.CustomPuzzleImage != null && newState.CurrentSettingsDto.CustomPuzzleImage.Length > 0)
                 {
-                    PuzzleImage = convertBytesToImageSource(newState.currentSettingsDto.customPuzzleImage);
+                    PuzzleImage = convertBytesToImageSource(newState.CurrentSettingsDto.CustomPuzzleImage);
                 }
-                else if (!string.IsNullOrEmpty(newState.puzzleImagePath))
+                else if (!string.IsNullOrEmpty(newState.PuzzleImagePath))
                 {
-                    string rawPath = newState.puzzleImagePath;
+                    string rawPath = newState.PuzzleImagePath;
                     string finalPath = rawPath.StartsWith("/") ? rawPath : $"/Resources/Images/Puzzles/{rawPath}";
                     try
                     {
@@ -190,8 +186,8 @@ namespace MindWeaveClient.ViewModel.Game
                 }
 
                 OnPropertyChanged(nameof(PuzzleImage));
-                var playersToRemove = Players.Except(newState.players).ToList();
-                var playersToAdd = newState.players.Except(Players).ToList();
+                var playersToRemove = Players.Except(newState.Players).ToList();
+                var playersToAdd = newState.Players.Except(Players).ToList();
                 foreach (var p in playersToRemove) Players.Remove(p);
                 foreach (var p in playersToAdd) Players.Add(p);
 
@@ -203,9 +199,9 @@ namespace MindWeaveClient.ViewModel.Game
 
                 CommandManager.InvalidateRequerySuggested();
 
-                if (isInitialJoin && !string.IsNullOrEmpty(newState.lobbyId))
+                if (isInitialJoin && !string.IsNullOrEmpty(newState.LobbyId))
                 {
-                    await connectToChatAsync(newState.lobbyId);
+                    await connectToChatAsync(newState.LobbyId);
                 }
             });
         }
@@ -234,15 +230,6 @@ namespace MindWeaveClient.ViewModel.Game
                 Trace.TraceError("Failed to convert byte array to ImageSource: " + ex.Message);
                 return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative)); // Fallback
             }
-        }
-
-        private void handleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                currentMatchService.initializeMatch(lobbyCode, players, settings, puzzleImagePath);
-                navigationService.navigateTo<GamePage>();
-            });
         }
 
         private void handleKickedOrFailed(string reason)
@@ -407,7 +394,7 @@ namespace MindWeaveClient.ViewModel.Game
 
                 if (friends != null)
                 {
-                    foreach (var friendDto in friends.Where(f => f.isOnline))
+                    foreach (var friendDto in friends.Where(f => f.IsOnline))
                     {
                         OnlineFriends.Add(new FriendDtoDisplay(friendDto));
                     }
@@ -436,9 +423,9 @@ namespace MindWeaveClient.ViewModel.Game
                 SetBusy(true);
                 var invitationData = new GuestInvitationDto
                 {
-                    inviterUsername = SessionService.Username,
-                    guestEmail = guestEmail.Trim(),
-                    lobbyCode = this.LobbyCode
+                    InviterUsername = SessionService.Username,
+                    GuestEmail = guestEmail.Trim(),
+                    LobbyCode = this.LobbyCode
                 };
 
                 try

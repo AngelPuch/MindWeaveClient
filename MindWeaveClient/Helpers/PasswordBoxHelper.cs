@@ -1,6 +1,4 @@
-﻿// All code must be in English
-using System;
-// using System.Linq; // <-- Ya no es necesario
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,7 +9,7 @@ namespace MindWeaveClient.Helpers
         public static readonly DependencyProperty BoundPasswordProperty =
             DependencyProperty.RegisterAttached("BoundPassword", typeof(string), typeof(PasswordBoxHelper), new PropertyMetadata(string.Empty, OnBoundPasswordChanged));
 
-        private static bool _isUpdating;
+        private static bool isUpdating;
 
         public static string GetBoundPassword(DependencyObject d)
         {
@@ -27,32 +25,24 @@ namespace MindWeaveClient.Helpers
         {
             if (d is PasswordBox box)
             {
-                // Remove the handler to prevent infinite loops
-                box.PasswordChanged -= HandlePasswordChanged;
+                box.PasswordChanged -= handlePasswordChanged;
 
-                if (!_isUpdating)
+                if (!isUpdating)
                 {
                     box.Password = (string)e.NewValue;
                 }
 
-                // Add the handler back
-                box.PasswordChanged += HandlePasswordChanged;
+                box.PasswordChanged += handlePasswordChanged;
             }
         }
 
-        private static void HandlePasswordChanged(object sender, RoutedEventArgs e)
+        private static void handlePasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox box)
             {
-                _isUpdating = true;
-
-                // --- FIX ---
-                // Set the bound password property to the actual password,
-                // not the reversed one.
+                isUpdating = true;
                 SetBoundPassword(box, box.Password);
-                // --- END FIX ---
-
-                _isUpdating = false;
+                isUpdating = false;
             }
         }
     }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows.Media; // <-- ¡ASEGÚRATE DE QUE ESTE USING ESTÉ PRESENTE!
+﻿using System.Windows.Media;
 
-namespace MindWeaveClient.ViewModel
+namespace MindWeaveClient.ViewModel.Puzzle
 {
     public class PuzzleDisplayInfo : BaseViewModel
     {

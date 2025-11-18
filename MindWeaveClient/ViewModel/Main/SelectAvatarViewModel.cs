@@ -97,15 +97,15 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 var result = await profileService.updateAvatarPathAsync(SessionService.Username, SelectedAvatar.ImagePath);
 
-                if (result.success)
+                if (result.Success)
                 {
                     SessionService.updateAvatarPath(SelectedAvatar.ImagePath);
-                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
                     navigationService.goBack();
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)

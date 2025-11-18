@@ -24,28 +24,28 @@ namespace MindWeaveClient.ProfileService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.ProfileService.AchievementDto[] achievementsField;
+        private MindWeaveClient.ProfileService.AchievementDto[] AchievementsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string avatarPathField;
+        private string AvatarPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> dateOfBirthField;
+        private System.Nullable<System.DateTime> DateOfBirthField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string firstNameField;
+        private string FirstNameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string genderField;
+        private string GenderField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lastNameField;
+        private string LastNameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.ProfileService.PlayerStatsDto statsField;
+        private MindWeaveClient.ProfileService.PlayerStatsDto StatsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string usernameField;
+        private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -58,105 +58,105 @@ namespace MindWeaveClient.ProfileService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.ProfileService.AchievementDto[] achievements {
+        public MindWeaveClient.ProfileService.AchievementDto[] Achievements {
             get {
-                return this.achievementsField;
+                return this.AchievementsField;
             }
             set {
-                if ((object.ReferenceEquals(this.achievementsField, value) != true)) {
-                    this.achievementsField = value;
-                    this.RaisePropertyChanged("achievements");
+                if ((object.ReferenceEquals(this.AchievementsField, value) != true)) {
+                    this.AchievementsField = value;
+                    this.RaisePropertyChanged("Achievements");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string avatarPath {
+        public string AvatarPath {
             get {
-                return this.avatarPathField;
+                return this.AvatarPathField;
             }
             set {
-                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
-                    this.avatarPathField = value;
-                    this.RaisePropertyChanged("avatarPath");
+                if ((object.ReferenceEquals(this.AvatarPathField, value) != true)) {
+                    this.AvatarPathField = value;
+                    this.RaisePropertyChanged("AvatarPath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> dateOfBirth {
+        public System.Nullable<System.DateTime> DateOfBirth {
             get {
-                return this.dateOfBirthField;
+                return this.DateOfBirthField;
             }
             set {
-                if ((this.dateOfBirthField.Equals(value) != true)) {
-                    this.dateOfBirthField = value;
-                    this.RaisePropertyChanged("dateOfBirth");
+                if ((this.DateOfBirthField.Equals(value) != true)) {
+                    this.DateOfBirthField = value;
+                    this.RaisePropertyChanged("DateOfBirth");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string firstName {
+        public string FirstName {
             get {
-                return this.firstNameField;
+                return this.FirstNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.firstNameField, value) != true)) {
-                    this.firstNameField = value;
-                    this.RaisePropertyChanged("firstName");
+                if ((object.ReferenceEquals(this.FirstNameField, value) != true)) {
+                    this.FirstNameField = value;
+                    this.RaisePropertyChanged("FirstName");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string gender {
+        public string Gender {
             get {
-                return this.genderField;
+                return this.GenderField;
             }
             set {
-                if ((object.ReferenceEquals(this.genderField, value) != true)) {
-                    this.genderField = value;
-                    this.RaisePropertyChanged("gender");
+                if ((object.ReferenceEquals(this.GenderField, value) != true)) {
+                    this.GenderField = value;
+                    this.RaisePropertyChanged("Gender");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lastName {
+        public string LastName {
             get {
-                return this.lastNameField;
+                return this.LastNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.lastNameField, value) != true)) {
-                    this.lastNameField = value;
-                    this.RaisePropertyChanged("lastName");
+                if ((object.ReferenceEquals(this.LastNameField, value) != true)) {
+                    this.LastNameField = value;
+                    this.RaisePropertyChanged("LastName");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.ProfileService.PlayerStatsDto stats {
+        public MindWeaveClient.ProfileService.PlayerStatsDto Stats {
             get {
-                return this.statsField;
+                return this.StatsField;
             }
             set {
-                if ((object.ReferenceEquals(this.statsField, value) != true)) {
-                    this.statsField = value;
-                    this.RaisePropertyChanged("stats");
+                if ((object.ReferenceEquals(this.StatsField, value) != true)) {
+                    this.StatsField = value;
+                    this.RaisePropertyChanged("Stats");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string username {
+        public string Username {
             get {
-                return this.usernameField;
+                return this.UsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
-                    this.usernameField = value;
-                    this.RaisePropertyChanged("username");
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }
@@ -182,16 +182,16 @@ namespace MindWeaveClient.ProfileService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int highestScoreField;
+        private int HighestScoreField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzlesCompletedField;
+        private int PuzzlesCompletedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int puzzlesWonField;
+        private int PuzzlesWonField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.TimeSpan totalPlaytimeField;
+        private System.TimeSpan TotalPlaytimeField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -204,53 +204,53 @@ namespace MindWeaveClient.ProfileService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int highestScore {
+        public int HighestScore {
             get {
-                return this.highestScoreField;
+                return this.HighestScoreField;
             }
             set {
-                if ((this.highestScoreField.Equals(value) != true)) {
-                    this.highestScoreField = value;
-                    this.RaisePropertyChanged("highestScore");
+                if ((this.HighestScoreField.Equals(value) != true)) {
+                    this.HighestScoreField = value;
+                    this.RaisePropertyChanged("HighestScore");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzlesCompleted {
+        public int PuzzlesCompleted {
             get {
-                return this.puzzlesCompletedField;
+                return this.PuzzlesCompletedField;
             }
             set {
-                if ((this.puzzlesCompletedField.Equals(value) != true)) {
-                    this.puzzlesCompletedField = value;
-                    this.RaisePropertyChanged("puzzlesCompleted");
+                if ((this.PuzzlesCompletedField.Equals(value) != true)) {
+                    this.PuzzlesCompletedField = value;
+                    this.RaisePropertyChanged("PuzzlesCompleted");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int puzzlesWon {
+        public int PuzzlesWon {
             get {
-                return this.puzzlesWonField;
+                return this.PuzzlesWonField;
             }
             set {
-                if ((this.puzzlesWonField.Equals(value) != true)) {
-                    this.puzzlesWonField = value;
-                    this.RaisePropertyChanged("puzzlesWon");
+                if ((this.PuzzlesWonField.Equals(value) != true)) {
+                    this.PuzzlesWonField = value;
+                    this.RaisePropertyChanged("PuzzlesWon");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.TimeSpan totalPlaytime {
+        public System.TimeSpan TotalPlaytime {
             get {
-                return this.totalPlaytimeField;
+                return this.TotalPlaytimeField;
             }
             set {
-                if ((this.totalPlaytimeField.Equals(value) != true)) {
-                    this.totalPlaytimeField = value;
-                    this.RaisePropertyChanged("totalPlaytime");
+                if ((this.TotalPlaytimeField.Equals(value) != true)) {
+                    this.TotalPlaytimeField = value;
+                    this.RaisePropertyChanged("TotalPlaytime");
                 }
             }
         }
@@ -276,13 +276,13 @@ namespace MindWeaveClient.ProfileService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string descriptionField;
+        private string DescriptionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string iconPathField;
+        private string IconPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string nameField;
+        private string NameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -295,40 +295,40 @@ namespace MindWeaveClient.ProfileService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string description {
+        public string Description {
             get {
-                return this.descriptionField;
+                return this.DescriptionField;
             }
             set {
-                if ((object.ReferenceEquals(this.descriptionField, value) != true)) {
-                    this.descriptionField = value;
-                    this.RaisePropertyChanged("description");
+                if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
+                    this.DescriptionField = value;
+                    this.RaisePropertyChanged("Description");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string iconPath {
+        public string IconPath {
             get {
-                return this.iconPathField;
+                return this.IconPathField;
             }
             set {
-                if ((object.ReferenceEquals(this.iconPathField, value) != true)) {
-                    this.iconPathField = value;
-                    this.RaisePropertyChanged("iconPath");
+                if ((object.ReferenceEquals(this.IconPathField, value) != true)) {
+                    this.IconPathField = value;
+                    this.RaisePropertyChanged("IconPath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string name {
+        public string Name {
             get {
-                return this.nameField;
+                return this.NameField;
             }
             set {
-                if ((object.ReferenceEquals(this.nameField, value) != true)) {
-                    this.nameField = value;
-                    this.RaisePropertyChanged("name");
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
                 }
             }
         }
@@ -354,19 +354,19 @@ namespace MindWeaveClient.ProfileService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private MindWeaveClient.ProfileService.GenderDto[] availableGendersField;
+        private MindWeaveClient.ProfileService.GenderDto[] AvailableGendersField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> dateOfBirthField;
+        private System.Nullable<System.DateTime> DateOfBirthField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string firstNameField;
+        private string FirstNameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int idGenderField;
+        private int IdGenderField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string lastNameField;
+        private string LastNameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -379,66 +379,66 @@ namespace MindWeaveClient.ProfileService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public MindWeaveClient.ProfileService.GenderDto[] availableGenders {
+        public MindWeaveClient.ProfileService.GenderDto[] AvailableGenders {
             get {
-                return this.availableGendersField;
+                return this.AvailableGendersField;
             }
             set {
-                if ((object.ReferenceEquals(this.availableGendersField, value) != true)) {
-                    this.availableGendersField = value;
-                    this.RaisePropertyChanged("availableGenders");
+                if ((object.ReferenceEquals(this.AvailableGendersField, value) != true)) {
+                    this.AvailableGendersField = value;
+                    this.RaisePropertyChanged("AvailableGenders");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> dateOfBirth {
+        public System.Nullable<System.DateTime> DateOfBirth {
             get {
-                return this.dateOfBirthField;
+                return this.DateOfBirthField;
             }
             set {
-                if ((this.dateOfBirthField.Equals(value) != true)) {
-                    this.dateOfBirthField = value;
-                    this.RaisePropertyChanged("dateOfBirth");
+                if ((this.DateOfBirthField.Equals(value) != true)) {
+                    this.DateOfBirthField = value;
+                    this.RaisePropertyChanged("DateOfBirth");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string firstName {
+        public string FirstName {
             get {
-                return this.firstNameField;
+                return this.FirstNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.firstNameField, value) != true)) {
-                    this.firstNameField = value;
-                    this.RaisePropertyChanged("firstName");
+                if ((object.ReferenceEquals(this.FirstNameField, value) != true)) {
+                    this.FirstNameField = value;
+                    this.RaisePropertyChanged("FirstName");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int idGender {
+        public int IdGender {
             get {
-                return this.idGenderField;
+                return this.IdGenderField;
             }
             set {
-                if ((this.idGenderField.Equals(value) != true)) {
-                    this.idGenderField = value;
-                    this.RaisePropertyChanged("idGender");
+                if ((this.IdGenderField.Equals(value) != true)) {
+                    this.IdGenderField = value;
+                    this.RaisePropertyChanged("IdGender");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string lastName {
+        public string LastName {
             get {
-                return this.lastNameField;
+                return this.LastNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.lastNameField, value) != true)) {
-                    this.lastNameField = value;
-                    this.RaisePropertyChanged("lastName");
+                if ((object.ReferenceEquals(this.LastNameField, value) != true)) {
+                    this.LastNameField = value;
+                    this.RaisePropertyChanged("LastName");
                 }
             }
         }
@@ -464,10 +464,10 @@ namespace MindWeaveClient.ProfileService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int idGenderField;
+        private int IdGenderField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string nameField;
+        private string NameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -480,27 +480,27 @@ namespace MindWeaveClient.ProfileService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int idGender {
+        public int IdGender {
             get {
-                return this.idGenderField;
+                return this.IdGenderField;
             }
             set {
-                if ((this.idGenderField.Equals(value) != true)) {
-                    this.idGenderField = value;
-                    this.RaisePropertyChanged("idGender");
+                if ((this.IdGenderField.Equals(value) != true)) {
+                    this.IdGenderField = value;
+                    this.RaisePropertyChanged("IdGender");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string name {
+        public string Name {
             get {
-                return this.nameField;
+                return this.NameField;
             }
             set {
-                if ((object.ReferenceEquals(this.nameField, value) != true)) {
-                    this.nameField = value;
-                    this.RaisePropertyChanged("name");
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
                 }
             }
         }
@@ -526,10 +526,10 @@ namespace MindWeaveClient.ProfileService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string messageField;
+        private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool successField;
+        private bool SuccessField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -542,27 +542,27 @@ namespace MindWeaveClient.ProfileService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string message {
+        public string Message {
             get {
-                return this.messageField;
+                return this.MessageField;
             }
             set {
-                if ((object.ReferenceEquals(this.messageField, value) != true)) {
-                    this.messageField = value;
-                    this.RaisePropertyChanged("message");
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool success {
+        public bool Success {
             get {
-                return this.successField;
+                return this.SuccessField;
             }
             set {
-                if ((this.successField.Equals(value) != true)) {
-                    this.successField = value;
-                    this.RaisePropertyChanged("success");
+                if ((this.SuccessField.Equals(value) != true)) {
+                    this.SuccessField = value;
+                    this.RaisePropertyChanged("Success");
                 }
             }
         }

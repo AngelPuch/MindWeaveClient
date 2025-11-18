@@ -28,9 +28,9 @@ namespace MindWeaveClient.ViewModel.Main
 
         public FriendDtoDisplay(FriendDto dto)
         {
-            this.Username = dto.username;
-            this.AvatarPath = dto.avatarPath ?? DEFAULT_AVATAR_PATH;
-            this.IsOnline = dto.isOnline;
+            this.Username = dto.Username;
+            this.AvatarPath = dto.AvatarPath ?? DEFAULT_AVATAR_PATH;
+            this.IsOnline = dto.IsOnline;
         }
 
         public FriendDtoDisplay() { }
@@ -218,16 +218,16 @@ namespace MindWeaveClient.ViewModel.Main
             SetBusy(true);
             try
             {
-                OperationResultDto result = await socialService.sendFriendRequestAsync(currentUserUsername, targetUser.username);
+                OperationResultDto result = await socialService.sendFriendRequestAsync(currentUserUsername, targetUser.Username);
 
-                if (result.success)
+                if (result.Success)
                 {
-                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
                     SearchResults.Remove(targetUser);
                 }
                 else
                 {
-                    dialogService.showWarning(result.message, Lang.WarningTitle);
+                    dialogService.showWarning(result.Message, Lang.WarningTitle);
                 }
             }
             catch (Exception ex)
@@ -246,11 +246,11 @@ namespace MindWeaveClient.ViewModel.Main
             SetBusy(true);
             try
             {
-                OperationResultDto result = await socialService.respondToFriendRequestAsync(currentUserUsername, request.requesterUsername, accept);
+                OperationResultDto result = await socialService.respondToFriendRequestAsync(currentUserUsername, request.RequesterUsername, accept);
 
-                if (result.success)
+                if (result.Success)
                 {
-                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
                     ReceivedRequests.Remove(request);
                     if (accept && IsFriendsListChecked)
                     {
@@ -259,7 +259,7 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -287,14 +287,14 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 OperationResultDto result = await socialService.removeFriendAsync(currentUserUsername, friendToRemove.Username);
 
-                if (result.success)
+                if (result.Success)
                 {
-                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
                     FriendsList.Remove(friendToRemove);
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)

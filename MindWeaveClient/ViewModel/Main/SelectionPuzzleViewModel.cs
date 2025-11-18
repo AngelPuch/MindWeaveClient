@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using MindWeaveClient.ViewModel.Puzzle;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -128,27 +129,27 @@ namespace MindWeaveClient.ViewModel.Main
                         ImageSource puzzleImage;
                         byte[] puzzleBytes = null;
 
-                        if (pzlDto.isUploaded && pzlDto.imageBytes != null)
+                        if (pzlDto.IsUploaded && pzlDto.ImageBytes != null)
                         {
-                            puzzleImage = convertBytesToImageSource(pzlDto.imageBytes);
-                            puzzleBytes = pzlDto.imageBytes;
+                            puzzleImage = convertBytesToImageSource(pzlDto.ImageBytes);
+                            puzzleBytes = pzlDto.ImageBytes;
                         }
-                        else if (pzlDto.isUploaded)
+                        else if (pzlDto.IsUploaded)
                         {
                             puzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
                         }
                         else
                         {
-                            string clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.imagePath}";
+                            string clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.ImagePath}";
                             puzzleImage = new BitmapImage(new Uri(clientImagePath, UriKind.Relative));
                         }
 
 
                         AvailablePuzzles.Add(new PuzzleDisplayInfo(
-                            pzlDto.puzzleId,
-                            pzlDto.name,
+                            pzlDto.PuzzleId,
+                            pzlDto.Name,
                             puzzleImage,
-                            pzlDto.isUploaded,
+                            pzlDto.IsUploaded,
                             puzzleBytes
                         ));
                     }
@@ -190,11 +191,11 @@ namespace MindWeaveClient.ViewModel.Main
 
                     UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
 
-                    if (uploadResult.success)
+                    if (uploadResult.Success)
                     {
                         ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
                         var newPuzzleInfo = new PuzzleDisplayInfo(
-                            uploadResult.newPuzzleId,
+                            uploadResult.NewPuzzleId,
                             fileName,
                             puzzleImage,
                             true,
@@ -207,11 +208,11 @@ namespace MindWeaveClient.ViewModel.Main
                         AvailablePuzzles.Add(newPuzzleInfo);
                         executeSelectPuzzle(newPuzzleInfo);
 
-                        dialogService.showInfo(uploadResult.message, Lang.UploadSuccessful);
+                        dialogService.showInfo(uploadResult.Message, Lang.UploadSuccessful);
                     }
                     else
                     {
-                        dialogService.showWarning(uploadResult.message, Lang.UploadFailed);
+                        dialogService.showWarning(uploadResult.Message, Lang.UploadFailed);
                     }
                 }
                 catch (Exception ex)
@@ -254,25 +255,25 @@ namespace MindWeaveClient.ViewModel.Main
 
             var settings = new LobbySettingsDto
             {
-                preloadedPuzzleId = puzzleId,
-                customPuzzleImage = puzzleBytes,
-                difficultyId = SelectedDifficultyIndex + 1
+                PreloadedPuzzleId = puzzleId,
+                CustomPuzzleImage = puzzleBytes,
+                DifficultyId = SelectedDifficultyIndex + 1
             };
 
             try
             {
                 LobbyCreationResultDto result = await matchmakingService.createLobbyAsync(SessionService.Username, settings);
 
-                if (result.success && result.initialLobbyState != null)
+                if (result.Success && result.InitialLobbyState != null)
                 {
-                    Debug.WriteLine(result.initialLobbyState.lobbyId);
-                    currentLobbyService.setInitialState(result.initialLobbyState);
+                    Debug.WriteLine(result.InitialLobbyState.LobbyId);
+                    currentLobbyService.setInitialState(result.InitialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
                     windowNavigationService.closeWindow<MainWindow>();
                 }
                 else
                 {
-                    dialogService.showError(result.message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle);
+                    dialogService.showError(result.Message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)

@@ -24,10 +24,10 @@ namespace MindWeaveClient.SocialManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string avatarPathField;
+        private string AvatarPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string usernameField;
+        private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -40,27 +40,27 @@ namespace MindWeaveClient.SocialManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string avatarPath {
+        public string AvatarPath {
             get {
-                return this.avatarPathField;
+                return this.AvatarPathField;
             }
             set {
-                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
-                    this.avatarPathField = value;
-                    this.RaisePropertyChanged("avatarPath");
+                if ((object.ReferenceEquals(this.AvatarPathField, value) != true)) {
+                    this.AvatarPathField = value;
+                    this.RaisePropertyChanged("AvatarPath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string username {
+        public string Username {
             get {
-                return this.usernameField;
+                return this.UsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
-                    this.usernameField = value;
-                    this.RaisePropertyChanged("username");
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }
@@ -86,10 +86,10 @@ namespace MindWeaveClient.SocialManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string messageField;
+        private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool successField;
+        private bool SuccessField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -102,27 +102,27 @@ namespace MindWeaveClient.SocialManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string message {
+        public string Message {
             get {
-                return this.messageField;
+                return this.MessageField;
             }
             set {
-                if ((object.ReferenceEquals(this.messageField, value) != true)) {
-                    this.messageField = value;
-                    this.RaisePropertyChanged("message");
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool success {
+        public bool Success {
             get {
-                return this.successField;
+                return this.SuccessField;
             }
             set {
-                if ((this.successField.Equals(value) != true)) {
-                    this.successField = value;
-                    this.RaisePropertyChanged("success");
+                if ((this.SuccessField.Equals(value) != true)) {
+                    this.SuccessField = value;
+                    this.RaisePropertyChanged("Success");
                 }
             }
         }
@@ -148,13 +148,13 @@ namespace MindWeaveClient.SocialManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string avatarPathField;
+        private string AvatarPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool isOnlineField;
+        private bool IsOnlineField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string usernameField;
+        private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -167,40 +167,40 @@ namespace MindWeaveClient.SocialManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string avatarPath {
+        public string AvatarPath {
             get {
-                return this.avatarPathField;
+                return this.AvatarPathField;
             }
             set {
-                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
-                    this.avatarPathField = value;
-                    this.RaisePropertyChanged("avatarPath");
+                if ((object.ReferenceEquals(this.AvatarPathField, value) != true)) {
+                    this.AvatarPathField = value;
+                    this.RaisePropertyChanged("AvatarPath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool isOnline {
+        public bool IsOnline {
             get {
-                return this.isOnlineField;
+                return this.IsOnlineField;
             }
             set {
-                if ((this.isOnlineField.Equals(value) != true)) {
-                    this.isOnlineField = value;
-                    this.RaisePropertyChanged("isOnline");
+                if ((this.IsOnlineField.Equals(value) != true)) {
+                    this.IsOnlineField = value;
+                    this.RaisePropertyChanged("IsOnline");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string username {
+        public string Username {
             get {
-                return this.usernameField;
+                return this.UsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.usernameField, value) != true)) {
-                    this.usernameField = value;
-                    this.RaisePropertyChanged("username");
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }
@@ -226,13 +226,13 @@ namespace MindWeaveClient.SocialManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string avatarPathField;
+        private string AvatarPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime requestDateField;
+        private System.DateTime RequestDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string requesterUsernameField;
+        private string RequesterUsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -245,40 +245,40 @@ namespace MindWeaveClient.SocialManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string avatarPath {
+        public string AvatarPath {
             get {
-                return this.avatarPathField;
+                return this.AvatarPathField;
             }
             set {
-                if ((object.ReferenceEquals(this.avatarPathField, value) != true)) {
-                    this.avatarPathField = value;
-                    this.RaisePropertyChanged("avatarPath");
+                if ((object.ReferenceEquals(this.AvatarPathField, value) != true)) {
+                    this.AvatarPathField = value;
+                    this.RaisePropertyChanged("AvatarPath");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime requestDate {
+        public System.DateTime RequestDate {
             get {
-                return this.requestDateField;
+                return this.RequestDateField;
             }
             set {
-                if ((this.requestDateField.Equals(value) != true)) {
-                    this.requestDateField = value;
-                    this.RaisePropertyChanged("requestDate");
+                if ((this.RequestDateField.Equals(value) != true)) {
+                    this.RequestDateField = value;
+                    this.RaisePropertyChanged("RequestDate");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string requesterUsername {
+        public string RequesterUsername {
             get {
-                return this.requesterUsernameField;
+                return this.RequesterUsernameField;
             }
             set {
-                if ((object.ReferenceEquals(this.requesterUsernameField, value) != true)) {
-                    this.requesterUsernameField = value;
-                    this.RaisePropertyChanged("requesterUsername");
+                if ((object.ReferenceEquals(this.RequesterUsernameField, value) != true)) {
+                    this.RequesterUsernameField = value;
+                    this.RaisePropertyChanged("RequesterUsername");
                 }
             }
         }

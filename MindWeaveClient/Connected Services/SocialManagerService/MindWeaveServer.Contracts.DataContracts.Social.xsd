@@ -8,8 +8,8 @@
   <xs:element name="ArrayOfPlayerSearchResultDto" nillable="true" type="tns:ArrayOfPlayerSearchResultDto" />
   <xs:complexType name="PlayerSearchResultDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="avatarPath" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AvatarPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PlayerSearchResultDto" nillable="true" type="tns:PlayerSearchResultDto" />
@@ -21,9 +21,9 @@
   <xs:element name="ArrayOfFriendDto" nillable="true" type="tns:ArrayOfFriendDto" />
   <xs:complexType name="FriendDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="avatarPath" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="isOnline" type="xs:boolean" />
-      <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AvatarPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsOnline" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FriendDto" nillable="true" type="tns:FriendDto" />
@@ -35,9 +35,9 @@
   <xs:element name="ArrayOfFriendRequestInfoDto" nillable="true" type="tns:ArrayOfFriendRequestInfoDto" />
   <xs:complexType name="FriendRequestInfoDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="avatarPath" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="requestDate" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="requesterUsername" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AvatarPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RequestDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="RequesterUsername" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FriendRequestInfoDto" nillable="true" type="tns:FriendRequestInfoDto" />

@@ -314,14 +314,14 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 var result = await profileService.changePasswordAsync(SessionService.Username, CurrentPassword, NewPassword);
 
-                if (result.success)
+                if (result.Success)
                 {
-                    dialogService.showInfo(result.message, Lang.InfoMsgTitleSuccess);
+                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
                     executeCancelChangePassword(null);
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -344,18 +344,18 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (profileData != null)
                 {
-                    FirstName = profileData.firstName;
-                    LastName = profileData.lastName;
-                    DateOfBirth = profileData.dateOfBirth;
+                    FirstName = profileData.FirstName;
+                    LastName = profileData.LastName;
+                    DateOfBirth = profileData.DateOfBirth;
                     Genders.Clear();
-                    if (profileData.availableGenders != null)
+                    if (profileData.AvailableGenders != null)
                     {
-                        foreach (var gender in profileData.availableGenders)
+                        foreach (var gender in profileData.AvailableGenders)
                         {
                             Genders.Add(gender);
                         }
                     }
-                    SelectedGender = Genders.FirstOrDefault(g => g.idGender == profileData.idGender);
+                    SelectedGender = Genders.FirstOrDefault(g => g.IdGender == profileData.IdGender);
                 }
                 else
                 {
@@ -386,11 +386,11 @@ namespace MindWeaveClient.ViewModel.Main
 
             var updatedProfile = new UserProfileForEditDto
             {
-                firstName = this.FirstName,
-                lastName = this.LastName,
-                dateOfBirth = this.DateOfBirth,
-                idGender = this.SelectedGender.idGender,
-                availableGenders = null
+                FirstName = this.FirstName,
+                LastName = this.LastName,
+                DateOfBirth = this.DateOfBirth,
+                IdGender = this.SelectedGender.IdGender,
+                AvailableGenders = null
             };
 
             setBusy(true);
@@ -398,14 +398,14 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 var result = await profileService.updateProfileAsync(SessionService.Username, updatedProfile);
 
-                if (result.success)
+                if (result.Success)
                 {
                     dialogService.showInfo(Lang.ProfileUpdateSuccess, Lang.InfoMsgTitleSuccess);
                     navigationService.goBack();
                 }
                 else
                 {
-                    dialogService.showError(result.message, Lang.ErrorTitle);
+                    dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
