@@ -90,7 +90,11 @@ namespace MindWeaveClient.Services.Callbacks
                         CorrectX = piece.CorrectX,
                         CorrectY = piece.CorrectY,
                         InitialX = piece.InitialX,
-                        InitialY = piece.InitialY
+                        InitialY = piece.InitialY,
+                        TopNeighborId = piece.TopNeighborId,
+                        BottomNeighborId = piece.BottomNeighborId,
+                        LeftNeighborId = piece.LeftNeighborId,
+                        RightNeighborId = piece.RightNeighborId
                     }).ToArray()
             };
 
