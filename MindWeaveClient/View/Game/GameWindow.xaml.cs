@@ -48,7 +48,6 @@ namespace MindWeaveClient.View.Game
             finally
             {
                 this.Closing -= GameWindow_Closing;
-                this.Close();
             }
 
         }
