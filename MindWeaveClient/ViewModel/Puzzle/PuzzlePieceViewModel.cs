@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using MindWeaveClient.PuzzleManagerService;
 
 namespace MindWeaveClient.ViewModel.Puzzle
 {
@@ -92,46 +93,32 @@ namespace MindWeaveClient.ViewModel.Puzzle
         public double DragOffsetY { get; set; }
 
 
-        public PuzzlePieceViewModel(
-            BitmapSource fullImage,
-            int pieceId,
-            int sourceX, int sourceY,
-            int width, int height,
-            double correctX, double correctY,
-            double startX, double startY,
-            double originalX, double originalY,
-            int? topNeighborId,
-            int? bottomNeighborId,
-            int? leftNeighborId,
-            int? rightNeighborId)
+        public PuzzlePieceViewModel(BitmapSource fullImage, PuzzlePieceDefinitionDto data)
         {
-            PieceId = pieceId;
+            this.PieceId = data.PieceId;
+            this.Width = data.Width;
+            this.Height = data.Height;
 
-            this.CorrectX = correctX;
-            this.CorrectY = correctY;
+            this.CorrectX = data.CorrectX;
+            this.CorrectY = data.CorrectY;
 
-            isPlaced = false;
-            isHeldByOther = false;
+            this.OriginalX = data.InitialX;
+            this.OriginalY = data.InitialY;
+            this.X = data.InitialX;
+            this.Y = data.InitialY;
 
-            this.Width = width;
-            this.Height = height;
+            this.ZIndex = 0;
+            this.isPlaced = false;
+            this.isHeldByOther = false;
 
-            this.OriginalX = originalX;
-            this.OriginalY = originalY;
+            this.TopNeighborId = data.TopNeighborId;
+            this.BottomNeighborId = data.BottomNeighborId;
+            this.LeftNeighborId = data.LeftNeighborId;
+            this.RightNeighborId = data.RightNeighborId;
 
-            Int32Rect cropRect = new Int32Rect(sourceX, sourceY, width, height);
-            PieceImage = new CroppedBitmap(fullImage, cropRect);
-            PieceImage.Freeze();
-
-            X = startX;
-            Y = startY;
-            ZIndex = 0;
-
-            this.TopNeighborId = topNeighborId;
-            this.BottomNeighborId = bottomNeighborId;
-            this.LeftNeighborId = leftNeighborId;
-            this.RightNeighborId = rightNeighborId;
-
+            Int32Rect cropRect = new Int32Rect(data.SourceX, data.SourceY, data.Width, data.Height);
+            this.PieceImage = new CroppedBitmap(fullImage, cropRect);
+            this.PieceImage.Freeze();
         }
     }
 }

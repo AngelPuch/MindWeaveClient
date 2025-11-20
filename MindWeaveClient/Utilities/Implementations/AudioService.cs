@@ -15,6 +15,9 @@ namespace MindWeaveClient.Utilities.Implementations
         private bool isMusicLoaded;
         private string tempMusicFilePath;
 
+        
+        private bool disposedValue;
+
         public AudioService()
         {
             loadInitialVolumes();
@@ -81,7 +84,14 @@ namespace MindWeaveClient.Utilities.Implementations
         {
             if (tempMusicFilePath != null && File.Exists(tempMusicFilePath))
             {
-                File.Delete(tempMusicFilePath);
+                try
+                {
+                    File.Delete(tempMusicFilePath);
+                }
+                catch
+                {
+                    // Ignoramos errores de borrado al cerrar para no bloquear el dispose
+                }
                 tempMusicFilePath = null;
             }
         }
@@ -145,11 +155,27 @@ namespace MindWeaveClient.Utilities.Implementations
             sfxPlayer.Play();
         }
 
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    stopMusic();
+                    musicPlayer.Close();
+                    sfxPlayer.Close();
+                    cleanupTempFile();
+                }
+
+                disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            stopMusic();
-            musicPlayer.Close();
-            cleanupTempFile();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

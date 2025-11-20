@@ -7,4 +7,28 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="OperationResultDto" nillable="true" type="tns:OperationResultDto" />
+  <xs:complexType name="ServiceFaultDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ErrorType" type="tns:ServiceErrorType" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Target" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ServiceFaultDto" nillable="true" type="tns:ServiceFaultDto" />
+  <xs:simpleType name="ServiceErrorType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown" />
+      <xs:enumeration value="DatabaseError" />
+      <xs:enumeration value="DuplicateRecord" />
+      <xs:enumeration value="ValidationFailed" />
+      <xs:enumeration value="NotFound" />
+      <xs:enumeration value="OperationFailed" />
+      <xs:enumeration value="CommunicationError" />
+      <xs:enumeration value="LobbyFull" />
+      <xs:enumeration value="GameInProgress" />
+      <xs:enumeration value="LobbyNotFound" />
+      <xs:enumeration value="PlayerBanned" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ServiceErrorType" nillable="true" type="tns:ServiceErrorType" />
 </xs:schema>

@@ -7,9 +7,9 @@ namespace MindWeaveClient.Services.Callbacks
     {
         public event Action<ChatMessageDto> OnMessageReceivedEvent;
 
-        public void receiveLobbyMessage(ChatMessageDto message)
+        public void receiveLobbyMessage(ChatMessageDto messageDto)
         {
-            OnMessageReceivedEvent?.Invoke(message);
+            OnMessageReceivedEvent?.Invoke(messageDto);
         }
     }
 }

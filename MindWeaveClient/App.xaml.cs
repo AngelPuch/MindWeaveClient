@@ -45,7 +45,7 @@ namespace MindWeaveClient
             authWindow.Show();
         }
 
-        private void configureServices(IServiceCollection services)
+        private static void configureServices(IServiceCollection services)
         {
             services.AddSingleton<IChatManagerCallback, ChatCallbackHandler>();
             services.AddSingleton<ISocialManagerCallback, SocialCallbackHandler>();

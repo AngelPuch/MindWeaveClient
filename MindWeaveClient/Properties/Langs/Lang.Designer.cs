@@ -187,11 +187,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a The selected file is too large for the server configuration..
+        /// </summary>
+        public static string ErrorFileTooBigForServer {
+            get {
+                return ResourceManager.GetString("ErrorFileTooBigForServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Could not generate a unique guest username. Please try another name..
         /// </summary>
         public static string ErrorGuestUsernameGenerationFailed {
             get {
                 return ResourceManager.GetString("ErrorGuestUsernameGenerationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The image is too large. Max size is {0}MB..
+        /// </summary>
+        public static string ErrorImageTooLarge {
+            get {
+                return ResourceManager.GetString("ErrorImageTooLarge", resourceCulture);
             }
         }
         
@@ -327,6 +345,33 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorMsgVerifyFailed {
             get {
                 return ResourceManager.GetString("ErrorMsgVerifyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error processing file.
+        /// </summary>
+        public static string ErrorProcessingFile {
+            get {
+                return ResourceManager.GetString("ErrorProcessingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error reading file.
+        /// </summary>
+        public static string ErrorReadingFile {
+            get {
+                return ResourceManager.GetString("ErrorReadingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error reading puzzle file bytes for ID {0}..
+        /// </summary>
+        public static string ErrorReadingPuzzleBytes {
+            get {
+                return ResourceManager.GetString("ErrorReadingPuzzleBytes", resourceCulture);
             }
         }
         

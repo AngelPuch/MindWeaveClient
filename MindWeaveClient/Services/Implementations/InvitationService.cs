@@ -97,7 +97,8 @@ namespace MindWeaveClient.Services.Implementations
 
                 await matchmakingService.joinLobbyAsync(SessionService.Username, lobbyId);
                 currentLobbyService.setInitialState(null);
-                Application.Current.Dispatcher.Invoke(() =>
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     windowNavigationService.openWindow<GameWindow>();
                     windowNavigationService.closeWindow<View.Main.MainWindow>();
@@ -106,7 +107,6 @@ namespace MindWeaveClient.Services.Implementations
             catch (Exception ex)
             {
                 dialogService.showError(Lang.ErrorJoiningLobby + ex.Message, Lang.ErrorTitle);
-
                 matchmakingService.disconnect();
             }
         }

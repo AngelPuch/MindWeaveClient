@@ -39,7 +39,7 @@ namespace MindWeaveClient.Validators
                 .When(vm => !vm.IsFemale && !vm.IsMale && !vm.IsOther && !vm.IsPreferNotToSay, ApplyConditionTo.CurrentValidator);
         }
 
-        private bool beValidAge(DateTime? birthDate)
+        private static bool beValidAge(DateTime? birthDate)
         {
             if (!birthDate.HasValue) return false;
 

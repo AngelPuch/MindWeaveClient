@@ -12,10 +12,11 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using MindWeaveClient.MatchmakingService;
 
 namespace MindWeaveClient.ViewModel.Main
 {
-    public class MainMenuViewModel : BaseViewModel
+    public class MainMenuViewModel : BaseViewModel, IDisposable
     {
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
@@ -87,28 +88,57 @@ namespace MindWeaveClient.ViewModel.Main
             this.currentLobbyService = currentLobbyService;
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
+            this.matchmakingService.OnLobbyStateUpdated += handleLobbyJoinedSuccess;
+            this.matchmakingService.OnLobbyCreationFailed += handleLobbyJoinFailed;
 
 
             PlayerUsername = SessionService.Username;
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-            ProfileCommand = new RelayCommand(p => this.navigationService.navigateTo<ProfilePage>(), p => !IsBusy);
-            CreateLobbyCommand = new RelayCommand(p => executeGoToPuzzleSelection(), p => !IsBusy);
-            SocialCommand = new RelayCommand(p => this.navigationService.navigateTo<SocialPage>(), p => !IsBusy);
-            SettingsCommand = new RelayCommand(p => executeShowSettings(), p => !IsBusy);
-            JoinLobbyCommand = new RelayCommand(async p => await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
+            ProfileCommand = new RelayCommand(p => 
+                this.navigationService.navigateTo<ProfilePage>(), p => !IsBusy);
+            CreateLobbyCommand = new RelayCommand(p => 
+                this.navigationService.navigateTo<SelectionPuzzlePage>(), p => !IsBusy);
+            SocialCommand = new RelayCommand(p => 
+                this.navigationService.navigateTo<SocialPage>(), p => !IsBusy);
+            SettingsCommand = new RelayCommand(p => 
+                this.windowNavigationService.openDialog<SettingsWindow>(Application.Current.MainWindow), p => !IsBusy);
+            JoinLobbyCommand = new RelayCommand(async p => 
+                await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
 
             validate(validator, this, "JoinLobby");
+            this.currentLobbyService = currentLobbyService;
+        }
+
+        private void handleLobbyJoinedSuccess(LobbyStateDto state)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (IsBusy)
+                {
+                    SetBusy(false);
+                    currentLobbyService.setInitialState(state);
+                    windowNavigationService.openWindow<GameWindow>();
+                    windowNavigationService.closeWindow<MainWindow>();
+                }
+            });
+        }
+
+        private void handleLobbyJoinFailed(string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (IsBusy)
+                {
+                    SetBusy(false);
+                    dialogService.showError(reason, Lang.ErrorTitle);
+                }
+            });
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
         {
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-        }
-
-        ~MainMenuViewModel()
-        {
-            SessionService.AvatarPathChanged -= OnAvatarPathChanged;
         }
 
         private async Task executeJoinLobbyAsync()
@@ -121,22 +151,22 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
-                //currentLobbyService.setInitialState(null);
-
-                windowNavigationService.openWindow<GameWindow>();
-                windowNavigationService.closeWindow<MainWindow>();
-            }
-            catch (InvalidOperationException ex)
-            {
-                dialogService.showError(ex.Message, Lang.ErrorTitle);
             }
             catch (EndpointNotFoundException ex)
             {
+                SetBusy(false);
+                handleError(Lang.ErrorMsgServerOffline, ex);
+                matchmakingService.disconnect();
+            }
+            catch (TimeoutException ex)
+            {
+                SetBusy(false);
                 handleError(Lang.ErrorMsgServerOffline, ex);
                 matchmakingService.disconnect();
             }
             catch (Exception ex)
             {
+                SetBusy(false);
                 handleError(Lang.ErrorMsgGuestJoinFailed, ex);
                 matchmakingService.disconnect();
             }
@@ -145,21 +175,21 @@ namespace MindWeaveClient.ViewModel.Main
                 SetBusy(false);
             }
         }
-
-        private void executeShowSettings()
-        {
-            windowNavigationService.openDialog<SettingsWindow>(Application.Current.MainWindow);
-        }
-
-        private void executeGoToPuzzleSelection()
-        {
-            navigationService.navigateTo<SelectionPuzzlePage>();
-        }
-
+        
         private void handleError(string message, Exception ex)
         {
             string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
             dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
+        }
+
+        public void Dispose()
+        {
+            if (matchmakingService != null)
+            {
+                matchmakingService.OnLobbyStateUpdated -= handleLobbyJoinedSuccess;
+                matchmakingService.OnLobbyCreationFailed -= handleLobbyJoinFailed;
+            }
+            SessionService.AvatarPathChanged -= OnAvatarPathChanged;
         }
     }
 }

@@ -12,9 +12,7 @@ namespace MindWeaveClient.Services.Implementations
     public class MatchmakingService : IMatchmakingService
     {
         private MatchmakingManagerClient proxy;
-        private IMatchmakingManagerCallback callbackHandler; 
-        private InstanceContext instanceContext;
-
+        private readonly IMatchmakingManagerCallback callbackHandler; 
        
         public event Action<LobbyStateDto> OnLobbyStateUpdated;
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
@@ -38,8 +36,7 @@ namespace MindWeaveClient.Services.Implementations
                 proxy.Abort();
             }
 
-            
-            instanceContext = new InstanceContext(callbackHandler);
+            var instanceContext = new InstanceContext(callbackHandler);
             proxy = new MatchmakingManagerClient(instanceContext);
 
            
@@ -88,7 +85,7 @@ namespace MindWeaveClient.Services.Implementations
             {
                 SessionService.setSession(wcfResult.PlayerId, wcfResult.AssignedGuestUsername, null, true);
             }
-            return new GuestJoinServiceResultDto(wcfResult, true);
+            return new GuestJoinServiceResultDto(wcfResult);
         }
 
         public async Task joinLobbyAsync(string username, string lobbyCode)
@@ -167,7 +164,7 @@ namespace MindWeaveClient.Services.Implementations
             }
             finally
             {
-                if (callbackHandler != null && callbackHandler is MatchmakingCallbackHandler handler)
+                if (callbackHandler is MatchmakingCallbackHandler handler)
                 {
                     handler.OnLobbyStateUpdatedEvent -= handleLobbyStateUpdated;
                     handler.OnMatchFoundEvent -= handleMatchFound;
@@ -175,7 +172,6 @@ namespace MindWeaveClient.Services.Implementations
                     handler.OnKickedEvent -= handleKicked;
                 }
                 proxy = null;
-                instanceContext = null;
             }
         }
 

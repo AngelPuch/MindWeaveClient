@@ -37,9 +37,9 @@ namespace MindWeaveClient.ViewModel
             IsBusy = value;
         }
 
-        protected void RaiseCanExecuteChangedOnCommands()
+        protected static void RaiseCanExecuteChangedOnCommands()
         {
-            Application.Current?.Dispatcher?.Invoke(() => CommandManager.InvalidateRequerySuggested());
+            Application.Current?.Dispatcher?.Invoke(CommandManager.InvalidateRequerySuggested);
         }
 
         private readonly Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
@@ -62,19 +62,18 @@ namespace MindWeaveClient.ViewModel
                 return errors.Values.SelectMany(list => list);
             }
 
-            if (touchedProperties.Contains(propertyName))
+            if (touchedProperties.Contains(propertyName) && errors.TryGetValue(propertyName, out var errorList))
             {
-                return errors.ContainsKey(propertyName) ? errors[propertyName] : null;
+                return errorList;
             }
 
-            return null;
+            return Enumerable.Empty<string>();
         }
 
         protected void markAsTouched(string propertyName)
         {
-            if (!touchedProperties.Contains(propertyName))
+            if (touchedProperties.Add(propertyName))
             {
-                touchedProperties.Add(propertyName);
                 OnErrorsChanged(propertyName);
             }
         }
@@ -102,16 +101,8 @@ namespace MindWeaveClient.ViewModel
         protected void validate<TViewModel>(IValidator<TViewModel> validator, TViewModel viewModel, string ruleSet = null)
             where TViewModel : class
         {
-            ValidationResult validationResult;
-
-            if (string.IsNullOrEmpty(ruleSet))
-            {
-                validationResult = validator.Validate(viewModel);
-            }
-            else
-            {
-                validationResult = validator.Validate(viewModel, v => v.IncludeRuleSets(ruleSet));
-            }
+            var validationResult = string.IsNullOrEmpty(ruleSet) ? 
+                validator.Validate(viewModel) : validator.Validate(viewModel, v => v.IncludeRuleSets(ruleSet));
 
             var propertyNamesWithErrors = errors.Keys.ToList();
             errors.Clear();

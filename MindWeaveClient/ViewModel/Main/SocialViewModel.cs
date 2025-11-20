@@ -6,6 +6,7 @@ using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -158,6 +159,18 @@ namespace MindWeaveClient.ViewModel.Main
                     }
                 }
             }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorLoadingFriends, ex);
@@ -180,6 +193,18 @@ namespace MindWeaveClient.ViewModel.Main
                     foreach (var req in requests) ReceivedRequests.Add(req);
                 }
             }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorLoadingRequests, ex);
@@ -201,6 +226,18 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     foreach (var user in results) SearchResults.Add(user);
                 }
+            }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
@@ -229,6 +266,18 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     dialogService.showWarning(result.Message, Lang.WarningTitle);
                 }
+            }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
@@ -261,6 +310,18 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
+            }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
@@ -296,6 +357,18 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
+            }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
@@ -360,7 +433,8 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void handleError(string message, Exception ex)
         {
-            dialogService.showError(message, Lang.ErrorTitle);
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
 
         public void cleanup()

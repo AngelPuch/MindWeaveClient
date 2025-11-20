@@ -7,15 +7,15 @@ using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
+using MindWeaveClient.ViewModel.Puzzle;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MindWeaveClient.ViewModel.Puzzle;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -27,6 +27,9 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentLobbyService currentLobbyService;
+
+        private const int MAX_IMAGE_SIZE_MB = 5;
+        private const int MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
 
         private ObservableCollection<PuzzleDisplayInfo> availablePuzzles = new ObservableCollection<PuzzleDisplayInfo>();
         private PuzzleDisplayInfo selectedPuzzle;
@@ -111,7 +114,6 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-
         private async Task executeLoadPuzzlesAsync()
         {
             SetBusy(true);
@@ -156,9 +158,21 @@ namespace MindWeaveClient.ViewModel.Main
                     OnPropertyChanged(nameof(AvailablePuzzles));
                 }
             }
+            catch (FaultException<PuzzleManagerService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
             catch (Exception ex)
             {
-                dialogService.showError(Lang.ErrorLoadingPuzzles + ": " + ex.Message, Lang.ErrorTitle);
+                handleError(Lang.ErrorLoadingPuzzles, ex);
             }
             finally
             {
@@ -168,86 +182,75 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task executeUploadImageAsync()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            string filePath = selectImageFile();
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            SetBusy(true);
+            try
             {
-                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
-                Title = Lang.SelectPuzzleImageTitle
-            };
+                byte[] imageBytes = readAndValidateImage(filePath);
+                if (imageBytes == null) return;
 
-            if (openFileDialog.ShowDialog() == true)
+                string fileName = Path.GetFileName(filePath);
+
+                UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
+
+                if (uploadResult.Success)
+                {
+                    ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
+                    var newPuzzleInfo = new PuzzleDisplayInfo(
+                        uploadResult.NewPuzzleId,
+                        fileName,
+                        puzzleImage,
+                        true,
+                        imageBytes,
+                        filePath
+                    );
+                    
+                    AvailablePuzzles.Add(newPuzzleInfo);
+                    executeSelectPuzzle(newPuzzleInfo);
+
+                    dialogService.showInfo(uploadResult.Message, Lang.UploadSuccessful);
+
+                }
+                else
+                {
+                    dialogService.showWarning(uploadResult.Message, Lang.UploadFailed);
+                }
+            }
+            catch (FaultException<PuzzleManagerService.ServiceFaultDto> ex)
             {
-                SetBusy(true);
-                try
-                {
-                    byte[] imageBytes = File.ReadAllBytes(openFileDialog.FileName);
-                    string fileName = Path.GetFileName(openFileDialog.FileName);
-
-                    if (imageBytes.Length > 2147483647)
-                    {
-                        dialogService.showError("Image file is too large.", Lang.UploadFailed);
-                        SetBusy(false);
-                        return;
-                    }
-
-                    UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
-
-                    if (uploadResult.Success)
-                    {
-                        ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
-                        var newPuzzleInfo = new PuzzleDisplayInfo(
-                            uploadResult.NewPuzzleId,
-                            fileName,
-                            puzzleImage,
-                            true,
-                            imageBytes,
-                            openFileDialog.FileName
-                        );
-
-
-
-                        AvailablePuzzles.Add(newPuzzleInfo);
-                        executeSelectPuzzle(newPuzzleInfo);
-
-                        dialogService.showInfo(uploadResult.Message, Lang.UploadSuccessful);
-                    }
-                    else
-                    {
-                        dialogService.showWarning(uploadResult.Message, Lang.UploadFailed);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    dialogService.showError(Lang.ErrorUploadingImage + ": " + ex.Message, Lang.ErrorTitle);
-                }
-                finally
-                {
-                    SetBusy(false);
-                }
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorUploadingImage, ex);
+            }
+            finally
+            {
+                SetBusy(false);
             }
         }
 
         private async Task executeConfirmAndCreateLobbyAsync()
         {
-            if (!canConfirmAndCreateLobby())
-            {
-                return;
-            }
+            if (!canConfirmAndCreateLobby()) { return; }
 
             SetBusy(true);
-
             byte[] puzzleBytes = null;
             int? puzzleId = SelectedPuzzle.PuzzleId;
-
-
 
             if (SelectedPuzzle.IsUploaded)
             {
                 puzzleBytes = SelectedPuzzle.PuzzleBytes;
 
-
                 if (puzzleBytes == null || puzzleBytes.Length == 0)
                 {
-                    dialogService.showError($"Error reading puzzle file bytes for ID {puzzleId}.", Lang.ErrorTitle);
+                    dialogService.showError(string.Format(Lang.ErrorReadingPuzzleBytes, puzzleId), Lang.ErrorTitle);
                     SetBusy(false);
                     return;
                 }
@@ -266,7 +269,6 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.Success && result.InitialLobbyState != null)
                 {
-                    Debug.WriteLine(result.InitialLobbyState.LobbyId);
                     currentLobbyService.setInitialState(result.InitialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
                     windowNavigationService.closeWindow<MainWindow>();
@@ -276,9 +278,36 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle);
                 }
             }
+            catch (FaultException<MatchmakingService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
+                matchmakingService.disconnect();
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+                matchmakingService.disconnect();
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+                matchmakingService.disconnect();
+            }
+            catch (CommunicationException ex)
+            {
+                if (ex.Message.Contains("Quota") || ex.Message.Contains("maximum message size"))
+                {
+                    handleError(Lang.ErrorFileTooBigForServer, ex);
+                }
+                else
+                {
+                    handleError(Lang.ErrorMsgServerOffline, ex);
+                }
+                matchmakingService.disconnect();
+            }
             catch (Exception ex)
             {
-                dialogService.showError(Lang.FailedToCreateLobby + ": " + ex.Message, Lang.ErrorTitle);
+                handleError(Lang.FailedToCreateLobby, ex);
                 matchmakingService.disconnect();
             }
             finally
@@ -287,9 +316,50 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private ImageSource convertBytesToImageSource(byte[] imageBytes)
+        private string selectImageFile()
         {
-            if (imageBytes == null || imageBytes.Length == 0) return null;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
+                Title = Lang.SelectPuzzleImageTitle
+            };
+
+            return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : null;
+        }
+
+        private byte[] readAndValidateImage(string filePath)
+        {
+            try
+            {
+                var fileInfo = new FileInfo(filePath);
+                if (fileInfo.Length > MAX_IMAGE_SIZE_BYTES)
+                {
+                    dialogService.showWarning(string.Format(Lang.ErrorImageTooLarge, MAX_IMAGE_SIZE_MB), Lang.UploadFailed);
+                    return null;
+                }
+
+                byte[] bytes = File.ReadAllBytes(filePath);
+                return bytes;
+            }
+            catch (IOException ex)
+            {
+                handleError(Lang.ErrorReadingFile, ex);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorProcessingFile, ex);
+                return null;
+            }
+        }
+
+        private static ImageSource convertBytesToImageSource(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0)
+            {
+                return getDefaultImage();
+            }
+
             try
             {
                 var bitmapImage = new BitmapImage();
@@ -306,14 +376,37 @@ namespace MindWeaveClient.ViewModel.Main
                 bitmapImage.Freeze();
                 return bitmapImage;
             }
-            catch (Exception ex)
+            catch (NotSupportedException)
             {
-                Trace.TraceError("Failed to convert byte array to ImageSource: " + ex.Message);
-                return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+                return getDefaultImage();
+            }
+            catch (InvalidOperationException)
+            {
+                return getDefaultImage();
+            }
+            catch (Exception)
+            {
+                return getDefaultImage();
             }
         }
 
+        private static ImageSource getDefaultImage()
+        {
+            try
+            {
+                return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
+        private void handleError(string message, Exception ex)
+        {
+            string errorDetails = ex?.Message ?? Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}:\n{errorDetails}", Lang.ErrorTitle);
+        }
 
         private void executeCancel()
         {

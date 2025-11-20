@@ -26,12 +26,9 @@ namespace MindWeaveClient.View.Main
 
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && this.DataContext is SocialViewModel vm && vm.SearchCommand.CanExecute(null))
             {
-                if (this.DataContext is SocialViewModel vm && vm.SearchCommand.CanExecute(null))
-                {
-                    vm.SearchCommand.Execute(null);
-                }
+                vm.SearchCommand.Execute(null);
             }
         }
     }

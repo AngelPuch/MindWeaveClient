@@ -304,12 +304,17 @@ namespace MindWeaveClient.ViewModel.Authentication
                     SessionService.PendingVerificationEmail = this.Email;
                     navigationService.navigateTo<VerificationPage>();
                 }
-                else
-                {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
-                }
+                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+            }
+            catch (FaultException<ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
             }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
             }

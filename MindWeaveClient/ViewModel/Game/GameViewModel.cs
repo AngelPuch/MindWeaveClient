@@ -104,7 +104,6 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 if (puzzleLoaded)
                 {
-                    Trace.WriteLine("Puzzle already loaded, skipping OnPuzzleReady");
                     return;
                 }
 
@@ -123,7 +122,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (currentMatchService.Players == null || !currentMatchService.Players.Any())
             {
-                Trace.WriteLine("No players available yet for score initialization");
                 return;
             }
 
@@ -154,15 +152,12 @@ namespace MindWeaveClient.ViewModel.Game
         {
             if (puzzleLoaded)
             {
-                Trace.WriteLine("Puzzle already loaded, skipping LoadPuzzle");
                 return;
             }
 
             SetBusy(true);
             try
             {
-                Trace.WriteLine($"Loading puzzle with {puzzleDto.Pieces?.Length ?? 0} pieces");
-
                 PuzzleWidth = puzzleDto.PuzzleWidth;
                 PuzzleHeight = puzzleDto.PuzzleHeight;
                 OnPropertyChanged(nameof(PuzzleWidth));
@@ -185,30 +180,8 @@ namespace MindWeaveClient.ViewModel.Game
 
                 foreach (var pieceDef in puzzleDto.Pieces)
                 {
-                    // ✅ CORRECCIÓN: Pasar los neighbor IDs en las posiciones correctas
-                    var pieceViewModel = new PuzzlePieceViewModel(
-                        fullImage,
-                        pieceDef.PieceId,
-                        pieceDef.SourceX,
-                        pieceDef.SourceY,
-                        pieceDef.Width,
-                        pieceDef.Height,
-                        pieceDef.CorrectX,
-                        pieceDef.CorrectY,
-                        pieceDef.InitialX,
-                        pieceDef.InitialY,
-                        pieceDef.InitialX,         
-                        pieceDef.InitialY,         
-                        pieceDef.TopNeighborId,    
-                        pieceDef.BottomNeighborId, 
-                        pieceDef.LeftNeighborId,   
-                        pieceDef.RightNeighborId   
-                    );
+                    var pieceViewModel = new PuzzlePieceViewModel(fullImage, pieceDef);
                     PiecesCollection.Add(pieceViewModel);
-
-                    Trace.WriteLine($"Piece {pieceDef.PieceId} created with neighbors: " +
-                                    $"T={pieceDef.TopNeighborId}, B={pieceDef.BottomNeighborId}, " +
-                                    $"L={pieceDef.LeftNeighborId}, R={pieceDef.RightNeighborId}");
                 }
 
                 foreach (var piece in PiecesCollection)
@@ -217,12 +190,10 @@ namespace MindWeaveClient.ViewModel.Game
                 }
 
                 puzzleLoaded = true;
-                Trace.WriteLine($"Puzzle loaded successfully with {PiecesCollection.Count} pieces");
             }
             catch (Exception ex)
             {
                 dialogService.showError($"Error al procesar el puzzle: {ex.Message}", "Error Crítico");
-                Trace.TraceError($"LoadPuzzle error: {ex}");
             }
             finally
             {
@@ -294,7 +265,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
+        private static BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0)
             {

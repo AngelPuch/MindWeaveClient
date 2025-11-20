@@ -36,9 +36,9 @@
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" />
-      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IPuzzleManager_getAvailablePuzzles_InputMessage">
@@ -47,11 +47,17 @@
   <wsdl:message name="IPuzzleManager_getAvailablePuzzles_OutputMessage">
     <wsdl:part name="parameters" element="tns:getAvailablePuzzlesResponse" />
   </wsdl:message>
+  <wsdl:message name="IPuzzleManager_getAvailablePuzzles_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q1:ServiceFaultDto" />
+  </wsdl:message>
   <wsdl:message name="IPuzzleManager_uploadPuzzleImage_InputMessage">
     <wsdl:part name="parameters" element="tns:uploadPuzzleImage" />
   </wsdl:message>
   <wsdl:message name="IPuzzleManager_uploadPuzzleImage_OutputMessage">
     <wsdl:part name="parameters" element="tns:uploadPuzzleImageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPuzzleManager_uploadPuzzleImage_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q2:ServiceFaultDto" />
   </wsdl:message>
   <wsdl:message name="IPuzzleManager_getPuzzleDefinition_InputMessage">
     <wsdl:part name="parameters" element="tns:getPuzzleDefinition" />
@@ -59,18 +65,24 @@
   <wsdl:message name="IPuzzleManager_getPuzzleDefinition_OutputMessage">
     <wsdl:part name="parameters" element="tns:getPuzzleDefinitionResponse" />
   </wsdl:message>
+  <wsdl:message name="IPuzzleManager_getPuzzleDefinition_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q3:ServiceFaultDto" />
+  </wsdl:message>
   <wsdl:portType name="IPuzzleManager">
     <wsdl:operation name="getAvailablePuzzles">
       <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/getAvailablePuzzles" message="tns:IPuzzleManager_getAvailablePuzzles_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/getAvailablePuzzlesResponse" message="tns:IPuzzleManager_getAvailablePuzzles_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPuzzleManager/getAvailablePuzzlesServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IPuzzleManager_getAvailablePuzzles_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation name="uploadPuzzleImage">
       <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImage" message="tns:IPuzzleManager_uploadPuzzleImage_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImageResponse" message="tns:IPuzzleManager_uploadPuzzleImage_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPuzzleManager/uploadPuzzleImageServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IPuzzleManager_uploadPuzzleImage_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation name="getPuzzleDefinition">
       <wsdl:input wsaw:Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinition" message="tns:IPuzzleManager_getPuzzleDefinition_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinitionResponse" message="tns:IPuzzleManager_getPuzzleDefinition_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPuzzleManager/getPuzzleDefinitionServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IPuzzleManager_getPuzzleDefinition_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IPuzzleManager" type="tns:IPuzzleManager">
@@ -85,6 +97,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="uploadPuzzleImage">
       <soap12:operation soapAction="http://tempuri.org/IPuzzleManager/uploadPuzzleImage" style="document" />
@@ -94,6 +109,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="getPuzzleDefinition">
       <soap12:operation soapAction="http://tempuri.org/IPuzzleManager/getPuzzleDefinition" style="document" />
@@ -103,6 +121,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="PuzzleManagerService">

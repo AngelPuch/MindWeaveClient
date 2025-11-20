@@ -3,10 +3,12 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.View.Main;
 using System;
 using System.Collections.ObjectModel;
+using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -63,7 +65,7 @@ namespace MindWeaveClient.ViewModel.Main
             AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
             Achievements = new ObservableCollection<AchievementDto>();
 
-            loadProfileDataAsync();
+            _ = loadProfileDataAsync();
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
@@ -77,7 +79,7 @@ namespace MindWeaveClient.ViewModel.Main
         }
 
 
-        private async void loadProfileDataAsync()
+        private async Task loadProfileDataAsync()
         {
             if (string.IsNullOrEmpty(SessionService.Username))
             {
@@ -114,14 +116,32 @@ namespace MindWeaveClient.ViewModel.Main
                     }
                 }
             }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
             catch (Exception ex)
             {
-                dialogService.showError(Lang.ErrorFailedToLoadProfile + ex.Message, Lang.ErrorTitle);
+                handleError(Lang.ErrorFailedToLoadProfile, ex);
             }
             finally
             {
                 SetBusy(false);
             }
+        }
+
+        private void handleError(string message, Exception ex)
+        {
+            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
+            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

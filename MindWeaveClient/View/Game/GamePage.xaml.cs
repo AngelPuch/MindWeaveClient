@@ -162,80 +162,75 @@ namespace MindWeaveClient.View.Game
         private bool checkForPieceToPieceSnap()
         {
             var allPieces = gameViewModel.PiecesCollection;
-
             var otherPieces = allPieces.Where(p => p.PieceGroup != this.draggedGroup).ToList();
 
             foreach (var pieceFromDragGroup in this.draggedGroup)
             {
-                Trace.WriteLine($"Checking Piece {pieceFromDragGroup.PieceId}. " +
-                                $"Neighbor IDs: R={pieceFromDragGroup.RightNeighborId}, " +
-                                $"L={pieceFromDragGroup.LeftNeighborId}, " +
-                                $"T={pieceFromDragGroup.TopNeighborId}, " +
-                                $"B={pieceFromDragGroup.BottomNeighborId}");
                 if (pieceFromDragGroup.IsPlaced)
                 {
                     continue;
                 }
 
-                foreach (var stationaryPiece in otherPieces)
+                if (tryFindSnapWithStationaryPieces(pieceFromDragGroup, otherPieces))
                 {
-                    double targetX, targetY;
-                    double snapOffsetX, snapOffsetY;
+                    return true;
+                }
+            }
+            return false;
+        }
 
-                    if (pieceFromDragGroup.RightNeighborId == stationaryPiece.PieceId)
+        private bool tryFindSnapWithStationaryPieces(PuzzlePieceViewModel draggedPiece, List<PuzzlePieceViewModel> otherPieces)
+        {
+            foreach (var stationaryPiece in otherPieces)
+            {
+                Point? targetPos = getTargetSnapPosition(draggedPiece, stationaryPiece);
+
+                if (targetPos.HasValue)
+                {
+                    if (attemptSnapToTarget(draggedPiece, stationaryPiece, targetPos.Value))
                     {
-                        targetX = stationaryPiece.X - pieceFromDragGroup.Width;
-                        targetY = stationaryPiece.Y;
-                        if (isClose(pieceFromDragGroup, targetX, targetY))
-                        {
-                            snapOffsetX = targetX - pieceFromDragGroup.X;
-                            snapOffsetY = targetY - pieceFromDragGroup.Y;
-                            alignAndMerge(stationaryPiece.PieceGroup, snapOffsetX, snapOffsetY, pieceFromDragGroup, stationaryPiece);
-                            return true; // Snap!
-                        }
-                    }
-                    else if (pieceFromDragGroup.LeftNeighborId == stationaryPiece.PieceId)
-                    {
-                        targetX = stationaryPiece.X + stationaryPiece.Width;
-                        targetY = stationaryPiece.Y;
-                        if (isClose(pieceFromDragGroup, targetX, targetY))
-                        {
-                            snapOffsetX = targetX - pieceFromDragGroup.X;
-                            snapOffsetY = targetY - pieceFromDragGroup.Y;
-                            alignAndMerge(stationaryPiece.PieceGroup, snapOffsetX, snapOffsetY, pieceFromDragGroup, stationaryPiece);
-                            return true; // Snap!
-                        }
-                    }
-                    else if (pieceFromDragGroup.BottomNeighborId == stationaryPiece.PieceId)
-                    {
-                        targetX = stationaryPiece.X;
-                        targetY = stationaryPiece.Y - pieceFromDragGroup.Height;
-                        if (isClose(pieceFromDragGroup, targetX, targetY))
-                        {
-                            snapOffsetX = targetX - pieceFromDragGroup.X;
-                            snapOffsetY = targetY - pieceFromDragGroup.Y;
-                            alignAndMerge(stationaryPiece.PieceGroup, snapOffsetX, snapOffsetY, pieceFromDragGroup, stationaryPiece);
-                            return true; // Snap!
-                        }
-                    }
-                    else if (pieceFromDragGroup.TopNeighborId == stationaryPiece.PieceId)
-                    {
-                        targetX = stationaryPiece.X;
-                        targetY = stationaryPiece.Y + stationaryPiece.Height;
-                        if (isClose(pieceFromDragGroup, targetX, targetY))
-                        {
-                            snapOffsetX = targetX - pieceFromDragGroup.X;
-                            snapOffsetY = targetY - pieceFromDragGroup.Y;
-                            alignAndMerge(stationaryPiece.PieceGroup, snapOffsetX, snapOffsetY, pieceFromDragGroup, stationaryPiece);
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
             return false;
         }
 
-        private bool isClose(PuzzlePieceViewModel piece, double targetX, double targetY)
+        private Point? getTargetSnapPosition(PuzzlePieceViewModel dragged, PuzzlePieceViewModel stationary)
+        {
+            if (dragged.RightNeighborId == stationary.PieceId)
+            {
+                return new Point(stationary.X - dragged.Width, stationary.Y);
+            }
+            if (dragged.LeftNeighborId == stationary.PieceId)
+            {
+                return new Point(stationary.X + stationary.Width, stationary.Y);
+            }
+            if (dragged.BottomNeighborId == stationary.PieceId)
+            {
+                return new Point(stationary.X, stationary.Y - dragged.Height);
+            }
+            if (dragged.TopNeighborId == stationary.PieceId)
+            {
+                return new Point(stationary.X, stationary.Y + stationary.Height);
+            }
+
+            return null;
+        }
+
+        private bool attemptSnapToTarget(PuzzlePieceViewModel dragged, PuzzlePieceViewModel stationary, Point target)
+        {
+            if (isClose(dragged, target.X, target.Y))
+            {
+                double snapOffsetX = target.X - dragged.X;
+                double snapOffsetY = target.Y - dragged.Y;
+                alignAndMerge(stationary.PieceGroup, snapOffsetX, snapOffsetY, dragged, stationary);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool isClose(PuzzlePieceViewModel piece, double targetX, double targetY)
         {
             double deltaX = piece.X - targetX;
             double deltaY = piece.Y - targetY;
@@ -249,7 +244,6 @@ namespace MindWeaveClient.View.Game
             PuzzlePieceViewModel draggedPiece,
             PuzzlePieceViewModel stationaryPiece)
         {
-            Trace.WriteLine($"Snap! Merging group of {draggedPiece.PieceId} ({draggedGroup.Count} pieces) into group of {stationaryPiece.PieceId} ({stationaryGroup.Count} pieces).");
 
             foreach (var piece in this.draggedGroup)
             {

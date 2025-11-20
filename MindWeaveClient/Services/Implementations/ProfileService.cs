@@ -1,7 +1,6 @@
 ﻿using MindWeaveClient.ProfileService;
 using MindWeaveClient.Services.Abstractions;
 using System;
-using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Implementations
@@ -10,128 +9,43 @@ namespace MindWeaveClient.Services.Implementations
     {
         public async Task<PlayerProfileViewDto> getPlayerProfileViewAsync(string username)
         {
-            ProfileManagerClient client = new ProfileManagerClient();
-            try
-            {
-                PlayerProfileViewDto profileData = await client.getPlayerProfileViewAsync(username);
-                client.Close();
-                return profileData;
-            }
-            catch (CommunicationException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch (TimeoutException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch
-            {
-                client.Abort();
-                throw;
-            }
+            return await executeSafeAsync(async (client) =>
+                await client.getPlayerProfileViewAsync(username));
         }
 
         public async Task<UserProfileForEditDto> getPlayerProfileForEditAsync(string username)
         {
-            var client = new ProfileManagerClient();
-            try
-            {
-                UserProfileForEditDto result = await client.getPlayerProfileForEditAsync(username);
-                client.Close();
-                return result;
-            }
-            catch (CommunicationException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch (TimeoutException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch
-            {
-                client.Abort();
-                throw;
-            }
+            return await executeSafeAsync(async (client) =>
+                await client.getPlayerProfileForEditAsync(username));
         }
 
         public async Task<OperationResultDto> updateProfileAsync(string username, UserProfileForEditDto updatedProfile)
         {
-            var client = new ProfileManagerClient();
-            try
-            {
-                OperationResultDto result = await client.updateProfileAsync(username, updatedProfile);
-                client.Close();
-                return result;
-            }
-            catch (CommunicationException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch (TimeoutException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch
-            {
-                client.Abort();
-                throw;
-            }
+            return await executeSafeAsync(async (client) =>
+                await client.updateProfileAsync(username, updatedProfile));
         }
 
         public async Task<OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword)
         {
-            var client = new ProfileManagerClient();
-            try
-            {
-                OperationResultDto result = await client.changePasswordAsync(username, currentPassword, newPassword);
-                client.Close();
-                return result;
-            }
-            catch (CommunicationException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch (TimeoutException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch
-            {
-                client.Abort();
-                throw;
-            }
+            return await executeSafeAsync(async (client) =>
+                await client.changePasswordAsync(username, currentPassword, newPassword));
         }
 
         public async Task<OperationResultDto> updateAvatarPathAsync(string username, string avatarPath)
         {
+            return await executeSafeAsync(async (client) =>
+                await client.updateAvatarPathAsync(username, avatarPath));
+        }
+        private async Task<T> executeSafeAsync<T>(Func<ProfileManagerClient, Task<T>> action)
+        {
             var client = new ProfileManagerClient();
             try
             {
-                OperationResultDto result = await client.updateAvatarPathAsync(username, avatarPath);
+                T result = await action(client);
                 client.Close();
                 return result;
             }
-            catch (CommunicationException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch (TimeoutException)
-            {
-                client.Abort();
-                throw;
-            }
-            catch
+            catch (Exception)
             {
                 client.Abort();
                 throw;

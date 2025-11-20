@@ -106,7 +106,7 @@ namespace MindWeaveClient.ViewModel.Main
             };
 
             string currentLangCode = Properties.Settings.Default.languageCode;
-            SelectedLanguage = AvailableLanguages.FirstOrDefault(lang => lang.Code == currentLangCode) ?? AvailableLanguages.First();
+            SelectedLanguage = AvailableLanguages.FirstOrDefault(lang => lang.Code == currentLangCode) ?? AvailableLanguages[0];
         }
 
         private void loadSettings()

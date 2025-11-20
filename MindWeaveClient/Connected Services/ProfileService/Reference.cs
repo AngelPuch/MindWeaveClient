@@ -345,6 +345,123 @@ namespace MindWeaveClient.ProfileService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
+    [System.SerializableAttribute()]
+    public partial class ServiceFaultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.ProfileService.ServiceErrorType ErrorTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MessageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TargetField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.ProfileService.ServiceErrorType ErrorType {
+            get {
+                return this.ErrorTypeField;
+            }
+            set {
+                if ((this.ErrorTypeField.Equals(value) != true)) {
+                    this.ErrorTypeField = value;
+                    this.RaisePropertyChanged("ErrorType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message {
+            get {
+                return this.MessageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Target {
+            get {
+                return this.TargetField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TargetField, value) != true)) {
+                    this.TargetField = value;
+                    this.RaisePropertyChanged("Target");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceErrorType", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
+    public enum ServiceErrorType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Unknown = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DatabaseError = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DuplicateRecord = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        ValidationFailed = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        NotFound = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        OperationFailed = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        CommunicationError = 6,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyFull = 7,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        GameInProgress = 8,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyNotFound = 9,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        PlayerBanned = 10,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="UserProfileForEditDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.P" +
         "rofile")]
     [System.SerializableAttribute()]
@@ -582,30 +699,40 @@ namespace MindWeaveClient.ProfileService {
     public interface IProfileManager {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileView", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileViewResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.ProfileService.ServiceFaultDto), Action="http://tempuri.org/IProfileManager/getPlayerProfileViewServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.ProfileService.PlayerProfileViewDto getPlayerProfileView(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileView", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileViewResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.PlayerProfileViewDto> getPlayerProfileViewAsync(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateProfile", ReplyAction="http://tempuri.org/IProfileManager/updateProfileResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.ProfileService.ServiceFaultDto), Action="http://tempuri.org/IProfileManager/updateProfileServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.ProfileService.OperationResultDto updateProfile(string username, MindWeaveClient.ProfileService.UserProfileForEditDto updatedProfileData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateProfile", ReplyAction="http://tempuri.org/IProfileManager/updateProfileResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateProfileAsync(string username, MindWeaveClient.ProfileService.UserProfileForEditDto updatedProfileData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.ProfileService.ServiceFaultDto), Action="http://tempuri.org/IProfileManager/getPlayerProfileForEditServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.ProfileService.UserProfileForEditDto getPlayerProfileForEdit(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit", ReplyAction="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.UserProfileForEditDto> getPlayerProfileForEditAsync(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateAvatarPath", ReplyAction="http://tempuri.org/IProfileManager/updateAvatarPathResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.ProfileService.ServiceFaultDto), Action="http://tempuri.org/IProfileManager/updateAvatarPathServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.ProfileService.OperationResultDto updateAvatarPath(string username, string newAvatarPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/updateAvatarPath", ReplyAction="http://tempuri.org/IProfileManager/updateAvatarPathResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> updateAvatarPathAsync(string username, string newAvatarPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.ProfileService.ServiceFaultDto), Action="http://tempuri.org/IProfileManager/changePasswordServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.ProfileService.OperationResultDto changePassword(string username, string currentPassword, string newPassword);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]

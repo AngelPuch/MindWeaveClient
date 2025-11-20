@@ -766,4 +766,19 @@
     <value>No se puede aceptar una invitación mientras ya se está dentro de una partida.
 </value>
   </data>
+  <data name="ErrorImageTooLarge" xml:space="preserve">
+    <value>La imagen es demasiado grande. El tamaño máximo es {0}MB.</value>
+  </data>
+  <data name="ErrorReadingFile" xml:space="preserve">
+    <value>Error al leer el archivo</value>
+  </data>
+  <data name="ErrorProcessingFile" xml:space="preserve">
+    <value>Error al procesar el archivo</value>
+  </data>
+  <data name="ErrorReadingPuzzleBytes" xml:space="preserve">
+    <value>Error al leer los bytes del archivo de rompecabezas para el ID {0}.</value>
+  </data>
+  <data name="ErrorFileTooBigForServer" xml:space="preserve">
+    <value>El archivo seleccionado es demasiado grande para la configuración del servidor.</value>
+  </data>
 </root>

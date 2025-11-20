@@ -145,9 +145,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private async Task executeJoinAsGuestAsync()
         {
             markAllAsTouched();
-
             if (HasErrors) return;
-
             SetBusy(true);
 
             var joinRequest = new GuestJoinRequestDto
@@ -170,14 +168,20 @@ namespace MindWeaveClient.ViewModel.Authentication
                 else
                 {
                     dialogService.showError(serviceResult.WcfResult.Message, Lang.ErrorTitle);
-
-                    if (!serviceResult.DidMatchmakingConnect)
-                    {
-                        matchmakingService.disconnect();
-                    }
+                    if (!serviceResult.DidMatchmakingConnect) { matchmakingService.disconnect(); }
                 }
             }
+            catch (FaultException<ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
+                matchmakingService.disconnect();
+            }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+                matchmakingService.disconnect();
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
                 matchmakingService.disconnect();

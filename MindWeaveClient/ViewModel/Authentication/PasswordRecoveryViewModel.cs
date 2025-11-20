@@ -193,7 +193,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (!isResend)
             {
                 markAsTouched(nameof(Email));
-                if (HasErrors) return;
+                if (HasErrors) { return;}
             }
 
             SetBusy(true);
@@ -215,12 +215,17 @@ namespace MindWeaveClient.ViewModel.Authentication
                         validateCurrentStep();
                     }
                 }
-                else
-                {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
-                }
+                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+            }
+            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
             }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
             }
@@ -287,7 +292,15 @@ namespace MindWeaveClient.ViewModel.Authentication
                     }
                 }
             }
+            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
+            }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
             }

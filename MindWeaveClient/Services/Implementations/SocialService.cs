@@ -11,7 +11,6 @@ namespace MindWeaveClient.Services.Implementations
     {
         private SocialManagerClient proxy;
         private SocialCallbackHandler callbackHandler;
-        private InstanceContext instanceContext;
         private string currentUsername;
 
         public event Action<string, bool> FriendStatusChanged;
@@ -36,7 +35,7 @@ namespace MindWeaveClient.Services.Implementations
             try
             {
                 callbackHandler = new SocialCallbackHandler();
-                instanceContext = new InstanceContext(callbackHandler);
+                var instanceContext = new InstanceContext(callbackHandler);
                 proxy = new SocialManagerClient(instanceContext);
 
                 callbackHandler.FriendStatusChanged += onFriendStatusChanged;
@@ -138,15 +137,10 @@ namespace MindWeaveClient.Services.Implementations
             {
                 return await call();
             }
-            catch (CommunicationException ex)
+            catch (Exception)
             {
                 cleanupProxy();
-                throw new InvalidOperationException("Lost connection to social service.", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                cleanupProxy();
-                throw new InvalidOperationException("Social service request timed out.", ex);
+                throw;
             }
         }
 
@@ -178,7 +172,6 @@ namespace MindWeaveClient.Services.Implementations
 
             proxy = null;
             callbackHandler = null;
-            instanceContext = null;
             currentUsername = null;
         }
     }

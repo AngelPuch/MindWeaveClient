@@ -12,7 +12,6 @@ namespace MindWeaveClient.Services.Implementations
     {
         private ChatManagerClient proxy;
         private ChatCallbackHandler callbackHandler;
-        private InstanceContext instanceContext;
 
         private string connectedUsername;
         private string connectedLobbyId;
@@ -44,8 +43,8 @@ namespace MindWeaveClient.Services.Implementations
             try
             {
                 callbackHandler = new ChatCallbackHandler();
-                instanceContext = new InstanceContext(callbackHandler);
-                proxy = new ChatManagerClient(instanceContext);  
+                var instanceContext = new InstanceContext(callbackHandler);
+                proxy = new ChatManagerClient(instanceContext);
 
                 callbackHandler.OnMessageReceivedEvent += handleMessageReceived;
 
@@ -104,7 +103,6 @@ namespace MindWeaveClient.Services.Implementations
                 }
                 proxy = null;
                 callbackHandler = null;
-                instanceContext = null;
                 connectedUsername = null;
                 connectedLobbyId = null;
             }

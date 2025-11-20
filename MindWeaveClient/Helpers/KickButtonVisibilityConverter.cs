@@ -9,13 +9,17 @@ namespace MindWeaveClient.Helpers
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length == 3 && values[0] is bool isHost && values[1] is string playerUsername && values[2] is string hostUsername)
+            if (values.Length == 3 &&
+                values[0] is bool isHost &&
+                values[1] is string playerUsername &&
+                values[2] is string hostUsername &&
+                isHost &&
+                !string.IsNullOrEmpty(playerUsername) &&
+                !playerUsername.Equals(hostUsername, StringComparison.OrdinalIgnoreCase))
             {
-                if (isHost && !string.IsNullOrEmpty(playerUsername) && !playerUsername.Equals(hostUsername, StringComparison.OrdinalIgnoreCase))
-                {
-                    return Visibility.Visible;
-                }
+                return Visibility.Visible;
             }
+
             return Visibility.Collapsed;
         }
 

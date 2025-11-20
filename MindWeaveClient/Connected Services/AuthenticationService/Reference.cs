@@ -249,6 +249,123 @@ namespace MindWeaveClient.AuthenticationService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
+    [System.SerializableAttribute()]
+    public partial class ServiceFaultDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.AuthenticationService.ServiceErrorType ErrorTypeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MessageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TargetField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.AuthenticationService.ServiceErrorType ErrorType {
+            get {
+                return this.ErrorTypeField;
+            }
+            set {
+                if ((this.ErrorTypeField.Equals(value) != true)) {
+                    this.ErrorTypeField = value;
+                    this.RaisePropertyChanged("ErrorType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message {
+            get {
+                return this.MessageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Target {
+            get {
+                return this.TargetField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TargetField, value) != true)) {
+                    this.TargetField = value;
+                    this.RaisePropertyChanged("Target");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceErrorType", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+        "hared")]
+    public enum ServiceErrorType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Unknown = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DatabaseError = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DuplicateRecord = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        ValidationFailed = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        NotFound = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        OperationFailed = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        CommunicationError = 6,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyFull = 7,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        GameInProgress = 8,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyNotFound = 9,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        PlayerBanned = 10,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="UserProfileDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.A" +
         "uthentication")]
     [System.SerializableAttribute()]
@@ -394,36 +511,51 @@ namespace MindWeaveClient.AuthenticationService {
     public interface IAuthenticationManager {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/login", ReplyAction="http://tempuri.org/IAuthenticationManager/loginResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.AuthenticationService.ServiceFaultDto), Action="http://tempuri.org/IAuthenticationManager/loginServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.AuthenticationService.LoginResultDto login(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/login", ReplyAction="http://tempuri.org/IAuthenticationManager/loginResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.LoginResultDto> loginAsync(MindWeaveClient.AuthenticationService.LoginDto loginCredentials);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/register", ReplyAction="http://tempuri.org/IAuthenticationManager/registerResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.AuthenticationService.ServiceFaultDto), Action="http://tempuri.org/IAuthenticationManager/registerServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.AuthenticationService.OperationResultDto register(MindWeaveClient.AuthenticationService.UserProfileDto userProfile, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/register", ReplyAction="http://tempuri.org/IAuthenticationManager/registerResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> registerAsync(MindWeaveClient.AuthenticationService.UserProfileDto userProfile, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/verifyAccount", ReplyAction="http://tempuri.org/IAuthenticationManager/verifyAccountResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.AuthenticationService.ServiceFaultDto), Action="http://tempuri.org/IAuthenticationManager/verifyAccountServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.AuthenticationService.OperationResultDto verifyAccount(string email, string code);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/verifyAccount", ReplyAction="http://tempuri.org/IAuthenticationManager/verifyAccountResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> verifyAccountAsync(string email, string code);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/resendVerificationCode", ReplyAction="http://tempuri.org/IAuthenticationManager/resendVerificationCodeResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.AuthenticationService.ServiceFaultDto), Action="http://tempuri.org/IAuthenticationManager/resendVerificationCodeServiceFaultDtoFa" +
+            "ult", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.AuthenticationService.OperationResultDto resendVerificationCode(string email);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/resendVerificationCode", ReplyAction="http://tempuri.org/IAuthenticationManager/resendVerificationCodeResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> resendVerificationCodeAsync(string email);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCode", ReplyAction="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCodeResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.AuthenticationService.ServiceFaultDto), Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCodeServiceFaultDto" +
+            "Fault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.AuthenticationService.OperationResultDto sendPasswordRecoveryCode(string email);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCode", ReplyAction="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCodeResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.AuthenticationService.OperationResultDto> sendPasswordRecoveryCodeAsync(string email);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/resetPasswordWithCode", ReplyAction="http://tempuri.org/IAuthenticationManager/resetPasswordWithCodeResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.AuthenticationService.ServiceFaultDto), Action="http://tempuri.org/IAuthenticationManager/resetPasswordWithCodeServiceFaultDtoFau" +
+            "lt", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
         MindWeaveClient.AuthenticationService.OperationResultDto resetPasswordWithCode(string email, string code, string newPassword);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAuthenticationManager/resetPasswordWithCode", ReplyAction="http://tempuri.org/IAuthenticationManager/resetPasswordWithCodeResponse")]

@@ -66,7 +66,7 @@ namespace MindWeaveClient.Services.Callbacks
             OnMatchFoundEvent?.Invoke(lobbyCode, playerList, settings, puzzleImagePath);
         }
 
-        public void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition)
+        public void onGameStarted(PuzzleDefinitionDto puzzleDefinition)
         {
             if (puzzleDefinition == null || currentMatchService == null)
             {
@@ -104,7 +104,17 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void updateLobbyState(LobbyStateDto lobbyStateDto)
         {
-  
+            if (currentMatchService != null && lobbyStateDto != null)
+            {
+                var playerList = lobbyStateDto.Players?.ToList() ?? new List<string>();
+                currentMatchService.initializeMatch(
+                    lobbyStateDto.LobbyId,
+                    playerList,
+                    lobbyStateDto.CurrentSettingsDto,
+                    lobbyStateDto.PuzzleImagePath
+                );
+            }
+
             OnLobbyStateUpdatedEvent?.Invoke(lobbyStateDto);
         }
 

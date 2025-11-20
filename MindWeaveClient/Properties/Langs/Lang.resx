@@ -765,4 +765,19 @@
   <data name="CannotAcceptInviteAlreadyInGame" xml:space="preserve">
     <value>Cannot accept invitation while already in a game.</value>
   </data>
+  <data name="ErrorImageTooLarge" xml:space="preserve">
+    <value>The image is too large. Max size is {0}MB.</value>
+  </data>
+  <data name="ErrorReadingFile" xml:space="preserve">
+    <value>Error reading file</value>
+  </data>
+  <data name="ErrorProcessingFile" xml:space="preserve">
+    <value>Error processing file</value>
+  </data>
+  <data name="ErrorReadingPuzzleBytes" xml:space="preserve">
+    <value>Error reading puzzle file bytes for ID {0}.</value>
+  </data>
+  <data name="ErrorFileTooBigForServer" xml:space="preserve">
+    <value>The selected file is too large for the server configuration.</value>
+  </data>
 </root>

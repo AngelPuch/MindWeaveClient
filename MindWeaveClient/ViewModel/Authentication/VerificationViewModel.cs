@@ -114,12 +114,17 @@ namespace MindWeaveClient.ViewModel.Authentication
                     navigationService.navigateTo<LoginPage>();
                     executeGoBack();
                 }
-                else
-                {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
-                }
+                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+            }
+            catch (FaultException<MindWeaveClient.AuthenticationService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
             }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
             }
@@ -153,12 +158,17 @@ namespace MindWeaveClient.ViewModel.Authentication
                     VerificationCode = string.Empty;
                     clearTouchedState();
                 }
-                else
-                {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
-                }
+                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+            }
+            catch (FaultException<MindWeaveClient.AuthenticationService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
             }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
             }

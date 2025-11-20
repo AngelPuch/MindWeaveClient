@@ -5,8 +5,10 @@ using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MindWeaveClient.ProfileService;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -107,6 +109,18 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
+            }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {

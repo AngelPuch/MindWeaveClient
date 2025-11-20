@@ -127,10 +127,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         {
             markAllAsTouched();
 
-            if (HasErrors)
-            {
-                return;
-            }
+            if (HasErrors) { return;}
 
             SetBusy(true);
             try
@@ -139,32 +136,29 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (serviceResult.WcfLoginResult.OperationResult.Success)
                 {
-                    if (!serviceResult.IsSocialServiceConnected)
-                    {
-                        dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle);
-                    }
-
-                    if (!serviceResult.IsMatchmakingServiceConnected)
-                    {
-                        dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle);
-                    }
+                    if (!serviceResult.IsSocialServiceConnected) { dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle); }
+                    
+                    if (!serviceResult.IsMatchmakingServiceConnected) { dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle); }
 
                     windowNavigationService.openWindow<MainWindow>();
                     windowNavigationService.closeWindow<AuthenticationWindow>();
                 }
                 else
                 {
-                    if (serviceResult.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED")
-                    {
-                        ShowUnverifiedControls = true;
-                    }
-                    else
-                    {
-                        dialogService.showError(serviceResult.WcfLoginResult.OperationResult.Message, Lang.ErrorTitle);
-                    }
+                    if (serviceResult.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED") { ShowUnverifiedControls = true;}
+                    else { dialogService.showError(serviceResult.WcfLoginResult.OperationResult.Message, Lang.ErrorTitle);}
                 }
             }
+            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
+            {
+                string errorMsg = ex.Detail.Message;
+                dialogService.showError(errorMsg, Lang.ErrorTitle);
+            }
             catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
             {
                 handleError(Lang.ErrorMsgServerOffline, ex);
             }
@@ -187,13 +181,23 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (result.Success)
                 {
+                    dialogService.showInfo(result.Message, Lang.InfoMsgResendSuccessTitle);
                     SessionService.PendingVerificationEmail = this.Email;
                     navigationService.navigateTo<VerificationPage>();
                 }
-                else
-                {
-                    handleError(result.Message, null);
-                }
+                else { handleError(result.Message, null); }
+            }
+            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
+            {
+                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {

@@ -37,8 +37,8 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Social" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Social" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="ISocialManager_connect_InputMessage">
@@ -53,11 +53,17 @@
   <wsdl:message name="ISocialManager_searchPlayers_OutputMessage">
     <wsdl:part name="parameters" element="tns:searchPlayersResponse" />
   </wsdl:message>
+  <wsdl:message name="ISocialManager_searchPlayers_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q1:ServiceFaultDto" />
+  </wsdl:message>
   <wsdl:message name="ISocialManager_sendFriendRequest_InputMessage">
     <wsdl:part name="parameters" element="tns:sendFriendRequest" />
   </wsdl:message>
   <wsdl:message name="ISocialManager_sendFriendRequest_OutputMessage">
     <wsdl:part name="parameters" element="tns:sendFriendRequestResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISocialManager_sendFriendRequest_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q2:ServiceFaultDto" />
   </wsdl:message>
   <wsdl:message name="ISocialManager_respondToFriendRequest_InputMessage">
     <wsdl:part name="parameters" element="tns:respondToFriendRequest" />
@@ -65,11 +71,17 @@
   <wsdl:message name="ISocialManager_respondToFriendRequest_OutputMessage">
     <wsdl:part name="parameters" element="tns:respondToFriendRequestResponse" />
   </wsdl:message>
+  <wsdl:message name="ISocialManager_respondToFriendRequest_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q3:ServiceFaultDto" />
+  </wsdl:message>
   <wsdl:message name="ISocialManager_removeFriend_InputMessage">
     <wsdl:part name="parameters" element="tns:removeFriend" />
   </wsdl:message>
   <wsdl:message name="ISocialManager_removeFriend_OutputMessage">
     <wsdl:part name="parameters" element="tns:removeFriendResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISocialManager_removeFriend_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q4:ServiceFaultDto" />
   </wsdl:message>
   <wsdl:message name="ISocialManager_getFriendsList_InputMessage">
     <wsdl:part name="parameters" element="tns:getFriendsList" />
@@ -77,11 +89,17 @@
   <wsdl:message name="ISocialManager_getFriendsList_OutputMessage">
     <wsdl:part name="parameters" element="tns:getFriendsListResponse" />
   </wsdl:message>
+  <wsdl:message name="ISocialManager_getFriendsList_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q5:ServiceFaultDto" />
+  </wsdl:message>
   <wsdl:message name="ISocialManager_getFriendRequests_InputMessage">
     <wsdl:part name="parameters" element="tns:getFriendRequests" />
   </wsdl:message>
   <wsdl:message name="ISocialManager_getFriendRequests_OutputMessage">
     <wsdl:part name="parameters" element="tns:getFriendRequestsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISocialManager_getFriendRequests_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q6:ServiceFaultDto" />
   </wsdl:message>
   <wsdl:message name="ISocialManager_notifyFriendRequest_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:notifyFriendRequest" />
@@ -105,26 +123,32 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="searchPlayers">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/searchPlayers" message="tns:ISocialManager_searchPlayers_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/searchPlayersResponse" message="tns:ISocialManager_searchPlayers_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/ISocialManager/searchPlayersServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:ISocialManager_searchPlayers_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="sendFriendRequest">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/sendFriendRequest" message="tns:ISocialManager_sendFriendRequest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/sendFriendRequestResponse" message="tns:ISocialManager_sendFriendRequest_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/ISocialManager/sendFriendRequestServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:ISocialManager_sendFriendRequest_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="respondToFriendRequest">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/respondToFriendRequest" message="tns:ISocialManager_respondToFriendRequest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/respondToFriendRequestResponse" message="tns:ISocialManager_respondToFriendRequest_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/ISocialManager/respondToFriendRequestServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:ISocialManager_respondToFriendRequest_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="removeFriend">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/removeFriend" message="tns:ISocialManager_removeFriend_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/removeFriendResponse" message="tns:ISocialManager_removeFriend_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/ISocialManager/removeFriendServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:ISocialManager_removeFriend_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getFriendsList">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/getFriendsList" message="tns:ISocialManager_getFriendsList_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/getFriendsListResponse" message="tns:ISocialManager_getFriendsList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/ISocialManager/getFriendsListServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:ISocialManager_getFriendsList_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getFriendRequests">
       <wsdl:input wsaw:Action="http://tempuri.org/ISocialManager/getFriendRequests" message="tns:ISocialManager_getFriendRequests_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/getFriendRequestsResponse" message="tns:ISocialManager_getFriendRequests_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/ISocialManager/getFriendRequestsServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:ISocialManager_getFriendRequests_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="notifyFriendRequest">
       <wsdl:output wsaw:Action="http://tempuri.org/ISocialManager/notifyFriendRequest" message="tns:ISocialManager_notifyFriendRequest_OutputCallbackMessage" />
@@ -163,6 +187,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="sendFriendRequest">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/sendFriendRequest" style="document" />
@@ -172,6 +199,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="respondToFriendRequest">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/respondToFriendRequest" style="document" />
@@ -181,6 +211,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="removeFriend">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/removeFriend" style="document" />
@@ -190,6 +223,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="getFriendsList">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/getFriendsList" style="document" />
@@ -199,6 +235,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="getFriendRequests">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/getFriendRequests" style="document" />
@@ -208,6 +247,9 @@
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="notifyFriendRequest">
       <soap12:operation soapAction="http://tempuri.org/ISocialManager/notifyFriendRequest" style="document" />
