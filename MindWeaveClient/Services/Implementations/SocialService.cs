@@ -1,7 +1,11 @@
-﻿using MindWeaveClient.Services.Abstractions;
+﻿// ============================================
+// 1. SocialService.cs - REEMPLAZAR COMPLETAMENTE
+// ============================================
+using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.SocialManagerService;
 using System;
+using System.Diagnostics;
 using System.ServiceModel;
 using System.Threading.Tasks;
 
@@ -10,45 +14,65 @@ namespace MindWeaveClient.Services.Implementations
     public class SocialService : ISocialService
     {
         private SocialManagerClient proxy;
-        private SocialCallbackHandler callbackHandler;
+        private readonly SocialCallbackHandler callbackHandler;
         private string currentUsername;
+        private readonly object lockObject = new object();
 
         public event Action<string, bool> FriendStatusChanged;
         public event Action<string> FriendRequestReceived;
         public event Action<string, bool> FriendResponseReceived;
         public event Action<string, string> LobbyInviteReceived;
 
+        // Recibir el callback handler por inyección de dependencias
+        public SocialService(ISocialManagerCallback callbackHandler)
+        {
+            this.callbackHandler = callbackHandler as SocialCallbackHandler;
+
+            if (this.callbackHandler != null)
+            {
+                // Suscribirse a los eventos del callback handler
+                this.callbackHandler.FriendStatusChanged += onFriendStatusChanged;
+                this.callbackHandler.FriendRequestReceived += onFriendRequestReceived;
+                this.callbackHandler.FriendResponseReceived += onFriendResponseReceived;
+                this.callbackHandler.LobbyInviteReceived += onLobbyInviteReceived;
+            }
+        }
+
         public async Task connectAsync(string username)
         {
-            if (proxy != null &&
-                proxy.State == CommunicationState.Opened &&
-                currentUsername == username)
+            lock (lockObject)
             {
-                return;
-            }
+                // Si ya está conectado con el mismo usuario, no hacer nada
+                if (proxy != null &&
+                    proxy.State == CommunicationState.Opened &&
+                    currentUsername == username)
+                {
+                    Trace.TraceInformation($"Social service already connected for {username}");
+                    return;
+                }
 
-            if (proxy != null)
-            {
-                cleanupProxy();
+                // Si hay un proxy anterior, limpiarlo
+                if (proxy != null)
+                {
+                    Trace.TraceWarning($"Cleaning up previous proxy before reconnecting");
+                    cleanupProxy(false);
+                }
             }
 
             try
             {
-                callbackHandler = new SocialCallbackHandler();
                 var instanceContext = new InstanceContext(callbackHandler);
                 proxy = new SocialManagerClient(instanceContext);
 
-                callbackHandler.FriendStatusChanged += onFriendStatusChanged;
-                callbackHandler.FriendRequestReceived += onFriendRequestReceived;
-                callbackHandler.FriendResponseReceived += onFriendResponseReceived;
-                callbackHandler.LobbyInviteReceived += onLobbyInviteReceived;
-
                 await proxy.connectAsync(username);
                 currentUsername = username;
+
+                Trace.TraceInformation($"Social service connected successfully for {username}");
             }
             catch (Exception ex)
             {
-                cleanupProxy();
+                Trace.TraceError($"Failed to connect social service: {ex.Message}");
+                cleanupProxy(false);
                 throw new InvalidOperationException("Failed to connect to social service.", ex);
             }
         }
@@ -57,22 +81,24 @@ namespace MindWeaveClient.Services.Implementations
         {
             if (proxy == null || proxy.State != CommunicationState.Opened)
             {
-                cleanupProxy();
+                cleanupProxy(false);
                 return;
             }
 
             try
             {
+                Trace.TraceInformation($"Disconnecting social service for {username}");
                 await proxy.disconnectAsync(username);
                 proxy.Close();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Trace.TraceWarning($"Error during disconnect: {ex.Message}");
                 proxy?.Abort();
             }
             finally
             {
-                cleanupProxy();
+                cleanupProxy(false);
             }
         }
 
@@ -108,21 +134,25 @@ namespace MindWeaveClient.Services.Implementations
 
         private void onFriendStatusChanged(string friendUsername, bool isOnline)
         {
+            Trace.TraceInformation($"Friend status changed: {friendUsername} - {(isOnline ? "Online" : "Offline")}");
             FriendStatusChanged?.Invoke(friendUsername, isOnline);
         }
 
         private void onFriendRequestReceived(string fromUsername)
         {
+            Trace.TraceInformation($"Friend request received from: {fromUsername}");
             FriendRequestReceived?.Invoke(fromUsername);
         }
 
         private void onFriendResponseReceived(string fromUsername, bool accepted)
         {
+            Trace.TraceInformation($"Friend response received from {fromUsername}: {accepted}");
             FriendResponseReceived?.Invoke(fromUsername, accepted);
         }
 
         private void onLobbyInviteReceived(string fromUsername, string lobbyCode)
         {
+            Trace.TraceInformation($"Lobby invite received from {fromUsername}: {lobbyCode}");
             LobbyInviteReceived?.Invoke(fromUsername, lobbyCode);
         }
 
@@ -137,22 +167,23 @@ namespace MindWeaveClient.Services.Implementations
             {
                 return await call();
             }
-            catch (Exception)
+            catch (CommunicationException ex)
             {
-                cleanupProxy();
+                Trace.TraceError($"Communication error in social service: {ex.Message}");
+                cleanupProxy(false);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError($"Error in social service: {ex.Message}");
                 throw;
             }
         }
 
-        private void cleanupProxy()
+        private void cleanupProxy(bool unsubscribeFromCallbacks)
         {
-            if (callbackHandler != null)
-            {
-                callbackHandler.FriendStatusChanged -= onFriendStatusChanged;
-                callbackHandler.FriendRequestReceived -= onFriendRequestReceived;
-                callbackHandler.FriendResponseReceived -= onFriendResponseReceived;
-                callbackHandler.LobbyInviteReceived -= onLobbyInviteReceived;
-            }
+            // NO desuscribir de los eventos del callback handler
+            // ya que es un singleton y debe mantener las suscripciones
 
             if (proxy != null)
             {
@@ -164,15 +195,29 @@ namespace MindWeaveClient.Services.Implementations
                         proxy.Abort();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // ignored
+                    Trace.TraceWarning($"Error aborting proxy: {ex.Message}");
                 }
             }
 
             proxy = null;
-            callbackHandler = null;
             currentUsername = null;
+        }
+
+        public void Dispose()
+        {
+            Trace.TraceInformation("Disposing SocialService");
+
+            if (callbackHandler != null)
+            {
+                callbackHandler.FriendStatusChanged -= onFriendStatusChanged;
+                callbackHandler.FriendRequestReceived -= onFriendRequestReceived;
+                callbackHandler.FriendResponseReceived -= onFriendResponseReceived;
+                callbackHandler.LobbyInviteReceived -= onLobbyInviteReceived;
+            }
+
+            cleanupProxy(true);
         }
     }
 }

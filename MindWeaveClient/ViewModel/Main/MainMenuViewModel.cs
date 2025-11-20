@@ -21,9 +21,7 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
         private readonly MainMenuValidator validator;
-        private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
-        private readonly ICurrentLobbyService currentLobbyService;
 
         public string PlayerUsername { get; }
 
@@ -83,57 +81,26 @@ namespace MindWeaveClient.ViewModel.Main
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
             this.validator = validator;
-            this.navigationService = navigationService;
+            var navigationService1 = navigationService;
             this.windowNavigationService = windowNavigationService;
-            this.currentLobbyService = currentLobbyService;
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
-            this.matchmakingService.OnLobbyStateUpdated += handleLobbyJoinedSuccess;
-            this.matchmakingService.OnLobbyCreationFailed += handleLobbyJoinFailed;
-
 
             PlayerUsername = SessionService.Username;
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
             ProfileCommand = new RelayCommand(p => 
-                this.navigationService.navigateTo<ProfilePage>(), p => !IsBusy);
+                navigationService1.navigateTo<ProfilePage>(), p => !IsBusy);
             CreateLobbyCommand = new RelayCommand(p => 
-                this.navigationService.navigateTo<SelectionPuzzlePage>(), p => !IsBusy);
+                navigationService1.navigateTo<SelectionPuzzlePage>(), p => !IsBusy);
             SocialCommand = new RelayCommand(p => 
-                this.navigationService.navigateTo<SocialPage>(), p => !IsBusy);
+                navigationService1.navigateTo<SocialPage>(), p => !IsBusy);
             SettingsCommand = new RelayCommand(p => 
                 this.windowNavigationService.openDialog<SettingsWindow>(Application.Current.MainWindow), p => !IsBusy);
             JoinLobbyCommand = new RelayCommand(async p => 
                 await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
 
             validate(validator, this, "JoinLobby");
-            this.currentLobbyService = currentLobbyService;
-        }
-
-        private void handleLobbyJoinedSuccess(LobbyStateDto state)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if (IsBusy)
-                {
-                    SetBusy(false);
-                    currentLobbyService.setInitialState(state);
-                    windowNavigationService.openWindow<GameWindow>();
-                    windowNavigationService.closeWindow<MainWindow>();
-                }
-            });
-        }
-
-        private void handleLobbyJoinFailed(string reason)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if (IsBusy)
-                {
-                    SetBusy(false);
-                    dialogService.showError(reason, Lang.ErrorTitle);
-                }
-            });
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
@@ -151,6 +118,8 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
+                windowNavigationService.openWindow<GameWindow>();
+                windowNavigationService.closeWindow<MainWindow>();
             }
             catch (EndpointNotFoundException ex)
             {
@@ -184,11 +153,6 @@ namespace MindWeaveClient.ViewModel.Main
 
         public void Dispose()
         {
-            if (matchmakingService != null)
-            {
-                matchmakingService.OnLobbyStateUpdated -= handleLobbyJoinedSuccess;
-                matchmakingService.OnLobbyCreationFailed -= handleLobbyJoinFailed;
-            }
             SessionService.AvatarPathChanged -= OnAvatarPathChanged;
         }
     }

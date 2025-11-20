@@ -12,14 +12,14 @@ using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO; 
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media; 
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Game
@@ -64,6 +64,7 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand StartGameCommand { get; }
         public ICommand InviteFriendCommand { get; }
         public ICommand KickPlayerCommand { get; }
+        public ICommand RefreshFriendsCommand { get; }
         public ICommand SendMessageCommand { get; }
         public ICommand InviteGuestCommand { get; }
 
@@ -86,7 +87,8 @@ namespace MindWeaveClient.ViewModel.Game
             LeaveLobbyCommand = new RelayCommand(async p => await executeLeaveLobby(), p => !IsBusy);
             StartGameCommand = new RelayCommand(async p => await executeStartGame(), p => IsHost && !IsBusy && !IsGuestUser);
             InviteFriendCommand = new RelayCommand(async p => await executeInviteFriend(p), canInviteFriend);
-            KickPlayerCommand = new RelayCommand(async p => await executeKickPlayer(p), p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername); 
+            KickPlayerCommand = new RelayCommand(async p => await executeKickPlayer(p), p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
+            RefreshFriendsCommand = new RelayCommand(async p => await executeRefreshFriendsAsync(), p => IsHost && !IsBusy && !IsGuestUser);
             SendMessageCommand = new RelayCommand(async p => await executeSendMessage(), canExecuteSendMessage);
             InviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => IsHost && !IsBusy && !IsGuestUser);
 
@@ -104,7 +106,7 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (IsHost && !IsGuestUser)
             {
-                _ = loadOnlineFriendsAsync();
+                RefreshFriendsCommand.Execute(null);
             }
         }
 
@@ -115,18 +117,35 @@ namespace MindWeaveClient.ViewModel.Game
             matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
             matchmakingService.OnKicked += handleKickedOrFailed;
             chatService.OnMessageReceived += onChatMessageReceived;
-            socialService.FriendStatusChanged += onFriendStatusChanged;
         }
 
-        private void onFriendStatusChanged(string username, bool isOnline)
+        private async Task executeRefreshFriendsAsync()
         {
             if (!IsHost || IsGuestUser) return;
-            Application.Current.Dispatcher.Invoke(async () =>
-            {
-                await loadOnlineFriendsAsync();
-            });
-        }
 
+            SetBusy(true);
+            try
+            {
+                OnlineFriends.Clear();
+                FriendDto[] friends = await socialService.getFriendsListAsync(SessionService.Username);
+
+                if (friends != null)
+                {
+                    foreach (var friendDto in friends.Where(f => f.IsOnline))
+                    {
+                        OnlineFriends.Add(new FriendDtoDisplay(friendDto));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.LoadFriendsError, ex);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
         private void handleGameStarted()
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -146,7 +165,6 @@ namespace MindWeaveClient.ViewModel.Game
                 matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
                 matchmakingService.OnKicked -= handleKickedOrFailed;
                 chatService.OnMessageReceived -= onChatMessageReceived;
-                socialService.FriendStatusChanged -= onFriendStatusChanged;
 
                 await disconnectFromChatAsync();
             }
@@ -169,8 +187,12 @@ namespace MindWeaveClient.ViewModel.Game
                 HostUsername = newState.HostUsername;
                 CurrentSettings = newState.CurrentSettingsDto;
 
+
                 updatePuzzleImage(newState);
-                updatePlayerList(newState.Players);
+                var playersToRemove = Players.Except(newState.Players).ToList();
+                var playersToAdd = newState.Players.Except(Players).ToList();
+                foreach (var p in playersToRemove) Players.Remove(p);
+                foreach (var p in playersToAdd) Players.Add(p);
 
                 OnPropertyChanged(nameof(LobbyCode));
                 OnPropertyChanged(nameof(HostUsername));
@@ -183,11 +205,6 @@ namespace MindWeaveClient.ViewModel.Game
                 if (isInitialJoin && !string.IsNullOrEmpty(newState.LobbyId))
                 {
                     await connectToChatAsync(newState.LobbyId);
-                }
-
-                if (IsHost && !IsGuestUser && OnlineFriends.Count == 0)
-                {
-                    _ = loadOnlineFriendsAsync();
                 }
             });
         }
@@ -219,15 +236,6 @@ namespace MindWeaveClient.ViewModel.Game
             OnPropertyChanged(nameof(PuzzleImage));
         }
 
-        private void updatePlayerList(System.Collections.Generic.IEnumerable<string> newPlayers)
-        {
-            var playersToRemove = Players.Except(newPlayers).ToList();
-            var playersToAdd = newPlayers.Except(Players).ToList();
-
-            foreach (var p in playersToRemove) Players.Remove(p);
-            foreach (var p in playersToAdd) Players.Add(p);
-        }
-
         private ImageSource convertBytesToImageSource(byte[] imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0) return null;
@@ -244,7 +252,7 @@ namespace MindWeaveClient.ViewModel.Game
                     bitmapImage.StreamSource = memStream;
                     bitmapImage.EndInit();
                 }
-                bitmapImage.Freeze(); 
+                bitmapImage.Freeze();
                 return bitmapImage;
             }
             catch (Exception ex)
@@ -340,7 +348,7 @@ namespace MindWeaveClient.ViewModel.Game
         }
 
         private async Task executeStartGame()
-        { 
+        {
             /*
             if (Players.Count != 4) 
             { 
@@ -446,38 +454,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private async Task loadOnlineFriendsAsync()
-        {
-            if (!IsHost || IsGuestUser) return;
-
-            try
-            {
-                var currentFriends = OnlineFriends.ToList();
-                FriendDto[] friends = await socialService.getFriendsListAsync(SessionService.Username);
-
-                if (friends != null)
-                {
-                    OnlineFriends.Clear();
-                    foreach (var friendDto in friends.Where(f => f.IsOnline))
-                    {
-                        OnlineFriends.Add(new FriendDtoDisplay(friendDto));
-                    }
-                }
-            }
-            catch (FaultException<SocialManagerService.ServiceFaultDto>)
-            {
-
-            }
-            catch (EndpointNotFoundException)
-            {
-             
-            }
-            catch (TimeoutException)
-            {
-             
-            }
-        }
-
         private async Task executeInviteGuestAsync()
         {
             if (dialogService.showGuestInputDialog(out string guestEmail))
@@ -558,9 +534,9 @@ namespace MindWeaveClient.ViewModel.Game
                 handleError(Lang.SendChatError, ex);
                 await attemptChatReconnect();
             }
-           
+
         }
-        
+
         private async Task attemptChatReconnect()
         {
             try

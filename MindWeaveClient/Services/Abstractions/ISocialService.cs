@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Abstractions
 {
-    public interface ISocialService
+    public interface ISocialService: IDisposable
     {
         event Action<string, bool> FriendStatusChanged;
         event Action<string> FriendRequestReceived;

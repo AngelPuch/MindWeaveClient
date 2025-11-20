@@ -1,6 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MindWeaveClient.ChatManagerService;
+using MindWeaveClient.MatchmakingService;
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
+using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Services.Implementations;
+using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
@@ -14,10 +19,6 @@ using System;
 using System.Threading;
 using System.Windows;
 using NavigationService = MindWeaveClient.Utilities.Implementations.NavigationService;
-using MindWeaveClient.Services.Callbacks;
-using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.SocialManagerService;
-using MindWeaveClient.ChatManagerService;
 
 namespace MindWeaveClient
 {
@@ -116,23 +117,53 @@ namespace MindWeaveClient
 
         protected override void OnExit(ExitEventArgs e)
         {
-            ServiceProvider.GetService<IAudioService>()?.Dispose();
-            ServiceProvider.GetService<IInvitationService>()?.unsubscribeFromGlobalInvites();
-
-            var socialService = ServiceProvider.GetService<ISocialService>();
-            if (socialService is IDisposable socialDisposable)
+            try
             {
-                socialDisposable.Dispose();
+                var audioService = ServiceProvider.GetService<IAudioService>();
+                audioService?.Dispose();
+
+                var invitationService = ServiceProvider.GetService<IInvitationService>();
+                invitationService?.unsubscribeFromGlobalInvites();
+
+                var socialService = ServiceProvider.GetService<ISocialService>();
+                if (socialService != null)
+                {
+                    try
+                    {
+                        var username = SessionService.Username;
+                        if (!string.IsNullOrEmpty(username))
+                        {
+                            socialService.disconnectAsync(username).Wait(TimeSpan.FromSeconds(2));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceWarning($"Error disconnecting social service: {ex.Message}");
+                    }
+                    finally
+                    {
+                        socialService.Dispose();
+                    }
+                }
+
+                var matchmakingService = ServiceProvider.GetService<IMatchmakingService>();
+                matchmakingService?.disconnect();
+
+                var chatService = ServiceProvider.GetService<IChatService>();
+                if (chatService is IDisposable chatDisposable)
+                {
+                    chatDisposable.Dispose();
+                }
             }
-
-            ServiceProvider.GetService<IMatchmakingService>()?.disconnect();
-
-            var chatService = ServiceProvider.GetService<IChatService>();
-            if (chatService is IDisposable chatDisposable)
+            catch (Exception ex)
             {
-                chatDisposable.Dispose();
+                System.Diagnostics.Trace.TraceError($"Error during application exit: {ex.Message}");
             }
-            base.OnExit(e);
+            finally
+            {
+                base.OnExit(e);
+            }
         }
+
     }
 }
