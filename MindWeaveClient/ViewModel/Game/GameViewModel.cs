@@ -32,13 +32,14 @@ namespace MindWeaveClient.ViewModel.Game
         }
     }
 
-    public class GameViewModel : BaseViewModel
+    public class GameViewModel : BaseViewModel, IDisposable
     {
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
+        public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
         public PlayerScoreViewModel MyPlayer { get; private set; }
 
@@ -76,6 +77,7 @@ namespace MindWeaveClient.ViewModel.Game
             this.dialogService = dialogService;
 
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
+            PuzzleSlots = new ObservableCollection<PuzzleSlotViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
 
             initializePlayerScores();
@@ -171,6 +173,7 @@ namespace MindWeaveClient.ViewModel.Game
                 }
 
                 PiecesCollection.Clear();
+                PuzzleSlots.Clear();
 
                 if (puzzleDto.Pieces == null || puzzleDto.Pieces.Length == 0)
                 {
@@ -182,6 +185,14 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     var pieceViewModel = new PuzzlePieceViewModel(fullImage, pieceDef);
                     PiecesCollection.Add(pieceViewModel);
+
+                    var slotViewModel = new PuzzleSlotViewModel(
+                        pieceDef.CorrectX,
+                        pieceDef.CorrectY,
+                        pieceDef.Width,
+                        pieceDef.Height
+                    );
+                    PuzzleSlots.Add(slotViewModel);
                 }
 
                 foreach (var piece in PiecesCollection)
@@ -356,14 +367,17 @@ namespace MindWeaveClient.ViewModel.Game
                 }
             });
         }
-
-        public void cleanup()
+        
+        public void Dispose()
         {
             currentMatchService.PuzzleReady -= OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler -= OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler -= OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler -= OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler -= OnServerPieceDragReleased;
+
+            PiecesCollection.Clear();
+            PlayerScores.Clear();
         }
     }
 }

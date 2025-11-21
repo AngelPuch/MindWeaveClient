@@ -3,43 +3,43 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.ViewModel.Game;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MindWeaveClient.View.Game
 {
     public partial class GameWindow : Window
     {
-        private readonly INavigationService navigationService;
         private bool isHandlingClosing;
 
         public GameWindow(INavigationService navigationService, LobbyPage startPage)
         {
             InitializeComponent();
 
-            this.navigationService = navigationService;
-            this.navigationService.initialize(GameFrame);
+            navigationService.initialize(GameFrame);
             GameFrame.Content = startPage;
 
-            this.Closing += GameWindow_Closing;
+            this.Closing += gameWindowClosing;
         }
 
-        private async void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void gameWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (isHandlingClosing)
-            {
-                return;
-            }
+            if (isHandlingClosing) { return; }
 
             e.Cancel = true;
             isHandlingClosing = true;
 
             try
             {
-                var lobbyPage = GameFrame?.Content as LobbyPage;
-                if (lobbyPage?.DataContext is LobbyViewModel lobbyViewModel)
-                {
-                    await lobbyViewModel.cleanup();
-                }
+                var currentPage = GameFrame?.Content;
 
+                if (currentPage is LobbyPage lobbyPage && lobbyPage.DataContext is LobbyViewModel lobbyVm)
+                {
+                    await lobbyVm.cleanup();
+                }
+                else if (currentPage is Page page && page.DataContext is IDisposable disposableVm)
+                {
+                    disposableVm.Dispose();
+                }
             }
             catch (Exception ex)
             {
@@ -47,9 +47,12 @@ namespace MindWeaveClient.View.Game
             }
             finally
             {
-                this.Closing -= GameWindow_Closing;
+                this.Closing -= gameWindowClosing;
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    this.Close();
+                });
             }
-
         }
     }
 }

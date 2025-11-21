@@ -24,7 +24,7 @@ using System.Windows.Media.Imaging;
 
 namespace MindWeaveClient.ViewModel.Game
 {
-    public class LobbyViewModel : BaseViewModel
+    public class LobbyViewModel : BaseViewModel, IDisposable
     {
         private readonly IMatchmakingService matchmakingService;
         private readonly ISocialService socialService;
@@ -37,6 +37,7 @@ namespace MindWeaveClient.ViewModel.Game
         private bool isChatConnected;
         private string currentChatMessage = string.Empty;
         private bool isCleaningUp;
+        private bool isDisposed = false;
 
         public static bool IsGuestUser => SessionService.IsGuest;
         public ImageSource PuzzleImage { get; private set; }
@@ -153,27 +154,7 @@ namespace MindWeaveClient.ViewModel.Game
                 navigationService.navigateTo<GamePage>();
             });
         }
-        private async Task cleanupAndUnsubscribeAsync()
-        {
-            if (isCleaningUp) return;
-            isCleaningUp = true;
-
-            try
-            {
-                matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-                MatchmakingCallbackHandler.OnGameStartedNavigation -= handleGameStarted;
-                matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
-                matchmakingService.OnKicked -= handleKickedOrFailed;
-                chatService.OnMessageReceived -= onChatMessageReceived;
-
-                await disconnectFromChatAsync();
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError($"Error during cleanup: {ex.Message}");
-            }
-        }
-
+        
         private void handleLobbyStateUpdated(LobbyStateDto newState)
         {
             Application.Current.Dispatcher.Invoke(async () =>
@@ -268,7 +249,16 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
 
-                await cleanupAndUnsubscribeAsync();
+                try
+                {
+                    await disconnectFromChatAsync();
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Error desconectando chat al ser expulsado: {ex.Message}");
+                }
+
+                Dispose();
                 matchmakingService.disconnect();
 
                 windowNavigationService.openWindow<MainWindow>();
@@ -323,7 +313,7 @@ namespace MindWeaveClient.ViewModel.Game
             SetBusy(true);
             try
             {
-                await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
+                await cleanup();
             }
             catch (EndpointNotFoundException)
             {
@@ -340,9 +330,9 @@ namespace MindWeaveClient.ViewModel.Game
             }
             finally
             {
-                await cleanupAndUnsubscribeAsync();
                 windowNavigationService.closeWindow<GameWindow>();
                 windowNavigationService.openWindow<MainWindow>();
+
                 SetBusy(false);
             }
         }
@@ -577,9 +567,44 @@ namespace MindWeaveClient.ViewModel.Game
                 {
 
                 }
+
+                try
+                {
+                    await disconnectFromChatAsync();
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError($"Error disconnecting chat: {ex.Message}");
+                }
             }
-            await cleanupAndUnsubscribeAsync();
+            Dispose();
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
+            {
+                matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
+                MatchmakingCallbackHandler.OnGameStartedNavigation -= handleGameStarted;
+                matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
+                matchmakingService.OnKicked -= handleKickedOrFailed;
+                chatService.OnMessageReceived -= onChatMessageReceived;
+                Players.Clear();
+                OnlineFriends.Clear();
+                ChatMessages.Clear();
+            }
+
+            isDisposed = true;
+        }
+
 
         private void handleError(string message, Exception ex)
         {

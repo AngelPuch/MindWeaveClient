@@ -24,7 +24,7 @@ namespace MindWeaveClient.View.Game
             InitializeComponent();
             this.DataContext = viewModel;
             this.gameViewModel = viewModel;
-            this.Unloaded += GamePage_Unloaded;
+            this.Unloaded += gamePageUnloaded;
         }
 
         private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -264,13 +264,13 @@ namespace MindWeaveClient.View.Game
             return this.PuzzleItemsControl.ItemContainerGenerator.ContainerFromItem(pieceVm) as FrameworkElement;
         }
 
-        private void GamePage_Unloaded(object sender, RoutedEventArgs e)
+        private void gamePageUnloaded(object sender, RoutedEventArgs e)
         {
-            if (this.DataContext is GameViewModel vm)
+            if (this.DataContext is IDisposable disposable)
             {
-                vm.cleanup();
+                disposable.Dispose();
             }
-            this.Unloaded -= GamePage_Unloaded;
+            this.Unloaded -= gamePageUnloaded;
         }
     }
 }
