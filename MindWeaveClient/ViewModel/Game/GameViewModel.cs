@@ -18,17 +18,18 @@ namespace MindWeaveClient.ViewModel.Game
 {
     public class PlayerScoreViewModel : BaseViewModel
     {
-        public string Username { get; set; } // Usamos Username como identificador principal
+        public string Username { get; set; }
 
         private int score;
         public int Score
         {
             get => score;
-            set { score = value; OnPropertyChanged(); }
+            set { score = value; 
+                OnPropertyChanged(); }
         }
     }
 
-    public class GameViewModel : BaseViewModel, IDisposable
+    public class GameViewModel : BaseViewModel
     {
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
@@ -39,7 +40,6 @@ namespace MindWeaveClient.ViewModel.Game
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
         public PlayerScoreViewModel MyPlayer { get; private set; }
 
-        // CAMBIO CLAVE: Mapa por Username (string) en lugar de ID (int)
         private Dictionary<string, SolidColorBrush> playerColorsMap;
 
         private readonly SolidColorBrush[] definedColors = new SolidColorBrush[]
@@ -84,7 +84,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             currentMatchService.PuzzleReady += OnPuzzleReady;
 
-            // Suscribirse a los eventos (Nota que ahora esperan strings para el usuario)
             MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
@@ -119,11 +118,9 @@ namespace MindWeaveClient.ViewModel.Game
             MyPlayer = null;
 
             if (currentMatchService.Players == null || !currentMatchService.Players.Any()) return;
-
-            var sortedUsernames = currentMatchService.Players.OrderBy(u => u).ToList();
             int colorIndex = 0;
 
-            foreach (var username in sortedUsernames)
+            foreach (var username in currentMatchService.Players)
             {
                 var newPlayerVm = new PlayerScoreViewModel
                 {
@@ -133,7 +130,6 @@ namespace MindWeaveClient.ViewModel.Game
 
                 PlayerScores.Add(newPlayerVm);
 
-                // Asignamos color basado en el Username
                 if (colorIndex < definedColors.Length)
                     playerColorsMap[username] = definedColors[colorIndex];
                 else
@@ -167,6 +163,13 @@ namespace MindWeaveClient.ViewModel.Game
                 PiecesCollection.Clear();
                 PuzzleSlots.Clear();
 
+                if (puzzleDto.Pieces == null || puzzleDto.Pieces.Length == 0)
+                {
+                    dialogService.showError("Error: No hay piezas en la definición del puzzle.", "Error Crítico");
+                    return;
+                }
+
+
                 foreach (var pieceDef in puzzleDto.Pieces)
                 {
                     var pieceViewModel = new PuzzlePieceViewModel(fullImage, pieceDef);
@@ -193,7 +196,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        // --- ACCIONES DE USUARIO (Requests no cambian, el server sabe quién eres) ---
 
         public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
@@ -209,6 +211,20 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
+        public async Task movePiece(PuzzlePieceViewModel piece, double newX, double newY)
+        {
+            if (piece == null) return;
+
+            try
+            {
+                await matchmakingService.requestPieceMoveAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
+            }
+            catch (Exception)
+            {
+                System.Diagnostics.Debug.WriteLine("Error sending move request");
+            }
+        }
+
         public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
             if (piece == null) return;
@@ -220,6 +236,8 @@ namespace MindWeaveClient.ViewModel.Game
             catch (Exception ex)
             {
                 dialogService.showError($"Error al soltar pieza: {ex.Message}", "Error");
+                piece.X = piece.OriginalX;
+                piece.Y = piece.OriginalY;
 
             }
         }
@@ -238,31 +256,26 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        // --- CALLBACKS (Ahora reciben string username) ---
 
         private void OnServerPieceDragStarted(int pieceId, string username)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece == null) return;
 
-                // No permitir si ya está colocada
-                if (piece.IsPlaced) return;
-
-                bool amIDragging = (username == SessionService.Username);
-
-                // Marcar si otro jugador la sostiene
-                piece.IsHeldByOther = !amIDragging;
-
-                // Aplicar color del jugador que arrastra
-                if (playerColorsMap.ContainsKey(username))
+                if (piece != null && !piece.IsPlaced)
                 {
-                    piece.BorderColor = playerColorsMap[username];
-                    piece.ZIndex = 100;
-                }
+                    bool amIDragging = (username == SessionService.Username);
+                    piece.IsHeldByOther = !amIDragging;
 
-                System.Diagnostics.Debug.WriteLine($"[DRAG STARTED] Piece {pieceId} by {username} (amI: {amIDragging})");
+                    if (playerColorsMap.ContainsKey(username))
+                    {
+                        piece.BorderColor = playerColorsMap[username];
+                        piece.ZIndex = 100;
+                    }
+
+                    Debug.WriteLine($"[DRAG STARTED] Piece {pieceId} by {username} (amI: {amIDragging})");
+                }
             });
         }
 
@@ -272,24 +285,20 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece == null) return;
 
-                // No actualizar si ya está colocada
-                if (piece.IsPlaced) return;
-
-                // Actualizar posición
-                piece.X = newX;
-                piece.Y = newY;
-
-                bool amIDragging = (username == SessionService.Username);
-                piece.IsHeldByOther = !amIDragging;
-
-                // Mantener color del jugador
-                if (playerColorsMap.ContainsKey(username))
+                if (piece != null && !piece.IsPlaced)
                 {
-                    piece.BorderColor = playerColorsMap[username];
-                    piece.ZIndex = 100;
+                    piece.X = newX;
+                    piece.Y = newY;
+                    piece.IsHeldByOther = false;
+
+                    if (playerColorsMap.ContainsKey(username))
+                    {
+                        piece.BorderColor = playerColorsMap[username];
+                        piece.ZIndex = 100;
+                    }
                 }
+
 
                 System.Diagnostics.Debug.WriteLine($"[PIECE MOVED] Piece {pieceId} to ({newX}, {newY}) by {username}");
             });
@@ -300,12 +309,15 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece == null) return;
 
-                // Liberar la pieza visualmente
-                piece.IsHeldByOther = false;
-                piece.BorderColor = Brushes.Transparent;
-                piece.ZIndex = 1;
+                if (piece != null && !piece.IsPlaced)
+                {
+                    piece.IsHeldByOther = false;
+                    piece.X = piece.OriginalX;
+                    piece.Y = piece.OriginalY;
+                    piece.BorderColor = Brushes.Transparent;
+                    piece.ZIndex = 1;
+                }
 
                 System.Diagnostics.Debug.WriteLine($"[DRAG RELEASED] Piece {pieceId} by {username}");
             });
@@ -317,24 +329,24 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece == null) return;
 
-                // Colocar pieza en posición final
-                piece.X = correctX;
-                piece.Y = correctY;
-                piece.IsPlaced = true;
-                piece.IsHeldByOther = false;
-                piece.BorderColor = Brushes.Transparent;
-                piece.ZIndex = -1;
+                if (piece != null)
+                {
+                    piece.X = correctX;
+                    piece.Y = correctY;
+                    piece.IsPlaced = true;
+                    piece.IsHeldByOther = false;
+                    piece.BorderColor = Brushes.Transparent;
+                    piece.ZIndex = -1;
+                }
 
-                // Actualizar score del jugador
                 var player = PlayerScores.FirstOrDefault(p => p.Username == scoringUsername);
                 if (player != null)
                 {
                     player.Score = newScore;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[PIECE PLACED] Piece {pieceId} at ({correctX}, {correctY}) by {scoringUsername}, new score: {newScore}");
+                Debug.WriteLine($"[PIECE PLACED] Piece {pieceId} at ({correctX}, {correctY}) by {scoringUsername}, new score: {newScore}");
             });
         }
 
@@ -360,17 +372,14 @@ namespace MindWeaveClient.ViewModel.Game
             catch { return null; }
         }
 
-        public void Dispose()
+        public void cleanup()
         {
             currentMatchService.PuzzleReady -= OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler -= OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler -= OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler -= OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler -= OnServerPieceDragReleased;
-
-            PiecesCollection.Clear();
-            PuzzleSlots.Clear();
-            PlayerScores.Clear();
         }
+
     }
 }

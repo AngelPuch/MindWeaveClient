@@ -1,4 +1,4 @@
-﻿using MindWeaveClient.MatchmakingService;
+﻿    using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks; 
@@ -136,6 +136,12 @@ namespace MindWeaveClient.Services.Implementations
             ensureClientIsCreated(); 
             await executeSafeTaskAsync(async () => await proxy.requestPieceDragAsync(lobbyCode, pieceId));
 
+        }
+
+        public async Task requestPieceMoveAsync(string lobbyCode, int pieceId, double newX, double newY)
+        {
+            ensureClientIsCreated();
+            await executeSafeTaskAsync(async () => await proxy.requestPieceMoveAsync(lobbyCode, pieceId, newX, newY));
         }
 
         public async Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY)

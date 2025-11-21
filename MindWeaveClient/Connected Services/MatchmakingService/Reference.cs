@@ -1034,6 +1034,12 @@ namespace MindWeaveClient.MatchmakingService {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceDrag")]
         System.Threading.Tasks.Task requestPieceDragAsync(string lobbyCode, int pieceId);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceMove")]
+        void requestPieceMove(string lobbyCode, int pieceId, double newX, double newY);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceMove")]
+        System.Threading.Tasks.Task requestPieceMoveAsync(string lobbyCode, int pieceId, double newX, double newY);
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/requestPieceDrop")]
         void requestPieceDrop(string lobbyCode, int pieceId, double newX, double newY);
         
@@ -1184,6 +1190,14 @@ namespace MindWeaveClient.MatchmakingService {
         
         public System.Threading.Tasks.Task requestPieceDragAsync(string lobbyCode, int pieceId) {
             return base.Channel.requestPieceDragAsync(lobbyCode, pieceId);
+        }
+        
+        public void requestPieceMove(string lobbyCode, int pieceId, double newX, double newY) {
+            base.Channel.requestPieceMove(lobbyCode, pieceId, newX, newY);
+        }
+        
+        public System.Threading.Tasks.Task requestPieceMoveAsync(string lobbyCode, int pieceId, double newX, double newY) {
+            return base.Channel.requestPieceMoveAsync(lobbyCode, pieceId, newX, newY);
         }
         
         public void requestPieceDrop(string lobbyCode, int pieceId, double newX, double newY) {

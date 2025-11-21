@@ -85,6 +85,9 @@
   <wsdl:message name="IMatchmakingManager_requestPieceDrag_InputMessage">
     <wsdl:part name="parameters" element="tns:requestPieceDrag" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_requestPieceMove_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceMove" />
+  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_requestPieceDrop_InputMessage">
     <wsdl:part name="parameters" element="tns:requestPieceDrop" />
   </wsdl:message>
@@ -152,6 +155,9 @@
     </wsdl:operation>
     <wsdl:operation name="requestPieceDrag">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceDrag" message="tns:IMatchmakingManager_requestPieceDrag_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceMove">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceMove" message="tns:IMatchmakingManager_requestPieceMove_InputMessage" />
     </wsdl:operation>
     <wsdl:operation name="requestPieceDrop">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceDrop" message="tns:IMatchmakingManager_requestPieceDrop_InputMessage" />
@@ -259,6 +265,12 @@
     </wsdl:operation>
     <wsdl:operation name="requestPieceDrag">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceDrag" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceMove">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceMove" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
