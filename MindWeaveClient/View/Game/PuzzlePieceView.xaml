@@ -8,8 +8,15 @@
              d:DesignHeight="100" d:DesignWidth="100">
 
     <Border Width="{Binding Width}" 
-            Height="{Binding Height}">
-        <Image Source="{Binding PieceImage}">
+            Height="{Binding Height}"
+            BorderBrush="{Binding BorderColor}" 
+            BorderThickness="{Binding BorderThickness}"
+            SnapsToDevicePixels="True">
+
+        <Image Source="{Binding PieceImage}"
+               Stretch="Fill"
+               RenderOptions.BitmapScalingMode="HighQuality">
+
             <Image.Effect>
                 <DropShadowEffect ShadowDepth="2" BlurRadius="5" Opacity="0.3" />
             </Image.Effect>

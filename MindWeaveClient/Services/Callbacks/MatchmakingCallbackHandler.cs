@@ -18,10 +18,11 @@ namespace MindWeaveClient.Services.Callbacks
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFoundEvent;
         public event Action<string> OnLobbyCreationFailedEvent;
         public event Action<string> OnKickedEvent;
-        public static event Action<int, int> PieceDragStartedHandler;
-        public static event Action<int, double, double, int, int> PiecePlacedHandler;
-        public static event Action<int, double, double> PieceMovedHandler;
-        public static event Action<int> PieceDragReleasedHandler;
+
+        public static event Action<int, string> PieceDragStartedHandler;
+        public static event Action<int, double, double, string, int> PiecePlacedHandler;
+        public static event Action<int, double, double, string> PieceMovedHandler;
+        public static event Action<int, string> PieceDragReleasedHandler;
         public static event Action OnGameStartedNavigation;
 
 
@@ -118,24 +119,9 @@ namespace MindWeaveClient.Services.Callbacks
             OnLobbyStateUpdatedEvent?.Invoke(lobbyStateDto);
         }
 
-        public void onPieceDragStarted(int pieceId, int playerId)
-        {
-            PieceDragStartedHandler?.Invoke(pieceId, playerId);
-        }
-
-        public void onPiecePlaced(int pieceId, double correctX, double correctY, int scoringPlayerId, int newScore)
-        {
-            PiecePlacedHandler?.Invoke(pieceId, correctX, correctY, scoringPlayerId, newScore);
-        }
-
-        public void onPieceMoved(int pieceId, double newX, double newY)
-        {
-            PieceMovedHandler?.Invoke(pieceId, newX, newY);
-        }
-
-        public void onPieceDragReleased(int pieceId)
-        {
-            PieceDragReleasedHandler?.Invoke(pieceId);
-        }
+        public void onPieceDragStarted(int pieceId, string username) => PieceDragStartedHandler?.Invoke(pieceId, username);
+        public void onPieceMoved(int pieceId, double x, double y, string username) => PieceMovedHandler?.Invoke(pieceId, x, y, username);
+        public void onPieceDragReleased(int pieceId, string username) => PieceDragReleasedHandler?.Invoke(pieceId, username);
+        public void onPiecePlaced(int pieceId, double x, double y, string username, int score) => PiecePlacedHandler?.Invoke(pieceId, x, y, username, score);
     }
 }

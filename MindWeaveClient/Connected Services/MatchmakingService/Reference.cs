@@ -1066,16 +1066,16 @@ namespace MindWeaveClient.MatchmakingService {
         void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceDragStarted")]
-        void onPieceDragStarted(int pieceId, int playerId);
+        void onPieceDragStarted(int pieceId, string username);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPiecePlaced")]
-        void onPiecePlaced(int pieceId, double correctX, double correctY, int scoringPlayerId, int newScore);
+        void onPiecePlaced(int pieceId, double correctX, double correctY, string username, int newScore);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceMoved")]
-        void onPieceMoved(int pieceId, double newX, double newY);
+        void onPieceMoved(int pieceId, double newX, double newY, string username);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceDragReleased")]
-        void onPieceDragReleased(int pieceId);
+        void onPieceDragReleased(int pieceId, string username);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

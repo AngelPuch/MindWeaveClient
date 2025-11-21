@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.PuzzleManagerService;
 
@@ -75,6 +76,20 @@ namespace MindWeaveClient.ViewModel.Puzzle
             }
         }
 
+        private Brush borderColor;
+        public Brush BorderColor
+        {
+            get => borderColor;
+            set
+            {
+                borderColor = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(BorderThickness));
+            }
+        }
+
+        public double BorderThickness => borderColor != null && borderColor != Brushes.Transparent ? 4 : 0;
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -116,6 +131,7 @@ namespace MindWeaveClient.ViewModel.Puzzle
             this.LeftNeighborId = data.LeftNeighborId;
             this.RightNeighborId = data.RightNeighborId;
 
+            BorderColor = Brushes.Transparent;
             Int32Rect cropRect = new Int32Rect(data.SourceX, data.SourceY, data.Width, data.Height);
             this.PieceImage = new CroppedBitmap(fullImage, cropRect);
             this.PieceImage.Freeze();
