@@ -199,50 +199,43 @@ namespace MindWeaveClient.ViewModel.Game
         {
             if (piece == null || piece.IsPlaced || piece.IsHeldByOther) return;
 
-            // Feedback local inmediato
-            string myUsername = SessionService.Username;
-            if (playerColorsMap.ContainsKey(myUsername))
-            {
-                piece.BorderColor = playerColorsMap[myUsername];
-                piece.ZIndex = 100;
-            }
-
             try
             {
                 await matchmakingService.requestPieceDragAsync(currentMatchService.LobbyId, piece.PieceId);
             }
-            catch
+            catch (Exception ex)
             {
-                piece.BorderColor = Brushes.Transparent;
-                piece.ZIndex = 1;
+                dialogService.showError($"Error al arrastrar pieza: {ex.Message}", "Error");
             }
         }
 
         public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
             if (piece == null) return;
+            
             try
             {
                 await matchmakingService.requestPieceDropAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
             }
-            catch
+            catch (Exception ex)
             {
-                piece.X = piece.OriginalX;
-                piece.Y = piece.OriginalY;
-                piece.BorderColor = Brushes.Transparent;
+                dialogService.showError($"Error al soltar pieza: {ex.Message}", "Error");
+
             }
         }
 
         public async Task releasePiece(PuzzlePieceViewModel piece)
         {
             if (piece == null) return;
-            piece.BorderColor = Brushes.Transparent;
-            piece.ZIndex = 1;
             try
             {
                 await matchmakingService.requestPieceReleaseAsync(currentMatchService.LobbyId, piece.PieceId);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                dialogService.showError($"Error al liberar pieza: {ex.Message}", "Error");
+
+            }
         }
 
         // --- CALLBACKS (Ahora reciben string username) ---
@@ -252,39 +245,53 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece != null && !piece.IsPlaced)
-                {
-                    bool amIDragging = (username == SessionService.Username);
-                    piece.IsHeldByOther = !amIDragging;
+                if (piece == null) return;
 
-                    if (playerColorsMap.ContainsKey(username))
-                    {
-                        piece.BorderColor = playerColorsMap[username];
-                        piece.ZIndex = 100;
-                    }
+                // No permitir si ya está colocada
+                if (piece.IsPlaced) return;
+
+                bool amIDragging = (username == SessionService.Username);
+
+                // Marcar si otro jugador la sostiene
+                piece.IsHeldByOther = !amIDragging;
+
+                // Aplicar color del jugador que arrastra
+                if (playerColorsMap.ContainsKey(username))
+                {
+                    piece.BorderColor = playerColorsMap[username];
+                    piece.ZIndex = 100;
                 }
+
+                System.Diagnostics.Debug.WriteLine($"[DRAG STARTED] Piece {pieceId} by {username} (amI: {amIDragging})");
             });
         }
+
 
         private void OnServerPieceMoved(int pieceId, double newX, double newY, string username)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece != null && !piece.IsPlaced)
+                if (piece == null) return;
+
+                // No actualizar si ya está colocada
+                if (piece.IsPlaced) return;
+
+                // Actualizar posición
+                piece.X = newX;
+                piece.Y = newY;
+
+                bool amIDragging = (username == SessionService.Username);
+                piece.IsHeldByOther = !amIDragging;
+
+                // Mantener color del jugador
+                if (playerColorsMap.ContainsKey(username))
                 {
-                    piece.X = newX;
-                    piece.Y = newY;
-
-                    bool amIDragging = (username == SessionService.Username);
-                    piece.IsHeldByOther = !amIDragging;
-
-                    if (playerColorsMap.ContainsKey(username))
-                    {
-                        piece.BorderColor = playerColorsMap[username];
-                        piece.ZIndex = 100;
-                    }
+                    piece.BorderColor = playerColorsMap[username];
+                    piece.ZIndex = 100;
                 }
+
+                System.Diagnostics.Debug.WriteLine($"[PIECE MOVED] Piece {pieceId} to ({newX}, {newY}) by {username}");
             });
         }
 
@@ -293,35 +300,41 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece != null && !piece.IsPlaced)
-                {
-                    piece.IsHeldByOther = false;
-                    piece.BorderColor = Brushes.Transparent;
-                    piece.ZIndex = 1;
-                }
+                if (piece == null) return;
+
+                // Liberar la pieza visualmente
+                piece.IsHeldByOther = false;
+                piece.BorderColor = Brushes.Transparent;
+                piece.ZIndex = 1;
+
+                System.Diagnostics.Debug.WriteLine($"[DRAG RELEASED] Piece {pieceId} by {username}");
             });
         }
+
 
         private void OnServerPiecePlaced(int pieceId, double correctX, double correctY, string scoringUsername, int newScore)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece != null)
-                {
-                    piece.X = correctX;
-                    piece.Y = correctY;
-                    piece.IsPlaced = true;
-                    piece.IsHeldByOther = false;
-                    piece.BorderColor = Brushes.Transparent;
-                    piece.ZIndex = -1;
-                }
+                if (piece == null) return;
 
+                // Colocar pieza en posición final
+                piece.X = correctX;
+                piece.Y = correctY;
+                piece.IsPlaced = true;
+                piece.IsHeldByOther = false;
+                piece.BorderColor = Brushes.Transparent;
+                piece.ZIndex = -1;
+
+                // Actualizar score del jugador
                 var player = PlayerScores.FirstOrDefault(p => p.Username == scoringUsername);
                 if (player != null)
                 {
                     player.Score = newScore;
                 }
+
+                System.Diagnostics.Debug.WriteLine($"[PIECE PLACED] Piece {pieceId} at ({correctX}, {correctY}) by {scoringUsername}, new score: {newScore}");
             });
         }
 
