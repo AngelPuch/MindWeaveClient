@@ -121,6 +121,9 @@
   <wsdl:message name="IMatchmakingManager_onPieceDragReleased_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:onPieceDragReleased" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onGameEnded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onGameEnded" />
+  </wsdl:message>
   <wsdl:portType name="IMatchmakingManager">
     <wsdl:operation name="createLobby">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobby" message="tns:IMatchmakingManager_createLobby_InputMessage" />
@@ -191,6 +194,9 @@
     </wsdl:operation>
     <wsdl:operation name="onPieceDragReleased">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceDragReleased" message="tns:IMatchmakingManager_onPieceDragReleased_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onGameEnded">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onGameEnded" message="tns:IMatchmakingManager_onGameEnded_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
@@ -341,6 +347,12 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="onGameEnded">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onGameEnded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="MatchmakingManagerService">
     <wsdl:port name="NetTcpBinding_IMatchmakingManager" binding="tns:NetTcpBinding_IMatchmakingManager">
@@ -348,7 +360,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>LAPTOP\Dell</Upn>
+          <Upn>ALDO\tonyz</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

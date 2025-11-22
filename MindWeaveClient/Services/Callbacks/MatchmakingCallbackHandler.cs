@@ -24,6 +24,7 @@ namespace MindWeaveClient.Services.Callbacks
         public static event Action<int, double, double, string> PieceMovedHandler;
         public static event Action<int, string> PieceDragReleasedHandler;
         public static event Action OnGameStartedNavigation;
+        public static event Action<int> GameEndedStatic;
 
 
         public MatchmakingCallbackHandler(
@@ -147,6 +148,11 @@ namespace MindWeaveClient.Services.Callbacks
         {
             System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPieceDragReleased: Piece {pieceId} by {username}");
             PieceDragReleasedHandler?.Invoke(pieceId, username);
+        }
+
+        public void onGameEnded(int matchId)
+        {
+            GameEndedStatic?.Invoke(matchId);
         }
     }
 }

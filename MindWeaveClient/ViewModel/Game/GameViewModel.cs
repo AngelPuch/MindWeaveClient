@@ -2,6 +2,7 @@
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.View.Game;
 using MindWeaveClient.ViewModel.Puzzle;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
+        private readonly INavigationService navigationService; 
+        private readonly IWindowNavigationService windowNavigationService; 
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
@@ -70,16 +73,21 @@ namespace MindWeaveClient.ViewModel.Game
         public GameViewModel(
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            INavigationService navigationService, 
+            IWindowNavigationService windowNavigationService)
         {
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
+            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
 
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PuzzleSlots = new ObservableCollection<PuzzleSlotViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
             playerColorsMap = new Dictionary<string, SolidColorBrush>();
+
 
             initializePlayerScores();
 
@@ -89,8 +97,20 @@ namespace MindWeaveClient.ViewModel.Game
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
+            MatchmakingCallbackHandler.GameEndedStatic += OnGameEnded;
 
             tryLoadExistingPuzzle();
+        }
+        private void OnGameEnded(int matchId)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // 1. Mostrar mensaje opcional
+                dialogService.showInfo("¡Puzzle Completado! Cargando resultados...", "Fin de Partida");
+
+          
+                navigationService.navigateTo<PostMatchResultsPage>();
+            });
         }
 
         private void tryLoadExistingPuzzle()
