@@ -22,6 +22,9 @@ namespace MindWeaveClient.View.Game
         private DateTime lastMoveUpdateTime = DateTime.MinValue;
         private const int MOVE_UPDATE_INTERVAL_MS = 50;
 
+        private bool isLocalDragging = false;
+
+
         public GamePage(GameViewModel viewModel)
         {
             InitializeComponent();
@@ -39,7 +42,7 @@ namespace MindWeaveClient.View.Game
             }
             lastUiUpdate = now;
 
-            if (this.draggedGroup != null && e.LeftButton == MouseButtonState.Pressed)
+            if (this.draggedGroup != null && e.LeftButton == MouseButtonState.Pressed && isLocalDragging)
             {
                 Point currentPoint = e.GetPosition(this.PuzzleItemsControl);
 
@@ -78,6 +81,8 @@ namespace MindWeaveClient.View.Game
                 Debug.WriteLine($"[DRAG BLOCKED] Piece {clickedPiece?.PieceId}: IsPlaced={clickedPiece?.IsPlaced}, IsHeldByOther={clickedPiece?.IsHeldByOther}");
                 return;
             }
+
+            isLocalDragging = true;
             this.draggedGroup = clickedPiece.PieceGroup;
             Point dragStartPoint = e.GetPosition(this.PuzzleItemsControl);
 
@@ -111,7 +116,7 @@ namespace MindWeaveClient.View.Game
 
         private async void Piece_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (this.draggedGroup == null)
+            if (this.draggedGroup == null || !isLocalDragging)
             {
                 return;
             }
@@ -135,10 +140,11 @@ namespace MindWeaveClient.View.Game
             }
             else
             {
-                handleBoardSnapAndDrop();
+                await handleBoardSnapAndDrop();
             }
 
             this.draggedGroup = null;
+            isLocalDragging = false;
             e.Handled = true;   
         }
 
@@ -234,7 +240,6 @@ namespace MindWeaveClient.View.Game
             {
                 return new Point(stationary.X, stationary.Y + stationary.Height);
             }
-
             return null;
         }
 

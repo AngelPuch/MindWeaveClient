@@ -2,6 +2,7 @@
 using MindWeaveClient.Services.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MindWeaveClient.Services.Implementations
 {
@@ -25,7 +26,8 @@ namespace MindWeaveClient.Services.Implementations
             this.CurrentSettings = settings;
             this.PuzzleImagePath = puzzleImagePath;
 
-            this.matchId = lobbyId; 
+            this.matchId = lobbyId;
+            Debug.WriteLine($"[CurrentMatchService] Match initialized: LobbyId={lobbyId}, Players={string.Join(", ", players)}");
 
             OnMatchFound?.Invoke(this, EventArgs.Empty);
         }
@@ -38,6 +40,8 @@ namespace MindWeaveClient.Services.Implementations
         public void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle)
         {
             this.currentPuzzle = puzzle;
+            Debug.WriteLine($"[CurrentMatchService] Puzzle set with {puzzle?.Pieces?.Length ?? 0} pieces");
+
             PuzzleReady?.Invoke();
         }
 
@@ -48,12 +52,14 @@ namespace MindWeaveClient.Services.Implementations
             {
                 this.LobbyId = matchId;
             }
+            Debug.WriteLine($"[CurrentMatchService] MatchId set to: {matchId}");
+
         }
 
         public string getMatchId()
         {
-            var id = matchId;
-            return id;
+            return matchId;
+
         }
     }
 }

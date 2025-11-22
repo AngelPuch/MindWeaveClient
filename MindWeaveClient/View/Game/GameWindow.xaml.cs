@@ -36,9 +36,9 @@ namespace MindWeaveClient.View.Game
                 {
                     await lobbyVm.cleanup();
                 }
-                else if (currentPage is Page page && page.DataContext is IDisposable disposableVm)
+                else if (currentPage is GamePage gamePage && gamePage.DataContext is GameViewModel gameVm)
                 {
-                    disposableVm.Dispose();
+                    gameVm.Dispose();
                 }
             }
             catch (Exception ex)

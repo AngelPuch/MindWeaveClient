@@ -577,7 +577,9 @@ namespace MindWeaveClient.ViewModel.Game
                     Trace.TraceError($"Error disconnecting chat: {ex.Message}");
                 }
             }
-            Dispose();
+            matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
+            matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
+            matchmakingService.OnKicked -= handleKickedOrFailed;
         }
 
         public void Dispose()
@@ -592,10 +594,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (disposing)
             {
-                matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-                MatchmakingCallbackHandler.OnGameStartedNavigation -= handleGameStarted;
-                matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
-                matchmakingService.OnKicked -= handleKickedOrFailed;
                 chatService.OnMessageReceived -= onChatMessageReceived;
                 Players.Clear();
                 OnlineFriends.Clear();

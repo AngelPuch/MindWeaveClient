@@ -119,6 +119,20 @@ namespace MindWeaveClient
         {
             try
             {
+                var callbackHandlerType = typeof(MindWeaveClient.Services.Callbacks.MatchmakingCallbackHandler);
+                var dragStartedField = callbackHandlerType.GetEvent("PieceDragStartedHandler");
+                var placedField = callbackHandlerType.GetEvent("PiecePlacedHandler");
+                var movedField = callbackHandlerType.GetEvent("PieceMovedHandler");
+                var releasedField = callbackHandlerType.GetEvent("PieceDragReleasedHandler");
+                var gameStartedField = callbackHandlerType.GetEvent("OnGameStartedNavigation");
+
+                if (dragStartedField != null)
+                {
+                    var fieldInfo = callbackHandlerType.GetField("PieceDragStartedHandler",
+                        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                    fieldInfo?.SetValue(null, null);
+                }
+
                 var audioService = ServiceProvider.GetService<IAudioService>();
                 audioService?.Dispose();
 
