@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.PuzzleManagerService;
+using System;
 
 namespace MindWeaveClient.ViewModel.Puzzle
 {
@@ -132,8 +133,25 @@ namespace MindWeaveClient.ViewModel.Puzzle
             this.RightNeighborId = data.RightNeighborId;
 
             BorderColor = Brushes.Transparent;
-            Int32Rect cropRect = new Int32Rect(data.SourceX, data.SourceY, data.Width, data.Height);
-            this.PieceImage = new CroppedBitmap(fullImage, cropRect);
+            int safeX = Math.Max(0, data.SourceX);
+            int safeY = Math.Max(0, data.SourceY);
+
+
+            int availableWidth = fullImage.PixelWidth - safeX;
+            int availableHeight = fullImage.PixelHeight - safeY;
+
+            int safeWidth = Math.Min(data.Width, availableWidth);
+            int safeHeight = Math.Min(data.Height, availableHeight);
+
+            if (safeWidth <= 0 || safeHeight <= 0) // Invalid crop, set to minimal size
+            {
+                safeWidth = 1;
+                safeHeight = 1;
+                safeX = 0;
+                safeY = 0;
+            }
+
+            Int32Rect cropRect = new Int32Rect(safeX, safeY, safeWidth, safeHeight); this.PieceImage = new CroppedBitmap(fullImage, cropRect);
             this.PieceImage.Freeze();
         }
     }

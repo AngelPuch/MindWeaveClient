@@ -121,28 +121,35 @@
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas x:Name="PuzzleCanvas" 
-                                                Width="{Binding PuzzleWidth}"
-                                                Height="{Binding PuzzleHeight}"
-                                                Background="Transparent"/>
+                    Width="{Binding PuzzleWidth}"
+                    Height="{Binding PuzzleHeight}"
+                    Background="Transparent"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
 
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type puzzleVM:PuzzlePieceViewModel}">
                                         <local:PuzzlePieceView 
-                                            DataContext="{Binding}"
-                                            Cursor="Hand"
-                                            MouseLeftButtonDown="Piece_MouseLeftButtonDown"
-                                            MouseMove="Piece_MouseMove"
-                                            MouseLeftButtonUp="Piece_MouseLeftButtonUp" />
+                DataContext="{Binding}"
+                Cursor="Hand"
+                MouseLeftButtonDown="Piece_MouseLeftButtonDown"
+                MouseMove="Piece_MouseMove"
+                MouseLeftButtonUp="Piece_MouseLeftButtonUp" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
 
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="ContentPresenter">
-                                        <Setter Property="Canvas.Left" Value="{Binding X}" />
-                                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                        <Setter Property="Canvas.Left" Value="0" />
+                                        <Setter Property="Canvas.Top" Value="0" />
+
                                         <Setter Property="Panel.ZIndex" Value="{Binding ZIndex}" />
+
+                                        <Setter Property="RenderTransform">
+                                            <Setter.Value>
+                                                <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
+                                            </Setter.Value>
+                                        </Setter>
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
                             </ItemsControl>

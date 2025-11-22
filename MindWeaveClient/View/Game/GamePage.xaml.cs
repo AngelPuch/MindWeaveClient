@@ -13,6 +13,7 @@ namespace MindWeaveClient.View.Game
     public partial class GamePage : Page
     {
         private List<PuzzlePieceViewModel> draggedGroup;
+        private DateTime lastUiUpdate = DateTime.MinValue;
         private readonly GameViewModel gameViewModel;
         
         private const double SNAP_THRESHOLD = 20.0;
@@ -31,6 +32,12 @@ namespace MindWeaveClient.View.Game
 
         private async void Piece_MouseMove(object sender, MouseEventArgs e)
         {
+            var now = DateTime.UtcNow;
+            if ((now - lastUiUpdate).TotalMilliseconds < 16)
+            {
+                return; 
+            }
+            lastUiUpdate = now;
 
             if (this.draggedGroup != null && e.LeftButton == MouseButtonState.Pressed)
             {
@@ -42,13 +49,13 @@ namespace MindWeaveClient.View.Game
                     piece.Y = currentPoint.Y + piece.DragOffsetY;
                 }
 
-                var now = DateTime.UtcNow;
                 if ((now - lastMoveUpdateTime).TotalMilliseconds > MOVE_UPDATE_INTERVAL_MS)
                 {
                     lastMoveUpdateTime = now;
-                    foreach (var piece in this.draggedGroup)
+                    if (this.draggedGroup.Count > 0)
                     {
-                        _ = gameViewModel?.movePiece(piece, piece.X, piece.Y);
+                        var leaderPiece = this.draggedGroup[0];
+                        _ = gameViewModel?.movePiece(leaderPiece, leaderPiece.X, leaderPiece.Y);
                     }
                 }
 
@@ -74,7 +81,6 @@ namespace MindWeaveClient.View.Game
             this.draggedGroup = clickedPiece.PieceGroup;
             Point dragStartPoint = e.GetPosition(this.PuzzleItemsControl);
 
-            // Calcular ZIndex para el grupo arrastrado
             var views = this.draggedGroup
                 .Select(getViewForPiece)
                 .Where(v => v != null)

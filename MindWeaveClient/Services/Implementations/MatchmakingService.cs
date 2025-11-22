@@ -193,7 +193,8 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch (Exception)
             {
-                proxy.Abort(); proxy = null;
+                proxy?.Abort();
+                proxy = null;
                 throw;
             }
         }
@@ -210,7 +211,8 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch (Exception)
             {
-                proxy.Abort(); proxy = null;
+                proxy?.Abort();
+                proxy = null;
                 throw;
             }
         }
@@ -228,7 +230,8 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch (Exception)
             {
-                proxy.Abort(); proxy = null;
+                proxy?.Abort();
+                proxy = null;
                 throw;
             }
         }
