@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -36,7 +37,8 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService; 
-        private readonly IWindowNavigationService windowNavigationService; 
+        private readonly IWindowNavigationService windowNavigationService;
+        private readonly IAudioService audioService;
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
@@ -68,6 +70,20 @@ namespace MindWeaveClient.ViewModel.Game
             set { puzzleHeight = value; OnPropertyChanged(); }
         }
 
+        private string bonusNotification;
+        public string BonusNotification
+        {
+            get => bonusNotification;
+            set { bonusNotification = value; OnPropertyChanged(); }
+        }
+
+        private bool isBonusVisible;
+        public bool IsBonusVisible
+        {
+            get => isBonusVisible;
+            set { isBonusVisible = value; OnPropertyChanged(); }
+        }
+
         private bool puzzleLoaded;
 
         public GameViewModel(
@@ -75,13 +91,15 @@ namespace MindWeaveClient.ViewModel.Game
             IMatchmakingService matchmakingService,
             IDialogService dialogService,
             INavigationService navigationService, 
-            IWindowNavigationService windowNavigationService)
+            IWindowNavigationService windowNavigationService,
+            IAudioService audioService)
         {
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
+            this.audioService = audioService;
 
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PuzzleSlots = new ObservableCollection<PuzzleSlotViewModel>();
@@ -355,7 +373,7 @@ namespace MindWeaveClient.ViewModel.Game
         }
 
 
-        private void OnServerPiecePlaced(int pieceId, double correctX, double correctY, string scoringUsername, int newScore)
+        private void OnServerPiecePlaced(int pieceId, double correctX, double correctY, string scoringUsername, int newScore, string bonusType)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -369,6 +387,7 @@ namespace MindWeaveClient.ViewModel.Game
                     piece.IsHeldByOther = false;
                     piece.BorderColor = Brushes.Transparent;
                     piece.ZIndex = -1;
+                    audioService.playSoundEffect("snap_sound.mp3");
                 }
 
                 var player = PlayerScores.FirstOrDefault(p => p.Username == scoringUsername);
@@ -377,8 +396,67 @@ namespace MindWeaveClient.ViewModel.Game
                     player.Score = newScore;
                 }
 
+                if (!string.IsNullOrEmpty(bonusType))
+                {
+                    handleBonusEffects(scoringUsername, bonusType);
+                }
+
                 Debug.WriteLine($"[PIECE PLACED] Piece {pieceId} at ({correctX}, {correctY}) by {scoringUsername}, new score: {newScore}");
             });
+        }
+
+        private void handleBonusEffects(string username, string bonusType)
+        {
+            if (username != SessionService.Username) return;
+
+            string message = "";
+            string soundFile = "";
+
+            var bonuses = bonusType.Split(',');
+
+            foreach (var bonus in bonuses)
+            {
+                switch (bonus)
+                {
+                    case "FIRST_BLOOD":
+                        message = "🩸 FIRST BLOOD! (+25)";
+                        soundFile = "bonus.mp3";
+                        break;
+                    case "STREAK":
+                        message = "🔥 STREAK! (+10)";
+                        soundFile = "bonus.mp3";
+                        break;
+                    case "FRENZY":
+                        message = "⚡ FRENZY! (+40)";
+                        soundFile = "bonus.mp3";
+                        break;
+                    case "LAST_HIT":
+                        message = "🏆 LAST HIT! (+50)";
+                        soundFile = "bonus.mp3";
+                        break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                showBonusNotification(message);
+                if (!string.IsNullOrEmpty(soundFile))
+                    audioService.playSoundEffect(soundFile);
+            }
+        }
+
+        private void showBonusNotification(string message)
+        {
+            BonusNotification = message;
+            IsBonusVisible = true;
+
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+            timer.Tick += (s, e) =>
+            {
+                IsBonusVisible = false;
+                timer.Stop();
+            };
+            timer.Start();
         }
 
         private static BitmapSource convertBytesToBitmapSource(byte[] imageBytes)

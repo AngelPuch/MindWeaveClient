@@ -4,6 +4,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:lang="clr-namespace:MindWeaveClient.Properties.Langs"
+      xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
       
       xmlns:local="clr-namespace:MindWeaveClient.View.Game"
       xmlns:viewModel="clr-namespace:MindWeaveClient.ViewModel.Game"
@@ -14,6 +15,8 @@
       Title="Mind Weave - In Game">
 
     <Page.Resources>
+        <controls:BooleanToVisibilityConverter x:Key="BoolToVis" />
+
         <SolidColorBrush x:Key="Player1Color" Color="#3498DB"/>
         <SolidColorBrush x:Key="Player2Color" Color="#E74C3C"/>
         <SolidColorBrush x:Key="Player3Color" Color="#2ECC71"/>
@@ -121,20 +124,20 @@
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas x:Name="PuzzleCanvas" 
-                    Width="{Binding PuzzleWidth}"
-                    Height="{Binding PuzzleHeight}"
-                    Background="Transparent"/>
+                                                Width="{Binding PuzzleWidth}"
+                                                Height="{Binding PuzzleHeight}"
+                                                Background="Transparent"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
 
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type puzzleVM:PuzzlePieceViewModel}">
                                         <local:PuzzlePieceView 
-                DataContext="{Binding}"
-                Cursor="Hand"
-                MouseLeftButtonDown="Piece_MouseLeftButtonDown"
-                MouseMove="Piece_MouseMove"
-                MouseLeftButtonUp="Piece_MouseLeftButtonUp" />
+                                            DataContext="{Binding}"
+                                            Cursor="Hand"
+                                            MouseLeftButtonDown="Piece_MouseLeftButtonDown"
+                                            MouseMove="Piece_MouseMove"
+                                            MouseLeftButtonUp="Piece_MouseLeftButtonUp" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
 
@@ -142,9 +145,7 @@
                                     <Style TargetType="ContentPresenter">
                                         <Setter Property="Canvas.Left" Value="0" />
                                         <Setter Property="Canvas.Top" Value="0" />
-
                                         <Setter Property="Panel.ZIndex" Value="{Binding ZIndex}" />
-
                                         <Setter Property="RenderTransform">
                                             <Setter.Value>
                                                 <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
@@ -158,7 +159,6 @@
                 </Border>
 
                 <StackPanel Grid.Column="1" Margin="20,0,0,0">
-
                     <Border Background="#A52E3A4E" CornerRadius="15" Padding="20" Margin="0,0,0,10">
                         <Border.Effect>
                             <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="0.4" BlurRadius="15"/>
@@ -186,9 +186,23 @@
                             </Viewbox>
                         </StackPanel>
                     </Border>
-
                 </StackPanel>
             </Grid>
+
+            <Border Grid.RowSpan="2" Grid.ColumnSpan="2" 
+                    Background="#CC000000" CornerRadius="20" Padding="30"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Visibility="{Binding IsBonusVisible, Converter={StaticResource BoolToVis}}"
+                    IsHitTestVisible="False" Panel.ZIndex="200">
+                <TextBlock Text="{Binding BonusNotification}" 
+                           Foreground="#F1C40F" FontSize="48" FontWeight="ExtraBold"
+                           TextAlignment="Center">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="Red" BlurRadius="20" ShadowDepth="0"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </Border>
+
         </Grid>
     </Grid>
 </Page>

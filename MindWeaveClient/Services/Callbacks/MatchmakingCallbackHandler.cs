@@ -20,7 +20,7 @@ namespace MindWeaveClient.Services.Callbacks
         public event Action<string> OnKickedEvent;
 
         public static event Action<int, string> PieceDragStartedHandler;
-        public static event Action<int, double, double, string, int> PiecePlacedHandler;
+        public static event Action<int, double, double, string, int, string> PiecePlacedHandler;
         public static event Action<int, double, double, string> PieceMovedHandler;
         public static event Action<int, string> PieceDragReleasedHandler;
         public static event Action OnGameStartedNavigation;
@@ -132,10 +132,10 @@ namespace MindWeaveClient.Services.Callbacks
             PieceDragStartedHandler?.Invoke(pieceId, username);
         }
 
-        public void onPiecePlaced(int pieceId, double correctX, double correctY, string username, int newScore)
+        public void onPiecePlaced(int pieceId, double correctX, double correctY, string username, int newScore, string bonusType)
         {
             System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPiecePlaced: Piece {pieceId} by {username} at ({correctX}, {correctY})");
-            PiecePlacedHandler?.Invoke(pieceId, correctX, correctY, username, newScore);
+            PiecePlacedHandler?.Invoke(pieceId, correctX, correctY, username, newScore, bonusType);
         }
 
         public void onPieceMoved(int pieceId, double newX, double newY, string username)

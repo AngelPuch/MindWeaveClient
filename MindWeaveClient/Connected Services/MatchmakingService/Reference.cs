@@ -1075,7 +1075,7 @@ namespace MindWeaveClient.MatchmakingService {
         void onPieceDragStarted(int pieceId, string username);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPiecePlaced")]
-        void onPiecePlaced(int pieceId, double correctX, double correctY, string username, int newScore);
+        void onPiecePlaced(int pieceId, double correctX, double correctY, string username, int newScore, string bonusType);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceMoved")]
         void onPieceMoved(int pieceId, double newX, double newY, string username);

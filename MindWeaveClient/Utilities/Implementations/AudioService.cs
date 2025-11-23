@@ -146,13 +146,34 @@ namespace MindWeaveClient.Utilities.Implementations
 
         public void playSoundEffect(string soundFileName)
         {
-            if (string.IsNullOrWhiteSpace(soundFileName))
+            if (string.IsNullOrWhiteSpace(soundFileName)) return;
+
+            try
             {
-                return;
+                Uri resourceUri = new Uri($"/MindWeaveClient;component/Resources/Audio/{soundFileName}", UriKind.Relative);
+                var resourceInfo = Application.GetResourceStream(resourceUri);
+
+                if (resourceInfo != null)
+                {
+                    string tempPath = Path.Combine(Path.GetTempPath(), $"MW_SFX_{soundFileName}");
+
+                    if (!File.Exists(tempPath))
+                    {
+                        using (Stream resourceStream = resourceInfo.Stream)
+                        using (FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+                        {
+                            resourceStream.CopyTo(fileStream);
+                        }
+                    }
+
+                    sfxPlayer.Open(new Uri(tempPath, UriKind.Absolute));
+                    sfxPlayer.Play();
+                }
             }
-            Uri sfxUri = new Uri($"pack://application:,,,/MindWeaveClient;component/Resources/Audio/{soundFileName}", UriKind.Absolute);
-            sfxPlayer.Open(sfxUri);
-            sfxPlayer.Play();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error playing SFX: {ex.Message}");
+            }
         }
 
 

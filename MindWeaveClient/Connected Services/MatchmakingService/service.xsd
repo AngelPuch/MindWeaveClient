@@ -180,6 +180,7 @@
         <xs:element minOccurs="0" name="correctY" type="xs:double" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="newScore" type="xs:int" />
+        <xs:element minOccurs="0" name="bonusType" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
