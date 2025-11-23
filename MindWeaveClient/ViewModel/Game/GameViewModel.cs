@@ -253,6 +253,11 @@ namespace MindWeaveClient.ViewModel.Game
         public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
             if (piece == null || piece.IsHeldByOther) return;
+            if (string.IsNullOrEmpty(currentMatchService.LobbyId))
+            {
+                System.Diagnostics.Debug.WriteLine("[CLIENT ERROR] Intento de DropPiece con LobbyId NULO.");
+                return;
+            }
 
             try
             {

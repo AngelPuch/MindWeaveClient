@@ -8,25 +8,52 @@ namespace MindWeaveClient.Services.Implementations
 {
     public class CurrentMatchService : ICurrentMatchService
     {
-        private string matchId;
-        private PuzzleManagerService.PuzzleDefinitionDto currentPuzzle;
-
-        public string LobbyId { get; private set; }
-        public List<string> Players { get; private set; }
-        public LobbySettingsDto CurrentSettings { get; private set; }
-        public string PuzzleImagePath { get; private set; }
+        // Campos estáticos para persistencia (solución al bug de LobbyId nulo)
+        // Nomenclatura: camelCase sin guiones bajos según el estándar
+        private static string matchId;
+        private static string lobbyId;
+        private static List<string> players;
+        private static LobbySettingsDto currentSettings;
+        private static string puzzleImagePath;
+        private static PuzzleManagerService.PuzzleDefinitionDto currentPuzzle;
 
         public event EventHandler OnMatchFound;
         public event Action PuzzleReady;
 
+        // Propiedades públicas (PascalCase) vinculadas a los campos estáticos
+        public string LobbyId
+        {
+            get { return CurrentMatchService.lobbyId; }
+            private set { CurrentMatchService.lobbyId = value; }
+        }
+
+        public List<string> Players
+        {
+            get { return CurrentMatchService.players; }
+            private set { CurrentMatchService.players = value; }
+        }
+
+        public LobbySettingsDto CurrentSettings
+        {
+            get { return CurrentMatchService.currentSettings; }
+            private set { CurrentMatchService.currentSettings = value; }
+        }
+
+        public string PuzzleImagePath
+        {
+            get { return CurrentMatchService.puzzleImagePath; }
+            private set { CurrentMatchService.puzzleImagePath = value; }
+        }
+
         public void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
-            this.LobbyId = lobbyId;
-            this.Players = players;
-            this.CurrentSettings = settings;
-            this.PuzzleImagePath = puzzleImagePath;
+            CurrentMatchService.lobbyId = lobbyId;
+            CurrentMatchService.players = players;
+            CurrentMatchService.currentSettings = settings;
+            CurrentMatchService.puzzleImagePath = puzzleImagePath;
 
-            this.matchId = lobbyId;
+            CurrentMatchService.matchId = lobbyId;
+
             Debug.WriteLine($"[CurrentMatchService] Match initialized: LobbyId={lobbyId}, Players={string.Join(", ", players)}");
 
             OnMatchFound?.Invoke(this, EventArgs.Empty);
@@ -34,12 +61,12 @@ namespace MindWeaveClient.Services.Implementations
 
         public PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle()
         {
-            return currentPuzzle;
+            return CurrentMatchService.currentPuzzle;
         }
 
         public void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle)
         {
-            this.currentPuzzle = puzzle;
+            CurrentMatchService.currentPuzzle = puzzle;
             Debug.WriteLine($"[CurrentMatchService] Puzzle set with {puzzle?.Pieces?.Length ?? 0} pieces");
 
             PuzzleReady?.Invoke();
@@ -47,19 +74,19 @@ namespace MindWeaveClient.Services.Implementations
 
         public void setMatchId(string matchId)
         {
-            this.matchId = matchId;
-            if (string.IsNullOrEmpty(this.LobbyId))
-            {
-                this.LobbyId = matchId;
-            }
-            Debug.WriteLine($"[CurrentMatchService] MatchId set to: {matchId}");
+            CurrentMatchService.matchId = matchId;
 
+            if (string.IsNullOrEmpty(CurrentMatchService.lobbyId))
+            {
+                CurrentMatchService.lobbyId = matchId;
+            }
+
+            Debug.WriteLine($"[CurrentMatchService] MatchId set to: {matchId}");
         }
 
         public string getMatchId()
         {
-            return matchId;
-
+            return CurrentMatchService.matchId;
         }
     }
 }
