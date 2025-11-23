@@ -611,5 +611,8 @@
   <ItemGroup>
     <Resource Include="Resources\Audio\bonus.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Audio\error_sound.mp3" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -84,6 +84,13 @@ namespace MindWeaveClient.ViewModel.Game
             set { isBonusVisible = value; OnPropertyChanged(); }
         }
 
+        private Brush notificationColor;
+        public Brush NotificationColor
+        {
+            get => notificationColor;
+            set { notificationColor = value; OnPropertyChanged(); }
+        }
+
         private bool puzzleLoaded;
 
         public GameViewModel(
@@ -115,6 +122,7 @@ namespace MindWeaveClient.ViewModel.Game
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
+            MatchmakingCallbackHandler.PlayerPenaltyHandler += OnServerPlayerPenalty; 
             MatchmakingCallbackHandler.GameEndedStatic += OnGameEnded;
 
             tryLoadExistingPuzzle();
@@ -405,6 +413,35 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
+        private void OnServerPlayerPenalty(string username, int pointsLost, int newScore, string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var player = PlayerScores.FirstOrDefault(p => p.Username == username);
+                if (player != null)
+                {
+                    player.Score = newScore;
+                }
+
+                if (username == SessionService.Username)
+                {
+                    string msg = "";
+                    switch (reason)
+                    {
+                        case "HOARDING": msg = $"Don't hoard! -{pointsLost}"; break;
+                        case "MISS": msg = $"Miss! -{pointsLost}"; break;
+                        case "WRONG_SPOT": msg = $"Wrong Piece! -{pointsLost}"; break;
+                        default: msg = $"-{pointsLost}"; break;
+                    }
+
+                    audioService.playSoundEffect("error_sound.mp3");
+
+                    NotificationColor = Brushes.Red;
+                    showBonusNotification(msg);
+                }
+            });
+        }
+
         private void handleBonusEffects(string username, string bonusType)
         {
             if (username != SessionService.Username) return;
@@ -439,6 +476,7 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (!string.IsNullOrEmpty(message))
             {
+                NotificationColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F")); 
                 showBonusNotification(message);
                 if (!string.IsNullOrEmpty(soundFile))
                     audioService.playSoundEffect(soundFile);
@@ -498,6 +536,7 @@ namespace MindWeaveClient.ViewModel.Game
                 MatchmakingCallbackHandler.PiecePlacedHandler -= OnServerPiecePlaced;
                 MatchmakingCallbackHandler.PieceMovedHandler -= OnServerPieceMoved;
                 MatchmakingCallbackHandler.PieceDragReleasedHandler -= OnServerPieceDragReleased;
+                MatchmakingCallbackHandler.PlayerPenaltyHandler -= OnServerPlayerPenalty;
             }
 
             isDisposed = true;

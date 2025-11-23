@@ -124,6 +124,9 @@
   <wsdl:message name="IMatchmakingManager_onGameEnded_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:onGameEnded" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPlayerPenalty_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPlayerPenalty" />
+  </wsdl:message>
   <wsdl:portType name="IMatchmakingManager">
     <wsdl:operation name="createLobby">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobby" message="tns:IMatchmakingManager_createLobby_InputMessage" />
@@ -197,6 +200,9 @@
     </wsdl:operation>
     <wsdl:operation name="onGameEnded">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onGameEnded" message="tns:IMatchmakingManager_onGameEnded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPlayerPenalty">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPlayerPenalty" message="tns:IMatchmakingManager_onPlayerPenalty_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
@@ -349,6 +355,12 @@
     </wsdl:operation>
     <wsdl:operation name="onGameEnded">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onGameEnded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPlayerPenalty">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPlayerPenalty" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

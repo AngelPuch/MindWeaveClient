@@ -194,13 +194,18 @@
                     HorizontalAlignment="Center" VerticalAlignment="Center"
                     Visibility="{Binding IsBonusVisible, Converter={StaticResource BoolToVis}}"
                     IsHitTestVisible="False" Panel.ZIndex="200">
+
                 <TextBlock Text="{Binding BonusNotification}" 
-                           Foreground="#F1C40F" FontSize="48" FontWeight="ExtraBold"
+                           Foreground="{Binding NotificationColor}" 
+                           FontSize="48" FontWeight="ExtraBold"
                            TextAlignment="Center">
+
                     <TextBlock.Effect>
-                        <DropShadowEffect Color="Red" BlurRadius="20" ShadowDepth="0"/>
+                        <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="2"/>
                     </TextBlock.Effect>
+
                 </TextBlock>
+
             </Border>
 
         </Grid>

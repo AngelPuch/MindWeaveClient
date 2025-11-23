@@ -1085,6 +1085,9 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onGameEnded")]
         void onGameEnded(int matchId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPlayerPenalty")]
+        void onPlayerPenalty(string username, int pointsLost, int newScore, string reason);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

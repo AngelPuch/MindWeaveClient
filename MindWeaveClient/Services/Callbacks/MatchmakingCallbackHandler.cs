@@ -23,6 +23,8 @@ namespace MindWeaveClient.Services.Callbacks
         public static event Action<int, double, double, string, int, string> PiecePlacedHandler;
         public static event Action<int, double, double, string> PieceMovedHandler;
         public static event Action<int, string> PieceDragReleasedHandler;
+        public static event Action<string, int, int, string> PlayerPenaltyHandler;
+
         public static event Action OnGameStartedNavigation;
         public static event Action<int> GameEndedStatic;
 
@@ -148,6 +150,11 @@ namespace MindWeaveClient.Services.Callbacks
         {
             System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPieceDragReleased: Piece {pieceId} by {username}");
             PieceDragReleasedHandler?.Invoke(pieceId, username);
+        }
+        public void onPlayerPenalty(string username, int pointsLost, int newScore, string reason)
+        {
+            System.Diagnostics.Debug.WriteLine($"[PENALTY] User: {username}, Lost: {pointsLost}, Reason: {reason}");
+            PlayerPenaltyHandler?.Invoke(username, pointsLost, newScore, reason);
         }
 
         public void onGameEnded(int matchId)
