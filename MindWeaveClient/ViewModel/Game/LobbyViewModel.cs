@@ -1,4 +1,5 @@
-﻿using MindWeaveClient.ChatManagerService;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MindWeaveClient.ChatManagerService;
 using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
@@ -350,6 +351,26 @@ namespace MindWeaveClient.ViewModel.Game
             SetBusy(true);
             try
             {
+                var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
+
+                Debug.WriteLine($"[LobbyViewModel] Before start - CurrentMatchService.LobbyId: {currentMatchService.LobbyId ?? "NULL"}");
+                Debug.WriteLine($"[LobbyViewModel] Before start - This.LobbyCode: {this.LobbyCode ?? "NULL"}");
+
+                if (string.IsNullOrEmpty(currentMatchService.LobbyId) && !string.IsNullOrEmpty(this.LobbyCode))
+                {
+                    Debug.WriteLine($"[LobbyViewModel] CurrentMatchService LobbyId is NULL, setting it to: {this.LobbyCode}");
+                    currentMatchService.initializeMatch(
+                        this.LobbyCode,
+                        this.Players.ToList(),
+                        this.CurrentSettings,
+                        lobbyState?.PuzzleImagePath
+                    );
+                }
+                else
+                {
+                    Debug.WriteLine($"[LobbyViewModel] CurrentMatchService already has LobbyId: {currentMatchService.LobbyId}");
+                }
+
                 await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
             }
             catch (EndpointNotFoundException ex)
