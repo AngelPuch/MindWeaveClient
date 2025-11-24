@@ -3,6 +3,7 @@
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Game" />
   <xs:element name="createLobby">
     <xs:complexType>
       <xs:sequence>
@@ -206,9 +207,7 @@
   <xs:element name="onGameEnded">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="matchId" type="xs:int" />
-        <xs:element minOccurs="0" name="winnerId" type="xs:int" />
-        <xs:element minOccurs="0" name="reason" nillable="true" type="xs:string" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Game" minOccurs="0" name="result" nillable="true" type="q10:MatchEndResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

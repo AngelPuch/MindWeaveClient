@@ -26,7 +26,8 @@ namespace MindWeaveClient.Services.Callbacks
         public static event Action<string, int, int, string> PlayerPenaltyHandler;
 
         public static event Action OnGameStartedNavigation;
-        public static event Action<int, int, string> GameEndedStatic;
+        public static event Action<MatchEndResultDto> GameEndedStatic;
+        public static MatchEndResultDto LastMatchResults { get; private set; }
         public static int LastMatchDuration { get; private set; } = 300;
 
         public MatchmakingCallbackHandler(
@@ -159,10 +160,12 @@ namespace MindWeaveClient.Services.Callbacks
             PlayerPenaltyHandler?.Invoke(username, pointsLost, newScore, reason);
         }
 
-        public void onGameEnded(int matchId, int winnerId, string reason)
+        public void onGameEnded(MatchEndResultDto result)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onGameEnded: Match {matchId}, Winner {winnerId}, Reason {reason}");
-            GameEndedStatic?.Invoke(matchId, winnerId, reason);
+            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onGameEnded: Match {result.MatchId}, Reason {result.Reason}");
+
+            LastMatchResults = result;
+            GameEndedStatic?.Invoke(result);
         }
     }
 }

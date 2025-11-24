@@ -94,6 +94,7 @@ namespace MindWeaveClient
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<SocialViewModel>();
             services.AddTransient<GameViewModel>();
+            services.AddTransient<PostMatchResultsViewModel>();
 
             services.AddTransient<LoginPage>();
             services.AddTransient<CreateAccountPage>();
@@ -108,6 +109,7 @@ namespace MindWeaveClient
             services.AddTransient<SelectionPuzzlePage>();
             services.AddTransient<SocialPage>();
             services.AddTransient<GamePage>();
+            services.AddTransient<PostMatchResultsPage>();
 
             services.AddTransient<AuthenticationWindow>();
             services.AddTransient<MainWindow>();

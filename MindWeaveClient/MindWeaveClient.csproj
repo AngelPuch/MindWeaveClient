@@ -167,6 +167,7 @@
     <Compile Include="ViewModel\Game\ChatMessageDisplayViewModel.cs" />
     <Compile Include="ViewModel\Game\GameViewModel.cs" />
     <Compile Include="ViewModel\Game\LobbyViewModel.cs" />
+    <Compile Include="ViewModel\Game\PostMatchResultsViewModel.cs" />
     <Compile Include="ViewModel\Main\EditProfileViewModel.cs" />
     <Compile Include="ViewModel\Main\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\Main\ProfileViewModel.cs" />
@@ -388,6 +389,9 @@
     </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.LobbyCreationResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Game.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd">
       <SubType>Designer</SubType>

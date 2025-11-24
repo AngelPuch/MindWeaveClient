@@ -29,6 +29,7 @@
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared.xsd" MetadataType="Schema" ID="319110f4-a4f0-4ce5-a764-4c6b9e4b092d" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="93a86e63-1a60-4a7e-b0e4-cc2952fe3720" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
     <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Puzzle.xsd" MetadataType="Schema" ID="b2968045-cc85-404d-9b52-c845c85f3695" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Game.xsd" MetadataType="Schema" ID="3a0be0b7-ac0c-43ff-b000-e1b5b06ad314" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

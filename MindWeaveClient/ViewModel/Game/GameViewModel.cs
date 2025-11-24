@@ -1,4 +1,5 @@
-﻿using MindWeaveClient.Services;
+﻿using MindWeaveClient.MatchmakingService;
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Utilities.Abstractions;
@@ -159,21 +160,25 @@ namespace MindWeaveClient.ViewModel.Game
             TimeDisplay = timeRemaining.ToString(@"mm\:ss");
         }
 
-        private void OnGameEnded(int matchId, int winnerId, string reason)
+        private void OnGameEnded(MatchEndResultDto result)
         {
             // Detener timer visual inmediatamente
             visualTimer?.Stop();
 
             Application.Current.Dispatcher.Invoke(() =>
             {
+                string reason = result.Reason;
                 string title = reason == "TimeOut" ? "¡Tiempo Agotado!" : "¡Puzzle Completado!";
+
                 string message = reason == "TimeOut"
                     ? "Se acabó el tiempo de la partida."
                     : "El rompecabezas ha sido resuelto.";
 
+                // Mostrar un aviso rápido antes de cambiar de página (opcional)
                 dialogService.showInfo($"{message} Cargando resultados...", title);
 
-                // Navegar
+                // Navegación limpia usando DI. 
+                // El PostMatchResultsViewModel leerá los datos de MatchmakingCallbackHandler.LastMatchResults
                 navigationService.navigateTo<PostMatchResultsPage>();
             });
         }
