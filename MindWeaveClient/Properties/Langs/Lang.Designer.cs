@@ -466,11 +466,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a View Image.
+        /// </summary>
+        public static string GameBtnViewImage {
+            get {
+                return ResourceManager.GetString("GameBtnViewImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error starting game..
         /// </summary>
         public static string GameStartError {
             get {
                 return ResourceManager.GetString("GameStartError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Close.
+        /// </summary>
+        public static string GameTxtClose {
+            get {
+                return ResourceManager.GetString("GameTxtClose", resourceCulture);
             }
         }
         

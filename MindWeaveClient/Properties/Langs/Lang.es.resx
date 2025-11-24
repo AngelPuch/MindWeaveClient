@@ -616,7 +616,7 @@
     <value>Se necesitan 4 jugadores para empezar.</value>
   </data>
   <data name="GameStartError" xml:space="preserve">
-    <value>Error al iniciar la partida.</value>
+    <value>Error al iniciar la partida</value>
   </data>
   <data name="KickedMessage" xml:space="preserve">
     <value>Has sido expulsado de la sala. Razón: {0}</value>
@@ -780,5 +780,11 @@
   </data>
   <data name="ErrorFileTooBigForServer" xml:space="preserve">
     <value>El archivo seleccionado es demasiado grande para la configuración del servidor.</value>
+  </data>
+  <data name="GameBtnViewImage" xml:space="preserve">
+    <value>Ver Imagen</value>
+  </data>
+  <data name="GameTxtClose" xml:space="preserve">
+    <value>Cerrar</value>
   </data>
 </root>

@@ -83,7 +83,29 @@ namespace MindWeaveClient.ViewModel.Game
         public bool IsBonusVisible { get => isBonusVisible; set { isBonusVisible = value; OnPropertyChanged(); } }
         private Brush notificationColor;
         public Brush NotificationColor { get => notificationColor; set { notificationColor = value; OnPropertyChanged(); } }
+        private bool isHelpPopupVisible;
+        public bool IsHelpPopupVisible
+        {
+            get { return isHelpPopupVisible; }
+            set
+            {
+                isHelpPopupVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
+        private ImageSource targetPuzzleImage;
+        public ImageSource TargetPuzzleImage
+        {
+            get { return targetPuzzleImage; }
+            set
+            {
+                targetPuzzleImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand ToggleHelpPopupCommand { get; set; }
         private bool puzzleLoaded;
 
         public GameViewModel(
@@ -105,6 +127,7 @@ namespace MindWeaveClient.ViewModel.Game
             PuzzleSlots = new ObservableCollection<PuzzleSlotViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
             playerColorsMap = new Dictionary<string, SolidColorBrush>();
+            ToggleHelpPopupCommand = new RelayCommand(ExecuteToggleHelpPopup);
 
             initializePlayerScores();
 
@@ -124,6 +147,11 @@ namespace MindWeaveClient.ViewModel.Game
             tryLoadExistingPuzzle();
         }
 
+        private void ExecuteToggleHelpPopup(object parameter)
+        {
+            // Invierte el valor: si es true pasa a false, y viceversa
+            IsHelpPopupVisible = !IsHelpPopupVisible;
+        }
         private void initializeGameTimer()
         {
             // Obtenemos la duración desde el "Puente" estático que definiremos en el paso 4
@@ -251,6 +279,7 @@ namespace MindWeaveClient.ViewModel.Game
 
                 BitmapSource fullImage = convertBytesToBitmapSource(puzzleDto.FullImageBytes);
                 if (fullImage == null) return;
+                TargetPuzzleImage = fullImage;
 
                 PiecesCollection.Clear();
                 PuzzleSlots.Clear();
