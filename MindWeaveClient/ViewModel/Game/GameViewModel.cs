@@ -21,33 +21,48 @@ namespace MindWeaveClient.ViewModel.Game
     public class PlayerScoreViewModel : BaseViewModel
     {
         public string Username { get; set; }
-
         private int score;
         public int Score
         {
             get => score;
-            set { score = value; 
-                OnPropertyChanged(); }
+            set { score = value; OnPropertyChanged(); }
         }
     }
 
     public class GameViewModel : BaseViewModel, IDisposable
     {
+        // --- Servicios ---
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
-        private readonly INavigationService navigationService; 
+        private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
 
+        // --- Propiedades del Puzzle y Jugadores ---
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
         public PlayerScoreViewModel MyPlayer { get; private set; }
-
         private readonly Dictionary<string, SolidColorBrush> playerColorsMap;
-        private bool isDisposed = false;
 
+        // --- TIMER Y TIEMPO ---
+        private DispatcherTimer visualTimer;
+        private TimeSpan timeRemaining;
+        private string timeDisplay;
+
+        public string TimeDisplay
+        {
+            get { return timeDisplay; }
+            set
+            {
+                timeDisplay = value;
+                OnPropertyChanged(nameof(TimeDisplay));
+            }
+        }
+        // ---------------------
+
+        private bool isDisposed = false;
         private readonly SolidColorBrush[] definedColors = new SolidColorBrush[]
         {
             new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3498DB")), // Azul
@@ -56,40 +71,17 @@ namespace MindWeaveClient.ViewModel.Game
             new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F"))  // Amarillo
         };
 
+        // ... (Propiedades de PuzzleWidth, PuzzleHeight, BonusNotification, etc. se mantienen igual) ...
         private int puzzleWidth;
-        public int PuzzleWidth
-        {
-            get => puzzleWidth;
-            set { puzzleWidth = value; OnPropertyChanged(); }
-        }
-
+        public int PuzzleWidth { get => puzzleWidth; set { puzzleWidth = value; OnPropertyChanged(); } }
         private int puzzleHeight;
-        public int PuzzleHeight
-        {
-            get => puzzleHeight;
-            set { puzzleHeight = value; OnPropertyChanged(); }
-        }
-
+        public int PuzzleHeight { get => puzzleHeight; set { puzzleHeight = value; OnPropertyChanged(); } }
         private string bonusNotification;
-        public string BonusNotification
-        {
-            get => bonusNotification;
-            set { bonusNotification = value; OnPropertyChanged(); }
-        }
-
+        public string BonusNotification { get => bonusNotification; set { bonusNotification = value; OnPropertyChanged(); } }
         private bool isBonusVisible;
-        public bool IsBonusVisible
-        {
-            get => isBonusVisible;
-            set { isBonusVisible = value; OnPropertyChanged(); }
-        }
-
+        public bool IsBonusVisible { get => isBonusVisible; set { isBonusVisible = value; OnPropertyChanged(); } }
         private Brush notificationColor;
-        public Brush NotificationColor
-        {
-            get => notificationColor;
-            set { notificationColor = value; OnPropertyChanged(); }
-        }
+        public Brush NotificationColor { get => notificationColor; set { notificationColor = value; OnPropertyChanged(); } }
 
         private bool puzzleLoaded;
 
@@ -97,7 +89,7 @@ namespace MindWeaveClient.ViewModel.Game
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
             IDialogService dialogService,
-            INavigationService navigationService, 
+            INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
             IAudioService audioService)
         {
@@ -113,31 +105,79 @@ namespace MindWeaveClient.ViewModel.Game
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
             playerColorsMap = new Dictionary<string, SolidColorBrush>();
 
-
             initializePlayerScores();
 
+            // Suscripciones a eventos
             currentMatchService.PuzzleReady += OnPuzzleReady;
-
             MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
             MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
             MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
-            MatchmakingCallbackHandler.PlayerPenaltyHandler += OnServerPlayerPenalty; 
+            MatchmakingCallbackHandler.PlayerPenaltyHandler += OnServerPlayerPenalty;
             MatchmakingCallbackHandler.GameEndedStatic += OnGameEnded;
+
+            // --- INICIALIZACIÓN DEL TIMER ---
+            initializeGameTimer();
+            // -------------------------------
 
             tryLoadExistingPuzzle();
         }
-        private void OnGameEnded(int matchId)
+
+        private void initializeGameTimer()
         {
+            // Obtenemos la duración desde el "Puente" estático que definiremos en el paso 4
+            int duration = MatchmakingCallbackHandler.LastMatchDuration > 0
+                           ? MatchmakingCallbackHandler.LastMatchDuration
+                           : 300; // Fallback 5 min
+
+            timeRemaining = TimeSpan.FromSeconds(duration);
+            updateTimerDisplay();
+
+            visualTimer = new DispatcherTimer();
+            visualTimer.Interval = TimeSpan.FromSeconds(1);
+            visualTimer.Tick += localTimerTick;
+            visualTimer.Start();
+        }
+
+        private void localTimerTick(object sender, EventArgs e)
+        {
+            if (timeRemaining.TotalSeconds > 0)
+            {
+                timeRemaining = timeRemaining.Add(TimeSpan.FromSeconds(-1));
+                updateTimerDisplay();
+            }
+            else
+            {
+                // Solo paramos visualmente, esperamos el OnGameEnded del servidor
+                visualTimer.Stop();
+                TimeDisplay = "00:00";
+            }
+        }
+
+        private void updateTimerDisplay()
+        {
+            TimeDisplay = timeRemaining.ToString(@"mm\:ss");
+        }
+
+        private void OnGameEnded(int matchId, int winnerId, string reason)
+        {
+            // Detener timer visual inmediatamente
+            visualTimer?.Stop();
+
             Application.Current.Dispatcher.Invoke(() =>
             {
-                // 1. Mostrar mensaje opcional
-                dialogService.showInfo("¡Puzzle Completado! Cargando resultados...", "Fin de Partida");
+                string title = reason == "TimeOut" ? "¡Tiempo Agotado!" : "¡Puzzle Completado!";
+                string message = reason == "TimeOut"
+                    ? "Se acabó el tiempo de la partida."
+                    : "El rompecabezas ha sido resuelto.";
 
-          
+                dialogService.showInfo($"{message} Cargando resultados...", title);
+
+                // Navegar
                 navigationService.navigateTo<PostMatchResultsPage>();
             });
         }
+
 
         private void tryLoadExistingPuzzle()
         {
@@ -531,12 +571,14 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (disposing)
             {
+                visualTimer?.Stop();
                 currentMatchService.PuzzleReady -= OnPuzzleReady;
                 MatchmakingCallbackHandler.PieceDragStartedHandler -= OnServerPieceDragStarted;
                 MatchmakingCallbackHandler.PiecePlacedHandler -= OnServerPiecePlaced;
                 MatchmakingCallbackHandler.PieceMovedHandler -= OnServerPieceMoved;
                 MatchmakingCallbackHandler.PieceDragReleasedHandler -= OnServerPieceDragReleased;
                 MatchmakingCallbackHandler.PlayerPenaltyHandler -= OnServerPlayerPenalty;
+                MatchmakingCallbackHandler.GameEndedStatic -= OnGameEnded;
             }
 
             isDisposed = true;

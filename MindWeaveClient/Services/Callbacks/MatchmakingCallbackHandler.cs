@@ -26,8 +26,8 @@ namespace MindWeaveClient.Services.Callbacks
         public static event Action<string, int, int, string> PlayerPenaltyHandler;
 
         public static event Action OnGameStartedNavigation;
-        public static event Action<int> GameEndedStatic;
-
+        public static event Action<int, int, string> GameEndedStatic;
+        public static int LastMatchDuration { get; private set; } = 300;
 
         public MatchmakingCallbackHandler(
             ICurrentMatchService currentMatchService,
@@ -70,9 +70,11 @@ namespace MindWeaveClient.Services.Callbacks
             OnMatchFoundEvent?.Invoke(lobbyCode, playerList, settings, puzzleImagePath);
         }
 
-        public void onGameStarted(PuzzleDefinitionDto puzzleDefinition)
+        public void onGameStarted(PuzzleDefinitionDto puzzleDefinition, int matchDurationSeconds)
         {
             System.Diagnostics.Debug.WriteLine($"[CALLBACK] onGameStarted received with {puzzleDefinition?.Pieces?.Length ?? 0} pieces");
+
+            LastMatchDuration = matchDurationSeconds;
 
             if (puzzleDefinition == null || currentMatchService == null)
             {
@@ -157,9 +159,10 @@ namespace MindWeaveClient.Services.Callbacks
             PlayerPenaltyHandler?.Invoke(username, pointsLost, newScore, reason);
         }
 
-        public void onGameEnded(int matchId)
+        public void onGameEnded(int matchId, int winnerId, string reason)
         {
-            GameEndedStatic?.Invoke(matchId);
+            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onGameEnded: Match {matchId}, Winner {winnerId}, Reason {reason}");
+            GameEndedStatic?.Invoke(matchId, winnerId, reason);
         }
     }
 }

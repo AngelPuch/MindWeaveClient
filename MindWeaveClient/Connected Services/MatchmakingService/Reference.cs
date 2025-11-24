@@ -1069,7 +1069,7 @@ namespace MindWeaveClient.MatchmakingService {
         void kickedFromLobby(string reason);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onGameStarted")]
-        void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition);
+        void onGameStarted(MindWeaveClient.MatchmakingService.PuzzleDefinitionDto puzzleDefinition, int matchDurationSeconds);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPieceDragStarted")]
         void onPieceDragStarted(int pieceId, string username);
@@ -1084,7 +1084,7 @@ namespace MindWeaveClient.MatchmakingService {
         void onPieceDragReleased(int pieceId, string username);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onGameEnded")]
-        void onGameEnded(int matchId);
+        void onGameEnded(int matchId, int winnerId, string reason);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPlayerPenalty")]
         void onPlayerPenalty(string username, int pointsLost, int newScore, string reason);
