@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -69,18 +70,11 @@ namespace MindWeaveClient.View.Game
         private async void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pieceView = sender as PuzzlePieceView;
-            if (pieceView == null)
-            {
-                return;
-            }
+            if (pieceView == null) { return; }
 
             var clickedPiece = pieceView.DataContext as PuzzlePieceViewModel;
 
-            if (clickedPiece == null || clickedPiece.IsPlaced || clickedPiece.IsHeldByOther)
-            {
-                Debug.WriteLine($"[DRAG BLOCKED] Piece {clickedPiece?.PieceId}: IsPlaced={clickedPiece?.IsPlaced}, IsHeldByOther={clickedPiece?.IsHeldByOther}");
-                return;
-            }
+            if (clickedPiece == null || clickedPiece.IsPlaced || clickedPiece.IsHeldByOther) { return; }
 
             isLocalDragging = true;
             this.draggedGroup = clickedPiece.PieceGroup;
@@ -106,54 +100,49 @@ namespace MindWeaveClient.View.Game
             {
                 piece.DragOffsetX = piece.X - dragStartPoint.X;
                 piece.DragOffsetY = piece.Y - dragStartPoint.Y;
+
+                if (gameViewModel != null)
+                {
+                    _ = gameViewModel.startDraggingPiece(piece);
+                }
             }
 
             pieceView.CaptureMouse();
-            gameViewModel?.startDraggingPiece(clickedPiece);
-
             e.Handled = true;
         }
 
         private async void Piece_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (this.draggedGroup == null || !isLocalDragging)
-            {
-                return;
-            }
+            if (this.draggedGroup == null || !isLocalDragging) { return; }
 
             var pieceView = sender as FrameworkElement;
-            if (pieceView == null)
-            {
-                return;
-            }
+            if (pieceView == null) { return; }
 
             pieceView.ReleaseMouseCapture();
 
             bool pieceSnapOccurred = checkForPieceToPieceSnap();
+            var piecesToDrop = new List<PuzzlePieceViewModel>(this.draggedGroup);
 
             if (pieceSnapOccurred)
             {
-                foreach (var piece in draggedGroup)
+                foreach (var piece in piecesToDrop)
                 {
-                    gameViewModel?.dropPiece(piece, piece.X, piece.Y);
+                    _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
                 }
             }
             else
             {
-                await handleBoardSnapAndDrop();
+                await handleBoardSnapAndDrop(piecesToDrop);
             }
-
+            
             this.draggedGroup = null;
             isLocalDragging = false;
             e.Handled = true;   
         }
 
-        private async System.Threading.Tasks.Task handleBoardSnapAndDrop()
+        private async Task handleBoardSnapAndDrop(List<PuzzlePieceViewModel> groupToDrop)
         {
-            if (draggedGroup == null || !draggedGroup.Any())
-            {
-                return;
-            }
+            if (groupToDrop == null || !groupToDrop.Any()) { return; }
 
             var firstPiece = draggedGroup[0];
             double currentX = firstPiece.X;
@@ -169,18 +158,18 @@ namespace MindWeaveClient.View.Game
                 double snapOffsetX = correctX - currentX;
                 double snapOffsetY = correctY - currentY;
 
-                foreach (var piece in draggedGroup)
+                foreach (var piece in groupToDrop)
                 {
                     piece.X += snapOffsetX;
                     piece.Y += snapOffsetY;
-                    gameViewModel?.dropPiece(piece, piece.X, piece.Y);
+                    _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
                 }
             }
             else
             {
                 foreach (var piece in draggedGroup)
                 {
-                    gameViewModel?.dropPiece(piece, piece.X, piece.Y);
+                    _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
                 }
             }
         }

@@ -1,21 +1,17 @@
-﻿using MindWeaveClient.Properties.Langs; // Para recursos
-using MindWeaveClient.Services;
+﻿using MindWeaveClient.Services;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Services.Callbacks;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Game
 {
-    // Clase Wrapper para adaptar el DTO a tu XAML
     public class ResultDisplayItem
     {
-        public int FinalRank { get; set; } // Mapea a Rank
+        public int FinalRank { get; set; }
         public string Username { get; set; }
         public int Score { get; set; }
         public int PiecesPlaced { get; set; }
@@ -25,40 +21,36 @@ namespace MindWeaveClient.ViewModel.Game
 
     public class PostMatchResultsViewModel : BaseViewModel
     {
-        private readonly INavigationService _navigationService;
-        private ResultDisplayItem _winner;
-        private ObservableCollection<ResultDisplayItem> _allParticipants;
+        private readonly INavigationService navigationService;
+        private ResultDisplayItem winner;
+        private ObservableCollection<ResultDisplayItem> allParticipants;
 
-        public PostMatchResultsViewModel(INavigationService navigationService)
-        {
-            _navigationService = navigationService;
-            _allParticipants = new ObservableCollection<ResultDisplayItem>();
 
-            // Inicializar comandos
-            BackToLobbyCommand = new RelayCommand(ExecuteBackToLobby);
-            GoToMainMenuCommand = new RelayCommand(ExecuteGoToMainMenu);
-
-            // Cargar datos automáticamente desde el CallbackHandler
-            LoadData();
-        }
-
-        // Propiedades para tu XAML
         public ResultDisplayItem Winner
         {
-            get => _winner;
-            set { _winner = value; OnPropertyChanged(); }
+            get => winner;
+            set { winner = value; OnPropertyChanged(); }
         }
 
         public ObservableCollection<ResultDisplayItem> AllParticipants
         {
-            get => _allParticipants;
-            set { _allParticipants = value; OnPropertyChanged(); }
+            get => allParticipants;
+            set { allParticipants = value; OnPropertyChanged(); }
         }
-
-        public ICommand BackToLobbyCommand { get; }
         public ICommand GoToMainMenuCommand { get; }
 
-        private void LoadData()
+        public PostMatchResultsViewModel(INavigationService navigationService)
+        {
+            this.navigationService = navigationService;
+            allParticipants = new ObservableCollection<ResultDisplayItem>();
+
+            GoToMainMenuCommand = new RelayCommand(executeGoToMainMenu);
+
+            loadData();
+        }
+
+
+        private void loadData()
         {
             var results = MatchmakingCallbackHandler.LastMatchResults;
 
@@ -70,15 +62,12 @@ namespace MindWeaveClient.ViewModel.Game
 
                 foreach (var playerDto in results.PlayerResults.OrderBy(p => p.Rank))
                 {
-                    // Lógica de Avatar: Usar el local si soy yo, o uno default/caché para otros
                     string avatar = "/Resources/Images/Avatar/default_avatar.png";
-                    if (playerDto.Username == SessionService.Username) // O comparar ID
+                    if (playerDto.Username == SessionService.Username)
                     {
-                        // Asumiendo que SessionService tiene el path guardado
                         avatar = SessionService.AvatarPath ?? avatar;
                     }
-                    // TODO: Si tienes los avatares de los amigos cacheados en CurrentMatchService, úsalos aquí.
-
+                    
                     var displayItem = new ResultDisplayItem
                     {
                         FinalRank = playerDto.Rank,
@@ -91,14 +80,12 @@ namespace MindWeaveClient.ViewModel.Game
 
                     AllParticipants.Add(displayItem);
 
-                    // Asignar al ganador para el bloque superior del XAML
                     if (displayItem.IsWinner)
                     {
                         Winner = displayItem;
                     }
                 }
 
-                // Fallback por si no viene ganador explícito (empate raro)
                 if (Winner == null && AllParticipants.Count > 0)
                 {
                     Winner = AllParticipants[0];
@@ -106,15 +93,9 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        private void ExecuteBackToLobby(object obj)
+        private void executeGoToMainMenu(object obj)
         {
-            // Aquí decides si vuelves al Lobby (si el servidor lo permite) o al menú
-            _navigationService.navigateTo<LobbyPage>();
-        }
-
-        private void ExecuteGoToMainMenu(object obj)
-        {
-            _navigationService.navigateTo<MainMenuPage>();
+            navigationService.navigateTo<MainMenuPage>();
         }
     }
 }
