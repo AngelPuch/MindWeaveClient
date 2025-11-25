@@ -32,7 +32,6 @@ namespace MindWeaveClient.ViewModel.Game
 
     public class GameViewModel : BaseViewModel, IDisposable
     {
-        // --- Servicios ---
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
@@ -40,14 +39,12 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
 
-        // --- Propiedades del Puzzle y Jugadores ---
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
         public PlayerScoreViewModel MyPlayer { get; private set; }
         private readonly Dictionary<string, SolidColorBrush> playerColorsMap;
 
-        // --- TIMER Y TIEMPO ---
         private DispatcherTimer visualTimer;
         private TimeSpan timeRemaining;
         private string timeDisplay;
@@ -61,7 +58,6 @@ namespace MindWeaveClient.ViewModel.Game
                 OnPropertyChanged(nameof(TimeDisplay));
             }
         }
-        // ---------------------
 
         private bool isDisposed = false;
         private readonly SolidColorBrush[] definedColors = new SolidColorBrush[]
@@ -72,7 +68,6 @@ namespace MindWeaveClient.ViewModel.Game
             new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F"))  // Amarillo
         };
 
-        // ... (Propiedades de PuzzleWidth, PuzzleHeight, BonusNotification, etc. se mantienen igual) ...
         private int puzzleWidth;
         public int PuzzleWidth { get => puzzleWidth; set { puzzleWidth = value; OnPropertyChanged(); } }
         private int puzzleHeight;
@@ -131,7 +126,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             initializePlayerScores();
 
-            // Suscripciones a eventos
             currentMatchService.PuzzleReady += OnPuzzleReady;
             MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
             MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
@@ -140,24 +134,20 @@ namespace MindWeaveClient.ViewModel.Game
             MatchmakingCallbackHandler.PlayerPenaltyHandler += OnServerPlayerPenalty;
             MatchmakingCallbackHandler.GameEndedStatic += OnGameEnded;
 
-            // --- INICIALIZACIÓN DEL TIMER ---
             initializeGameTimer();
-            // -------------------------------
 
             tryLoadExistingPuzzle();
         }
 
         private void ExecuteToggleHelpPopup(object parameter)
         {
-            // Invierte el valor: si es true pasa a false, y viceversa
             IsHelpPopupVisible = !IsHelpPopupVisible;
         }
         private void initializeGameTimer()
         {
-            // Obtenemos la duración desde el "Puente" estático que definiremos en el paso 4
             int duration = MatchmakingCallbackHandler.LastMatchDuration > 0
                            ? MatchmakingCallbackHandler.LastMatchDuration
-                           : 300; // Fallback 5 min
+                           : 300; 
 
             timeRemaining = TimeSpan.FromSeconds(duration);
             updateTimerDisplay();
@@ -177,7 +167,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
             else
             {
-                // Solo paramos visualmente, esperamos el OnGameEnded del servidor
                 visualTimer.Stop();
                 TimeDisplay = "00:00";
             }
@@ -190,7 +179,6 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnGameEnded(MatchEndResultDto result)
         {
-            // Detener timer visual inmediatamente
             visualTimer?.Stop();
 
             Application.Current.Dispatcher.Invoke(() =>
@@ -202,11 +190,8 @@ namespace MindWeaveClient.ViewModel.Game
                     ? "Se acabó el tiempo de la partida."
                     : "El rompecabezas ha sido resuelto.";
 
-                // Mostrar un aviso rápido antes de cambiar de página (opcional)
                 dialogService.showInfo($"{message} Cargando resultados...", title);
 
-                // Navegación limpia usando DI. 
-                // El PostMatchResultsViewModel leerá los datos de MatchmakingCallbackHandler.LastMatchResults
                 navigationService.navigateTo<PostMatchResultsPage>();
             });
         }
