@@ -17,6 +17,7 @@ namespace MindWeaveClient.Services.Implementations
         private string connectedLobbyId;
 
         public event Action<ChatMessageDto> OnMessageReceived;
+        public event Action<string> OnSystemMessageReceived;
 
         public bool isConnected()
         {
@@ -47,6 +48,7 @@ namespace MindWeaveClient.Services.Implementations
                 proxy = new ChatManagerClient(instanceContext);
 
                 callbackHandler.OnMessageReceivedEvent += handleMessageReceived;
+                callbackHandler.OnSystemMessageReceivedEvent += HandleSystemMessageCallback;
 
                 await Task.Run(() => proxy.joinLobbyChat(username, lobbyId));
 
@@ -132,6 +134,11 @@ namespace MindWeaveClient.Services.Implementations
         private void handleMessageReceived(ChatMessageDto message)
         {
             OnMessageReceived?.Invoke(message);
+        }
+
+        private void HandleSystemMessageCallback(string message)
+        {
+            OnSystemMessageReceived?.Invoke(message);
         }
     }
 }

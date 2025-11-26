@@ -787,4 +787,10 @@
   <data name="GameTxtClose" xml:space="preserve">
     <value>Cerrar</value>
   </data>
+  <data name="SystemMessageBlocked" xml:space="preserve">
+    <value>[SISTEMA] Mensaje bloqueado. Strike {0}/3. Cuida tu lenguaje.</value>
+  </data>
+  <data name="SystemHostExpelled" xml:space="preserve">
+    <value>La sala se cerró porque el anfitrión fue expulsado.</value>
+  </data>
 </root>

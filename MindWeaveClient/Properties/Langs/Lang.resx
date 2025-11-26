@@ -786,4 +786,10 @@
   <data name="GameTxtClose" xml:space="preserve">
     <value>Close</value>
   </data>
+  <data name="SystemMessageBlocked" xml:space="preserve">
+    <value>[SYSTEM] Message blocked. Strike {0}/3. Watch your language.</value>
+  </data>
+  <data name="SystemHostExpelled" xml:space="preserve">
+    <value>Lobby closed because the host was expelled.</value>
+  </data>
 </root>

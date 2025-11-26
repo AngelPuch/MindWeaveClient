@@ -119,6 +119,9 @@ namespace MindWeaveClient.ChatManagerService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatManager/receiveLobbyMessage")]
         void receiveLobbyMessage(MindWeaveClient.ChatManagerService.ChatMessageDto messageDto);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChatManager/receiveSystemMessage")]
+        void receiveSystemMessage(string message);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

@@ -52,6 +52,9 @@
   <wsdl:message name="IChatManager_receiveLobbyMessage_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:receiveLobbyMessage" />
   </wsdl:message>
+  <wsdl:message name="IChatManager_receiveSystemMessage_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:receiveSystemMessage" />
+  </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IChatManager">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="joinLobbyChat">
       <wsdl:input wsaw:Action="http://tempuri.org/IChatManager/joinLobbyChat" message="tns:IChatManager_joinLobbyChat_InputMessage" />
@@ -64,6 +67,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="receiveLobbyMessage">
       <wsdl:output wsaw:Action="http://tempuri.org/IChatManager/receiveLobbyMessage" message="tns:IChatManager_receiveLobbyMessage_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="receiveSystemMessage">
+      <wsdl:output wsaw:Action="http://tempuri.org/IChatManager/receiveSystemMessage" message="tns:IChatManager_receiveSystemMessage_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IChatManager" type="tns:IChatManager">
@@ -94,6 +100,12 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="receiveSystemMessage">
+      <soap12:operation soapAction="http://tempuri.org/IChatManager/receiveSystemMessage" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="ChatManagerService">
     <wsdl:port name="NetTcpBinding_IChatManager" binding="tns:NetTcpBinding_IChatManager">
@@ -101,7 +113,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://localhost:8734/MindWeaveServer/Services/ChatManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>LAPTOP\Dell</Upn>
+          <Upn>ALDO\tonyz</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

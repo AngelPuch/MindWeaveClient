@@ -11,7 +11,8 @@ namespace MindWeaveClient.Services.Abstractions
         event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
         event Action<string> OnLobbyCreationFailed;
         event Action<string> OnKicked;
-
+        event Action<string> OnLobbyDestroyed;
+        event Action<string, string> OnAchievementUnlocked;
         Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings);
 
         Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request);

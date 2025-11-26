@@ -1,4 +1,4 @@
-﻿    using MindWeaveClient.MatchmakingService;
+﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks; 
@@ -18,6 +18,10 @@ namespace MindWeaveClient.Services.Implementations
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
         public event Action<string> OnLobbyCreationFailed;
         public event Action<string> OnKicked;
+
+        public event Action<string> OnLobbyDestroyed;
+        public event Action<string, string> OnAchievementUnlocked;
+
 
         public MatchmakingService(IMatchmakingManagerCallback callbackHandler)
         {
@@ -46,6 +50,8 @@ namespace MindWeaveClient.Services.Implementations
                 handler.OnMatchFoundEvent += handleMatchFound; 
                 handler.OnLobbyCreationFailedEvent += handleLobbyCreationFailed;
                 handler.OnKickedEvent += handleKicked;
+                handler.OnLobbyDestroyedEvent += handleLobbyDestroyedCallback;
+                handler.OnAchievementUnlockedEvent += handleAchievementCallback;
             }
         }
 
@@ -130,7 +136,7 @@ namespace MindWeaveClient.Services.Implementations
         {
             await executeOneWaySafeAsync(() => proxy.inviteGuestByEmail(invitationData));
         }
-
+        
         public async Task requestPieceDragAsync(string lobbyCode, int pieceId)
         {
             ensureClientIsCreated(); 
@@ -234,6 +240,16 @@ namespace MindWeaveClient.Services.Implementations
                 proxy = null;
                 throw;
             }
+        }
+
+        private void handleLobbyDestroyedCallback(string reason)
+        {
+            OnLobbyDestroyed?.Invoke(reason);
+        }
+
+        private void handleAchievementCallback(string achievementName, string imagePath)
+        {
+            OnAchievementUnlocked?.Invoke(achievementName, imagePath);
         }
     }
 }

@@ -18,6 +18,8 @@ namespace MindWeaveClient.Services.Callbacks
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFoundEvent;
         public event Action<string> OnLobbyCreationFailedEvent;
         public event Action<string> OnKickedEvent;
+        public event Action<string> OnLobbyDestroyedEvent;
+        public event Action<string, string> OnAchievementUnlockedEvent;
 
         public static event Action<int, string> PieceDragStartedHandler;
         public static event Action<int, double, double, string, int, string> PiecePlacedHandler;
@@ -166,6 +168,15 @@ namespace MindWeaveClient.Services.Callbacks
 
             LastMatchResults = result;
             GameEndedStatic?.Invoke(result);
+        }
+
+        public void lobbyDestroyed(string reason)
+        {
+            OnLobbyDestroyedEvent?.Invoke(reason);
+        }
+        public void achievementUnlocked(string achievementName, string imagePath)
+        {
+            OnAchievementUnlockedEvent?.Invoke(achievementName, imagePath);
         }
     }
 }

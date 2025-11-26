@@ -10,6 +10,8 @@ namespace MindWeaveClient.Services.Abstractions
 
         bool isConnected();
 
+        event Action<string> OnSystemMessageReceived;
+
         Task connectAsync(string username, string lobbyId);
 
         Task disconnectAsync();

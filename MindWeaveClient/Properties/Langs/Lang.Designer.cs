@@ -1789,6 +1789,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Lobby closed because the host was expelled..
+        /// </summary>
+        public static string SystemHostExpelled {
+            get {
+                return ResourceManager.GetString("SystemHostExpelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a [SYSTEM] Message blocked. Strike {0}/3. Watch your language..
+        /// </summary>
+        public static string SystemMessageBlocked {
+            get {
+                return ResourceManager.GetString("SystemMessageBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Upload Failed.
         /// </summary>
         public static string UploadFailed {

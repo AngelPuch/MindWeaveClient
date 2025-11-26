@@ -119,6 +119,8 @@ namespace MindWeaveClient.ViewModel.Game
             matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
             matchmakingService.OnKicked += handleKickedOrFailed;
             chatService.OnMessageReceived += onChatMessageReceived;
+            chatService.OnSystemMessageReceived += HandleSystemMessage;
+            matchmakingService.OnLobbyDestroyed += HandleLobbyDestroyed;
         }
 
         private async Task executeRefreshFriendsAsync()
@@ -624,6 +626,49 @@ namespace MindWeaveClient.ViewModel.Game
             isDisposed = true;
         }
 
+        private void HandleSystemMessage(string messageCode)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                string finalMessage = messageCode;
+
+                if (messageCode.StartsWith("WARN_STRIKE:"))
+                {
+                    string strikeCount = messageCode.Split(':')[1];
+
+                    
+                    finalMessage = string.Format(Lang.SystemMessageBlocked, strikeCount);
+                }
+                else if (messageCode == "LOBBY_CLOSED_HOST_BAN")
+                {
+                    finalMessage = Lang.SystemHostExpelled;
+                }
+
+                var sysMsg = new ChatMessageDto
+                {
+                    SenderUsername = "SYSTEM", 
+                    Content = finalMessage,
+                    Timestamp = DateTime.Now
+                };
+
+                
+                ChatMessages.Add(new ChatMessageDisplayViewModel(sysMsg));
+            });
+        }
+
+        private void HandleLobbyDestroyed(string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+               
+                dialogService.showInfo(reason, "Lobby Closed");
+
+                windowNavigationService.closeWindow<GameWindow>();
+                windowNavigationService.openWindow<MainWindow>();
+
+                Dispose();
+            });
+        }
 
         private void handleError(string message, Exception ex)
         {
