@@ -618,5 +618,25 @@
   <ItemGroup>
     <Resource Include="Resources\Audio\error_sound.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\achievements\achievement_1000points1game.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\achievements\achievement_complete10games.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\achievements\achievement_finishLastPlace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\achievements\achievement_host20games.png" />
+    <Resource Include="Resources\Images\achievements\achievement_place1000pieces.png" />
+    <Resource Include="Resources\Images\achievements\achievement_place1piece.png" />
+    <Resource Include="Resources\Images\achievements\achievement_play10hours.png" />
+    <Resource Include="Resources\Images\achievements\achievement_playOwnPuzzle.png" />
+    <Resource Include="Resources\Images\achievements\achievement_win1game.png" />
+    <Resource Include="Resources\Images\achievements\achievement_win50games.png" />
+    <Resource Include="Resources\Images\achievements\achievement_winHardMode.png" />
+    <Resource Include="Resources\Images\achievements\achievement_winUnder5min.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
