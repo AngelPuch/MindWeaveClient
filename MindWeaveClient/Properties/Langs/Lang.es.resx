@@ -763,8 +763,7 @@
     <value>Mind Weave\nDesarrollado por:\nAldo Antonio Campos Gómez\nAngel Jonathan Puch Hernández\n\n© 2025</value>
   </data>
   <data name="CannotAcceptInviteAlreadyInGame" xml:space="preserve">
-    <value>No se puede aceptar una invitación mientras ya se está dentro de una partida.
-</value>
+    <value>No se puede aceptar una invitación mientras ya se está dentro de una partida.</value>
   </data>
   <data name="ErrorImageTooLarge" xml:space="preserve">
     <value>La imagen es demasiado grande. El tamaño máximo es {0}MB.</value>
@@ -792,5 +791,44 @@
   </data>
   <data name="SystemHostExpelled" xml:space="preserve">
     <value>La sala se cerró porque el anfitrión fue expulsado.</value>
+  </data>
+  <data name="AchievementUnlockedTitle" xml:space="preserve">
+    <value>¡LOGRO DESBLOQUEADO!</value>
+  </data>
+  <data name="AchievementNoviceWeaver" xml:space="preserve">
+    <value>Tejedor Novato</value>
+  </data>
+  <data name="AchievementPuzzleMaster" xml:space="preserve">
+    <value>Maestro de los Puzzles</value>
+  </data>
+  <data name="AchievementPieceCollector" xml:space="preserve">
+    <value>Coleccionista de Piezas</value>
+  </data>
+  <data name="AchievementTimeWarp" xml:space="preserve">
+    <value>Salto en el Tiempo</value>
+  </data>
+  <data name="AchievementFirstVictory" xml:space="preserve">
+    <value>Primera Victoria</value>
+  </data>
+  <data name="AchievementHighScorer" xml:space="preserve">
+    <value>Puntuación Alta</value>
+  </data>
+  <data name="AchievementSpeedDemon" xml:space="preserve">
+    <value>Demonio de la Velocidad</value>
+  </data>
+  <data name="AchievementHardcoreGamer" xml:space="preserve">
+    <value>Jugador Intenso</value>
+  </data>
+  <data name="AchievementHostWithTheMost" xml:space="preserve">
+    <value>El Anfitrión</value>
+  </data>
+  <data name="AchievementSubjectZero" xml:space="preserve">
+    <value>Sujeto Cero</value>
+  </data>
+  <data name="AchievementParticipationAward" xml:space="preserve">
+    <value>Premio de Participación</value>
+  </data>
+  <data name="AchievementJustBeginning" xml:space="preserve">
+    <value>Apenas el Comienzo</value>
   </data>
 </root>

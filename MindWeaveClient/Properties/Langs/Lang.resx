@@ -792,4 +792,43 @@
   <data name="SystemHostExpelled" xml:space="preserve">
     <value>Lobby closed because the host was expelled.</value>
   </data>
+  <data name="AchievementUnlockedTitle" xml:space="preserve">
+    <value>ACHIEVEMENT UNLOCKED!</value>
+  </data>
+  <data name="AchievementNoviceWeaver" xml:space="preserve">
+    <value>Novice Weaver</value>
+  </data>
+  <data name="AchievementPuzzleMaster" xml:space="preserve">
+    <value>Puzzle Master</value>
+  </data>
+  <data name="AchievementPieceCollector" xml:space="preserve">
+    <value>Piece Collector</value>
+  </data>
+  <data name="AchievementTimeWarp" xml:space="preserve">
+    <value>Time Warp</value>
+  </data>
+  <data name="AchievementFirstVictory" xml:space="preserve">
+    <value>First Victory</value>
+  </data>
+  <data name="AchievementHighScorer" xml:space="preserve">
+    <value>High Scorer</value>
+  </data>
+  <data name="AchievementSpeedDemon" xml:space="preserve">
+    <value>Speed Demon</value>
+  </data>
+  <data name="AchievementHardcoreGamer" xml:space="preserve">
+    <value>Hardcore Gamer</value>
+  </data>
+  <data name="AchievementHostWithTheMost" xml:space="preserve">
+    <value>Host with the Most</value>
+  </data>
+  <data name="AchievementSubjectZero" xml:space="preserve">
+    <value>Subject Zero</value>
+  </data>
+  <data name="AchievementParticipationAward" xml:space="preserve">
+    <value>Participation Award</value>
+  </data>
+  <data name="AchievementJustBeginning" xml:space="preserve">
+    <value>Just Beginning</value>
+  </data>
 </root>

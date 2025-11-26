@@ -178,5 +178,12 @@ namespace MindWeaveClient.Services.Callbacks
         {
             OnAchievementUnlockedEvent?.Invoke(achievementName, imagePath);
         }
+
+        public void OnAchievementUnlocked(string achievementName, string errorMessage) 
+        {
+            System.Diagnostics.Debug.WriteLine($"[Client Callback] Logro recibido: {achievementName}");
+
+            
+        }
     }
 }

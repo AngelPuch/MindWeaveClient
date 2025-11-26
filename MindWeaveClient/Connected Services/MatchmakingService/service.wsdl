@@ -131,6 +131,9 @@
   <wsdl:message name="IMatchmakingManager_lobbyDestroyed_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:lobbyDestroyed" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_OnAchievementUnlocked_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnAchievementUnlocked" />
+  </wsdl:message>
   <wsdl:portType name="IMatchmakingManager">
     <wsdl:operation name="createLobby">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobby" message="tns:IMatchmakingManager_createLobby_InputMessage" />
@@ -210,6 +213,9 @@
     </wsdl:operation>
     <wsdl:operation name="lobbyDestroyed">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/lobbyDestroyed" message="tns:IMatchmakingManager_lobbyDestroyed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnAchievementUnlocked">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked" message="tns:IMatchmakingManager_OnAchievementUnlocked_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
@@ -374,6 +380,12 @@
     </wsdl:operation>
     <wsdl:operation name="lobbyDestroyed">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/lobbyDestroyed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnAchievementUnlocked">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

@@ -228,4 +228,12 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="OnAchievementUnlocked">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="achievementKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="imageName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

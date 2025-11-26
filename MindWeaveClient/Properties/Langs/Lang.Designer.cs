@@ -61,6 +61,123 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a First Victory.
+        /// </summary>
+        public static string AchievementFirstVictory {
+            get {
+                return ResourceManager.GetString("AchievementFirstVictory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Hardcore Gamer.
+        /// </summary>
+        public static string AchievementHardcoreGamer {
+            get {
+                return ResourceManager.GetString("AchievementHardcoreGamer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a High Scorer.
+        /// </summary>
+        public static string AchievementHighScorer {
+            get {
+                return ResourceManager.GetString("AchievementHighScorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Host with the Most.
+        /// </summary>
+        public static string AchievementHostWithTheMost {
+            get {
+                return ResourceManager.GetString("AchievementHostWithTheMost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Just Beginning.
+        /// </summary>
+        public static string AchievementJustBeginning {
+            get {
+                return ResourceManager.GetString("AchievementJustBeginning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Novice Weaver.
+        /// </summary>
+        public static string AchievementNoviceWeaver {
+            get {
+                return ResourceManager.GetString("AchievementNoviceWeaver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Participation Award.
+        /// </summary>
+        public static string AchievementParticipationAward {
+            get {
+                return ResourceManager.GetString("AchievementParticipationAward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Piece Collector.
+        /// </summary>
+        public static string AchievementPieceCollector {
+            get {
+                return ResourceManager.GetString("AchievementPieceCollector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Puzzle Master.
+        /// </summary>
+        public static string AchievementPuzzleMaster {
+            get {
+                return ResourceManager.GetString("AchievementPuzzleMaster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Speed Demon.
+        /// </summary>
+        public static string AchievementSpeedDemon {
+            get {
+                return ResourceManager.GetString("AchievementSpeedDemon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Subject Zero.
+        /// </summary>
+        public static string AchievementSubjectZero {
+            get {
+                return ResourceManager.GetString("AchievementSubjectZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Time Warp.
+        /// </summary>
+        public static string AchievementTimeWarp {
+            get {
+                return ResourceManager.GetString("AchievementTimeWarp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ACHIEVEMENT UNLOCKED!.
+        /// </summary>
+        public static string AchievementUnlockedTitle {
+            get {
+                return ResourceManager.GetString("AchievementUnlockedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Cannot accept invitation while already in a game..
         /// </summary>
         public static string CannotAcceptInviteAlreadyInGame {

@@ -1086,6 +1086,9 @@ namespace MindWeaveClient.MatchmakingService {
         private int ScoreField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int[] UnlockedAchievementIdsField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -1159,6 +1162,19 @@ namespace MindWeaveClient.MatchmakingService {
                 if ((this.ScoreField.Equals(value) != true)) {
                     this.ScoreField = value;
                     this.RaisePropertyChanged("Score");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int[] UnlockedAchievementIds {
+            get {
+                return this.UnlockedAchievementIdsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UnlockedAchievementIdsField, value) != true)) {
+                    this.UnlockedAchievementIdsField = value;
+                    this.RaisePropertyChanged("UnlockedAchievementIds");
                 }
             }
         }
@@ -1311,6 +1327,9 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/lobbyDestroyed")]
         void lobbyDestroyed(string reason);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked")]
+        void OnAchievementUnlocked(string achievementKey, string imageName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
