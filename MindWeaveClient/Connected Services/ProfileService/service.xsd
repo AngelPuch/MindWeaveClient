@@ -77,4 +77,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetPlayerAchievements">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="playerId" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPlayerAchievementsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" minOccurs="0" name="GetPlayerAchievementsResult" nillable="true" type="q7:ArrayOfAchievementDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

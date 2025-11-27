@@ -29,6 +29,7 @@ namespace MindWeaveClient.ViewModel.Main
         private string totalPlaytime;
         private int highestScore;
         private ObservableCollection<AchievementDto> achievements;
+        public ObservableCollection<AchievementDto> AchievementsList { get; set; }
 
         public string WelcomeMessage { get => welcomeMessage; set { welcomeMessage = value; OnPropertyChanged(); } }
         public string Username { get => username; set { username = value; OnPropertyChanged(); } }
@@ -51,6 +52,7 @@ namespace MindWeaveClient.ViewModel.Main
             IDialogService dialogService,
             INavigationService navigationService)
         {
+            AchievementsList = new ObservableCollection<AchievementDto>();
             this.profileService = profileService;
             this.dialogService = dialogService;
             var navigationService1 = navigationService;
@@ -66,6 +68,7 @@ namespace MindWeaveClient.ViewModel.Main
             Achievements = new ObservableCollection<AchievementDto>();
 
             _ = loadProfileDataAsync();
+            LoadAchievements();
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
@@ -142,6 +145,63 @@ namespace MindWeaveClient.ViewModel.Main
         {
             string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
             dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
+        }
+
+
+        private async void LoadAchievements()
+        {
+            if (SessionService.PlayerId <= 0)
+            {
+                return;
+            }
+
+            int currentPlayerId = SessionService.PlayerId;
+            ProfileManagerClient client = new ProfileManagerClient();
+
+            try
+            {
+                var achievements = await client.GetPlayerAchievementsAsync(currentPlayerId);
+
+                AchievementsList.Clear();
+                foreach (var achievement in achievements)
+                {
+
+                    string fileName = System.IO.Path.GetFileName(achievement.IconPath);
+                    achievement.IconPath = $"pack://application:,,,/MindWeaveClient;component/Resources/Images/achievements/{fileName}";
+                    AchievementsList.Add(achievement);
+                }
+            }
+            catch (FaultException<ServiceFaultDto> faultEx)
+            {
+                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                handleError(Lang.ErrorMsgServerOffline, ex);
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorFailedToLoadProfile, ex);
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                try
+                {
+                    if (client.State == CommunicationState.Opened)
+                        client.Close();
+                    else
+                        client.Abort();
+                }
+                catch
+                {
+                    client.Abort();
+                }
+            }
         }
     }
 }

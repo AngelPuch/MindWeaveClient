@@ -87,6 +87,12 @@
   <wsdl:message name="IProfileManager_changePassword_ServiceFaultDtoFault_FaultMessage">
     <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q5:ServiceFaultDto" />
   </wsdl:message>
+  <wsdl:message name="IProfileManager_GetPlayerAchievements_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerAchievements" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_GetPlayerAchievements_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerAchievementsResponse" />
+  </wsdl:message>
   <wsdl:portType name="IProfileManager">
     <wsdl:operation name="getPlayerProfileView">
       <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileView" message="tns:IProfileManager_getPlayerProfileView_InputMessage" />
@@ -112,6 +118,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/changePassword" message="tns:IProfileManager_changePassword_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/changePasswordResponse" message="tns:IProfileManager_changePassword_OutputMessage" />
       <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/changePasswordServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_changePassword_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerAchievements">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/GetPlayerAchievements" message="tns:IProfileManager_GetPlayerAchievements_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/GetPlayerAchievementsResponse" message="tns:IProfileManager_GetPlayerAchievements_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IProfileManager" type="tns:IProfileManager">
@@ -177,6 +187,15 @@
       <wsdl:fault name="ServiceFaultDtoFault">
         <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
       </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerAchievements">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/GetPlayerAchievements" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="ProfileManagerService">

@@ -282,6 +282,12 @@ namespace MindWeaveClient.ProfileService {
         private string IconPathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsUnlockedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -316,6 +322,32 @@ namespace MindWeaveClient.ProfileService {
                 if ((object.ReferenceEquals(this.IconPathField, value) != true)) {
                     this.IconPathField = value;
                     this.RaisePropertyChanged("IconPath");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsUnlocked {
+            get {
+                return this.IsUnlockedField;
+            }
+            set {
+                if ((this.IsUnlockedField.Equals(value) != true)) {
+                    this.IsUnlockedField = value;
+                    this.RaisePropertyChanged("IsUnlocked");
                 }
             }
         }
@@ -737,6 +769,12 @@ namespace MindWeaveClient.ProfileService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/GetPlayerAchievements", ReplyAction="http://tempuri.org/IProfileManager/GetPlayerAchievementsResponse")]
+        MindWeaveClient.ProfileService.AchievementDto[] GetPlayerAchievements(int playerId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/GetPlayerAchievements", ReplyAction="http://tempuri.org/IProfileManager/GetPlayerAchievementsResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.AchievementDto[]> GetPlayerAchievementsAsync(int playerId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -804,6 +842,14 @@ namespace MindWeaveClient.ProfileService {
         
         public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword) {
             return base.Channel.changePasswordAsync(username, currentPassword, newPassword);
+        }
+        
+        public MindWeaveClient.ProfileService.AchievementDto[] GetPlayerAchievements(int playerId) {
+            return base.Channel.GetPlayerAchievements(playerId);
+        }
+        
+        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.AchievementDto[]> GetPlayerAchievementsAsync(int playerId) {
+            return base.Channel.GetPlayerAchievementsAsync(playerId);
         }
     }
 }
