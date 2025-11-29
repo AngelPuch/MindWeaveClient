@@ -20,5 +20,6 @@ namespace MindWeaveClient.Services.Abstractions
         void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle);
         void setMatchId(string matchId); 
         string getMatchId();
+        void clearMatchData();
     }
 }

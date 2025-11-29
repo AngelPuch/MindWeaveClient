@@ -1,11 +1,13 @@
-﻿using MindWeaveClient.Services;
-using MindWeaveClient.Utilities.Abstractions;
+﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
+using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.View.Main;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -22,9 +24,31 @@ namespace MindWeaveClient.ViewModel.Game
     public class PostMatchResultsViewModel : BaseViewModel
     {
         private readonly INavigationService navigationService;
+        private readonly ICurrentMatchService currentMatchService;
+
         private ResultDisplayItem winner;
         private ObservableCollection<ResultDisplayItem> allParticipants;
 
+        private string resultTitle;
+        public string ResultTitle
+        {
+            get => resultTitle;
+            set { resultTitle = value; OnPropertyChanged(); }
+        }
+
+        private Visibility winnerSectionVisibility;
+        public Visibility WinnerSectionVisibility
+        {
+            get => winnerSectionVisibility;
+            set { winnerSectionVisibility = value; OnPropertyChanged(); }
+        }
+
+        private Visibility drawSectionVisibility;
+        public Visibility DrawSectionVisibility
+        {
+            get => drawSectionVisibility;
+            set { drawSectionVisibility = value; OnPropertyChanged(); }
+        }
 
         public ResultDisplayItem Winner
         {
@@ -39,9 +63,13 @@ namespace MindWeaveClient.ViewModel.Game
         }
         public ICommand GoToMainMenuCommand { get; }
 
-        public PostMatchResultsViewModel(INavigationService navigationService)
+        public PostMatchResultsViewModel(
+            INavigationService navigationService,
+            ICurrentMatchService currentMatchService)
         {
             this.navigationService = navigationService;
+            this.currentMatchService = currentMatchService;
+
             allParticipants = new ObservableCollection<ResultDisplayItem>();
 
             GoToMainMenuCommand = new RelayCommand(executeGoToMainMenu);
@@ -59,6 +87,7 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 AllParticipants.Clear();
+                Winner = null;
 
                 foreach (var playerDto in results.PlayerResults.OrderBy(p => p.Rank))
                 {
@@ -67,7 +96,7 @@ namespace MindWeaveClient.ViewModel.Game
                     {
                         avatar = SessionService.AvatarPath ?? avatar;
                     }
-                    
+
                     var displayItem = new ResultDisplayItem
                     {
                         FinalRank = playerDto.Rank,
@@ -86,15 +115,24 @@ namespace MindWeaveClient.ViewModel.Game
                     }
                 }
 
-                if (Winner == null && AllParticipants.Count > 0)
+                if (Winner != null)
                 {
-                    Winner = AllParticipants[0];
+                    ResultTitle = Lang.PostMatchLbWinner;
+                    WinnerSectionVisibility = Visibility.Visible;
+                    DrawSectionVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    ResultTitle = "¡EMPATE!";
+                    WinnerSectionVisibility = Visibility.Collapsed;
+                    DrawSectionVisibility = Visibility.Visible;
                 }
             });
         }
 
         private void executeGoToMainMenu(object obj)
         {
+            currentMatchService.clearMatchData();
             navigationService.navigateTo<MainMenuPage>();
         }
     }

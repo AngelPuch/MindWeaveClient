@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using MindWeaveClient.ViewModel.Game;
 using MindWeaveClient.ViewModel.Puzzle;
 
@@ -31,7 +32,24 @@ namespace MindWeaveClient.View.Game
             InitializeComponent();
             this.DataContext = viewModel;
             this.gameViewModel = viewModel;
+
+            if (this.gameViewModel != null)
+            {
+                this.gameViewModel.ForceReleaseLocalDrag += OnForceReleaseLocalDrag;
+            }
+
             this.Unloaded += gamePageUnloaded;
+        }
+
+        private void OnForceReleaseLocalDrag()
+        {
+            if (isLocalDragging)
+            {
+                isLocalDragging = false;
+                draggedGroup = null;
+
+                Mouse.Capture(null);
+            }
         }
 
         private async void Piece_MouseMove(object sender, MouseEventArgs e)
@@ -47,19 +65,86 @@ namespace MindWeaveClient.View.Game
             {
                 Point currentPoint = e.GetPosition(this.PuzzleItemsControl);
 
+                GeneralTransform transform = this.TransformToDescendant(this.PuzzleItemsControl);
+                Rect validBounds;
+
+                if (transform != null)
+                {
+                    validBounds = transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+                }
+                else
+                {
+                    validBounds = new Rect(0, 0, this.PuzzleItemsControl.ActualWidth, this.PuzzleItemsControl.ActualHeight);
+                }
+
+                var proposedPositions = new List<(PuzzlePieceViewModel piece, double x, double y)>();
+
+
                 foreach (var piece in this.draggedGroup)
                 {
-                    piece.X = currentPoint.X + piece.DragOffsetX;
-                    piece.Y = currentPoint.Y + piece.DragOffsetY;
+                    double px = currentPoint.X + piece.DragOffsetX;
+                    double py = currentPoint.Y + piece.DragOffsetY;
+                    proposedPositions.Add((piece, px, py));
                 }
+
+                double requiredShiftRight = 0;
+                double requiredShiftLeft = 0;
+                double requiredShiftDown = 0;
+                double requiredShiftUp = 0;
+
+                foreach (var item in proposedPositions)
+                {
+                    if (item.x < validBounds.Left)
+                    {
+                        double violation = validBounds.Left - item.x;
+                        if (violation > requiredShiftRight) requiredShiftRight = violation;
+                    }
+
+                    if (item.y < validBounds.Top)
+                    {
+                        double violation = validBounds.Top - item.y;
+                        if (violation > requiredShiftDown) requiredShiftDown = violation;
+                    }
+
+                    double pieceRight = item.x + item.piece.Width;
+                    if (pieceRight > validBounds.Right)
+                    {
+                        double violation = pieceRight - validBounds.Right;
+                        if (violation > requiredShiftLeft) requiredShiftLeft = violation;
+                    }
+
+                    double pieceBottom = item.y + item.piece.Height;
+                    if (pieceBottom > validBounds.Bottom)
+                    {
+                        double violation = pieceBottom - validBounds.Bottom;
+                        if (violation > requiredShiftUp) requiredShiftUp = violation;
+                    }
+                }
+
+                double finalOffsetX = 0;
+                if (requiredShiftRight > 0) finalOffsetX = requiredShiftRight;
+                else if (requiredShiftLeft > 0) finalOffsetX = -requiredShiftLeft;
+
+                double finalOffsetY = 0;
+                if (requiredShiftDown > 0) finalOffsetY = requiredShiftDown;
+                else if (requiredShiftUp > 0) finalOffsetY = -requiredShiftUp;
+
+                foreach (var item in proposedPositions)
+                {
+                    item.piece.X = item.x + finalOffsetX;
+                    item.piece.Y = item.y + finalOffsetY;
+                }
+
 
                 if ((now - lastMoveUpdateTime).TotalMilliseconds > MOVE_UPDATE_INTERVAL_MS)
                 {
                     lastMoveUpdateTime = now;
                     if (this.draggedGroup.Count > 0)
                     {
-                        var leaderPiece = this.draggedGroup[0];
-                        _ = gameViewModel?.movePiece(leaderPiece, leaderPiece.X, leaderPiece.Y);
+                        foreach (var piece in this.draggedGroup)
+                        {
+                            _ = gameViewModel?.movePiece(piece, piece.X, piece.Y);
+                        }
                     }
                 }
 
@@ -279,6 +364,11 @@ namespace MindWeaveClient.View.Game
 
         private void gamePageUnloaded(object sender, RoutedEventArgs e)
         {
+            if (this.gameViewModel != null)
+            {
+                this.gameViewModel.ForceReleaseLocalDrag -= OnForceReleaseLocalDrag;
+            }
+
             if (this.DataContext is IDisposable disposable)
             {
                 disposable.Dispose();

@@ -238,6 +238,9 @@ namespace MindWeaveClient.PuzzleManagerService {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PlayerBanned = 10,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        ValidationError = 11,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

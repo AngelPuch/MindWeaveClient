@@ -39,6 +39,9 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
 
+        private const double REMOTE_SNAP_THRESHOLD = 20.0;
+        public event Action ForceReleaseLocalDrag;
+
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
@@ -46,6 +49,7 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly Dictionary<string, SolidColorBrush> playerColorsMap;
 
         private DispatcherTimer visualTimer;
+        private DateTime matchEndTime;
         private TimeSpan timeRemaining;
         private string timeDisplay;
 
@@ -60,12 +64,11 @@ namespace MindWeaveClient.ViewModel.Game
         }
 
         private bool isDisposed = false;
-        private readonly SolidColorBrush[] definedColors = new SolidColorBrush[]
-        {
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3498DB")), // Azul
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C")), // Rojo
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2ECC71")), // Verde
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F"))  // Amarillo
+        private readonly SolidColorBrush[] definedColors = {
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3498DB")),
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C")),
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2ECC71")),
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F"))
         };
 
         private int puzzleWidth;
@@ -122,7 +125,7 @@ namespace MindWeaveClient.ViewModel.Game
             PuzzleSlots = new ObservableCollection<PuzzleSlotViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
             playerColorsMap = new Dictionary<string, SolidColorBrush>();
-            ToggleHelpPopupCommand = new RelayCommand(ExecuteToggleHelpPopup);
+            ToggleHelpPopupCommand = new RelayCommand(executeToggleHelpPopup);
 
             initializePlayerScores();
 
@@ -139,7 +142,7 @@ namespace MindWeaveClient.ViewModel.Game
             tryLoadExistingPuzzle();
         }
 
-        private void ExecuteToggleHelpPopup(object parameter)
+        private void executeToggleHelpPopup(object parameter)
         {
             IsHelpPopupVisible = !IsHelpPopupVisible;
         }
@@ -147,34 +150,43 @@ namespace MindWeaveClient.ViewModel.Game
         {
             int duration = MatchmakingCallbackHandler.LastMatchDuration > 0
                            ? MatchmakingCallbackHandler.LastMatchDuration
-                           : 300; 
+                           : 300;
 
-            timeRemaining = TimeSpan.FromSeconds(duration);
-            updateTimerDisplay();
+            matchEndTime = DateTime.UtcNow.AddSeconds(duration); 
+            updateRemainingTime();
 
             visualTimer = new DispatcherTimer();
-            visualTimer.Interval = TimeSpan.FromSeconds(1);
+            visualTimer.Interval = TimeSpan.FromSeconds(0.5);
             visualTimer.Tick += localTimerTick;
             visualTimer.Start();
         }
 
         private void localTimerTick(object sender, EventArgs e)
         {
-            if (timeRemaining.TotalSeconds > 0)
+            updateRemainingTime();
+        }
+
+        private void updateRemainingTime()
+        {
+            var now = DateTime.UtcNow;
+            var remaining = matchEndTime - now;
+
+            if (remaining.TotalSeconds > 0)
             {
-                timeRemaining = timeRemaining.Add(TimeSpan.FromSeconds(-1));
+                timeRemaining = remaining;
                 updateTimerDisplay();
             }
             else
             {
-                visualTimer.Stop();
+                timeRemaining = TimeSpan.Zero;
+                visualTimer?.Stop();
                 TimeDisplay = "00:00";
             }
         }
 
         private void updateTimerDisplay()
         {
-            TimeDisplay = timeRemaining.ToString(@"mm\:ss");
+            TimeDisplay = timeRemaining.Add(TimeSpan.FromSeconds(0.9)).ToString(@"mm\:ss");
         }
 
         private void OnGameEnded(MatchEndResultDto result)
@@ -357,21 +369,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        public async Task releasePiece(PuzzlePieceViewModel piece)
-        {
-            if (piece == null || piece.IsHeldByOther) return;
-            try
-            {
-                await matchmakingService.requestPieceReleaseAsync(currentMatchService.LobbyId, piece.PieceId);
-            }
-            catch (Exception ex)
-            {
-                dialogService.showError($"Error al liberar pieza: {ex.Message}", "Error");
-
-            }
-        }
-
-
         private void OnServerPieceDragStarted(int pieceId, string username)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -384,7 +381,7 @@ namespace MindWeaveClient.ViewModel.Game
                 if (amIDragging)
                 {
                     piece.IsHeldByOther = false;
-                    piece.BorderColor = Brushes.Transparent; // Sin borde para mí
+                    piece.BorderColor = Brushes.Transparent;
                 }
                 else
                 {
@@ -436,9 +433,79 @@ namespace MindWeaveClient.ViewModel.Game
                 piece.IsHeldByOther = false;
                 piece.BorderColor = Brushes.Transparent;
                 piece.ZIndex = 1;
+                AttemptRemoteMerge(piece);
+                if (username == SessionService.Username)
+                {
+                    ForceReleaseLocalDrag?.Invoke();
+                }
             });
         }
 
+        private void AttemptRemoteMerge(PuzzlePieceViewModel piece)
+        {
+            if (piece == null || piece.IsPlaced) return;
+
+            foreach (var potentialNeighbor in PiecesCollection)
+            {
+                if (potentialNeighbor == piece || potentialNeighbor.IsPlaced || potentialNeighbor.PieceGroup == piece.PieceGroup)
+                    continue;
+
+                bool isNeighbor = false;
+                Point expectedPos = new Point();
+
+                if (piece.RightNeighborId == potentialNeighbor.PieceId)
+                {
+                    isNeighbor = true;
+                    expectedPos = new Point(piece.X + piece.Width, piece.Y);
+                }
+                else if (piece.LeftNeighborId == potentialNeighbor.PieceId)
+                {
+                    isNeighbor = true;
+                    expectedPos = new Point(piece.X - potentialNeighbor.Width, piece.Y);
+                }
+                else if (piece.BottomNeighborId == potentialNeighbor.PieceId)
+                {
+                    isNeighbor = true;
+                    expectedPos = new Point(piece.X, piece.Y + piece.Height);
+                }
+                else if (piece.TopNeighborId == potentialNeighbor.PieceId)
+                {
+                    isNeighbor = true;
+                    expectedPos = new Point(piece.X, piece.Y - potentialNeighbor.Height);
+                }
+
+                if (isNeighbor)
+                {
+                    double distSquared = (Math.Pow(potentialNeighbor.X - expectedPos.X, 2) + Math.Pow(potentialNeighbor.Y - expectedPos.Y, 2));
+
+                    if (distSquared < (REMOTE_SNAP_THRESHOLD * REMOTE_SNAP_THRESHOLD))
+                    {
+                        potentialNeighbor.X = expectedPos.X;
+                        potentialNeighbor.Y = expectedPos.Y;
+
+                        MergeGroups(piece, potentialNeighbor);
+                    }
+                }
+            }
+        }
+
+        private void MergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
+        {
+            var group1 = p1.PieceGroup;
+            var group2 = p2.PieceGroup;
+
+            if (group1 == group2) return;
+
+            foreach (var p in group2)
+            {
+                if (!group1.Contains(p))
+                {
+                    group1.Add(p);
+                    p.PieceGroup = group1;
+                }
+            }
+            group2.Clear();
+        }
 
         private void OnServerPiecePlaced(int pieceId, double correctX, double correctY, string scoringUsername, int newScore, string bonusType)
         {
