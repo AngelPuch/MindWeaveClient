@@ -17,6 +17,7 @@ namespace MindWeaveClient.Services.Callbacks
         public event Action<LobbyStateDto> OnLobbyStateUpdatedEvent;
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFoundEvent;
         public event Action<string> OnLobbyCreationFailedEvent;
+        public event Action<string> OnLobbyActionFailedEvent;
         public event Action<string> OnKickedEvent;
         public event Action<string> OnLobbyDestroyedEvent;
         public event Action<string, string> OnAchievementUnlockedEvent;
@@ -58,6 +59,16 @@ namespace MindWeaveClient.Services.Callbacks
             App.Current.Dispatcher.Invoke(() =>
             {
                 dialogService.showError(reason, Properties.Langs.Lang.ErrorTitle);
+            });
+        }
+
+        public void notifyLobbyActionFailed(string message)
+        {
+            OnLobbyActionFailedEvent?.Invoke(message);
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                dialogService.showWarning(message, Properties.Langs.Lang.WarningTitle);
             });
         }
 

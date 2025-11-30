@@ -151,6 +151,13 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="notifyLobbyActionFailed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="kickedFromLobby">
     <xs:complexType>
       <xs:sequence>

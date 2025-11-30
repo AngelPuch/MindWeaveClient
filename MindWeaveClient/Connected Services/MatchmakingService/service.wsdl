@@ -104,6 +104,9 @@
   <wsdl:message name="IMatchmakingManager_lobbyCreationFailed_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:lobbyCreationFailed" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_notifyLobbyActionFailed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:notifyLobbyActionFailed" />
+  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_kickedFromLobby_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:kickedFromLobby" />
   </wsdl:message>
@@ -186,6 +189,9 @@
     </wsdl:operation>
     <wsdl:operation name="lobbyCreationFailed">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/lobbyCreationFailed" message="tns:IMatchmakingManager_lobbyCreationFailed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="notifyLobbyActionFailed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/notifyLobbyActionFailed" message="tns:IMatchmakingManager_notifyLobbyActionFailed_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation name="kickedFromLobby">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/kickedFromLobby" message="tns:IMatchmakingManager_kickedFromLobby_OutputCallbackMessage" />
@@ -326,6 +332,12 @@
     </wsdl:operation>
     <wsdl:operation name="lobbyCreationFailed">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/lobbyCreationFailed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="notifyLobbyActionFailed">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/notifyLobbyActionFailed" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

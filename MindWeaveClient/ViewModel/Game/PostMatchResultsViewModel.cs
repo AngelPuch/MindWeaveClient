@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -23,7 +24,7 @@ namespace MindWeaveClient.ViewModel.Game
 
     public class PostMatchResultsViewModel : BaseViewModel
     {
-        private readonly INavigationService navigationService;
+        private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentMatchService currentMatchService;
 
         private ResultDisplayItem winner;
@@ -64,10 +65,10 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand GoToMainMenuCommand { get; }
 
         public PostMatchResultsViewModel(
-            INavigationService navigationService,
+            IWindowNavigationService windowNavigationService,
             ICurrentMatchService currentMatchService)
         {
-            this.navigationService = navigationService;
+            this.windowNavigationService = windowNavigationService;
             this.currentMatchService = currentMatchService;
 
             allParticipants = new ObservableCollection<ResultDisplayItem>();
@@ -133,7 +134,8 @@ namespace MindWeaveClient.ViewModel.Game
         private void executeGoToMainMenu(object obj)
         {
             currentMatchService.clearMatchData();
-            navigationService.navigateTo<MainMenuPage>();
+            windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
         }
     }
 }

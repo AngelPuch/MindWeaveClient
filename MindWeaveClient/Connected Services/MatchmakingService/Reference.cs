@@ -1304,6 +1304,9 @@ namespace MindWeaveClient.MatchmakingService {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/lobbyCreationFailed")]
         void lobbyCreationFailed(string reason);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/notifyLobbyActionFailed")]
+        void notifyLobbyActionFailed(string message);
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/kickedFromLobby")]
         void kickedFromLobby(string reason);
         

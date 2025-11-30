@@ -57,9 +57,6 @@ namespace MindWeaveClient.Services.Implementations
             var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
             if (gameWindow != null)
             {
-                dialogService.showWarning(
-                    Lang.CannotAcceptInviteAlreadyInGame,
-                    Lang.WarningTitle);
                 return;
             }
 
