@@ -45,31 +45,16 @@ namespace MindWeaveClient.Services.Callbacks
         public void kickedFromLobby(string reason)
         {
             OnKickedEvent?.Invoke(reason);
-
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                dialogService.showInfo(reason, Properties.Langs.Lang.KickedMessage);
-            });
         }
 
         public void lobbyCreationFailed(string reason)
         {
             OnLobbyCreationFailedEvent?.Invoke(reason);
-
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                dialogService.showError(reason, Properties.Langs.Lang.ErrorTitle);
-            });
         }
 
         public void notifyLobbyActionFailed(string message)
         {
             OnLobbyActionFailedEvent?.Invoke(message);
-
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                dialogService.showWarning(message, Properties.Langs.Lang.WarningTitle);
-            });
         }
 
         public void matchFound(string lobbyCode, string[] players, LobbySettingsDto settings, string puzzleImagePath)
@@ -86,16 +71,9 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void onGameStarted(PuzzleDefinitionDto puzzleDefinition, int matchDurationSeconds)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onGameStarted received with {puzzleDefinition?.Pieces?.Length ?? 0} pieces");
-
             LastMatchDuration = matchDurationSeconds;
 
-            if (puzzleDefinition == null || currentMatchService == null)
-            {
-                System.Diagnostics.Debug.WriteLine("[CALLBACK ERROR] puzzleDefinition or currentMatchService is null");
-
-                return;
-            }
+            if (puzzleDefinition == null || currentMatchService == null) { return; }
 
             var puzzleManagerDto = new MindWeaveClient.PuzzleManagerService.PuzzleDefinitionDto
             {
@@ -123,7 +101,6 @@ namespace MindWeaveClient.Services.Callbacks
             };
 
             currentMatchService?.setPuzzle(puzzleManagerDto);
-            System.Diagnostics.Debug.WriteLine("[CALLBACK] Invoking OnGameStartedNavigation");
 
             OnGameStartedNavigation?.Invoke();
         }

@@ -4,7 +4,6 @@ using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
-using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
@@ -38,7 +37,7 @@ namespace MindWeaveClient.ViewModel.Game
         private bool isChatConnected;
         private string currentChatMessage = string.Empty;
         private bool isCleaningUp;
-        private bool isDisposed = false;
+        private bool isDisposed;
 
         public static bool IsGuestUser => SessionService.IsGuest;
         public ImageSource PuzzleImage { get; private set; }
@@ -115,12 +114,13 @@ namespace MindWeaveClient.ViewModel.Game
         private void subscribeToServiceEvents()
         {
             matchmakingService.OnLobbyStateUpdated += handleLobbyStateUpdated;
-            MatchmakingCallbackHandler.OnGameStartedNavigation += handleGameStarted;
-            matchmakingService.OnLobbyCreationFailed += handleKickedOrFailed;
-            matchmakingService.OnKicked += handleKickedOrFailed;
+            matchmakingService.OnGameStarted += handleGameStarted;
+            matchmakingService.OnLobbyCreationFailed += handleFatalError;
+            matchmakingService.OnKicked += handleKicked;
+            matchmakingService.OnLobbyActionFailed += handleActionFailed;
             chatService.OnMessageReceived += onChatMessageReceived;
-            chatService.OnSystemMessageReceived += HandleSystemMessage;
-            matchmakingService.OnLobbyDestroyed += HandleLobbyDestroyed;
+            chatService.OnSystemMessageReceived += handleSystemMessage;
+            matchmakingService.OnLobbyDestroyed += handleLobbyDestroyed;
         }
 
         private async Task executeRefreshFriendsAsync()
@@ -150,6 +150,15 @@ namespace MindWeaveClient.ViewModel.Game
                 SetBusy(false);
             }
         }
+
+        private void handleActionFailed(string message)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                dialogService.showWarning(message, Lang.WarningTitle);
+            });
+        }
+
         private void handleGameStarted()
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -157,7 +166,45 @@ namespace MindWeaveClient.ViewModel.Game
                 navigationService.navigateTo<GamePage>();
             });
         }
+
+        private void handleFatalError(string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            { 
+                dialogService.showError(reason, Lang.ErrorTitle);
+                _ = forceExitLobby();
+            });
+        }
         
+        private void handleKicked(string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                dialogService.showInfo(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
+
+                _ = forceExitLobby();
+            });
+        }
+
+
+        private async Task forceExitLobby()
+        {
+            try
+            {
+                await disconnectFromChatAsync();
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceWarning($"Error desconectando chat al salir forzosamente: {ex.Message}");
+            }
+
+            Dispose();
+            matchmakingService.disconnect();
+
+            windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
+        }
+
         private void handleLobbyStateUpdated(LobbyStateDto newState)
         {
             Application.Current.Dispatcher.Invoke(async () =>
@@ -244,30 +291,6 @@ namespace MindWeaveClient.ViewModel.Game
                 Trace.TraceError("Failed to convert byte array to ImageSource: " + ex.Message);
                 return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative)); // Fallback
             }
-        }
-
-        private void handleKickedOrFailed(string reason)
-        {
-            Application.Current.Dispatcher.Invoke(async () =>
-            {
-                dialogService.showError(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
-
-                try
-                {
-                    await disconnectFromChatAsync();
-                }
-                catch (Exception ex)
-                {
-                    Trace.TraceWarning($"Error desconectando chat al ser expulsado: {ex.Message}");
-                }
-
-                Dispose();
-                matchmakingService.disconnect();
-
-                windowNavigationService.openWindow<MainWindow>();
-                windowNavigationService.closeWindow<GameWindow>();
-
-            });
         }
 
         private void onChatMessageReceived(ChatMessageDto messageDto)
@@ -445,9 +468,6 @@ namespace MindWeaveClient.ViewModel.Game
             try
             {
                 await matchmakingService.inviteToLobbyAsync(SessionService.Username, friendToInvite.Username, LobbyCode);
-                dialogService.showInfo(
-                    string.Format(Lang.InviteSentBody, friendToInvite.Username),
-                    Lang.InviteSentTitle);
             }
             catch (EndpointNotFoundException ex)
             {
@@ -601,17 +621,19 @@ namespace MindWeaveClient.ViewModel.Game
                 }
             }
             matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-            matchmakingService.OnLobbyCreationFailed -= handleKickedOrFailed;
-            matchmakingService.OnKicked -= handleKickedOrFailed;
+            matchmakingService.OnLobbyCreationFailed -= handleFatalError;
+            matchmakingService.OnKicked -= handleKicked;
+            matchmakingService.OnGameStarted -= handleGameStarted;
+
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void dispose(bool disposing)
         {
             if (isDisposed) return;
 
@@ -626,7 +648,7 @@ namespace MindWeaveClient.ViewModel.Game
             isDisposed = true;
         }
 
-        private void HandleSystemMessage(string messageCode)
+        private void handleSystemMessage(string messageCode)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -656,7 +678,7 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        private void HandleLobbyDestroyed(string reason)
+        private void handleLobbyDestroyed(string reason)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

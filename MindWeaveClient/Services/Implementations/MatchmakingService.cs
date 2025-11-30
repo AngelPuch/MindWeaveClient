@@ -18,6 +18,8 @@ namespace MindWeaveClient.Services.Implementations
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
         public event Action<string> OnLobbyCreationFailed;
         public event Action<string> OnKicked;
+        public event Action<string> OnLobbyActionFailed;
+        public event Action OnGameStarted;
 
         public event Action<string> OnLobbyDestroyed;
         public event Action<string, string> OnAchievementUnlocked;
@@ -49,6 +51,7 @@ namespace MindWeaveClient.Services.Implementations
                 handler.OnLobbyStateUpdatedEvent += handleLobbyStateUpdated;
                 handler.OnMatchFoundEvent += handleMatchFound; 
                 handler.OnLobbyCreationFailedEvent += handleLobbyCreationFailed;
+                handler.OnLobbyActionFailedEvent += handleLobbyActionFailed;
                 handler.OnKickedEvent += handleKicked;
                 handler.OnLobbyDestroyedEvent += handleLobbyDestroyedCallback;
                 handler.OnAchievementUnlockedEvent += handleAchievementCallback;
@@ -75,7 +78,17 @@ namespace MindWeaveClient.Services.Implementations
             OnKicked?.Invoke(reason);
         }
 
-      
+        private void handleGameStartedCallback()
+        {
+            OnGameStarted?.Invoke();
+        }
+
+        private void handleLobbyActionFailed(string message)
+        {
+            OnLobbyActionFailed?.Invoke(message);
+        }
+
+
         public async Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings)
         {
             ensureClientIsCreated();
