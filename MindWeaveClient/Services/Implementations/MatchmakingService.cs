@@ -19,7 +19,7 @@ namespace MindWeaveClient.Services.Implementations
         public event Action<string> OnLobbyCreationFailed;
         public event Action<string> OnKicked;
         public event Action<string> OnLobbyActionFailed;
-        public event Action OnGameStarted;
+        public event Action<PuzzleDefinitionDto, int> OnGameStarted;
 
         public event Action<string> OnLobbyDestroyed;
         public event Action<string, string> OnAchievementUnlocked;
@@ -55,6 +55,7 @@ namespace MindWeaveClient.Services.Implementations
                 handler.OnKickedEvent += handleKicked;
                 handler.OnLobbyDestroyedEvent += handleLobbyDestroyedCallback;
                 handler.OnAchievementUnlockedEvent += handleAchievementCallback;
+                handler.OnGameStartedNavigation += handleGameStartedCallback;
             }
         }
 
@@ -78,9 +79,9 @@ namespace MindWeaveClient.Services.Implementations
             OnKicked?.Invoke(reason);
         }
 
-        private void handleGameStartedCallback()
+        private void handleGameStartedCallback(PuzzleDefinitionDto puzzleDefinition, int matchDurationSeconds)
         {
-            OnGameStarted?.Invoke();
+            OnGameStarted?.Invoke(puzzleDefinition, matchDurationSeconds);
         }
 
         private void handleLobbyActionFailed(string message)
@@ -195,6 +196,7 @@ namespace MindWeaveClient.Services.Implementations
                     handler.OnMatchFoundEvent -= handleMatchFound;
                     handler.OnLobbyCreationFailedEvent -= handleLobbyCreationFailed;
                     handler.OnKickedEvent -= handleKicked;
+                    handler.OnGameStartedNavigation -= handleGameStartedCallback;
                 }
                 proxy = null;
             }

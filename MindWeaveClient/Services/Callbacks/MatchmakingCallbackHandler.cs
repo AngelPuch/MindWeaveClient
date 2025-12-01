@@ -28,7 +28,7 @@ namespace MindWeaveClient.Services.Callbacks
         public static event Action<int, string> PieceDragReleasedHandler;
         public static event Action<string, int, int, string> PlayerPenaltyHandler;
 
-        public static event Action OnGameStartedNavigation;
+        public event Action<PuzzleDefinitionDto, int> OnGameStartedNavigation;
         public static event Action<MatchEndResultDto> GameEndedStatic;
         public static MatchEndResultDto LastMatchResults { get; private set; }
         public static int LastMatchDuration { get; private set; } = 300;
@@ -102,7 +102,7 @@ namespace MindWeaveClient.Services.Callbacks
 
             currentMatchService?.setPuzzle(puzzleManagerDto);
 
-            OnGameStartedNavigation?.Invoke();
+            OnGameStartedNavigation?.Invoke(puzzleDefinition, matchDurationSeconds);
         }
 
         public void updateLobbyState(LobbyStateDto lobbyStateDto)

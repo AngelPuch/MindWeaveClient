@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="FpaK9MXZroln+KEKlsV9NFxJIl8QMvAT/kgvbjHkEiY=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="2u4QhE4dyd1TMOElcqQS1H0y36Sbb2Lq+0MD2pdzdvo=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IMatchmakingManager">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IMatchmakingManager" contract="MatchmakingService.IMatchmakingManager" bindingType="netTcpBinding" address="net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/" bindingConfiguration="NetTcpBinding_IMatchmakingManager">
+    <endpoint name="NetTcpBinding_IMatchmakingManager" contract="MatchmakingService.IMatchmakingManager" bindingType="netTcpBinding" address="net.tcp://10.64.17.175:8734/MindWeaveServer/Services/MatchmakingManagerService/" bindingConfiguration="NetTcpBinding_IMatchmakingManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/</serializedValue>
+          <serializedValue>net.tcp://10.64.17.175:8734/MindWeaveServer/Services/MatchmakingManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

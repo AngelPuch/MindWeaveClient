@@ -405,9 +405,9 @@
   </wsdl:binding>
   <wsdl:service name="MatchmakingManagerService">
     <wsdl:port name="NetTcpBinding_IMatchmakingManager" binding="tns:NetTcpBinding_IMatchmakingManager">
-      <soap12:address location="net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
+      <soap12:address location="net.tcp://10.64.17.175:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://10.64.17.175:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Upn>LAPTOP\Dell</Upn>
         </Identity>

@@ -159,7 +159,7 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        private void handleGameStarted()
+        private void handleGameStarted(PuzzleDefinitionDto puzzleDefinition, int matchDurationSeconds)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
