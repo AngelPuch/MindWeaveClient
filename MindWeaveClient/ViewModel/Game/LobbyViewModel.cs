@@ -225,6 +225,17 @@ namespace MindWeaveClient.ViewModel.Game
                 foreach (var p in playersToRemove) Players.Remove(p);
                 foreach (var p in playersToAdd) Players.Add(p);
 
+                var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
+                if (currentMatchService != null)
+                {
+                    currentMatchService.initializeMatch(
+                        newState.LobbyId,
+                        newState.Players.ToList(),
+                        newState.CurrentSettingsDto,
+                        newState.PuzzleImagePath
+                    );
+                }
+
                 OnPropertyChanged(nameof(LobbyCode));
                 OnPropertyChanged(nameof(HostUsername));
                 OnPropertyChanged(nameof(CurrentSettings));
@@ -378,12 +389,8 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
 
-                Debug.WriteLine($"[LobbyViewModel] Before start - CurrentMatchService.LobbyId: {currentMatchService.LobbyId ?? "NULL"}");
-                Debug.WriteLine($"[LobbyViewModel] Before start - This.LobbyCode: {this.LobbyCode ?? "NULL"}");
-
                 if (string.IsNullOrEmpty(currentMatchService.LobbyId) && !string.IsNullOrEmpty(this.LobbyCode))
                 {
-                    Debug.WriteLine($"[LobbyViewModel] CurrentMatchService LobbyId is NULL, setting it to: {this.LobbyCode}");
                     currentMatchService.initializeMatch(
                         this.LobbyCode,
                         this.Players.ToList(),
@@ -395,6 +402,8 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     Debug.WriteLine($"[LobbyViewModel] CurrentMatchService already has LobbyId: {currentMatchService.LobbyId}");
                 }
+
+                Debug.WriteLine(LobbyCode);
 
                 await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
             }

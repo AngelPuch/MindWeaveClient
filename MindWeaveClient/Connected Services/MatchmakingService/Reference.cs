@@ -479,6 +479,9 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ValidationError = 11,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        SecurityError = 12,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
