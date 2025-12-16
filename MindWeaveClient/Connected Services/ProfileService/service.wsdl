@@ -87,11 +87,14 @@
   <wsdl:message name="IProfileManager_changePassword_ServiceFaultDtoFault_FaultMessage">
     <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q5:ServiceFaultDto" />
   </wsdl:message>
-  <wsdl:message name="IProfileManager_GetPlayerAchievements_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetPlayerAchievements" />
+  <wsdl:message name="IProfileManager_getPlayerAchievements_InputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerAchievements" />
   </wsdl:message>
-  <wsdl:message name="IProfileManager_GetPlayerAchievements_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetPlayerAchievementsResponse" />
+  <wsdl:message name="IProfileManager_getPlayerAchievements_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerAchievementsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerAchievements_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q6:ServiceFaultDto" />
   </wsdl:message>
   <wsdl:portType name="IProfileManager">
     <wsdl:operation name="getPlayerProfileView">
@@ -119,9 +122,10 @@
       <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/changePasswordResponse" message="tns:IProfileManager_changePassword_OutputMessage" />
       <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/changePasswordServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_changePassword_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetPlayerAchievements">
-      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/GetPlayerAchievements" message="tns:IProfileManager_GetPlayerAchievements_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/GetPlayerAchievementsResponse" message="tns:IProfileManager_GetPlayerAchievements_OutputMessage" />
+    <wsdl:operation name="getPlayerAchievements">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerAchievements" message="tns:IProfileManager_getPlayerAchievements_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/getPlayerAchievementsResponse" message="tns:IProfileManager_getPlayerAchievements_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/getPlayerAchievementsServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_getPlayerAchievements_ServiceFaultDtoFault_FaultMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IProfileManager" type="tns:IProfileManager">
@@ -188,21 +192,24 @@
         <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="GetPlayerAchievements">
-      <soap12:operation soapAction="http://tempuri.org/IProfileManager/GetPlayerAchievements" style="document" />
+    <wsdl:operation name="getPlayerAchievements">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/getPlayerAchievements" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="ProfileManagerService">
     <wsdl:port name="NetTcpBinding_IProfileManager" binding="tns:NetTcpBinding_IProfileManager">
-      <soap12:address location="net.tcp://10.64.17.175:8734/MindWeaveServer/Services/ProfileManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.68:8734/MindWeaveServer/Services/ProfileManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.64.17.175:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.68:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Upn>LAPTOP\Dell</Upn>
         </Identity>

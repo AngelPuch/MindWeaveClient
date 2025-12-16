@@ -776,11 +776,13 @@ namespace MindWeaveClient.ProfileService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/changePassword", ReplyAction="http://tempuri.org/IProfileManager/changePasswordResponse")]
         System.Threading.Tasks.Task<MindWeaveClient.ProfileService.OperationResultDto> changePasswordAsync(string username, string currentPassword, string newPassword);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/GetPlayerAchievements", ReplyAction="http://tempuri.org/IProfileManager/GetPlayerAchievementsResponse")]
-        MindWeaveClient.ProfileService.AchievementDto[] GetPlayerAchievements(int playerId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerAchievements", ReplyAction="http://tempuri.org/IProfileManager/getPlayerAchievementsResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(MindWeaveClient.ProfileService.ServiceFaultDto), Action="http://tempuri.org/IProfileManager/getPlayerAchievementsServiceFaultDtoFault", Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
+            "hared")]
+        MindWeaveClient.ProfileService.AchievementDto[] getPlayerAchievements(int playerId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/GetPlayerAchievements", ReplyAction="http://tempuri.org/IProfileManager/GetPlayerAchievementsResponse")]
-        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.AchievementDto[]> GetPlayerAchievementsAsync(int playerId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProfileManager/getPlayerAchievements", ReplyAction="http://tempuri.org/IProfileManager/getPlayerAchievementsResponse")]
+        System.Threading.Tasks.Task<MindWeaveClient.ProfileService.AchievementDto[]> getPlayerAchievementsAsync(int playerId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -850,12 +852,12 @@ namespace MindWeaveClient.ProfileService {
             return base.Channel.changePasswordAsync(username, currentPassword, newPassword);
         }
         
-        public MindWeaveClient.ProfileService.AchievementDto[] GetPlayerAchievements(int playerId) {
-            return base.Channel.GetPlayerAchievements(playerId);
+        public MindWeaveClient.ProfileService.AchievementDto[] getPlayerAchievements(int playerId) {
+            return base.Channel.getPlayerAchievements(playerId);
         }
         
-        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.AchievementDto[]> GetPlayerAchievementsAsync(int playerId) {
-            return base.Channel.GetPlayerAchievementsAsync(playerId);
+        public System.Threading.Tasks.Task<MindWeaveClient.ProfileService.AchievementDto[]> getPlayerAchievementsAsync(int playerId) {
+            return base.Channel.getPlayerAchievementsAsync(playerId);
         }
     }
 }

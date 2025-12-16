@@ -1,4 +1,5 @@
-﻿using MindWeaveClient.ProfileService;
+﻿using System.Collections.Generic;
+using MindWeaveClient.ProfileService;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Abstractions
@@ -8,6 +9,8 @@ namespace MindWeaveClient.Services.Abstractions
         Task<PlayerProfileViewDto> getPlayerProfileViewAsync(string username);
 
         Task<UserProfileForEditDto> getPlayerProfileForEditAsync(string username);
+
+        Task<AchievementDto[]> getPlayerAchievementsAsync(int playerId);
 
         Task<OperationResultDto> updateProfileAsync(string username, UserProfileForEditDto updatedProfile);
 

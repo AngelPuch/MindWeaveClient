@@ -68,7 +68,7 @@ namespace MindWeaveClient.ViewModel.Main
             Achievements = new ObservableCollection<AchievementDto>();
 
             _ = loadProfileDataAsync();
-            LoadAchievements();
+            loadAchievements();
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
@@ -148,22 +148,19 @@ namespace MindWeaveClient.ViewModel.Main
         }
 
 
-        private async void LoadAchievements()
+        private async void loadAchievements()
         {
             if (SessionService.PlayerId <= 0)
             {
                 return;
             }
 
-            int currentPlayerId = SessionService.PlayerId;
-            ProfileManagerClient client = new ProfileManagerClient();
-
             try
             {
-                var achievements = await client.GetPlayerAchievementsAsync(currentPlayerId);
+                AchievementDto[] achievementList = await profileService.getPlayerAchievementsAsync(SessionService.PlayerId);
 
                 AchievementsList.Clear();
-                foreach (var achievement in achievements)
+                foreach (var achievement in achievementList)
                 {
 
                     string fileName = System.IO.Path.GetFileName(achievement.IconPath);
@@ -187,20 +184,6 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 handleError(Lang.ErrorFailedToLoadProfile, ex);
                 Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                try
-                {
-                    if (client.State == CommunicationState.Opened)
-                        client.Close();
-                    else
-                        client.Abort();
-                }
-                catch
-                {
-                    client.Abort();
-                }
             }
         }
     }

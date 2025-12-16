@@ -19,6 +19,12 @@ namespace MindWeaveClient.Services.Implementations
                 await client.getPlayerProfileForEditAsync(username));
         }
 
+        public async Task<AchievementDto[]> getPlayerAchievementsAsync(int playerId)
+        {
+            return await executeSafeAsync(async (client) => 
+                await client.getPlayerAchievementsAsync(playerId));
+        }
+
         public async Task<OperationResultDto> updateProfileAsync(string username, UserProfileForEditDto updatedProfile)
         {
             return await executeSafeAsync(async (client) =>
