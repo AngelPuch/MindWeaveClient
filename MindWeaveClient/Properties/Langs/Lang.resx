@@ -831,4 +831,7 @@
   <data name="AchievementJustBeginning" xml:space="preserve">
     <value>Just Beginning</value>
   </data>
+  <data name="MainMenuBtnLogOut" xml:space="preserve">
+    <value>LOG OUT</value>
+  </data>
 </root>

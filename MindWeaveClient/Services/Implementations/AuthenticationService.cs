@@ -68,6 +68,15 @@ namespace MindWeaveClient.Services.Implementations
                 await client.resetPasswordWithCodeAsync(email, code, newPassword));
         }
 
+        public async Task logoutAsync(string username)
+        {
+            await executeSafeAsync(async (client) =>
+            {
+                client.logOut(username);
+                return 0;
+            });
+        }
+
         private static async Task<T> executeSafeAsync<T>(Func<AuthenticationManagerClient, Task<T>> call)
         {
             var client = new AuthenticationManagerClient();

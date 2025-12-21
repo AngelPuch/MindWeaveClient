@@ -831,4 +831,7 @@
   <data name="AchievementJustBeginning" xml:space="preserve">
     <value>Apenas el Comienzo</value>
   </data>
+  <data name="MainMenuBtnLogOut" xml:space="preserve">
+    <value>CERRAR SESIÓN</value>
+  </data>
 </root>

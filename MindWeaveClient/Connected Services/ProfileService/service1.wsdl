@@ -207,9 +207,9 @@
   </wsdl:binding>
   <wsdl:service name="ProfileManagerService">
     <wsdl:port name="NetTcpBinding_IProfileManager" binding="tns:NetTcpBinding_IProfileManager">
-      <soap12:address location="net.tcp://192.168.1.68:8734/MindWeaveServer/Services/ProfileManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/ProfileManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.1.68:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.101:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Upn>LAPTOP\Dell</Upn>
         </Identity>

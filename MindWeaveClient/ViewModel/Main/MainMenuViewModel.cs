@@ -13,12 +13,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using MindWeaveClient.MatchmakingService;
+using MindWeaveClient.View.Authentication;
 
 namespace MindWeaveClient.ViewModel.Main
 {
     public class MainMenuViewModel : BaseViewModel, IDisposable
     {
         private readonly IMatchmakingService matchmakingService;
+        private readonly IAuthenticationService authenticationService;
+        private readonly ISocialService socialService;
+
         private readonly IDialogService dialogService;
         private readonly MainMenuValidator validator;
         private readonly IWindowNavigationService windowNavigationService;
@@ -69,10 +73,13 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand SocialCommand { get; }
         public ICommand SettingsCommand { get; }
         public ICommand JoinLobbyCommand { get; }
+        public ICommand LogOutCommand { get; }
 
         public MainMenuViewModel(
             IMatchmakingService matchmakingService,
             IDialogService dialogService,
+            IAuthenticationService authenticationService,
+            ISocialService socialService,
             MainMenuValidator validator,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
@@ -80,6 +87,8 @@ namespace MindWeaveClient.ViewModel.Main
         {
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
+            this.authenticationService = authenticationService;
+            this.socialService = socialService;
             this.validator = validator;
             var navigationService1 = navigationService;
             this.windowNavigationService = windowNavigationService;
@@ -99,6 +108,7 @@ namespace MindWeaveClient.ViewModel.Main
                 this.windowNavigationService.openDialog<SettingsWindow>(Application.Current.MainWindow), p => !IsBusy);
             JoinLobbyCommand = new RelayCommand(async p => 
                 await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
+            LogOutCommand = new RelayCommand(async p => await executeLogOutAsync(), p => !IsBusy);
 
             validate(validator, this, "JoinLobby");
         }
@@ -144,7 +154,35 @@ namespace MindWeaveClient.ViewModel.Main
                 SetBusy(false);
             }
         }
-        
+
+        private async Task executeLogOutAsync()
+        {
+            SetBusy(true);
+            try
+            {
+                if (!SessionService.IsGuest)
+                {
+                    await authenticationService.logoutAsync(SessionService.Username);
+                }
+
+                await socialService.disconnectAsync(SessionService.Username);
+                matchmakingService.disconnect();
+
+                SessionService.clearSession();
+
+                windowNavigationService.openWindow<AuthenticationWindow>();
+                windowNavigationService.closeWindow<MainWindow>();
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorMsgNoDetails, ex);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
         private void handleError(string message, Exception ex)
         {
             string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;

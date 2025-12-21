@@ -1222,6 +1222,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a LOG OUT.
+        /// </summary>
+        public static string MainMenuBtnLogOut {
+            get {
+                return ResourceManager.GetString("MainMenuBtnLogOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a PROFILE.
         /// </summary>
         public static string MainMenuBtnProfile {

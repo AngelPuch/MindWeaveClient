@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ServiceModel;
 using System.Windows;
 using MindWeaveClient.SocialManagerService;
 
 namespace MindWeaveClient.Services.Callbacks
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class SocialCallbackHandler : ISocialManagerCallback
     {
         public event Action<string> FriendRequestReceived;

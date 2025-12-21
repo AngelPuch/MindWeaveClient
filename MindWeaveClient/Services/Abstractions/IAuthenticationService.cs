@@ -16,5 +16,7 @@ namespace MindWeaveClient.Services.Abstractions
         Task<OperationResultDto> sendPasswordRecoveryCodeAsync(string email);
 
         Task<OperationResultDto> resetPasswordWithCodeAsync(string email, string code, string newPassword);
+
+        Task logoutAsync(string username);
     }
 }

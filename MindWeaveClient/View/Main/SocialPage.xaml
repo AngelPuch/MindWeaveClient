@@ -166,10 +166,10 @@
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                     <Ellipse Width="30" Height="30">
                                                         <Ellipse.Fill>
-                                                            <ImageBrush ImageSource="{Binding avatarPath}" Stretch="UniformToFill"/>
+                                                            <ImageBrush ImageSource="{Binding AvatarPath}" Stretch="UniformToFill"/>
                                                         </Ellipse.Fill>
                                                     </Ellipse>
-                                                    <TextBlock Text="{Binding username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                    <TextBlock Text="{Binding Username}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
                                                 </StackPanel>
                                                 <Button Content="{x:Static language:Lang.GlobalBtnAddFriend}"
                                                         Command="{Binding DataContext.SendRequestCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
@@ -194,11 +194,11 @@
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                                     <Ellipse Width="30" Height="30">
                                                         <Ellipse.Fill>
-                                                            <ImageBrush ImageSource="{Binding avatarPath}" Stretch="UniformToFill"/>
+                                                            <ImageBrush ImageSource="{Binding AvatarPath}" Stretch="UniformToFill"/>
                                                         </Ellipse.Fill>
                                                     </Ellipse>
-                                                    <TextBlock Text="{Binding requesterUsername}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
-                                                    <TextBlock Text="{Binding requestDate, StringFormat='{}{0:dd MMM yyyy}'}" VerticalAlignment="Center" Margin="10,0" Foreground="Gray" FontStyle="Italic"/>
+                                                    <TextBlock Text="{Binding RequesterUsername}" VerticalAlignment="Center" Margin="10,0" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                                                    <TextBlock Text="{Binding RequestDate, StringFormat='{}{0:dd MMM yyyy}'}" VerticalAlignment="Center" Margin="10,0" Foreground="Gray" FontStyle="Italic"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button Content="{x:Static language:Lang.SocialBtnAccept}"

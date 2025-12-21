@@ -128,9 +128,9 @@
   </wsdl:binding>
   <wsdl:service name="PuzzleManagerService">
     <wsdl:port name="NetTcpBinding_IPuzzleManager" binding="tns:NetTcpBinding_IPuzzleManager">
-      <soap12:address location="net.tcp://192.168.1.68:8734/MindWeaveServer/Services/PuzzleManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/PuzzleManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.1.68:8734/MindWeaveServer/Services/PuzzleManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.101:8734/MindWeaveServer/Services/PuzzleManagerService/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Upn>LAPTOP\Dell</Upn>
         </Identity>
