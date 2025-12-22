@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:MindWeaveClient.View.Game"
         mc:Ignorable="d"
         Title="Mind Weave - In Game"
-        Height="720" Width="1280">
+        WindowStyle="None"
+        WindowState="Maximized"
+        ResizeMode="NoResize"
+        Topmost="True">
 
     <Grid>
         <Grid.Background>

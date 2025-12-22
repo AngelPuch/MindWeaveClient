@@ -20,33 +20,33 @@ namespace MindWeaveClient.Services.Implementations
 
         public string LobbyId
         {
-            get => CurrentMatchService.lobbyId;
-            private set => CurrentMatchService.lobbyId = value;
+            get => lobbyId;
+            private set => lobbyId = value;
         }
 
         public List<string> Players
         {
-            get => CurrentMatchService.players;
-            private set => CurrentMatchService.players = value;
+            get => players;
+            private set => players = value;
         }
 
         public LobbySettingsDto CurrentSettings
         {
-            get => CurrentMatchService.currentSettings;
-            private set => CurrentMatchService.currentSettings = value;
+            get => currentSettings;
+            private set => currentSettings = value;
         }
 
         public string PuzzleImagePath
         {
-            get => CurrentMatchService.puzzleImagePath;
-            private set => CurrentMatchService.puzzleImagePath = value;
+            get => puzzleImagePath;
+            private set => puzzleImagePath = value;
         }
 
         public void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
             CurrentMatchService.lobbyId = lobbyId;
             CurrentMatchService.players = players;
-            CurrentMatchService.currentSettings = settings;
+            currentSettings = settings;
             CurrentMatchService.puzzleImagePath = puzzleImagePath;
 
             CurrentMatchService.matchId = lobbyId;
@@ -55,7 +55,7 @@ namespace MindWeaveClient.Services.Implementations
 
         public PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle()
         {
-            return CurrentMatchService.currentPuzzle;
+            return currentPuzzle;
         }
 
         public void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle)
@@ -68,9 +68,9 @@ namespace MindWeaveClient.Services.Implementations
         {
             CurrentMatchService.matchId = matchId;
 
-            if (string.IsNullOrEmpty(CurrentMatchService.lobbyId))
+            if (string.IsNullOrEmpty(lobbyId))
             {
-                CurrentMatchService.lobbyId = matchId;
+                lobbyId = matchId;
             }
         }
 
@@ -81,12 +81,12 @@ namespace MindWeaveClient.Services.Implementations
 
         public void clearMatchData()
         {
-            CurrentMatchService.matchId = null;
-            CurrentMatchService.lobbyId = null;
-            CurrentMatchService.players = null;
-            CurrentMatchService.currentSettings = null;
-            CurrentMatchService.puzzleImagePath = null;
-            CurrentMatchService.currentPuzzle = null;
+            matchId = null;
+            lobbyId = null;
+            players = null;
+            currentSettings = null;
+            puzzleImagePath = null;
+            currentPuzzle = null;
         }
     }
 }

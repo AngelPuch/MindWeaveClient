@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MindWeaveClient.View.Authentication"
         mc:Ignorable="d"
-        Title="Mind Weave" Height="720" Width="760">
+        Title="Mind Weave"
+        WindowStyle="None"
+        WindowState="Maximized"
+        ResizeMode="NoResize"
+        Topmost="True">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>

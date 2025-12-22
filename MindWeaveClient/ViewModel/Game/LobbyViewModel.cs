@@ -398,12 +398,7 @@ namespace MindWeaveClient.ViewModel.Game
                         lobbyState?.PuzzleImagePath
                     );
                 }
-                else
-                {
-                    Debug.WriteLine($"[LobbyViewModel] CurrentMatchService already has LobbyId: {currentMatchService.LobbyId}");
-                }
 
-                Debug.WriteLine(LobbyCode);
 
                 await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
             }

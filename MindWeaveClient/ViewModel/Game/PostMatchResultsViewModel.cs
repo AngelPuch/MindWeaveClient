@@ -134,8 +134,8 @@ namespace MindWeaveClient.ViewModel.Game
         private void executeGoToMainMenu(object obj)
         {
             currentMatchService.clearMatchData();
-            windowNavigationService.openWindow<MainWindow>();
             windowNavigationService.closeWindow<GameWindow>();
+            windowNavigationService.openWindow<MainWindow>();
         }
     }
 }

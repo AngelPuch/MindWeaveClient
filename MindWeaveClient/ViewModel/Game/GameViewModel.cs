@@ -39,6 +39,9 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
 
+        private static Guid _activeGameInstanceId;
+        private readonly Guid _myInstanceId;
+
         private const double REMOTE_SNAP_THRESHOLD = 20.0;
         public event Action ForceReleaseLocalDrag;
 
@@ -114,6 +117,9 @@ namespace MindWeaveClient.ViewModel.Game
             IWindowNavigationService windowNavigationService,
             IAudioService audioService)
         {
+            _myInstanceId = Guid.NewGuid();
+            _activeGameInstanceId = _myInstanceId;
+
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
@@ -191,6 +197,12 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void OnGameEnded(MatchEndResultDto result)
         {
+            if (_myInstanceId != _activeGameInstanceId)
+            {
+                Dispose(); // Me elimino silenciosamente
+                return;
+            }
+
             visualTimer?.Stop();
 
             Application.Current.Dispatcher.Invoke(() =>
@@ -204,6 +216,7 @@ namespace MindWeaveClient.ViewModel.Game
 
                 dialogService.showInfo($"{message} Cargando resultados...", title);
 
+                this.Dispose();
                 navigationService.navigateTo<PostMatchResultsPage>();
             });
         }
@@ -376,7 +389,6 @@ namespace MindWeaveClient.ViewModel.Game
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece == null) return;
                 bool amIDragging = (username == SessionService.Username);
-                Debug.WriteLine($"[CLIENT DRAG STARTED] Piece {pieceId} by {username} (amI: {amIDragging})");
 
                 if (amIDragging)
                 {
@@ -433,7 +445,7 @@ namespace MindWeaveClient.ViewModel.Game
                 piece.IsHeldByOther = false;
                 piece.BorderColor = Brushes.Transparent;
                 piece.ZIndex = 1;
-                AttemptRemoteMerge(piece);
+                attemptRemoteMerge(piece);
                 if (username == SessionService.Username)
                 {
                     ForceReleaseLocalDrag?.Invoke();
@@ -441,7 +453,7 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        private void AttemptRemoteMerge(PuzzlePieceViewModel piece)
+        private void attemptRemoteMerge(PuzzlePieceViewModel piece)
         {
             if (piece == null || piece.IsPlaced) return;
 
@@ -483,13 +495,13 @@ namespace MindWeaveClient.ViewModel.Game
                         potentialNeighbor.X = expectedPos.X;
                         potentialNeighbor.Y = expectedPos.Y;
 
-                        MergeGroups(piece, potentialNeighbor);
+                        mergeGroups(piece, potentialNeighbor);
                     }
                 }
             }
         }
 
-        private void MergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
+        private void mergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
         {
             var group1 = p1.PieceGroup;
             var group2 = p2.PieceGroup;
@@ -647,18 +659,23 @@ namespace MindWeaveClient.ViewModel.Game
 
         public void Dispose()
         {
-            Dispose(true);
+            dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void dispose(bool disposing)
         {
             if (isDisposed) return;
 
             if (disposing)
             {
                 visualTimer?.Stop();
-                currentMatchService.PuzzleReady -= OnPuzzleReady;
+
+                if (currentMatchService != null)
+                {
+                    currentMatchService.PuzzleReady -= OnPuzzleReady;
+                }
+
                 MatchmakingCallbackHandler.PieceDragStartedHandler -= OnServerPieceDragStarted;
                 MatchmakingCallbackHandler.PiecePlacedHandler -= OnServerPiecePlaced;
                 MatchmakingCallbackHandler.PieceMovedHandler -= OnServerPieceMoved;
