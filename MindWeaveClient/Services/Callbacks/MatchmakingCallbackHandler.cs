@@ -22,6 +22,7 @@ namespace MindWeaveClient.Services.Callbacks
         public event Action<string> OnLobbyDestroyedEvent;
         public event Action<string, string> OnAchievementUnlockedEvent;
 
+        public static event Action<string> OnPlayerLeftEvent;
         public static event Action<int, string> PieceDragStartedHandler;
         public static event Action<int, double, double, string, int, string> PiecePlacedHandler;
         public static event Action<int, double, double, string> PieceMovedHandler;
@@ -170,8 +171,11 @@ namespace MindWeaveClient.Services.Callbacks
         public void OnAchievementUnlocked(string achievementName, string errorMessage) 
         {
             System.Diagnostics.Debug.WriteLine($"[Client Callback] Logro recibido: {achievementName}");
+        }
 
-            
+        public void onPlayerLeftMatch(string username)
+        {
+            OnPlayerLeftEvent?.Invoke(username);
         }
     }
 }

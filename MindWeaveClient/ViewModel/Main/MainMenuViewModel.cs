@@ -24,6 +24,7 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly ISocialService socialService;
 
         private readonly IDialogService dialogService;
+        private readonly ISessionCleanupService cleanupService;
         private readonly MainMenuValidator validator;
         private readonly IWindowNavigationService windowNavigationService;
 
@@ -74,6 +75,7 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand SettingsCommand { get; }
         public ICommand JoinLobbyCommand { get; }
         public ICommand LogOutCommand { get; }
+        public ICommand ExitCommand { get; }
 
         public MainMenuViewModel(
             IMatchmakingService matchmakingService,
@@ -83,7 +85,8 @@ namespace MindWeaveClient.ViewModel.Main
             MainMenuValidator validator,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            ICurrentLobbyService currentLobbyService)
+            ICurrentLobbyService currentLobbyService,
+            ISessionCleanupService cleanupService)
         {
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
@@ -92,6 +95,7 @@ namespace MindWeaveClient.ViewModel.Main
             this.validator = validator;
             var navigationService1 = navigationService;
             this.windowNavigationService = windowNavigationService;
+            this.cleanupService = cleanupService;
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
@@ -109,6 +113,7 @@ namespace MindWeaveClient.ViewModel.Main
             JoinLobbyCommand = new RelayCommand(async p => 
                 await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
             LogOutCommand = new RelayCommand(async p => await executeLogOutAsync(), p => !IsBusy);
+            ExitCommand = new RelayCommand(async p => await executeExitAsync());
 
             validate(validator, this, "JoinLobby");
         }
@@ -160,15 +165,7 @@ namespace MindWeaveClient.ViewModel.Main
             SetBusy(true);
             try
             {
-                if (!SessionService.IsGuest)
-                {
-                    await authenticationService.logoutAsync(SessionService.Username);
-                }
-
-                await socialService.disconnectAsync(SessionService.Username);
-                matchmakingService.disconnect();
-
-                SessionService.clearSession();
+                await cleanupService.cleanUpSessionAsync();
 
                 windowNavigationService.openWindow<AuthenticationWindow>();
                 windowNavigationService.closeWindow<MainWindow>();
@@ -181,6 +178,26 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 SetBusy(false);
             }
+        }
+
+        private async Task executeExitAsync()
+        {
+            SetBusy(true);
+            try
+            {
+                await cleanupService.cleanUpSessionAsync();
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                handleError(Lang.ErrorMsgNoDetails, ex);
+                Application.Current.Shutdown();
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+
         }
 
         private void handleError(string message, Exception ex)

@@ -834,4 +834,22 @@
   <data name="MainMenuBtnLogOut" xml:space="preserve">
     <value>CERRAR SESIÓN</value>
   </data>
+  <data name="GlobalBtnExit" xml:space="preserve">
+    <value>Salir del Juego</value>
+  </data>
+  <data name="MainMenuBtnExit" xml:space="preserve">
+    <value>SALIR DEL JUEGO</value>
+  </data>
+  <data name="GlobalExitConfirmTitle" xml:space="preserve">
+    <value>Salir de Mind Weave</value>
+  </data>
+  <data name="GlobalExitConfirmMessage" xml:space="preserve">
+    <value>¿Estás seguro de que deseas salir de Mind Weave?</value>
+  </data>
+  <data name="GameExitConfirmTitle" xml:space="preserve">
+    <value>¿Abandonar Partida?</value>
+  </data>
+  <data name="GameExitConfirmMessage" xml:space="preserve">
+    <value>¡Partida en curso! Si sales ahora, perderás tu progreso actual (piezas colocadas). Solo se guardará tu tiempo de juego. ¿Salir de todos modos?</value>
+  </data>
 </root>

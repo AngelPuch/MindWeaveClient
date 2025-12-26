@@ -133,6 +133,9 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void executeGoToMainMenu(object obj)
         {
+            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+            if (gameWindow != null) { gameWindow.GameEndedNaturally = true; }
+
             currentMatchService.clearMatchData();
             windowNavigationService.closeWindow<GameWindow>();
             windowNavigationService.openWindow<MainWindow>();

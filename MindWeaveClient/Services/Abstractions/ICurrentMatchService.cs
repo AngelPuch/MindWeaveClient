@@ -8,6 +8,7 @@ namespace MindWeaveClient.Services.Abstractions
     {
         string LobbyId { get; }
         List<string> Players { get; }
+        bool IsMatchActive { get; }
         LobbySettingsDto CurrentSettings { get; }
         string PuzzleImagePath { get; }
 

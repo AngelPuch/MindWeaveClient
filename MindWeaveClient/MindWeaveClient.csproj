@@ -146,10 +146,12 @@
     <Compile Include="Utilities\Abstractions\IAudioService.cs" />
     <Compile Include="Utilities\Abstractions\IDialogService.cs" />
     <Compile Include="Utilities\Abstractions\INavigationService.cs" />
+    <Compile Include="Utilities\Abstractions\ISessionCleanupService.cs" />
     <Compile Include="Utilities\Abstractions\IWindowNavigationService.cs" />
     <Compile Include="Utilities\Implementations\AudioService.cs" />
     <Compile Include="Utilities\Implementations\DialogService.cs" />
     <Compile Include="Utilities\Implementations\NavigationService.cs" />
+    <Compile Include="Utilities\Implementations\SessionCleanupService.cs" />
     <Compile Include="Utilities\Implementations\WindowNavigationService.cs" />
     <Compile Include="Validators\CreateAccountValidator.cs" />
     <Compile Include="Validators\EditProfileValidator.cs" />

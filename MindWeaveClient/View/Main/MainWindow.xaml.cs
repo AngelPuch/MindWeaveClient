@@ -1,22 +1,31 @@
-﻿using MindWeaveClient.Services.Abstractions;
+﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
+using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.View.Main
 {
     public partial class MainWindow : Window
     {
-        private readonly INavigationService navigationService;
+        private readonly ISessionCleanupService cleanupService;
+        private bool isExitConfirmed;
         private readonly IInvitationService invitationService;
 
-        public MainWindow(INavigationService navigationService, IInvitationService invitationService)
+        public MainWindow(
+            INavigationService navigationService, 
+            IInvitationService invitationService, 
+            ISessionCleanupService cleanupService)
         {
             InitializeComponent();
-            this.navigationService = navigationService;
             this.invitationService = invitationService;
+            this.cleanupService = cleanupService;
 
-            this.navigationService.initialize(MainFrame);
-            this.navigationService.navigateTo<MainMenuPage>();
+            navigationService.initialize(MainFrame);
+            navigationService.navigateTo<MainMenuPage>();
 
             this.Loaded += mainWindow_Loaded;
         }
@@ -24,6 +33,38 @@ namespace MindWeaveClient.View.Main
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             invitationService.subscribeToGlobalInvites();
+        }
+
+        private async void windowClosing(object sender, CancelEventArgs e)
+        {
+            if (isExitConfirmed)
+            {
+                return;
+            }
+
+            bool isTransitioningToGame = Application.Current.Windows
+                .OfType<GameWindow>()
+                .Any();
+
+            if (isTransitioningToGame)
+            {
+                return;
+            }
+
+            e.Cancel = true;
+
+            var result = MessageBox.Show(
+                Lang.GlobalExitConfirmMessage,
+                Lang.GlobalExitConfirmTitle,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                await cleanupService.cleanUpSessionAsync();
+                isExitConfirmed = true;
+                Application.Current.Shutdown();
+            }
         }
     }
 }

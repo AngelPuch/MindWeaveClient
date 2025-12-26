@@ -1244,6 +1244,12 @@ namespace MindWeaveClient.MatchmakingService {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/startGame")]
         System.Threading.Tasks.Task startGameAsync(string hostUsername, string lobbyId);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/leaveGame")]
+        void leaveGame(string username, string lobbyCode);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/leaveGame")]
+        System.Threading.Tasks.Task leaveGameAsync(string username, string lobbyCode);
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/kickPlayer")]
         void kickPlayer(string hostUsername, string playerToKickUsername, string lobbyId);
         
@@ -1339,6 +1345,9 @@ namespace MindWeaveClient.MatchmakingService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked")]
         void OnAchievementUnlocked(string achievementKey, string imageName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IMatchmakingManager/onPlayerLeftMatch")]
+        void onPlayerLeftMatch(string username);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1407,6 +1416,14 @@ namespace MindWeaveClient.MatchmakingService {
         
         public System.Threading.Tasks.Task startGameAsync(string hostUsername, string lobbyId) {
             return base.Channel.startGameAsync(hostUsername, lobbyId);
+        }
+        
+        public void leaveGame(string username, string lobbyCode) {
+            base.Channel.leaveGame(username, lobbyCode);
+        }
+        
+        public System.Threading.Tasks.Task leaveGameAsync(string username, string lobbyCode) {
+            return base.Channel.leaveGameAsync(username, lobbyCode);
         }
         
         public void kickPlayer(string hostUsername, string playerToKickUsername, string lobbyId) {

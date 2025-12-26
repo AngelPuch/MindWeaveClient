@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -39,8 +40,8 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
 
-        private static Guid _activeGameInstanceId;
-        private readonly Guid _myInstanceId;
+        private static Guid activeGameInstanceId;
+        private readonly Guid myInstanceId;
 
         private const double REMOTE_SNAP_THRESHOLD = 20.0;
         public event Action ForceReleaseLocalDrag;
@@ -117,8 +118,8 @@ namespace MindWeaveClient.ViewModel.Game
             IWindowNavigationService windowNavigationService,
             IAudioService audioService)
         {
-            _myInstanceId = Guid.NewGuid();
-            _activeGameInstanceId = _myInstanceId;
+            myInstanceId = Guid.NewGuid();
+            activeGameInstanceId = myInstanceId;
 
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
@@ -142,6 +143,7 @@ namespace MindWeaveClient.ViewModel.Game
             MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
             MatchmakingCallbackHandler.PlayerPenaltyHandler += OnServerPlayerPenalty;
             MatchmakingCallbackHandler.GameEndedStatic += OnGameEnded;
+            MatchmakingCallbackHandler.OnPlayerLeftEvent += handlePlayerLeft;
 
             initializeGameTimer();
 
@@ -195,11 +197,31 @@ namespace MindWeaveClient.ViewModel.Game
             TimeDisplay = timeRemaining.Add(TimeSpan.FromSeconds(0.9)).ToString(@"mm\:ss");
         }
 
+        private void handlePlayerLeft(string username)
+        {
+            // FORZAMOS LA EJECUCIÓN EN EL HILO DE LA UI
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var player = PlayerScores.FirstOrDefault(p => p.Username == username);
+                if (player != null)
+                {
+                    PlayerScores.Remove(player);
+
+                    // Opcional: Podrías mostrar una notificación visual aquí también
+                    // NotificationColor = Brushes.Orange;
+                    // showBonusNotification($"{username} abandonó la partida.");
+                }
+            });
+        }
+
+        // File: View/Game/GameWindow.xaml.cs (o donde tengas este método)
+
         private void OnGameEnded(MatchEndResultDto result)
         {
-            if (_myInstanceId != _activeGameInstanceId)
+            // Validación de instancia para evitar condiciones de carrera
+            if (myInstanceId != activeGameInstanceId)
             {
-                Dispose(); // Me elimino silenciosamente
+                Dispose();
                 return;
             }
 
@@ -207,20 +229,38 @@ namespace MindWeaveClient.ViewModel.Game
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                string reason = result.Reason;
-                string title = reason == "TimeOut" ? "¡Tiempo Agotado!" : "¡Puzzle Completado!";
+                string title;
+                string message;
 
-                string message = reason == "TimeOut"
-                    ? "Se acabó el tiempo de la partida."
-                    : "El rompecabezas ha sido resuelto.";
+                // Evaluamos la razón que viene del servidor
+                switch (result.Reason)
+                {
+                    case "TimeOut":
+                        title = "¡Tiempo Agotado!";
+                        message = "Se acabó el tiempo de la partida.";
+                        break;
 
+                    case "Forfeit": // <--- NUEVO CASO REUTILIZANDO EL MÉTODO
+                        title = "¡Victoria por Abandono!";
+                        message = "Tus rivales han abandonado la partida. ¡Has ganado!";
+                        break;
+
+                    default: // Caso normal ("PuzzleSolved" o similar)
+                        title = "¡Puzzle Completado!";
+                        message = "El rompecabezas ha sido resuelto.";
+                        break;
+                }
+
+                // Usamos el DialogService existente
                 dialogService.showInfo($"{message} Cargando resultados...", title);
 
                 this.Dispose();
+
+                // Aquí pasas el result al ViewModel de resultados para que muestre que ganaste
+                // Asumo que tu servicio de navegación puede pasar parámetros o usa un Store global
                 navigationService.navigateTo<PostMatchResultsPage>();
             });
         }
-
 
         private void tryLoadExistingPuzzle()
         {

@@ -42,6 +42,9 @@
   <wsdl:message name="IMatchmakingManager_startGame_InputMessage">
     <wsdl:part name="parameters" element="tns:startGame" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_leaveGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:leaveGame" />
+  </wsdl:message>
   <wsdl:message name="IMatchmakingManager_kickPlayer_InputMessage">
     <wsdl:part name="parameters" element="tns:kickPlayer" />
   </wsdl:message>
@@ -114,6 +117,9 @@
   <wsdl:message name="IMatchmakingManager_OnAchievementUnlocked_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnAchievementUnlocked" />
   </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPlayerLeftMatch_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPlayerLeftMatch" />
+  </wsdl:message>
   <wsdl:portType name="IMatchmakingManager">
     <wsdl:operation name="createLobby">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobby" message="tns:IMatchmakingManager_createLobby_InputMessage" />
@@ -131,6 +137,9 @@
     </wsdl:operation>
     <wsdl:operation name="startGame">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/startGame" message="tns:IMatchmakingManager_startGame_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="leaveGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/leaveGame" message="tns:IMatchmakingManager_leaveGame_InputMessage" />
     </wsdl:operation>
     <wsdl:operation name="kickPlayer">
       <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/kickPlayer" message="tns:IMatchmakingManager_kickPlayer_InputMessage" />
@@ -200,6 +209,9 @@
     <wsdl:operation name="OnAchievementUnlocked">
       <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked" message="tns:IMatchmakingManager_OnAchievementUnlocked_OutputCallbackMessage" />
     </wsdl:operation>
+    <wsdl:operation name="onPlayerLeftMatch">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPlayerLeftMatch" message="tns:IMatchmakingManager_onPlayerLeftMatch_OutputCallbackMessage" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
     <wsp:PolicyReference URI="#NetTcpBinding_IMatchmakingManager_policy">
@@ -237,6 +249,12 @@
     </wsdl:operation>
     <wsdl:operation name="startGame">
       <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/startGame" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="leaveGame">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/leaveGame" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -379,12 +397,18 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="onPlayerLeftMatch">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPlayerLeftMatch" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="MatchmakingManagerService">
     <wsdl:port name="NetTcpBinding_IMatchmakingManager" binding="tns:NetTcpBinding_IMatchmakingManager">
-      <soap12:address location="net.tcp://192.168.1.102:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.1.102:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

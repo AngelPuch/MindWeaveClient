@@ -592,6 +592,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Game in progress! If you leave now, you will lose your current progress (pieces placed). Only your playtime will be saved. Exit anyway?.
+        /// </summary>
+        public static string GameExitConfirmMessage {
+            get {
+                return ResourceManager.GetString("GameExitConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Abandon Match?.
+        /// </summary>
+        public static string GameExitConfirmTitle {
+            get {
+                return ResourceManager.GetString("GameExitConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error starting game..
         /// </summary>
         public static string GameStartError {
@@ -633,6 +651,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string GlobalBtnCancel {
             get {
                 return ResourceManager.GetString("GlobalBtnCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Exit Game.
+        /// </summary>
+        public static string GlobalBtnExit {
+            get {
+                return ResourceManager.GetString("GlobalBtnExit", resourceCulture);
             }
         }
         
@@ -696,6 +723,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string GlobalErrorInvalidEmailFormat {
             get {
                 return ResourceManager.GetString("GlobalErrorInvalidEmailFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to exit Mind Weave?.
+        /// </summary>
+        public static string GlobalExitConfirmMessage {
+            get {
+                return ResourceManager.GetString("GlobalExitConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Exit Mind Weave.
+        /// </summary>
+        public static string GlobalExitConfirmTitle {
+            get {
+                return ResourceManager.GetString("GlobalExitConfirmTitle", resourceCulture);
             }
         }
         
@@ -1209,6 +1254,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string MainMenuBtnCreateLobby {
             get {
                 return ResourceManager.GetString("MainMenuBtnCreateLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a EXIT GAME.
+        /// </summary>
+        public static string MainMenuBtnExit {
+            get {
+                return ResourceManager.GetString("MainMenuBtnExit", resourceCulture);
             }
         }
         

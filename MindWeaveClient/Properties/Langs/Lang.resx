@@ -834,4 +834,22 @@
   <data name="MainMenuBtnLogOut" xml:space="preserve">
     <value>LOG OUT</value>
   </data>
+  <data name="GlobalBtnExit" xml:space="preserve">
+    <value>Exit Game</value>
+  </data>
+  <data name="MainMenuBtnExit" xml:space="preserve">
+    <value>EXIT GAME</value>
+  </data>
+  <data name="GlobalExitConfirmTitle" xml:space="preserve">
+    <value>Exit Mind Weave</value>
+  </data>
+  <data name="GlobalExitConfirmMessage" xml:space="preserve">
+    <value>Are you sure you want to exit Mind Weave?</value>
+  </data>
+  <data name="GameExitConfirmTitle" xml:space="preserve">
+    <value>Abandon Match?</value>
+  </data>
+  <data name="GameExitConfirmMessage" xml:space="preserve">
+    <value>Game in progress! If you leave now, you will lose your current progress (pieces placed). Only your playtime will be saved. Exit anyway?</value>
+  </data>
 </root>

@@ -15,6 +15,7 @@ namespace MindWeaveClient.Services.Abstractions
         event Action<string> OnLobbyDestroyed;
         event Action<string, string> OnAchievementUnlocked;
         event Action<PuzzleDefinitionDto, int> OnGameStarted;
+
         Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings);
 
         Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request);
@@ -41,5 +42,7 @@ namespace MindWeaveClient.Services.Abstractions
         Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY);
 
         Task requestPieceReleaseAsync(string lobbyCode, int pieceId);
+
+        Task leaveGameAsync(string username, string lobbyCode);
     }
 }

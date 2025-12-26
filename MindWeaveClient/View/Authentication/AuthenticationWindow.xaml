@@ -8,8 +8,7 @@
         Title="Mind Weave"
         WindowStyle="None"
         WindowState="Maximized"
-        ResizeMode="NoResize"
-        Topmost="True">
+        ResizeMode="NoResize">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Resources/Images/background.png" Stretch="UniformToFill"/>

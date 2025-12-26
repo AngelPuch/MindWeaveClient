@@ -95,6 +95,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         public ICommand ForgotPasswordCommand { get; }
         public ICommand GuestLoginCommand { get; }
         public ICommand ResendVerificationCommand { get; }
+        public ICommand ExitCommand { get; }
 
         public LoginViewModel(
             IAuthenticationService authenticationService,
@@ -114,6 +115,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             ForgotPasswordCommand = new RelayCommand((param) => executeGoToForgotPassword());
             GuestLoginCommand = new RelayCommand((param) => executeGoToGuestJoin());
             ResendVerificationCommand = new RelayCommand(async (param) => await executeResendVerificationAsync());
+            ExitCommand = new RelayCommand(executeExit);
 
             validate(validator, this);
         }
@@ -222,6 +224,11 @@ namespace MindWeaveClient.ViewModel.Authentication
         private void executeGoToGuestJoin()
         {
             navigationService.navigateTo<GuestJoinPage>();
+        }
+
+        private void executeExit(object parameter)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void handleError(string message, Exception ex)

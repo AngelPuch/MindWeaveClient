@@ -9,6 +9,7 @@ namespace MindWeaveClient.Services.Implementations
     public class CurrentMatchService : ICurrentMatchService
     {
         private static string matchId;
+        public Guid MatchId { get; set; }
         private static string lobbyId;
         private static List<string> players;
         private static LobbySettingsDto currentSettings;
@@ -18,6 +19,7 @@ namespace MindWeaveClient.Services.Implementations
         public event EventHandler OnMatchFound;
         public event Action PuzzleReady;
 
+        public bool IsMatchActive => MatchId != Guid.Empty;
         public string LobbyId
         {
             get => lobbyId;

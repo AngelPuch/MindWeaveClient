@@ -23,7 +23,7 @@ namespace MindWeaveClient.Services.Implementations
 
         public event Action<string> OnLobbyDestroyed;
         public event Action<string, string> OnAchievementUnlocked;
-
+        public event Action<string> OnPlayerLeftEvent;
 
         public MatchmakingService(IMatchmakingManagerCallback callbackHandler)
         {
@@ -174,6 +174,12 @@ namespace MindWeaveClient.Services.Implementations
         {
             ensureClientIsCreated();
             await executeSafeTaskAsync(async () => await proxy.requestPieceReleaseAsync(lobbyCode, pieceId));
+        }
+
+        public async Task leaveGameAsync(string username, string lobbyCode)
+        {
+            ensureClientIsCreated();
+            await executeSafeTaskAsync(async () => await proxy.leaveGameAsync(username, lobbyCode));
         }
 
         public void disconnect()

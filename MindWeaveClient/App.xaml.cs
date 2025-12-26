@@ -71,6 +71,7 @@ namespace MindWeaveClient
             services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
             services.AddSingleton<IAudioService, AudioService>();
             services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
+            services.AddSingleton<ISessionCleanupService, SessionCleanupService>();
 
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();

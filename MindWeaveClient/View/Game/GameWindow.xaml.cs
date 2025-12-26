@@ -1,58 +1,63 @@
-﻿using System;
+﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Utilities.Abstractions;
-using MindWeaveClient.ViewModel.Game;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
+// Asegúrate de importar donde tienes tus páginas
+using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.View.Game
 {
     public partial class GameWindow : Window
     {
-        private bool isHandlingClosing;
+        private readonly ISessionCleanupService cleanupService;
+        private bool isExitConfirmed = false;
+        public bool GameEndedNaturally { get; set; } = false;
 
-        public GameWindow(INavigationService navigationService, LobbyPage startPage)
+        public GameWindow(
+            INavigationService navigationService,
+            LobbyPage startPage,
+            ISessionCleanupService cleanupService)
         {
             InitializeComponent();
+            this.cleanupService = cleanupService;
 
             navigationService.initialize(GameFrame);
             GameFrame.Content = startPage;
-
-            this.Closing += gameWindowClosing;
         }
 
-        private async void gameWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void windowClosing(object sender, CancelEventArgs e)
         {
-            if (isHandlingClosing) { return; }
+            if (GameEndedNaturally || isExitConfirmed) return;
 
             e.Cancel = true;
-            isHandlingClosing = true;
 
-            try
-            {
-                var currentPage = GameFrame?.Content;
+            bool isGameInProgress = GameFrame.Content is GamePage;
 
-                if (currentPage is LobbyPage lobbyPage && lobbyPage.DataContext is LobbyViewModel lobbyVm)
-                {
-                    await lobbyVm.cleanup();
-                }
-                else if (currentPage is GamePage gamePage && gamePage.DataContext is GameViewModel gameVm)
-                {
-                    gameVm.Dispose();
-                }
-            }
-            catch (Exception ex)
+            if (isGameInProgress)
             {
-                Trace.TraceError($"Error during graceful cleanup: {ex.Message}");
-            }
-            finally
-            {
-                this.Closing -= gameWindowClosing;
-                await Application.Current.Dispatcher.InvokeAsync(() =>
+                var result = MessageBox.Show(
+                    Lang.GameExitConfirmMessage,
+                    Lang.GameExitConfirmTitle,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
                 {
-                    this.Close();
-                });
+                    await cleanupService.exitGameInProcessAsync();
+                    forceShutdown();
+                }
             }
+            else
+            {
+                await cleanupService.cleanUpSessionAsync();
+                forceShutdown();
+            }
+        }
+
+        private void forceShutdown()
+        {
+            isExitConfirmed = true;
+            Application.Current.Shutdown();
         }
     }
 }
