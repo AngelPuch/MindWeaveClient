@@ -1,9 +1,11 @@
 ﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Utilities.Abstractions;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 // Asegúrate de importar donde tienes tus páginas
 using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.View.Game
 {
@@ -28,6 +30,15 @@ namespace MindWeaveClient.View.Game
         private async void windowClosing(object sender, CancelEventArgs e)
         {
             if (GameEndedNaturally || isExitConfirmed) return;
+
+            bool isTransitioningToMain = Application.Current.Windows
+                .OfType<MainWindow>()
+                .Any();
+
+            if (isTransitioningToMain)
+            {
+                return;
+            }
 
             e.Cancel = true;
 
