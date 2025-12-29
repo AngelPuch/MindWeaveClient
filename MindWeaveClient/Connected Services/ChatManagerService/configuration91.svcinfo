@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="chlGdNyFac0ucV9Ze3Wd4w4ztDAvsh4+n5VXGv1wJsI=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="I9GHU6jiB4pH0LIcLO/vxjJxkih6O6L166FeyNnOAqs=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IChatManager">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IChatManager" contract="ChatManagerService.IChatManager" bindingType="netTcpBinding" address="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/ChatManagerService/" bindingConfiguration="NetTcpBinding_IChatManager">
+    <endpoint name="NetTcpBinding_IChatManager" contract="ChatManagerService.IChatManager" bindingType="netTcpBinding" address="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/ChatManagerService/" bindingConfiguration="NetTcpBinding_IChatManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://169.254.230.170:8734/MindWeaveServer/Services/ChatManagerService/</serializedValue>
+          <serializedValue>net.tcp://192.168.1.101:8734/MindWeaveServer/Services/ChatManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

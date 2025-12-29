@@ -19,17 +19,17 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="bb3a43ac-d255-496d-8f13-9bae1e409e5c" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="02a87e5a-ced7-4ee5-9fb5-9103e654bc2c" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="c92bbb2c-bcb7-458b-b777-c7c627b36056" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Matchmaking1.xsd" MetadataType="Schema" ID="ab5558fb-25f6-4344-9739-985c77a4560f" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared1.xsd" MetadataType="Schema" ID="d864518d-2793-4a27-98cb-44d5a61eb8e7" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="17d0891a-1ec3-474b-9af7-1baae9e191e0" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Puzzle1.xsd" MetadataType="Schema" ID="b00f67dd-47a0-4754-aba2-d1da41581c38" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Game1.xsd" MetadataType="Schema" ID="f282cdc7-f773-4175-b05f-043cf9aa8d60" SourceId="1" SourceUrl="net.tcp://169.254.230.170:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="f7381481-c8c0-4b31-9eb4-e58aff20e1a4" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="4ea33635-bdca-424d-be03-6534a38e1b39" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="c6f4d662-4e3d-4cef-8491-441964596752" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd" MetadataType="Schema" ID="868f8411-9288-4e47-90bf-e87888564a80" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared.xsd" MetadataType="Schema" ID="0a406cda-ed22-4e7b-bfaf-fd370cf741af" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="72870223-89cc-47df-9d75-348a9bc6a229" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Puzzle.xsd" MetadataType="Schema" ID="01ed4346-b974-4963-bea3-8b9b5e9bc616" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Game.xsd" MetadataType="Schema" ID="c2ddfa01-e656-4432-91cb-1e5df329cd8c" SourceId="1" SourceUrl="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/MatchmakingManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
