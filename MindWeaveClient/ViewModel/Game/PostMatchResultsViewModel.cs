@@ -170,8 +170,14 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void navigateToMainMenu()
         {
-            windowNavigationService.closeWindow<GameWindow>();
+            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+            if (gameWindow != null)
+            {
+                gameWindow.isExitConfirmed = true;
+            }
+
             windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
         }
     }
 }

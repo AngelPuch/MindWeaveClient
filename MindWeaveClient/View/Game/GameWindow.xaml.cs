@@ -3,8 +3,6 @@ using MindWeaveClient.Utilities.Abstractions;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-// Asegúrate de importar donde tienes tus páginas
-using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.View.Game
@@ -12,7 +10,7 @@ namespace MindWeaveClient.View.Game
     public partial class GameWindow : Window
     {
         private readonly ISessionCleanupService cleanupService;
-        private bool isExitConfirmed = false;
+        public bool isExitConfirmed { get; set; } = false;
         public bool GameEndedNaturally { get; set; } = false;
 
         public GameWindow(
