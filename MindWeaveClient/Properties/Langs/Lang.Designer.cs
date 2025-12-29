@@ -331,6 +331,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Cannot connect to the network. Please verify your internet connection is working..
+        /// </summary>
+        public static string ErrorCannotConnectToNetwork {
+            get {
+                return ResourceManager.GetString("ErrorCannotConnectToNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error changing password..
         /// </summary>
         public static string ErrorChangingPassword {
@@ -394,6 +403,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Could not resolve server address. Please check your internet connection..
+        /// </summary>
+        public static string ErrorDnsResolutionFailed {
+            get {
+                return ResourceManager.GetString("ErrorDnsResolutionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error al cargar los datos del perfil.
         /// </summary>
         public static string ErrorFailedToLoadProfile {
@@ -426,6 +444,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorGuestUsernameGenerationFailed {
             get {
                 return ResourceManager.GetString("ErrorGuestUsernameGenerationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The remote server appears to be down. Please try again later..
+        /// </summary>
+        public static string ErrorHostDown {
+            get {
+                return ResourceManager.GetString("ErrorHostDown", resourceCulture);
             }
         }
         
@@ -610,6 +637,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Your network connection is down. Please check your internet connection..
+        /// </summary>
+        public static string ErrorNetworkDown {
+            get {
+                return ResourceManager.GetString("ErrorNetworkDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Network subsystem is not ready. Please wait a moment and try again..
+        /// </summary>
+        public static string ErrorNetworkNotReady {
+            get {
+                return ResourceManager.GetString("ErrorNetworkNotReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Cannot reach the server. Please check your network connection..
         /// </summary>
         public static string ErrorNetworkUnreachable {
@@ -619,11 +664,38 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No internet connection. Please check your network settings and try again..
+        /// </summary>
+        public static string ErrorNoInternetConnection {
+            get {
+                return ResourceManager.GetString("ErrorNoInternetConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No Internet Connection.
+        /// </summary>
+        public static string ErrorNoInternetTitle {
+            get {
+                return ResourceManager.GetString("ErrorNoInternetTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error: No pieces found in puzzle definition..
         /// </summary>
         public static string ErrorNoPiecesInPuzzle {
             get {
                 return ResourceManager.GetString("ErrorNoPiecesInPuzzle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You are not connected to a network. Please connect to the internet and try again..
+        /// </summary>
+        public static string ErrorNotConnectedToNetwork {
+            get {
+                return ResourceManager.GetString("ErrorNotConnectedToNetwork", resourceCulture);
             }
         }
         

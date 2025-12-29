@@ -1029,4 +1029,28 @@
   <data name="ErrorRestartFailed" xml:space="preserve">
     <value>No se pudo reiniciar la aplicación. Por favor reinicie manualmente.</value>
   </data>
+  <data name="ErrorNoInternetTitle" xml:space="preserve">
+    <value>Sin Conexión a Internet</value>
+  </data>
+  <data name="ErrorNoInternetConnection" xml:space="preserve">
+    <value>No hay conexión a internet. Por favor revisa tu configuración de red e intenta de nuevo.</value>
+  </data>
+  <data name="ErrorNetworkDown" xml:space="preserve">
+    <value>Tu conexión de red está caída. Por favor revisa tu conexión a internet.</value>
+  </data>
+  <data name="ErrorNotConnectedToNetwork" xml:space="preserve">
+    <value>No estás conectado a una red. Por favor conéctate a internet e intenta de nuevo.</value>
+  </data>
+  <data name="ErrorHostDown" xml:space="preserve">
+    <value>El servidor remoto parece estar caído. Por favor intenta más tarde.</value>
+  </data>
+  <data name="ErrorNetworkNotReady" xml:space="preserve">
+    <value>El subsistema de red no está listo. Por favor espera un momento e intenta de nuevo.</value>
+  </data>
+  <data name="ErrorDnsResolutionFailed" xml:space="preserve">
+    <value>No se pudo resolver la dirección del servidor. Por favor revisa tu conexión a internet.</value>
+  </data>
+  <data name="ErrorCannotConnectToNetwork" xml:space="preserve">
+    <value>No se puede conectar a la red. Por favor verifica que tu conexión a internet funcione.</value>
+  </data>
 </root>

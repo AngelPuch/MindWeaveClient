@@ -126,6 +126,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
                 windowNavigationService.openWindow<GameWindow>();
+                markWindowAsSafeClose();
                 windowNavigationService.closeWindow<MainWindow>();
             }
             catch (Exception ex)
@@ -148,6 +149,7 @@ namespace MindWeaveClient.ViewModel.Main
                 await cleanupService.cleanUpSessionAsync();
 
                 windowNavigationService.openWindow<AuthenticationWindow>();
+                markWindowAsSafeClose();
                 windowNavigationService.closeWindow<MainWindow>();
             }
             catch (EndpointNotFoundException)
@@ -203,9 +205,18 @@ namespace MindWeaveClient.ViewModel.Main
         {
             SessionService.clearSession();
             windowNavigationService.openWindow<AuthenticationWindow>();
+            markWindowAsSafeClose();
             windowNavigationService.closeWindow<MainWindow>();
         }
 
+        private static void markWindowAsSafeClose()
+        {
+            var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (mainWindow != null)
+            {
+                mainWindow.IsExitConfirmed = true;
+            }
+        }
 
         private void disconnectMatchmakingSafe()
         {

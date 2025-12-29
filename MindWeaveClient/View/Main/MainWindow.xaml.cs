@@ -12,8 +12,9 @@ namespace MindWeaveClient.View.Main
     public partial class MainWindow : Window
     {
         private readonly ISessionCleanupService cleanupService;
-        private bool isExitConfirmed;
         private readonly IInvitationService invitationService;
+
+        public bool IsExitConfirmed { get; set; } = false;
 
         public MainWindow(
             INavigationService navigationService, 
@@ -37,7 +38,7 @@ namespace MindWeaveClient.View.Main
 
         private async void windowClosing(object sender, CancelEventArgs e)
         {
-            if (isExitConfirmed)
+            if (IsExitConfirmed)
             {
                 return;
             }
@@ -62,7 +63,7 @@ namespace MindWeaveClient.View.Main
             if (result == MessageBoxResult.Yes)
             {
                 await cleanupService.cleanUpSessionAsync();
-                isExitConfirmed = true;
+                IsExitConfirmed = true;
                 Application.Current.Shutdown();
             }
         }
