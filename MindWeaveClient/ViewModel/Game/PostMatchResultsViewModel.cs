@@ -173,7 +173,7 @@ namespace MindWeaveClient.ViewModel.Game
             var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
             if (gameWindow != null)
             {
-                gameWindow.isExitConfirmed = true;
+                gameWindow.IsExitConfirmed = true;
             }
 
             windowNavigationService.openWindow<MainWindow>();

@@ -10,7 +10,7 @@ namespace MindWeaveClient.View.Game
     public partial class GameWindow : Window
     {
         private readonly ISessionCleanupService cleanupService;
-        public bool isExitConfirmed { get; set; } = false;
+        public bool IsExitConfirmed { get; set; } = false;
         public bool GameEndedNaturally { get; set; } = false;
 
         public GameWindow(
@@ -27,7 +27,7 @@ namespace MindWeaveClient.View.Game
 
         private async void windowClosing(object sender, CancelEventArgs e)
         {
-            if (GameEndedNaturally || isExitConfirmed) return;
+            if (GameEndedNaturally || IsExitConfirmed) return;
 
             bool isTransitioningToMain = Application.Current.Windows
                 .OfType<MainWindow>()
@@ -65,7 +65,7 @@ namespace MindWeaveClient.View.Game
 
         private void forceShutdown()
         {
-            isExitConfirmed = true;
+            IsExitConfirmed = true;
             Application.Current.Shutdown();
         }
     }

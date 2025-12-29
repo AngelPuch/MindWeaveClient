@@ -8,6 +8,8 @@ using System.Net.Sockets;
 using System.ServiceModel;
 using System.ServiceModel.Security;
 using System.Windows;
+using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.Utilities.Implementations
 {
@@ -42,9 +44,9 @@ namespace MindWeaveClient.Utilities.Implementations
             IWindowNavigationService windowNavigationService,
             Lazy<ISessionCleanupService> sessionCleanupServiceLazy)
         {
-            this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-            this.windowNavigationService = windowNavigationService ?? throw new ArgumentNullException(nameof(windowNavigationService));
-            this.sessionCleanupServiceLazy = sessionCleanupServiceLazy ?? throw new ArgumentNullException(nameof(sessionCleanupServiceLazy));
+            this.dialogService = dialogService;
+            this.windowNavigationService = windowNavigationService;
+            this.sessionCleanupServiceLazy = sessionCleanupServiceLazy;
         }
 
         public bool handleException(Exception exception, string operationContext = null)
@@ -592,6 +594,15 @@ namespace MindWeaveClient.Utilities.Implementations
 
             foreach (var window in windowsToClose)
             {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.IsExitConfirmed = true;
+                }
+                else if (window is GameWindow gameWindow)
+                {
+                    gameWindow.IsExitConfirmed = true;
+                }
+
                 window.Close();
             }
         }
