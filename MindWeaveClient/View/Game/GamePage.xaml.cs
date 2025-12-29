@@ -16,14 +16,14 @@ namespace MindWeaveClient.View.Game
         private List<PuzzlePieceViewModel> draggedGroup;
         private DateTime lastUiUpdate = DateTime.MinValue;
         private readonly GameViewModel gameViewModel;
-        
+
         private const double SNAP_THRESHOLD = 20.0;
         private const double BOARD_SNAP_TOLERANCE = 10.0;
 
         private DateTime lastMoveUpdateTime = DateTime.MinValue;
         private const int MOVE_UPDATE_INTERVAL_MS = 50;
 
-        private bool isLocalDragging;
+        private bool isLocalDragging = false;
 
 
         public GamePage(GameViewModel viewModel)
@@ -51,12 +51,12 @@ namespace MindWeaveClient.View.Game
             }
         }
 
-        private void Piece_MouseMove(object sender, MouseEventArgs e)
+        private async void Piece_MouseMove(object sender, MouseEventArgs e)
         {
             var now = DateTime.UtcNow;
             if ((now - lastUiUpdate).TotalMilliseconds < 16)
             {
-                return; 
+                return;
             }
             lastUiUpdate = now;
 
@@ -65,8 +65,16 @@ namespace MindWeaveClient.View.Game
                 Point currentPoint = e.GetPosition(this.PuzzleItemsControl);
 
                 GeneralTransform transform = this.TransformToDescendant(this.PuzzleItemsControl);
+                Rect validBounds;
 
-                var validBounds = transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+                if (transform != null)
+                {
+                    validBounds = transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+                }
+                else
+                {
+                    validBounds = new Rect(0, 0, this.PuzzleItemsControl.ActualWidth, this.PuzzleItemsControl.ActualHeight);
+                }
 
                 var proposedPositions = new List<(PuzzlePieceViewModel piece, double x, double y)>();
 
@@ -143,7 +151,7 @@ namespace MindWeaveClient.View.Game
             }
         }
 
-        private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pieceView = sender as PuzzlePieceView;
             if (pieceView == null) { return; }
@@ -164,7 +172,7 @@ namespace MindWeaveClient.View.Game
             int maxZ = 0;
             if (views.Any())
             {
-                maxZ = views.Max(Panel.GetZIndex);
+                maxZ = views.Max(v => Panel.GetZIndex(v));
             }
 
             foreach (var view in views)
@@ -210,18 +218,15 @@ namespace MindWeaveClient.View.Game
             {
                 await handleBoardSnapAndDrop(piecesToDrop);
             }
-            
+
             this.draggedGroup = null;
             isLocalDragging = false;
-            e.Handled = true;   
+            e.Handled = true;
         }
 
-        private Task handleBoardSnapAndDrop(List<PuzzlePieceViewModel> groupToDrop)
+        private async Task handleBoardSnapAndDrop(List<PuzzlePieceViewModel> groupToDrop)
         {
-            if (groupToDrop == null || !groupToDrop.Any())
-            {
-                return Task.CompletedTask;
-            }
+            if (groupToDrop == null || !groupToDrop.Any()) { return; }
 
             var firstPiece = draggedGroup[0];
             double currentX = firstPiece.X;
@@ -251,8 +256,6 @@ namespace MindWeaveClient.View.Game
                     _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
                 }
             }
-
-            return Task.CompletedTask;
         }
 
         private bool checkForPieceToPieceSnap()
@@ -319,7 +322,7 @@ namespace MindWeaveClient.View.Game
             {
                 double snapOffsetX = target.X - dragged.X;
                 double snapOffsetY = target.Y - dragged.Y;
-                alignAndMerge(stationary.PieceGroup, snapOffsetX, snapOffsetY);
+                alignAndMerge(stationary.PieceGroup, snapOffsetX, snapOffsetY, dragged, stationary);
                 return true;
             }
             return false;
@@ -335,7 +338,9 @@ namespace MindWeaveClient.View.Game
         private void alignAndMerge(
             List<PuzzlePieceViewModel> stationaryGroup,
             double offsetX,
-            double offsetY)
+            double offsetY,
+            PuzzlePieceViewModel draggedPiece,
+            PuzzlePieceViewModel stationaryPiece)
         {
             foreach (var piece in this.draggedGroup)
             {

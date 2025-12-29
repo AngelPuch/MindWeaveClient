@@ -86,9 +86,9 @@
   </wsdl:binding>
   <wsdl:service name="ChatManagerService">
     <wsdl:port name="NetTcpBinding_IChatManager" binding="tns:NetTcpBinding_IChatManager">
-      <soap12:address location="net.tcp://192.168.1.101:8734/MindWeaveServer/Services/ChatManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.79:8734/MindWeaveServer/Services/ChatManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.1.101:8734/MindWeaveServer/Services/ChatManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.79:8734/MindWeaveServer/Services/ChatManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>
