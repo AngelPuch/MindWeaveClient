@@ -16,6 +16,7 @@ using MindWeaveClient.ViewModel.Authentication;
 using MindWeaveClient.ViewModel.Game;
 using MindWeaveClient.ViewModel.Main;
 using System;
+using System.ServiceModel;
 using System.Threading;
 using System.Windows;
 using NavigationService = MindWeaveClient.Utilities.Implementations.NavigationService;
@@ -72,6 +73,13 @@ namespace MindWeaveClient
             services.AddSingleton<IAudioService, AudioService>();
             services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
             services.AddSingleton<ISessionCleanupService, SessionCleanupService>();
+            services.AddSingleton<IServiceExceptionHandler>(provider =>
+                new ServiceExceptionHandler(
+                    provider.GetRequiredService<IDialogService>(),
+                    provider.GetRequiredService<IWindowNavigationService>(),
+                    new Lazy<ISessionCleanupService>(provider.GetRequiredService<ISessionCleanupService>)
+                )
+            );
 
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();
@@ -122,59 +130,12 @@ namespace MindWeaveClient
         {
             try
             {
-                var callbackHandlerType = typeof(MindWeaveClient.Services.Callbacks.MatchmakingCallbackHandler);
-                var dragStartedField = callbackHandlerType.GetEvent("PieceDragStartedHandler");
-                var placedField = callbackHandlerType.GetEvent("PiecePlacedHandler");
-                var movedField = callbackHandlerType.GetEvent("PieceMovedHandler");
-                var releasedField = callbackHandlerType.GetEvent("PieceDragReleasedHandler");
-                var gameStartedField = callbackHandlerType.GetEvent("OnGameStartedNavigation");
-
-                if (dragStartedField != null)
-                {
-                    var fieldInfo = callbackHandlerType.GetField("PieceDragStartedHandler",
-                        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-                    fieldInfo?.SetValue(null, null);
-                }
-
-                var audioService = ServiceProvider.GetService<IAudioService>();
-                audioService?.Dispose();
-
-                var invitationService = ServiceProvider.GetService<IInvitationService>();
-                invitationService?.unsubscribeFromGlobalInvites();
-
-                var socialService = ServiceProvider.GetService<ISocialService>();
-                if (socialService != null)
-                {
-                    try
-                    {
-                        var username = SessionService.Username;
-                        if (!string.IsNullOrEmpty(username))
-                        {
-                            socialService.disconnectAsync(username).Wait(TimeSpan.FromSeconds(2));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Trace.TraceWarning($"Error disconnecting social service: {ex.Message}");
-                    }
-                    finally
-                    {
-                        socialService.Dispose();
-                    }
-                }
-
-                var matchmakingService = ServiceProvider.GetService<IMatchmakingService>();
-                matchmakingService?.disconnect();
-
-                var chatService = ServiceProvider.GetService<IChatService>();
-                if (chatService is IDisposable chatDisposable)
-                {
-                    chatDisposable.Dispose();
-                }
+                cleanupCallbackHandlers();
+                cleanupServices();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                System.Diagnostics.Trace.TraceError($"Error during application exit: {ex.Message}");
+                // ignored
             }
             finally
             {
@@ -182,5 +143,73 @@ namespace MindWeaveClient
             }
         }
 
+        private void cleanupCallbackHandlers()
+        {
+            try
+            {
+                var callbackHandlerType = typeof(MatchmakingCallbackHandler);
+                var fieldFlags = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic;
+
+                var fields = new[] { "PieceDragStartedHandler", "PiecePlacedHandler", "PieceMovedHandler", "PieceDragReleasedHandler", "OnGameStartedNavigation" };
+
+                foreach (var fieldName in fields)
+                {
+                    var fieldInfo = callbackHandlerType.GetField(fieldName, fieldFlags);
+                    fieldInfo?.SetValue(null, null);
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+
+        private void cleanupServices()
+        {
+            var audioService = ServiceProvider.GetService<IAudioService>();
+            audioService?.Dispose();
+
+            var invitationService = ServiceProvider.GetService<IInvitationService>();
+            invitationService?.unsubscribeFromGlobalInvites();
+
+            cleanupSocialService();
+
+            var matchmakingService = ServiceProvider.GetService<IMatchmakingService>();
+            matchmakingService?.disconnect();
+
+            var chatService = ServiceProvider.GetService<IChatService>();
+            if (chatService is IDisposable chatDisposable)
+            {
+                chatDisposable.Dispose();
+            }
+        }
+
+        private static void cleanupSocialService()
+        {
+            var socialService = ServiceProvider.GetService<ISocialService>();
+            if (socialService == null) return;
+
+            try
+            {
+                var username = SessionService.Username;
+                if (!string.IsNullOrEmpty(username))
+                {
+                    socialService.disconnectAsync(username).Wait(TimeSpan.FromSeconds(2));
+                }
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+            catch (AggregateException)
+            {
+            }
+            finally
+            {
+                socialService.Dispose();
+            }
+        }
     }
 }

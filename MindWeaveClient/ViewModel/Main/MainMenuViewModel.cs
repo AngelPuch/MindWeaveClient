@@ -3,30 +3,27 @@ using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Validators;
+using MindWeaveClient.View.Authentication;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.View.Authentication;
 
 namespace MindWeaveClient.ViewModel.Main
 {
     public class MainMenuViewModel : BaseViewModel, IDisposable
     {
         private readonly IMatchmakingService matchmakingService;
-        private readonly IAuthenticationService authenticationService;
-        private readonly ISocialService socialService;
-
-        private readonly IDialogService dialogService;
         private readonly ISessionCleanupService cleanupService;
         private readonly MainMenuValidator validator;
         private readonly IWindowNavigationService windowNavigationService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         public string PlayerUsername { get; }
 
@@ -79,23 +76,18 @@ namespace MindWeaveClient.ViewModel.Main
 
         public MainMenuViewModel(
             IMatchmakingService matchmakingService,
-            IDialogService dialogService,
-            IAuthenticationService authenticationService,
-            ISocialService socialService,
             MainMenuValidator validator,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            ICurrentLobbyService currentLobbyService,
-            ISessionCleanupService cleanupService)
+            ISessionCleanupService cleanupService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.matchmakingService = matchmakingService;
-            this.dialogService = dialogService;
-            this.authenticationService = authenticationService;
-            this.socialService = socialService;
             this.validator = validator;
             var navigationService1 = navigationService;
             this.windowNavigationService = windowNavigationService;
             this.cleanupService = cleanupService;
+            this.exceptionHandler = exceptionHandler;
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
@@ -136,23 +128,11 @@ namespace MindWeaveClient.ViewModel.Main
                 windowNavigationService.openWindow<GameWindow>();
                 windowNavigationService.closeWindow<MainWindow>();
             }
-            catch (EndpointNotFoundException ex)
-            {
-                SetBusy(false);
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                matchmakingService.disconnect();
-            }
-            catch (TimeoutException ex)
-            {
-                SetBusy(false);
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                matchmakingService.disconnect();
-            }
             catch (Exception ex)
             {
                 SetBusy(false);
-                handleError(Lang.ErrorMsgGuestJoinFailed, ex);
-                matchmakingService.disconnect();
+                exceptionHandler.handleException(ex, Lang.JoinLobbyOperation);
+                disconnectMatchmakingSafe();
             }
             finally
             {
@@ -170,9 +150,21 @@ namespace MindWeaveClient.ViewModel.Main
                 windowNavigationService.openWindow<AuthenticationWindow>();
                 windowNavigationService.closeWindow<MainWindow>();
             }
-            catch (Exception ex)
+            catch (EndpointNotFoundException)
             {
-                handleError(Lang.ErrorMsgNoDetails, ex);
+                forceLocalLogout();
+            }
+            catch (CommunicationException)
+            {
+                forceLocalLogout();
+            }
+            catch (TimeoutException)
+            {
+                forceLocalLogout();
+            }
+            catch (SocketException)
+            {
+                forceLocalLogout();
             }
             finally
             {
@@ -186,24 +178,47 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 await cleanupService.cleanUpSessionAsync();
-                Application.Current.Shutdown();
             }
-            catch (Exception ex)
+            catch (EndpointNotFoundException)
             {
-                handleError(Lang.ErrorMsgNoDetails, ex);
-                Application.Current.Shutdown();
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+            catch (SocketException)
+            {
             }
             finally
             {
                 SetBusy(false);
+                Application.Current.Shutdown();
             }
 
         }
 
-        private void handleError(string message, Exception ex)
+        private void forceLocalLogout()
         {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
+            SessionService.clearSession();
+            windowNavigationService.openWindow<AuthenticationWindow>();
+            windowNavigationService.closeWindow<MainWindow>();
+        }
+
+
+        private void disconnectMatchmakingSafe()
+        {
+            try
+            {
+                matchmakingService.disconnect();
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
 
         public void Dispose()

@@ -4,6 +4,7 @@ using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Main;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -24,27 +25,32 @@ namespace MindWeaveClient.ViewModel.Game
 
     public class PostMatchResultsViewModel : BaseViewModel
     {
+        private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
+        private const string DRAW_TITLE = "¡EMPATE!";
+
+
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentMatchService currentMatchService;
 
         private ResultDisplayItem winner;
         private ObservableCollection<ResultDisplayItem> allParticipants;
-
         private string resultTitle;
+        private Visibility winnerSectionVisibility;
+        private Visibility drawSectionVisibility;
+
+
         public string ResultTitle
         {
             get => resultTitle;
             set { resultTitle = value; OnPropertyChanged(); }
         }
 
-        private Visibility winnerSectionVisibility;
         public Visibility WinnerSectionVisibility
         {
             get => winnerSectionVisibility;
             set { winnerSectionVisibility = value; OnPropertyChanged(); }
         }
 
-        private Visibility drawSectionVisibility;
         public Visibility DrawSectionVisibility
         {
             get => drawSectionVisibility;
@@ -62,14 +68,15 @@ namespace MindWeaveClient.ViewModel.Game
             get => allParticipants;
             set { allParticipants = value; OnPropertyChanged(); }
         }
+
         public ICommand GoToMainMenuCommand { get; }
 
         public PostMatchResultsViewModel(
             IWindowNavigationService windowNavigationService,
             ICurrentMatchService currentMatchService)
         {
-            this.windowNavigationService = windowNavigationService;
-            this.currentMatchService = currentMatchService;
+            this.windowNavigationService = windowNavigationService ?? throw new ArgumentNullException(nameof(windowNavigationService));
+            this.currentMatchService = currentMatchService ?? throw new ArgumentNullException(nameof(currentMatchService));
 
             allParticipants = new ObservableCollection<ResultDisplayItem>();
 
@@ -77,7 +84,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             loadData();
         }
-
 
         private void loadData()
         {
@@ -92,11 +98,7 @@ namespace MindWeaveClient.ViewModel.Game
 
                 foreach (var playerDto in results.PlayerResults.OrderBy(p => p.Rank))
                 {
-                    string avatar = "/Resources/Images/Avatar/default_avatar.png";
-                    if (playerDto.Username == SessionService.Username)
-                    {
-                        avatar = SessionService.AvatarPath ?? avatar;
-                    }
+                    string avatar = getPlayerAvatar(playerDto.Username);
 
                     var displayItem = new ResultDisplayItem
                     {
@@ -116,27 +118,58 @@ namespace MindWeaveClient.ViewModel.Game
                     }
                 }
 
-                if (Winner != null)
-                {
-                    ResultTitle = Lang.PostMatchLbWinner;
-                    WinnerSectionVisibility = Visibility.Visible;
-                    DrawSectionVisibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    ResultTitle = "¡EMPATE!";
-                    WinnerSectionVisibility = Visibility.Collapsed;
-                    DrawSectionVisibility = Visibility.Visible;
-                }
+                updateResultDisplay();
             });
+        }
+
+        private static string getPlayerAvatar(string username)
+        {
+            if (username == SessionService.Username)
+            {
+                return SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
+            }
+            return DEFAULT_AVATAR_PATH;
+        }
+
+        private void updateResultDisplay()
+        {
+            if (Winner != null)
+            {
+                ResultTitle = Lang.PostMatchLbWinner;
+                WinnerSectionVisibility = Visibility.Visible;
+                DrawSectionVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ResultTitle = DRAW_TITLE;
+                WinnerSectionVisibility = Visibility.Collapsed;
+                DrawSectionVisibility = Visibility.Visible;
+            }
         }
 
         private void executeGoToMainMenu(object obj)
         {
-            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
-            if (gameWindow != null) { gameWindow.GameEndedNaturally = true; }
+            markGameAsEndedNaturally();
+            clearMatchData();
+            navigateToMainMenu();
+        }
 
+        private void markGameAsEndedNaturally()
+        {
+            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+            if (gameWindow != null)
+            {
+                gameWindow.GameEndedNaturally = true;
+            }
+        }
+
+        private void clearMatchData()
+        {
             currentMatchService.clearMatchData();
+        }
+
+        private void navigateToMainMenu()
+        {
             windowNavigationService.closeWindow<GameWindow>();
             windowNavigationService.openWindow<MainWindow>();
         }

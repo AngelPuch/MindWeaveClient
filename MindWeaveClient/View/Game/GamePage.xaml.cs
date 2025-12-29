@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +23,7 @@ namespace MindWeaveClient.View.Game
         private DateTime lastMoveUpdateTime = DateTime.MinValue;
         private const int MOVE_UPDATE_INTERVAL_MS = 50;
 
-        private bool isLocalDragging = false;
+        private bool isLocalDragging;
 
 
         public GamePage(GameViewModel viewModel)
@@ -52,7 +51,7 @@ namespace MindWeaveClient.View.Game
             }
         }
 
-        private async void Piece_MouseMove(object sender, MouseEventArgs e)
+        private void Piece_MouseMove(object sender, MouseEventArgs e)
         {
             var now = DateTime.UtcNow;
             if ((now - lastUiUpdate).TotalMilliseconds < 16)
@@ -66,16 +65,8 @@ namespace MindWeaveClient.View.Game
                 Point currentPoint = e.GetPosition(this.PuzzleItemsControl);
 
                 GeneralTransform transform = this.TransformToDescendant(this.PuzzleItemsControl);
-                Rect validBounds;
 
-                if (transform != null)
-                {
-                    validBounds = transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-                }
-                else
-                {
-                    validBounds = new Rect(0, 0, this.PuzzleItemsControl.ActualWidth, this.PuzzleItemsControl.ActualHeight);
-                }
+                var validBounds = transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
 
                 var proposedPositions = new List<(PuzzlePieceViewModel piece, double x, double y)>();
 
@@ -152,7 +143,7 @@ namespace MindWeaveClient.View.Game
             }
         }
 
-        private async void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pieceView = sender as PuzzlePieceView;
             if (pieceView == null) { return; }
@@ -173,7 +164,7 @@ namespace MindWeaveClient.View.Game
             int maxZ = 0;
             if (views.Any())
             {
-                maxZ = views.Max(v => Panel.GetZIndex(v));
+                maxZ = views.Max(Panel.GetZIndex);
             }
 
             foreach (var view in views)
@@ -225,9 +216,12 @@ namespace MindWeaveClient.View.Game
             e.Handled = true;   
         }
 
-        private async Task handleBoardSnapAndDrop(List<PuzzlePieceViewModel> groupToDrop)
+        private Task handleBoardSnapAndDrop(List<PuzzlePieceViewModel> groupToDrop)
         {
-            if (groupToDrop == null || !groupToDrop.Any()) { return; }
+            if (groupToDrop == null || !groupToDrop.Any())
+            {
+                return Task.CompletedTask;
+            }
 
             var firstPiece = draggedGroup[0];
             double currentX = firstPiece.X;
@@ -257,6 +251,8 @@ namespace MindWeaveClient.View.Game
                     _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private bool checkForPieceToPieceSnap()
@@ -323,7 +319,7 @@ namespace MindWeaveClient.View.Game
             {
                 double snapOffsetX = target.X - dragged.X;
                 double snapOffsetY = target.Y - dragged.Y;
-                alignAndMerge(stationary.PieceGroup, snapOffsetX, snapOffsetY, dragged, stationary);
+                alignAndMerge(stationary.PieceGroup, snapOffsetX, snapOffsetY);
                 return true;
             }
             return false;
@@ -339,9 +335,7 @@ namespace MindWeaveClient.View.Game
         private void alignAndMerge(
             List<PuzzlePieceViewModel> stationaryGroup,
             double offsetX,
-            double offsetY,
-            PuzzlePieceViewModel draggedPiece,
-            PuzzlePieceViewModel stationaryPiece)
+            double offsetY)
         {
             foreach (var piece in this.draggedGroup)
             {

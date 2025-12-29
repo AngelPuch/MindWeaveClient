@@ -852,4 +852,181 @@
   <data name="GameExitConfirmMessage" xml:space="preserve">
     <value>Game in progress! If you leave now, you will lose your current progress (pieces placed). Only your playtime will be saved. Exit anyway?</value>
   </data>
+  <data name="ErrorConnectionLostTitle" xml:space="preserve">
+    <value>Connection Error</value>
+  </data>
+  <data name="ErrorConnectionLost" xml:space="preserve">
+    <value>Connection to server lost. You will be redirected to login.</value>
+  </data>
+  <data name="ErrorServiceNotFound" xml:space="preserve">
+    <value>Could not connect to the server. Please verify the server is running and try again.</value>
+  </data>
+  <data name="ErrorServerTimeout" xml:space="preserve">
+    <value>The server is not responding. Please check your network connection and try again.</value>
+  </data>
+  <data name="ErrorConnectionTerminated" xml:space="preserve">
+    <value>The connection was terminated unexpectedly. You will be redirected to login.</value>
+  </data>
+  <data name="ErrorServerBusy" xml:space="preserve">
+    <value>The server is too busy to handle your request. Please try again later.</value>
+  </data>
+  <data name="ErrorConnectionRefused" xml:space="preserve">
+    <value>Connection refused by server. Please verify the server is running.</value>
+  </data>
+  <data name="ErrorConnectionReset" xml:space="preserve">
+    <value>The connection was reset by the server. You will be redirected to login.</value>
+  </data>
+  <data name="ErrorNetworkUnreachable" xml:space="preserve">
+    <value>Cannot reach the server. Please check your network connection.</value>
+  </data>
+  <data name="ErrorHostNotFound" xml:space="preserve">
+    <value>Server not found. Please verify the server address in configuration.</value>
+  </data>
+  <data name="ErrorSecurityNegotiation" xml:space="preserve">
+    <value>Security negotiation failed. Please contact support.</value>
+  </data>
+  <data name="ErrorMessageSecurity" xml:space="preserve">
+    <value>Message security error. Please try again.</value>
+  </data>
+  <data name="ErrorQuotaExceeded" xml:space="preserve">
+    <value>The message size exceeds the allowed limit.</value>
+  </data>
+  <data name="ErrorProtocol" xml:space="preserve">
+    <value>Protocol error communicating with the server.</value>
+  </data>
+  <data name="ErrorActionNotSupported" xml:space="preserve">
+    <value>The requested action is not supported.</value>
+  </data>
+  <data name="ErrorInvalidOperation" xml:space="preserve">
+    <value>The operation could not be completed. Please try again.</value>
+  </data>
+  <data name="ErrorInvalidData" xml:space="preserve">
+    <value>Invalid data provided. Please check your input and try again.</value>
+  </data>
+  <data name="ErrorGenericOperation" xml:space="preserve">
+    <value>An error occurred during {0}. Please try again.</value>
+  </data>
+  <data name="GlobalLbUnknown" xml:space="preserve">
+    <value>unknown operation</value>
+  </data>
+  <data name="LoginOperation" xml:space="preserve">
+    <value>login</value>
+  </data>
+  <data name="ResendCodeOperation" xml:space="preserve">
+    <value>resend verification code</value>
+  </data>
+  <data name="RegistrationOperation" xml:space="preserve">
+    <value>registration</value>
+  </data>
+  <data name="VerificationOperation" xml:space="preserve">
+    <value>account verification</value>
+  </data>
+  <data name="PasswordRecoveryOperation" xml:space="preserve">
+    <value>password recovery</value>
+  </data>
+  <data name="GuestJoinOperation" xml:space="preserve">
+    <value>guest join</value>
+  </data>
+  <data name="JoinLobbyOperation" xml:space="preserve">
+    <value>join lobby</value>
+  </data>
+  <data name="LoadProfileOperation" xml:space="preserve">
+    <value>load profile</value>
+  </data>
+  <data name="LoadAchievementsOperation" xml:space="preserve">
+    <value>load achievements</value>
+  </data>
+  <data name="ChangePasswordOperation" xml:space="preserve">
+    <value>change password</value>
+  </data>
+  <data name="UpdateProfileOperation" xml:space="preserve">
+    <value>update profile</value>
+  </data>
+  <data name="LoadFriendsOperation" xml:space="preserve">
+    <value>load friends list</value>
+  </data>
+  <data name="LoadRequestsOperation" xml:space="preserve">
+    <value>load friend requests</value>
+  </data>
+  <data name="SearchPlayersOperation" xml:space="preserve">
+    <value>search players</value>
+  </data>
+  <data name="SendFriendRequestOperation" xml:space="preserve">
+    <value>send friend request</value>
+  </data>
+  <data name="RespondFriendRequestOperation" xml:space="preserve">
+    <value>respond to friend request</value>
+  </data>
+  <data name="RemoveFriendOperation" xml:space="preserve">
+    <value>remove friend</value>
+  </data>
+  <data name="UpdateAvatarOperation" xml:space="preserve">
+    <value>update avatar</value>
+  </data>
+  <data name="LoadPuzzlesOperation" xml:space="preserve">
+    <value>load puzzles</value>
+  </data>
+  <data name="UploadPuzzleOperation" xml:space="preserve">
+    <value>upload puzzle</value>
+  </data>
+  <data name="CreateLobbyOperation" xml:space="preserve">
+    <value>create lobby</value>
+  </data>
+  <data name="DragPieceOperation" xml:space="preserve">
+    <value>drag piece</value>
+  </data>
+  <data name="DropPieceOperation" xml:space="preserve">
+    <value>drop piece</value>
+  </data>
+  <data name="ErrorNoPiecesInPuzzle" xml:space="preserve">
+    <value>Error: No pieces found in puzzle definition.</value>
+  </data>
+  <data name="ErrorCriticalTitle" xml:space="preserve">
+    <value>Critical Error</value>
+  </data>
+  <data name="ErrorProcessingPuzzle" xml:space="preserve">
+    <value>Error processing puzzle: {0}</value>
+  </data>
+  <data name="GameEndTimeoutTitle" xml:space="preserve">
+    <value>Time's Up!</value>
+  </data>
+  <data name="GameEndTimeoutMessage" xml:space="preserve">
+    <value>The match time has expired.</value>
+  </data>
+  <data name="GameEndForfeitTitle" xml:space="preserve">
+    <value>Victory by Forfeit!</value>
+  </data>
+  <data name="GameEndForfeitMessage" xml:space="preserve">
+    <value>Your opponents have left the match. You win!</value>
+  </data>
+  <data name="GameEndCompletedTitle" xml:space="preserve">
+    <value>Puzzle Completed!</value>
+  </data>
+  <data name="GameEndCompletedMessage" xml:space="preserve">
+    <value>The puzzle has been solved.</value>
+  </data>
+  <data name="GameEndLoadingResults" xml:space="preserve">
+    <value>{0} Loading results...</value>
+  </data>
+  <data name="StartGameOperation" xml:space="preserve">
+    <value>start game</value>
+  </data>
+  <data name="KickPlayerOperation" xml:space="preserve">
+    <value>kick player</value>
+  </data>
+  <data name="InviteFriendOperation" xml:space="preserve">
+    <value>invite friend</value>
+  </data>
+  <data name="InviteGuestOperation" xml:space="preserve">
+    <value>invite guest</value>
+  </data>
+  <data name="SendMessageOperation" xml:space="preserve">
+    <value>send message</value>
+  </data>
+  <data name="LobbyClosedTitle" xml:space="preserve">
+    <value>Lobby Closed</value>
+  </data>
+  <data name="ErrorRestartFailed" xml:space="preserve">
+    <value>Failed to restart the application. Please restart manually.</value>
+  </data>
 </root>

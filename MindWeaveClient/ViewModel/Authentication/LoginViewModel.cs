@@ -5,7 +5,6 @@ using MindWeaveClient.View.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MindWeaveClient.Services;
@@ -25,6 +24,8 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly LoginValidator validator;
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
+        private readonly IServiceExceptionHandler exceptionHandler;
+
 
         public string Email
         {
@@ -102,13 +103,15 @@ namespace MindWeaveClient.ViewModel.Authentication
             IDialogService dialogService,
             LoginValidator validator,
             INavigationService navigationService,
-            IWindowNavigationService windowNavigationService)
+            IWindowNavigationService windowNavigationService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.authenticationService = authenticationService;
             this.dialogService = dialogService;
             this.validator = validator;
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
+            this.exceptionHandler = exceptionHandler;
 
             LoginCommand = new RelayCommand(async (param) => await executeLoginAsync(), (param) => canExecuteLogin());
             SignUpCommand = new RelayCommand((param) => executeGoToSignUp());
@@ -118,6 +121,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             ExitCommand = new RelayCommand(executeExit);
 
             validate(validator, this);
+            this.exceptionHandler = exceptionHandler;
         }
 
         private bool canExecuteLogin()
@@ -134,44 +138,54 @@ namespace MindWeaveClient.ViewModel.Authentication
             SetBusy(true);
             try
             {
-                LoginServiceResultDto serviceResult = await authenticationService.loginAsync(Email, Password);
+                var serviceResult = await authenticationService.loginAsync(Email, Password);
 
                 if (serviceResult.WcfLoginResult.OperationResult.Success)
                 {
-                    if (!serviceResult.IsSocialServiceConnected) { dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle); }
-                    
-                    if (!serviceResult.IsMatchmakingServiceConnected) { dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle); }
-
-                    windowNavigationService.openWindow<MainWindow>();
-                    windowNavigationService.closeWindow<AuthenticationWindow>();
+                    handleSuccessfulLogin(serviceResult);
                 }
                 else
                 {
-                    if (serviceResult.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED") { ShowUnverifiedControls = true;}
-                    else { dialogService.showError(serviceResult.WcfLoginResult.OperationResult.Message, Lang.ErrorTitle);}
+                    handleFailedLogin(serviceResult);
                 }
-            }
-            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
-            {
-                string errorMsg = ex.Detail.Message;
-                dialogService.showError(errorMsg, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgLoginFailed, ex);
+                exceptionHandler.handleException(ex, Lang.LoginOperation);
             }
             finally
             {
                 SetBusy(false);
             }
+        }
+
+        private void handleSuccessfulLogin(LoginServiceResultDto result)
+        {
+            if (!result.IsSocialServiceConnected)
+            {
+                dialogService.showWarning(Lang.WarningMsgSocialConnectFailed, Lang.WarningTitle);
+            }
+
+            if (!result.IsMatchmakingServiceConnected)
+            {
+                dialogService.showWarning(Lang.WarningMsgMatchmakingConnectFailed, Lang.WarningTitle);
+            }
+
+            windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<AuthenticationWindow>();
+        }
+
+        private void handleFailedLogin(LoginServiceResultDto result)
+        {
+            if (result.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED")
+            {
+                ShowUnverifiedControls = true;
+            }
+            else
+            {
+                dialogService.showError(result.WcfLoginResult.OperationResult.Message, Lang.ErrorTitle);
+            }
+
         }
 
         private async Task executeResendVerificationAsync()
@@ -187,23 +201,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                     SessionService.PendingVerificationEmail = this.Email;
                     navigationService.navigateTo<VerificationPage>();
                 }
-                else { handleError(result.Message, null); }
-            }
-            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
+                else
+                {
+                    handleError(result.Message, null);
+                }
             }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgResendCodeFailed, ex);
+                exceptionHandler.handleException(ex, Lang.ResendCodeOperation);
             }
             finally
             {
@@ -226,7 +231,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             navigationService.navigateTo<GuestJoinPage>();
         }
 
-        private void executeExit(object parameter)
+        private static void executeExit(object parameter)
         {
             System.Windows.Application.Current.Shutdown();
         }

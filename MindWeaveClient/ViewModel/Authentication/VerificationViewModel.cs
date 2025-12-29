@@ -8,7 +8,6 @@ using MindWeaveClient.View.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -23,6 +22,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
         private readonly VerificationValidator validator;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         public string Email
         {
@@ -75,12 +75,14 @@ namespace MindWeaveClient.ViewModel.Authentication
             IAuthenticationService authenticationService,
             IDialogService dialogService,
             INavigationService navigationService,
-            VerificationValidator validator)
+            VerificationValidator validator,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.authenticationService = authenticationService;
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.validator = validator;
+            this.exceptionHandler = exceptionHandler;
 
             this.Email = SessionService.PendingVerificationEmail;
 
@@ -116,21 +118,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else { dialogService.showError(result.Message, Lang.ErrorTitle); }
             }
-            catch (FaultException<MindWeaveClient.AuthenticationService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgVerifyFailed, ex);
+                exceptionHandler.handleException(ex, Lang.VerificationOperation);
             }
             finally
             {
@@ -160,32 +150,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else { dialogService.showError(result.Message, Lang.ErrorTitle); }
             }
-            catch (FaultException<MindWeaveClient.AuthenticationService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgResendCodeFailed, ex);
+                exceptionHandler.handleException(ex, Lang.ResendCodeOperation);
             }
             finally
             {
                 SetBusy(false);
             }
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

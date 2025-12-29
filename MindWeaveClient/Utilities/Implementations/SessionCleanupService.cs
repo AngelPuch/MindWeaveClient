@@ -2,6 +2,8 @@
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using System;
+using System.Net.Sockets;
+using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Utilities.Implementations
@@ -36,10 +38,20 @@ namespace MindWeaveClient.Utilities.Implementations
                 await socialService.disconnectAsync(SessionService.Username);
                 matchmakingService.disconnect();
             }
-            catch (Exception)
+            catch (EndpointNotFoundException)
             {
-                // Loguear el error si tienes un Logger, pero no detener el flujo de salida.
-                // Es preferible que la limpieza continúe (borrar sesión local) aunque falle la red.
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+            catch (SocketException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
             }
             finally
             {
@@ -58,10 +70,22 @@ namespace MindWeaveClient.Utilities.Implementations
                     await matchmakingService.leaveGameAsync(SessionService.Username, lobbyCode);
                 }
             }
-            catch (Exception)
+            catch (EndpointNotFoundException)
             {
-                // Ignorar errores de red al salir, priorizar limpieza local
             }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+            catch (SocketException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+
             finally
             {
                 await cleanUpSessionAsync();

@@ -852,4 +852,181 @@
   <data name="GameExitConfirmMessage" xml:space="preserve">
     <value>¡Partida en curso! Si sales ahora, perderás tu progreso actual (piezas colocadas). Solo se guardará tu tiempo de juego. ¿Salir de todos modos?</value>
   </data>
+  <data name="ErrorConnectionLostTitle" xml:space="preserve">
+    <value>Error de Conexión</value>
+  </data>
+  <data name="ErrorConnectionLost" xml:space="preserve">
+    <value>Se ha perdido la conexión con el servidor. Serás redirigido al inicio de sesión.</value>
+  </data>
+  <data name="ErrorServiceNotFound" xml:space="preserve">
+    <value>No se pudo conectar al servidor. Verifica que el servidor esté ejecutándose e intenta de nuevo.</value>
+  </data>
+  <data name="ErrorServerTimeout" xml:space="preserve">
+    <value>El servidor no responde. Verifica tu conexión de red e intenta de nuevo.</value>
+  </data>
+  <data name="ErrorConnectionTerminated" xml:space="preserve">
+    <value>La conexión se terminó inesperadamente. Serás redirigido al inicio de sesión.</value>
+  </data>
+  <data name="ErrorServerBusy" xml:space="preserve">
+    <value>El servidor está muy ocupado para procesar tu solicitud. Intenta más tarde.</value>
+  </data>
+  <data name="ErrorConnectionRefused" xml:space="preserve">
+    <value>Conexión rechazada por el servidor. Verifica que el servidor esté ejecutándose.</value>
+  </data>
+  <data name="ErrorConnectionReset" xml:space="preserve">
+    <value>La conexión fue reiniciada por el servidor. Serás redirigido al inicio de sesión.</value>
+  </data>
+  <data name="ErrorNetworkUnreachable" xml:space="preserve">
+    <value>No se puede alcanzar el servidor. Verifica tu conexión de red.</value>
+  </data>
+  <data name="ErrorHostNotFound" xml:space="preserve">
+    <value>Servidor no encontrado. Verifica la dirección del servidor en la configuración.</value>
+  </data>
+  <data name="ErrorSecurityNegotiation" xml:space="preserve">
+    <value>La negociación de seguridad falló. Contacta a soporte.</value>
+  </data>
+  <data name="ErrorMessageSecurity" xml:space="preserve">
+    <value>Error de seguridad del mensaje. Intenta de nuevo.</value>
+  </data>
+  <data name="ErrorQuotaExceeded" xml:space="preserve">
+    <value>El tamaño del mensaje excede el límite permitido.</value>
+  </data>
+  <data name="ErrorProtocol" xml:space="preserve">
+    <value>Error de protocolo al comunicarse con el servidor.</value>
+  </data>
+  <data name="ErrorActionNotSupported" xml:space="preserve">
+    <value>La acción solicitada no está soportada.</value>
+  </data>
+  <data name="ErrorInvalidOperation" xml:space="preserve">
+    <value>La operación no pudo completarse. Intenta de nuevo.</value>
+  </data>
+  <data name="ErrorInvalidData" xml:space="preserve">
+    <value>Datos inválidos proporcionados. Revisa tu entrada e intenta de nuevo.</value>
+  </data>
+  <data name="ErrorGenericOperation" xml:space="preserve">
+    <value>Ocurrió un error durante {0}. Intenta de nuevo.</value>
+  </data>
+  <data name="GlobalLbUnknown" xml:space="preserve">
+    <value>operación desconocida</value>
+  </data>
+  <data name="LoginOperation" xml:space="preserve">
+    <value>inicio de sesión</value>
+  </data>
+  <data name="ResendCodeOperation" xml:space="preserve">
+    <value>reenvío de código de verificación</value>
+  </data>
+  <data name="RegistrationOperation" xml:space="preserve">
+    <value>registro</value>
+  </data>
+  <data name="VerificationOperation" xml:space="preserve">
+    <value>verificación de cuenta</value>
+  </data>
+  <data name="PasswordRecoveryOperation" xml:space="preserve">
+    <value>recuperación de contraseña</value>
+  </data>
+  <data name="GuestJoinOperation" xml:space="preserve">
+    <value>unión como invitado</value>
+  </data>
+  <data name="JoinLobbyOperation" xml:space="preserve">
+    <value>unión a sala</value>
+  </data>
+  <data name="LoadProfileOperation" xml:space="preserve">
+    <value>carga de perfil</value>
+  </data>
+  <data name="LoadAchievementsOperation" xml:space="preserve">
+    <value>carga de logros</value>
+  </data>
+  <data name="ChangePasswordOperation" xml:space="preserve">
+    <value>cambio de contraseña</value>
+  </data>
+  <data name="UpdateProfileOperation" xml:space="preserve">
+    <value>actualización de perfil</value>
+  </data>
+  <data name="LoadFriendsOperation" xml:space="preserve">
+    <value>carga de lista de amigos</value>
+  </data>
+  <data name="LoadRequestsOperation" xml:space="preserve">
+    <value>carga de solicitudes de amistad</value>
+  </data>
+  <data name="SearchPlayersOperation" xml:space="preserve">
+    <value>búsqueda de jugadores</value>
+  </data>
+  <data name="SendFriendRequestOperation" xml:space="preserve">
+    <value>envío de solicitud de amistad</value>
+  </data>
+  <data name="RespondFriendRequestOperation" xml:space="preserve">
+    <value>respuesta a solicitud de amistad</value>
+  </data>
+  <data name="RemoveFriendOperation" xml:space="preserve">
+    <value>eliminación de amigo</value>
+  </data>
+  <data name="UpdateAvatarOperation" xml:space="preserve">
+    <value>actualización de avatar</value>
+  </data>
+  <data name="LoadPuzzlesOperation" xml:space="preserve">
+    <value>carga de puzzles</value>
+  </data>
+  <data name="UploadPuzzleOperation" xml:space="preserve">
+    <value>subida de puzzle</value>
+  </data>
+  <data name="CreateLobbyOperation" xml:space="preserve">
+    <value>creación de sala</value>
+  </data>
+  <data name="DragPieceOperation" xml:space="preserve">
+    <value>arrastre de pieza</value>
+  </data>
+  <data name="DropPieceOperation" xml:space="preserve">
+    <value>soltar pieza</value>
+  </data>
+  <data name="ErrorNoPiecesInPuzzle" xml:space="preserve">
+    <value>Error: No hay piezas en la definición del puzzle.</value>
+  </data>
+  <data name="ErrorCriticalTitle" xml:space="preserve">
+    <value>Error Crítico</value>
+  </data>
+  <data name="ErrorProcessingPuzzle" xml:space="preserve">
+    <value>Error al procesar puzzle: {0}</value>
+  </data>
+  <data name="GameEndTimeoutTitle" xml:space="preserve">
+    <value>¡Tiempo Agotado!</value>
+  </data>
+  <data name="GameEndTimeoutMessage" xml:space="preserve">
+    <value>Se acabó el tiempo de la partida.</value>
+  </data>
+  <data name="GameEndForfeitTitle" xml:space="preserve">
+    <value>¡Victoria por Abandono!</value>
+  </data>
+  <data name="GameEndForfeitMessage" xml:space="preserve">
+    <value>Tus rivales han abandonado la partida. ¡Has ganado!</value>
+  </data>
+  <data name="GameEndCompletedTitle" xml:space="preserve">
+    <value>¡Puzzle Completado!</value>
+  </data>
+  <data name="GameEndCompletedMessage" xml:space="preserve">
+    <value>El rompecabezas ha sido resuelto.</value>
+  </data>
+  <data name="GameEndLoadingResults" xml:space="preserve">
+    <value>{0} Cargando resultados...</value>
+  </data>
+  <data name="StartGameOperation" xml:space="preserve">
+    <value>inicio de juego</value>
+  </data>
+  <data name="KickPlayerOperation" xml:space="preserve">
+    <value>expulsar jugador</value>
+  </data>
+  <data name="InviteFriendOperation" xml:space="preserve">
+    <value>invitar amigo</value>
+  </data>
+  <data name="InviteGuestOperation" xml:space="preserve">
+    <value>invitar invitado</value>
+  </data>
+  <data name="SendMessageOperation" xml:space="preserve">
+    <value>envío de mensaje</value>
+  </data>
+  <data name="LobbyClosedTitle" xml:space="preserve">
+    <value>Sala Cerrada</value>
+  </data>
+  <data name="ErrorRestartFailed" xml:space="preserve">
+    <value>No se pudo reiniciar la aplicación. Por favor reinicie manualmente.</value>
+  </data>
 </root>

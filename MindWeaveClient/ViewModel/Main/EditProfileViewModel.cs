@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -25,6 +24,7 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly IProfileService profileService;
         private readonly IDialogService dialogService;
         private readonly EditProfileValidator validator;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private string firstNameValue;
         private string lastNameValue;
@@ -245,7 +245,6 @@ namespace MindWeaveClient.ViewModel.Main
         }
 
         public bool CanSaveChanges => !HasErrors && !IsBusy && !IsChangePasswordSectionVisible;
-
         public bool CanSaveNewPassword => !HasErrors && !IsBusy && IsChangePasswordSectionVisible;
 
         public ICommand SaveChangesCommand { get; }
@@ -259,12 +258,14 @@ namespace MindWeaveClient.ViewModel.Main
             INavigationService navigationService,
             IProfileService profileService,
             IDialogService dialogService,
-            EditProfileValidator validator)
+            EditProfileValidator validator,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.navigationService = navigationService;
             this.profileService = profileService;
             this.dialogService = dialogService;
             this.validator = validator;
+            this.exceptionHandler = exceptionHandler;
 
             CancelCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
             SaveChangesCommand = new RelayCommand(async p => await saveProfileChangesAsync(), p => CanSaveChanges);
@@ -325,21 +326,9 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorChangingPassword, ex);
+                exceptionHandler.handleException(ex, Lang.ChangePasswordOperation);
             }
             finally
             {
@@ -357,18 +346,7 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (profileData != null)
                 {
-                    FirstName = profileData.FirstName;
-                    LastName = profileData.LastName;
-                    DateOfBirth = profileData.DateOfBirth;
-                    Genders.Clear();
-                    if (profileData.AvailableGenders != null)
-                    {
-                        foreach (var gender in profileData.AvailableGenders)
-                        {
-                            Genders.Add(gender);
-                        }
-                    }
-                    SelectedGender = Genders.FirstOrDefault(g => g.IdGender == profileData.IdGender);
+                    populateProfileData(profileData);
                 }
                 else
                 {
@@ -377,24 +355,9 @@ namespace MindWeaveClient.ViewModel.Main
 
                 validateCurrentStep();
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-                navigationService.goBack();
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                navigationService.goBack();
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                navigationService.goBack();
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorFailedToLoadProfile, ex);
+                exceptionHandler.handleException(ex, Lang.LoadProfileOperation);
                 navigationService.goBack();
             }
             finally
@@ -436,26 +399,32 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ProfileUpdateError, ex);
+                exceptionHandler.handleException(ex, Lang.UpdateProfileOperation);
             }
             finally
             {
                 setBusy(false);
             }
+        }
+
+        private void populateProfileData(UserProfileForEditDto profileData)
+        {
+            FirstName = profileData.FirstName;
+            LastName = profileData.LastName;
+            DateOfBirth = profileData.DateOfBirth;
+
+            Genders.Clear();
+            if (profileData.AvailableGenders != null)
+            {
+                foreach (var gender in profileData.AvailableGenders)
+                {
+                    Genders.Add(gender);
+                }
+            }
+
+            SelectedGender = Genders.FirstOrDefault(g => g.IdGender == profileData.IdGender);
         }
 
         private void setBusy(bool value)
@@ -481,12 +450,6 @@ namespace MindWeaveClient.ViewModel.Main
         {
             OnPropertyChanged(nameof(CanSaveChanges));
             OnPropertyChanged(nameof(CanSaveNewPassword));
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

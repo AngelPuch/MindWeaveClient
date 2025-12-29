@@ -3,6 +3,7 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using System;
+using System.Net.Sockets;
 using System.ServiceModel;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace MindWeaveClient.Services.Implementations
 
             if (proxy != null)
             {
-                proxy.Abort();
+                abortProxySafe();
             }
 
             try
@@ -48,24 +49,39 @@ namespace MindWeaveClient.Services.Implementations
                 proxy = new ChatManagerClient(instanceContext);
 
                 callbackHandler.OnMessageReceivedEvent += handleMessageReceived;
-                callbackHandler.OnSystemMessageReceivedEvent += HandleSystemMessageCallback;
+                callbackHandler.OnSystemMessageReceivedEvent += handleSystemMessageCallback;
 
                 await Task.Run(() => proxy.joinLobbyChat(username, lobbyId));
 
                 connectedUsername = username;
                 connectedLobbyId = lobbyId;
             }
-            catch (Exception ex)
+            catch (EndpointNotFoundException)
             {
-                if (proxy != null)
-                {
-                    proxy.Abort();
-                    proxy = null;
-                }
-                connectedUsername = null;
-                connectedLobbyId = null;
+                cleanupOnError();
                 throw;
             }
+            catch (CommunicationObjectFaultedException)
+            {
+                cleanupOnError();
+                throw;
+            }
+            catch (CommunicationException)
+            {
+                cleanupOnError();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                cleanupOnError();
+                throw;
+            }
+            catch (SocketException)
+            {
+                cleanupOnError();
+                throw;
+            }
+
         }
 
         public async Task disconnectAsync()
@@ -91,23 +107,29 @@ namespace MindWeaveClient.Services.Implementations
             try
             {
                 await Task.Run(() => proxy.leaveLobbyChat(username, lobbyId));
-                proxy.Close();
+                closeProxySafe();
             }
-            catch (Exception ex)
+            catch (EndpointNotFoundException)
             {
-                proxy.Abort();
+                abortProxySafe();
+            }
+            catch (CommunicationException)  
+            {
+                abortProxySafe();
+            }
+            catch (TimeoutException)
+            {
+                abortProxySafe();
+            }
+            catch (SocketException)
+            {
+                abortProxySafe();
             }
             finally
             {
-                if (callbackHandler != null)
-                {
-                    callbackHandler.OnMessageReceivedEvent -= handleMessageReceived;
-                }
-                proxy = null;
-                callbackHandler = null;
-                connectedUsername = null;
-                connectedLobbyId = null;
+                cleanup();
             }
+
         }
 
         public async Task sendLobbyMessageAsync(string username, string lobbyId, string message)
@@ -121,12 +143,29 @@ namespace MindWeaveClient.Services.Implementations
             {
                 await Task.Run(() => proxy.sendLobbyMessage(username, lobbyId, message));
             }
-            catch (Exception ex)
+            catch (EndpointNotFoundException)
             {
-                proxy.Abort();
-                proxy = null;
-                connectedUsername = null;
-                connectedLobbyId = null;
+                cleanupOnError();
+                throw;
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                cleanupOnError();
+                throw;
+            }
+            catch (CommunicationException)
+            {
+                cleanupOnError();
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                cleanupOnError();
+                throw;
+            }
+            catch (SocketException)
+            {
+                cleanupOnError();
                 throw;
             }
         }
@@ -136,9 +175,60 @@ namespace MindWeaveClient.Services.Implementations
             OnMessageReceived?.Invoke(message);
         }
 
-        private void HandleSystemMessageCallback(string message)
+        private void handleSystemMessageCallback(string message)
         {
             OnSystemMessageReceived?.Invoke(message);
+        }
+
+        private void closeProxySafe()
+        {
+            try
+            {
+                if (proxy != null && proxy.State == CommunicationState.Opened)
+                {
+                    proxy.Close();
+                }
+            }
+            catch (CommunicationException)
+            {
+                abortProxySafe();
+            }
+            catch (TimeoutException)
+            {
+                abortProxySafe();
+            }
+        }
+
+        private void abortProxySafe()
+        {
+            try
+            {
+                proxy?.Abort();
+            }
+            catch
+            {
+                // Ignore
+            }
+        }
+
+        private void cleanup()
+        {
+            if (callbackHandler != null)
+            {
+                callbackHandler.OnMessageReceivedEvent -= handleMessageReceived;
+                callbackHandler.OnSystemMessageReceivedEvent -= handleSystemMessageCallback;
+            }
+
+            proxy = null;
+            callbackHandler = null;
+            connectedUsername = null;
+            connectedLobbyId = null;
+        }
+
+        private void cleanupOnError()
+        {
+            abortProxySafe();
+            cleanup();
         }
     }
 }

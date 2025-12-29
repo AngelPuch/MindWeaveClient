@@ -27,6 +27,7 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentLobbyService currentLobbyService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private const int MAX_IMAGE_SIZE_MB = 5;
         private const int MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
@@ -71,7 +72,8 @@ namespace MindWeaveClient.ViewModel.Main
             IDialogService dialogService,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            ICurrentLobbyService currentLobbyService)
+            ICurrentLobbyService currentLobbyService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.puzzleService = puzzleService;
             this.matchmakingService = matchmakingService;
@@ -79,6 +81,7 @@ namespace MindWeaveClient.ViewModel.Main
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
             this.currentLobbyService = currentLobbyService;
+            this.exceptionHandler = exceptionHandler;
 
             SelectedDifficultyIndex = 0;
 
@@ -128,51 +131,15 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     foreach (var pzlDto in puzzlesFromServer)
                     {
-                        ImageSource puzzleImage;
-                        byte[] puzzleBytes = null;
-
-                        if (pzlDto.IsUploaded && pzlDto.ImageBytes != null)
-                        {
-                            puzzleImage = convertBytesToImageSource(pzlDto.ImageBytes);
-                            puzzleBytes = pzlDto.ImageBytes;
-                        }
-                        else if (pzlDto.IsUploaded)
-                        {
-                            puzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
-                        }
-                        else
-                        {
-                            string clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.ImagePath}";
-                            puzzleImage = new BitmapImage(new Uri(clientImagePath, UriKind.Relative));
-                        }
-
-
-                        AvailablePuzzles.Add(new PuzzleDisplayInfo(
-                            pzlDto.PuzzleId,
-                            pzlDto.Name,
-                            puzzleImage,
-                            pzlDto.IsUploaded,
-                            puzzleBytes
-                        ));
+                        var displayInfo = createPuzzleDisplayInfo(pzlDto);
+                        AvailablePuzzles.Add(displayInfo);
                     }
                     OnPropertyChanged(nameof(AvailablePuzzles));
                 }
             }
-            catch (FaultException<PuzzleManagerService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorLoadingPuzzles, ex);
+                exceptionHandler.handleException(ex, Lang.LoadPuzzlesOperation);
             }
             finally
             {
@@ -197,38 +164,16 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (uploadResult.Success)
                 {
-                    ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
-                    var newPuzzleInfo = new PuzzleDisplayInfo(
-                        uploadResult.NewPuzzleId,
-                        fileName,
-                        puzzleImage,
-                        true,
-                        imageBytes,
-                        filePath
-                    );
-                    
-                    AvailablePuzzles.Add(newPuzzleInfo);
-                    executeSelectPuzzle(newPuzzleInfo);
-
-                    dialogService.showInfo(uploadResult.Message, Lang.UploadSuccessful);
-
+                    handleSuccessfulUpload(uploadResult, imageBytes, fileName, filePath);
                 }
                 else
                 {
                     dialogService.showWarning(uploadResult.Message, Lang.UploadFailed);
                 }
             }
-            catch (FaultException<PuzzleManagerService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorUploadingImage, ex);
+                exceptionHandler.handleException(ex, Lang.UploadPuzzleOperation);
             }
             finally
             {
@@ -278,43 +223,64 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle);
                 }
             }
-            catch (FaultException<MatchmakingService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-                matchmakingService.disconnect();
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                matchmakingService.disconnect();
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                matchmakingService.disconnect();
-            }
-            catch (CommunicationException ex)
-            {
-                if (ex.Message.Contains("Quota") || ex.Message.Contains("maximum message size"))
-                {
-                    handleError(Lang.ErrorFileTooBigForServer, ex);
-                }
-                else
-                {
-                    handleError(Lang.ErrorMsgServerOffline, ex);
-                }
-                matchmakingService.disconnect();
-            }
             catch (Exception ex)
             {
-                handleError(Lang.FailedToCreateLobby, ex);
-                matchmakingService.disconnect();
+                exceptionHandler.handleException(ex, Lang.CreateLobbyOperation);
+                disconnectMatchmakingSafe();
             }
             finally
             {
                 SetBusy(false);
             }
         }
+
+        private PuzzleDisplayInfo createPuzzleDisplayInfo(PuzzleInfoDto pzlDto)
+        {
+            ImageSource puzzleImage;
+            byte[] puzzleBytes = null;
+
+            if (pzlDto.IsUploaded && pzlDto.ImageBytes != null)
+            {
+                puzzleImage = convertBytesToImageSource(pzlDto.ImageBytes);
+                puzzleBytes = pzlDto.ImageBytes;
+            }
+            else if (pzlDto.IsUploaded)
+            {
+                puzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+            }
+            else
+            {
+                string clientImagePath = $"/Resources/Images/Puzzles/{pzlDto.ImagePath}";
+                puzzleImage = new BitmapImage(new Uri(clientImagePath, UriKind.Relative));
+            }
+
+            return new PuzzleDisplayInfo(
+                pzlDto.PuzzleId,
+                pzlDto.Name,
+                puzzleImage,
+                pzlDto.IsUploaded,
+                puzzleBytes
+            );
+        }
+
+        private void handleSuccessfulUpload(UploadResultDto result, byte[] imageBytes, string fileName, string filePath)
+        {
+            ImageSource puzzleImage = convertBytesToImageSource(imageBytes);
+            var newPuzzleInfo = new PuzzleDisplayInfo(
+                result.NewPuzzleId,
+                fileName,
+                puzzleImage,
+                true,
+                imageBytes,
+                filePath
+            );
+
+            AvailablePuzzles.Add(newPuzzleInfo);
+            executeSelectPuzzle(newPuzzleInfo);
+
+            dialogService.showInfo(result.Message, Lang.UploadSuccessful);
+        }
+
 
         private string selectImageFile()
         {
@@ -384,10 +350,6 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 return getDefaultImage();
             }
-            catch (Exception)
-            {
-                return getDefaultImage();
-            }
         }
 
         private static ImageSource getDefaultImage()
@@ -399,6 +361,20 @@ namespace MindWeaveClient.ViewModel.Main
             catch
             {
                 return null;
+            }
+        }
+
+        private void disconnectMatchmakingSafe()
+        {
+            try
+            {
+                matchmakingService.disconnect();
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
             }
         }
 

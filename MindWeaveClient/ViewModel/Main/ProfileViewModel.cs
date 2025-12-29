@@ -6,7 +6,6 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Main;
 using System;
 using System.Collections.ObjectModel;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,7 +14,7 @@ namespace MindWeaveClient.ViewModel.Main
     public class ProfileViewModel : BaseViewModel
     {
         private readonly IProfileService profileService;
-        private readonly IDialogService dialogService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private string welcomeMessage;
         private string username;
@@ -50,12 +49,14 @@ namespace MindWeaveClient.ViewModel.Main
         public ProfileViewModel(
             IProfileService profileService,
             IDialogService dialogService,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            IServiceExceptionHandler exceptionHandler)
         {
             AchievementsList = new ObservableCollection<AchievementDto>();
             this.profileService = profileService;
-            this.dialogService = dialogService;
             var navigationService1 = navigationService;
+            this.exceptionHandler = exceptionHandler;
+
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
@@ -96,44 +97,12 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (profileData != null)
                 {
-                    Username = profileData.Username;
-                    WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {profileData.Username.ToUpper()}!";
-                    AvatarSource = profileData.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
-
-                    FirstName = profileData.FirstName ?? Lang.GlobalLbNotSpecified;
-                    LastName = profileData.LastName ?? Lang.GlobalLbNotSpecified;
-                    DateOfBirth = profileData.DateOfBirth?.ToString("dd/MM/yyyy") ?? Lang.GlobalLbNotSpecified;
-                    Gender = profileData.Gender ?? Lang.GlobalLbNotSpecified;
-
-                    if (profileData.Stats != null)
-                    {
-                        PuzzlesCompleted = profileData.Stats.PuzzlesCompleted;
-                        PuzzlesWon = profileData.Stats.PuzzlesWon;
-                        TotalPlaytime = $"{profileData.Stats.TotalPlaytime.Hours}H {profileData.Stats.TotalPlaytime.Minutes}m";
-                        HighestScore = profileData.Stats.HighestScore;
-                    }
-
-                    if (profileData.Achievements != null)
-                    {
-                        Achievements = new ObservableCollection<AchievementDto>(profileData.Achievements);
-                    }
+                    updateProfileDisplay(profileData);
                 }
-            }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
             }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorFailedToLoadProfile, ex);
+                exceptionHandler.handleException(ex, Lang.LoadProfileOperation);
             }
             finally
             {
@@ -141,12 +110,30 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private void handleError(string message, Exception ex)
+        private void updateProfileDisplay(PlayerProfileViewDto profileData)
         {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
-        }
+            Username = profileData.Username;
+            WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {profileData.Username.ToUpper()}!";
+            AvatarSource = profileData.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
+            FirstName = profileData.FirstName ?? Lang.GlobalLbNotSpecified;
+            LastName = profileData.LastName ?? Lang.GlobalLbNotSpecified;
+            DateOfBirth = profileData.DateOfBirth?.ToString("dd/MM/yyyy") ?? Lang.GlobalLbNotSpecified;
+            Gender = profileData.Gender ?? Lang.GlobalLbNotSpecified;
+
+            if (profileData.Stats != null)
+            {
+                PuzzlesCompleted = profileData.Stats.PuzzlesCompleted;
+                PuzzlesWon = profileData.Stats.PuzzlesWon;
+                TotalPlaytime = $"{profileData.Stats.TotalPlaytime.Hours}H {profileData.Stats.TotalPlaytime.Minutes}m";
+                HighestScore = profileData.Stats.HighestScore;
+            }
+
+            if (profileData.Achievements != null)
+            {
+                Achievements = new ObservableCollection<AchievementDto>(profileData.Achievements);
+            }
+        }
 
         private async void loadAchievements()
         {
@@ -168,22 +155,9 @@ namespace MindWeaveClient.ViewModel.Main
                     AchievementsList.Add(achievement);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorFailedToLoadProfile, ex);
-                Console.WriteLine(ex.Message);
+                exceptionHandler.handleException(ex, Lang.LoadAchievementsOperation);
             }
         }
     }

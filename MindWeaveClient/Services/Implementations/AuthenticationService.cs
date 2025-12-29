@@ -1,6 +1,8 @@
 ﻿using MindWeaveClient.AuthenticationService;
 using MindWeaveClient.Services.Abstractions;
 using System;
+using System.Net.Sockets;
+using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Implementations
@@ -22,13 +24,13 @@ namespace MindWeaveClient.Services.Implementations
                 Password = password
             };
 
-            LoginResultDto result = await executeSafeAsync(async (client) =>
+            LoginResultDto result = await executeServiceCallAsync(async (client) =>
                 await client.loginAsync(loginCredentials));
 
             if (result.OperationResult.Success)
             {
                 SessionService.setSession(result.PlayerId, result.Username, result.AvatarPath);
-                bool socialConnected = await connectSocialServiceAsync(result.Username);
+                bool socialConnected = await connectSocialServiceSafeAsync(result.Username);
 
                 return new LoginServiceResultDto(result, socialConnected, true);
             }
@@ -40,72 +42,122 @@ namespace MindWeaveClient.Services.Implementations
 
         public async Task<OperationResultDto> resendVerificationCodeAsync(string email)
         {
-            return await executeSafeAsync(async (client) =>
+            return await executeServiceCallAsync(async (client) =>
                 await client.resendVerificationCodeAsync(email));
         }
 
         public async Task<OperationResultDto> registerAsync(UserProfileDto profile, string password)
         {
-            return await executeSafeAsync(async (client) =>
+            return await executeServiceCallAsync(async (client) =>
                 await client.registerAsync(profile, password));
         }
 
         public async Task<OperationResultDto> verifyAccountAsync(string email, string code)
         {
-            return await executeSafeAsync(async (client) =>
+            return await executeServiceCallAsync(async (client) =>
                 await client.verifyAccountAsync(email, code));
         }
 
         public async Task<OperationResultDto> sendPasswordRecoveryCodeAsync(string email)
         {
-            return await executeSafeAsync(async (client) =>
+            return await executeServiceCallAsync(async (client) =>
                 await client.sendPasswordRecoveryCodeAsync(email));
         }
 
         public async Task<OperationResultDto> resetPasswordWithCodeAsync(string email, string code, string newPassword)
         {
-            return await executeSafeAsync(async (client) =>
+            return await executeServiceCallAsync(async (client) =>
                 await client.resetPasswordWithCodeAsync(email, code, newPassword));
         }
 
         public async Task logoutAsync(string username)
         {
-            await executeSafeAsync(async (client) =>
+            await executeServiceCallAsync(async (client) =>
             {
-                client.logOut(username);
+                await client.logOutAsync(username);
                 return 0;
             });
         }
 
-        private static async Task<T> executeSafeAsync<T>(Func<AuthenticationManagerClient, Task<T>> call)
+        private static async Task<T> executeServiceCallAsync<T>(Func<AuthenticationManagerClient, Task<T>> serviceCall)
         {
             var client = new AuthenticationManagerClient();
+
             try
             {
-                T result = await call(client);
-                client.Close();
+                T result = await serviceCall(client);
+                closeClientSafe(client);
                 return result;
             }
-            catch (Exception)
+            catch (CommunicationException)
             {
-                client.Abort();
+                abortClientSafe(client);
+                throw;
+            }
+            catch (TimeoutException)
+            {
+                abortClientSafe(client);
+                throw;
+            }
+            catch (SocketException)
+            {
+                abortClientSafe(client);
                 throw;
             }
         }
 
-        private async Task<bool> connectSocialServiceAsync(string username)
+        private async Task<bool> connectSocialServiceSafeAsync(string username)
         {
             try
             {
                 await socialService.connectAsync(username);
                 return true;
             }
-            catch (Exception ex)
+            catch (CommunicationException)
             {
-                System.Diagnostics.Trace.TraceError(
-                    $"Failed to connect social service for {username}: {ex.Message}");
+                return false;
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            }
+            catch (SocketException)
+            {
                 return false;
             }
         }
+
+        private static void closeClientSafe(AuthenticationManagerClient client)
+        {
+            try
+            {
+                if (client.State == CommunicationState.Opened)
+                {
+                    client.Close();
+                }
+            }
+            catch (CommunicationException)
+            {
+                client.Abort();
+            }
+            catch (TimeoutException)
+            {
+                client.Abort();
+            }
+        }
+
+        private static void abortClientSafe(AuthenticationManagerClient client)
+        {
+            try
+            {
+                client.Abort();
+            }
+            catch
+            {
+                // Ignore
+            }
+        }
+
+
     }
 }

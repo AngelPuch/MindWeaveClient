@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.MatchmakingService;
+using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
@@ -8,10 +9,9 @@ using MindWeaveClient.ViewModel.Puzzle;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -23,6 +23,7 @@ namespace MindWeaveClient.ViewModel.Game
     public class PlayerScoreViewModel : BaseViewModel
     {
         public string Username { get; set; }
+
         private int score;
         public int Score
         {
@@ -33,82 +34,140 @@ namespace MindWeaveClient.ViewModel.Game
 
     public class GameViewModel : BaseViewModel, IDisposable
     {
+        private const double REMOTE_SNAP_THRESHOLD = 20.0;
+        private const int DEFAULT_MATCH_DURATION_SECONDS = 300;
+
+        private const double VISUAL_TIMER_INTERVAL_SECONDS = 0.5;
+        private const double TIMER_ROUND_ADJUSTMENT_SECONDS = 0.9;
+        private const double NOTIFICATION_DISPLAY_SECONDS = 2.0;
+
+        private const int ZINDEX_PLACED_PIECE = -1;
+        private const int ZINDEX_DRAGGING_PIECE = 100;
+        private const int ZINDEX_DEFAULT_PIECE = 1;
+
+        private const string TIMER_FORMAT = @"mm\:ss";
+        private const string TIMER_ZERO_DISPLAY = "00:00";
+
+        private const string PENALTY_REASON_HOARDING = "HOARDING";
+        private const string PENALTY_REASON_MISS = "MISS";
+        private const string PENALTY_REASON_WRONG_SPOT = "WRONG_SPOT";
+
+        private const string BONUS_FIRST_BLOOD = "FIRST_BLOOD";
+        private const string BONUS_STREAK = "STREAK";
+        private const string BONUS_FRENZY = "FRENZY";
+        private const string BONUS_LAST_HIT = "LAST_HIT";
+        private const char BONUS_SEPARATOR = ',';
+
+        private const string BONUS_MSG_FIRST_BLOOD = "🩸 FIRST BLOOD! (+25)";
+        private const string BONUS_MSG_STREAK = "STREAK! (+10)";
+        private const string BONUS_MSG_FRENZY = "FRENZY! (+40)";
+        private const string BONUS_MSG_LAST_HIT = "LAST HIT! (+50)";
+
+        private const string PENALTY_MSG_HOARDING_FORMAT = "Don't hoard! -{0}";
+        private const string PENALTY_MSG_MISS_FORMAT = "Miss! -{0}";
+        private const string PENALTY_MSG_WRONG_SPOT_FORMAT = "Wrong Piece! -{0}";
+        private const string PENALTY_MSG_DEFAULT_FORMAT = "-{0}";
+
+        private const string SOUND_SNAP = "snap_sound.mp3";
+        private const string SOUND_ERROR = "error_sound.mp3";
+        private const string SOUND_BONUS = "bonus.mp3";
+
+        private const string END_REASON_TIMEOUT = "TimeOut";
+        private const string END_REASON_FORFEIT = "Forfeit";
+
+        private const string COLOR_BONUS_NOTIFICATION = "#F1C40F";
+        private const string COLOR_PLAYER_BLUE = "#3498DB";
+        private const string COLOR_PLAYER_RED = "#E74C3C";
+        private const string COLOR_PLAYER_GREEN = "#2ECC71";
+        private const string COLOR_PLAYER_YELLOW = "#F1C40F";
+
+
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private static Guid activeGameInstanceId;
         private readonly Guid myInstanceId;
 
-        private const double REMOTE_SNAP_THRESHOLD = 20.0;
-        public event Action ForceReleaseLocalDrag;
-
-        public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
-        public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
-        public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
-        public PlayerScoreViewModel MyPlayer { get; private set; }
         private readonly Dictionary<string, SolidColorBrush> playerColorsMap;
+        private readonly SolidColorBrush[] definedColors;
 
         private DispatcherTimer visualTimer;
         private DateTime matchEndTime;
         private TimeSpan timeRemaining;
         private string timeDisplay;
+        private bool isDisposed;
+        private bool puzzleLoaded;
+
+        private int puzzleWidth;
+        private int puzzleHeight;
+        private string bonusNotification;
+        private bool isBonusVisible;
+        private Brush notificationColor;
+        private bool isHelpPopupVisible;
+        private ImageSource targetPuzzleImage;
+        
+        public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
+        public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
+        public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
+        public PlayerScoreViewModel MyPlayer { get; private set; }
 
         public string TimeDisplay
         {
-            get { return timeDisplay; }
-            set
-            {
-                timeDisplay = value;
-                OnPropertyChanged(nameof(TimeDisplay));
-            }
+            get => timeDisplay;
+            set { timeDisplay = value; OnPropertyChanged(); }
         }
 
-        private bool isDisposed = false;
-        private readonly SolidColorBrush[] definedColors = {
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3498DB")),
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C")),
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2ECC71")),
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F"))
-        };
+        public int PuzzleWidth
+        {
+            get => puzzleWidth;
+            set { puzzleWidth = value; OnPropertyChanged(); }
+        }
 
-        private int puzzleWidth;
-        public int PuzzleWidth { get => puzzleWidth; set { puzzleWidth = value; OnPropertyChanged(); } }
-        private int puzzleHeight;
-        public int PuzzleHeight { get => puzzleHeight; set { puzzleHeight = value; OnPropertyChanged(); } }
-        private string bonusNotification;
-        public string BonusNotification { get => bonusNotification; set { bonusNotification = value; OnPropertyChanged(); } }
-        private bool isBonusVisible;
-        public bool IsBonusVisible { get => isBonusVisible; set { isBonusVisible = value; OnPropertyChanged(); } }
-        private Brush notificationColor;
-        public Brush NotificationColor { get => notificationColor; set { notificationColor = value; OnPropertyChanged(); } }
-        private bool isHelpPopupVisible;
+        public int PuzzleHeight
+        {
+            get => puzzleHeight;
+            set { puzzleHeight = value; OnPropertyChanged(); }
+        }
+
+        public string BonusNotification
+        {
+            get => bonusNotification;
+            set { bonusNotification = value; OnPropertyChanged(); }
+        }
+
+        public bool IsBonusVisible
+        {
+            get => isBonusVisible;
+            set { isBonusVisible = value; OnPropertyChanged(); }
+        }
+
+        public Brush NotificationColor
+        {
+            get => notificationColor;
+            set { notificationColor = value; OnPropertyChanged(); }
+        }
+
         public bool IsHelpPopupVisible
         {
-            get { return isHelpPopupVisible; }
-            set
-            {
-                isHelpPopupVisible = value;
-                OnPropertyChanged();
-            }
+            get => isHelpPopupVisible;
+            set { isHelpPopupVisible = value; OnPropertyChanged(); }
         }
 
-        private ImageSource targetPuzzleImage;
         public ImageSource TargetPuzzleImage
         {
-            get { return targetPuzzleImage; }
-            set
-            {
-                targetPuzzleImage = value;
-                OnPropertyChanged();
-            }
+            get => targetPuzzleImage;
+            set { targetPuzzleImage = value; OnPropertyChanged(); }
         }
 
-        public RelayCommand ToggleHelpPopupCommand { get; set; }
-        private bool puzzleLoaded;
+        public RelayCommand ToggleHelpPopupCommand { get; }
+
+        public event Action ForceReleaseLocalDrag;
+
 
         public GameViewModel(
             ICurrentMatchService currentMatchService,
@@ -116,7 +175,8 @@ namespace MindWeaveClient.ViewModel.Game
             IDialogService dialogService,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            IAudioService audioService)
+            IAudioService audioService,
+            IServiceExceptionHandler exceptionHandler)
         {
             myInstanceId = Guid.NewGuid();
             activeGameInstanceId = myInstanceId;
@@ -127,158 +187,134 @@ namespace MindWeaveClient.ViewModel.Game
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
             this.audioService = audioService;
+            this.exceptionHandler = exceptionHandler;
+
+            definedColors = new[]
+            {
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString(COLOR_PLAYER_BLUE)),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString(COLOR_PLAYER_RED)),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString(COLOR_PLAYER_GREEN)),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString(COLOR_PLAYER_YELLOW))
+            };
 
             PiecesCollection = new ObservableCollection<PuzzlePieceViewModel>();
             PuzzleSlots = new ObservableCollection<PuzzleSlotViewModel>();
             PlayerScores = new ObservableCollection<PlayerScoreViewModel>();
             playerColorsMap = new Dictionary<string, SolidColorBrush>();
+
             ToggleHelpPopupCommand = new RelayCommand(executeToggleHelpPopup);
 
             initializePlayerScores();
-
-            currentMatchService.PuzzleReady += OnPuzzleReady;
-            MatchmakingCallbackHandler.PieceDragStartedHandler += OnServerPieceDragStarted;
-            MatchmakingCallbackHandler.PiecePlacedHandler += OnServerPiecePlaced;
-            MatchmakingCallbackHandler.PieceMovedHandler += OnServerPieceMoved;
-            MatchmakingCallbackHandler.PieceDragReleasedHandler += OnServerPieceDragReleased;
-            MatchmakingCallbackHandler.PlayerPenaltyHandler += OnServerPlayerPenalty;
-            MatchmakingCallbackHandler.GameEndedStatic += OnGameEnded;
-            MatchmakingCallbackHandler.OnPlayerLeftEvent += handlePlayerLeft;
-
+            subscribeToEvents();
             initializeGameTimer();
-
             tryLoadExistingPuzzle();
         }
 
-        private void executeToggleHelpPopup(object parameter)
+        public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
-            IsHelpPopupVisible = !IsHelpPopupVisible;
-        }
-        private void initializeGameTimer()
-        {
-            int duration = MatchmakingCallbackHandler.LastMatchDuration > 0
-                           ? MatchmakingCallbackHandler.LastMatchDuration
-                           : 300;
-
-            matchEndTime = DateTime.UtcNow.AddSeconds(duration); 
-            updateRemainingTime();
-
-            visualTimer = new DispatcherTimer();
-            visualTimer.Interval = TimeSpan.FromSeconds(0.5);
-            visualTimer.Tick += localTimerTick;
-            visualTimer.Start();
-        }
-
-        private void localTimerTick(object sender, EventArgs e)
-        {
-            updateRemainingTime();
-        }
-
-        private void updateRemainingTime()
-        {
-            var now = DateTime.UtcNow;
-            var remaining = matchEndTime - now;
-
-            if (remaining.TotalSeconds > 0)
+            if (piece == null || piece.IsPlaced || piece.IsHeldByOther)
             {
-                timeRemaining = remaining;
-                updateTimerDisplay();
-            }
-            else
-            {
-                timeRemaining = TimeSpan.Zero;
-                visualTimer?.Stop();
-                TimeDisplay = "00:00";
-            }
-        }
-
-        private void updateTimerDisplay()
-        {
-            TimeDisplay = timeRemaining.Add(TimeSpan.FromSeconds(0.9)).ToString(@"mm\:ss");
-        }
-
-        private void handlePlayerLeft(string username)
-        {
-            // FORZAMOS LA EJECUCIÓN EN EL HILO DE LA UI
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var player = PlayerScores.FirstOrDefault(p => p.Username == username);
-                if (player != null)
-                {
-                    PlayerScores.Remove(player);
-
-                    // Opcional: Podrías mostrar una notificación visual aquí también
-                    // NotificationColor = Brushes.Orange;
-                    // showBonusNotification($"{username} abandonó la partida.");
-                }
-            });
-        }
-
-        // File: View/Game/GameWindow.xaml.cs (o donde tengas este método)
-
-        private void OnGameEnded(MatchEndResultDto result)
-        {
-            // Validación de instancia para evitar condiciones de carrera
-            if (myInstanceId != activeGameInstanceId)
-            {
-                Dispose();
                 return;
             }
 
-            visualTimer?.Stop();
-
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                string title;
-                string message;
-
-                // Evaluamos la razón que viene del servidor
-                switch (result.Reason)
-                {
-                    case "TimeOut":
-                        title = "¡Tiempo Agotado!";
-                        message = "Se acabó el tiempo de la partida.";
-                        break;
-
-                    case "Forfeit": // <--- NUEVO CASO REUTILIZANDO EL MÉTODO
-                        title = "¡Victoria por Abandono!";
-                        message = "Tus rivales han abandonado la partida. ¡Has ganado!";
-                        break;
-
-                    default: // Caso normal ("PuzzleSolved" o similar)
-                        title = "¡Puzzle Completado!";
-                        message = "El rompecabezas ha sido resuelto.";
-                        break;
-                }
-
-                // Usamos el DialogService existente
-                dialogService.showInfo($"{message} Cargando resultados...", title);
-
-                this.Dispose();
-
-                // Aquí pasas el result al ViewModel de resultados para que muestre que ganaste
-                // Asumo que tu servicio de navegación puede pasar parámetros o usa un Store global
-                navigationService.navigateTo<PostMatchResultsPage>();
-            });
-        }
-
-        private void tryLoadExistingPuzzle()
-        {
-            var puzzleDto = currentMatchService.getCurrentPuzzle();
-            if (puzzleDto != null && !puzzleLoaded)
+                await matchmakingService.requestPieceDragAsync(currentMatchService.LobbyId, piece.PieceId);
+            }
+            catch (Exception ex)
             {
-                loadPuzzle(puzzleDto);
+                exceptionHandler.handleException(ex, Lang.DragPieceOperation);
             }
         }
 
-        private void OnPuzzleReady()
+        public async Task movePiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            if (piece == null || piece.IsHeldByOther) return;
+
+            try
             {
-                if (puzzleLoaded) return;
-                var puzzleDto = currentMatchService.getCurrentPuzzle();
-                if (puzzleDto != null) loadPuzzle(puzzleDto);
-            });
+                await matchmakingService.requestPieceMoveAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+
+        public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
+        {
+            if (piece == null || piece.IsHeldByOther) return;
+
+            if (string.IsNullOrEmpty(currentMatchService.LobbyId))
+            {
+                return;
+            }
+
+            try
+            {
+                await matchmakingService.requestPieceDropAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler.handleException(ex, Lang.DropPieceOperation);
+                resetPiecePosition(piece);
+            }
+        }
+
+        public void Dispose()
+        {
+            dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void subscribeToEvents()
+        {
+            currentMatchService.PuzzleReady += onPuzzleReady;
+            MatchmakingCallbackHandler.PieceDragStartedHandler += onServerPieceDragStarted;
+            MatchmakingCallbackHandler.PiecePlacedHandler += onServerPiecePlaced;
+            MatchmakingCallbackHandler.PieceMovedHandler += onServerPieceMoved;
+            MatchmakingCallbackHandler.PieceDragReleasedHandler += onServerPieceDragReleased;
+            MatchmakingCallbackHandler.PlayerPenaltyHandler += onServerPlayerPenalty;
+            MatchmakingCallbackHandler.GameEndedStatic += onGameEnded;
+            MatchmakingCallbackHandler.OnPlayerLeftEvent += handlePlayerLeft;
+        }
+
+        private void unsubscribeFromEvents()
+        {
+            if (currentMatchService != null)
+            {
+                currentMatchService.PuzzleReady -= onPuzzleReady;
+            }
+
+            MatchmakingCallbackHandler.PieceDragStartedHandler -= onServerPieceDragStarted;
+            MatchmakingCallbackHandler.PiecePlacedHandler -= onServerPiecePlaced;
+            MatchmakingCallbackHandler.PieceMovedHandler -= onServerPieceMoved;
+            MatchmakingCallbackHandler.PieceDragReleasedHandler -= onServerPieceDragReleased;
+            MatchmakingCallbackHandler.PlayerPenaltyHandler -= onServerPlayerPenalty;
+            MatchmakingCallbackHandler.GameEndedStatic -= onGameEnded;
+            MatchmakingCallbackHandler.OnPlayerLeftEvent -= handlePlayerLeft;
+        }
+
+        private void initializeGameTimer()
+        {
+            int duration = MatchmakingCallbackHandler.LastMatchDuration > 0
+                ? MatchmakingCallbackHandler.LastMatchDuration
+                : DEFAULT_MATCH_DURATION_SECONDS;
+
+            matchEndTime = DateTime.UtcNow.AddSeconds(duration);
+            updateRemainingTime();
+
+            visualTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(VISUAL_TIMER_INTERVAL_SECONDS)
+            };
+            visualTimer.Tick += localTimerTick;
+            visualTimer.Start();
         }
 
         private void initializePlayerScores()
@@ -288,8 +324,8 @@ namespace MindWeaveClient.ViewModel.Game
             MyPlayer = null;
 
             if (currentMatchService.Players == null || !currentMatchService.Players.Any()) return;
-            int colorIndex = 0;
 
+            int colorIndex = 0;
             foreach (var username in currentMatchService.Players)
             {
                 var newPlayerVm = new PlayerScoreViewModel
@@ -300,10 +336,7 @@ namespace MindWeaveClient.ViewModel.Game
 
                 PlayerScores.Add(newPlayerVm);
 
-                if (colorIndex < definedColors.Length)
-                    playerColorsMap[username] = definedColors[colorIndex];
-                else
-                    playerColorsMap[username] = definedColors[colorIndex % definedColors.Length];
+                playerColorsMap[username] = definedColors[colorIndex % definedColors.Length];
 
                 if (username == SessionService.Username)
                 {
@@ -312,7 +345,54 @@ namespace MindWeaveClient.ViewModel.Game
 
                 colorIndex++;
             }
+
             OnPropertyChanged(nameof(MyPlayer));
+        }
+
+        private void tryLoadExistingPuzzle()
+        {
+            var puzzleDto = currentMatchService.getCurrentPuzzle();
+            if (puzzleDto != null && !puzzleLoaded)
+            {
+                loadPuzzle(puzzleDto);
+            }
+        }
+        
+        private void localTimerTick(object sender, EventArgs e)
+        {
+            updateRemainingTime();
+        }
+
+        private void updateRemainingTime()
+        {
+            var remaining = matchEndTime - DateTime.UtcNow;
+
+            if (remaining.TotalSeconds > 0)
+            {
+                timeRemaining = remaining;
+                updateTimerDisplay();
+            }
+            else
+            {
+                timeRemaining = TimeSpan.Zero;
+                visualTimer?.Stop();
+                TimeDisplay = TIMER_ZERO_DISPLAY;
+            }
+        }
+
+        private void updateTimerDisplay()
+        {
+            TimeDisplay = timeRemaining.Add(TimeSpan.FromSeconds(TIMER_ROUND_ADJUSTMENT_SECONDS)).ToString(TIMER_FORMAT);
+        }
+
+        private void onPuzzleReady()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (puzzleLoaded) return;
+                var puzzleDto = currentMatchService.getCurrentPuzzle();
+                if (puzzleDto != null) loadPuzzle(puzzleDto);
+            });
         }
 
         private void loadPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzleDto)
@@ -324,11 +404,10 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 PuzzleWidth = puzzleDto.PuzzleWidth;
                 PuzzleHeight = puzzleDto.PuzzleHeight;
-                OnPropertyChanged(nameof(PuzzleWidth));
-                OnPropertyChanged(nameof(PuzzleHeight));
 
                 BitmapSource fullImage = convertBytesToBitmapSource(puzzleDto.FullImageBytes);
                 if (fullImage == null) return;
+
                 TargetPuzzleImage = fullImage;
 
                 PiecesCollection.Clear();
@@ -336,10 +415,9 @@ namespace MindWeaveClient.ViewModel.Game
 
                 if (puzzleDto.Pieces == null || puzzleDto.Pieces.Length == 0)
                 {
-                    dialogService.showError("Error: No hay piezas en la definición del puzzle.", "Error Crítico");
+                    dialogService.showError(Lang.ErrorNoPiecesInPuzzle, Lang.ErrorCriticalTitle);
                     return;
                 }
-
 
                 foreach (var pieceDef in puzzleDto.Pieces)
                 {
@@ -359,7 +437,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                dialogService.showError($"Error al procesar puzzle: {ex.Message}", "Error");
+                dialogService.showError(string.Format(Lang.ErrorProcessingPuzzle, ex.Message), Lang.ErrorTitle);
             }
             finally
             {
@@ -367,68 +445,66 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-
-        public async Task startDraggingPiece(PuzzlePieceViewModel piece)
+        private void handlePlayerLeft(string username)
         {
-            if (piece == null || piece.IsPlaced || piece.IsHeldByOther)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Debug.WriteLine($"[CLIENT DRAG BLOCKED] Piece {piece?.PieceId}: IsPlaced={piece?.IsPlaced}, IsHeldByOther={piece?.IsHeldByOther}");
+                var player = PlayerScores.FirstOrDefault(p => p.Username == username);
+                if (player != null)
+                {
+                    PlayerScores.Remove(player);
+                }
+            });
+        }
+
+        private void onGameEnded(MatchEndResultDto result)
+        {
+            if (myInstanceId != activeGameInstanceId)
+            {
+                Dispose();
                 return;
             }
 
-            try
+            visualTimer?.Stop();
+
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                await matchmakingService.requestPieceDragAsync(currentMatchService.LobbyId, piece.PieceId);
-            }
-            catch (Exception ex)
-            {
-                dialogService.showError($"Error al arrastrar pieza: {ex.Message}", "Error");
-            }
+                string title;
+                string message;
+
+                switch (result.Reason)
+                {
+                    case END_REASON_TIMEOUT:
+                        title = Lang.GameEndTimeoutTitle;
+                        message = Lang.GameEndTimeoutMessage;
+                        break;
+
+                    case END_REASON_FORFEIT:
+                        title = Lang.GameEndForfeitTitle;
+                        message = Lang.GameEndForfeitMessage;
+                        break;
+
+                    default:
+                        title = Lang.GameEndCompletedTitle;
+                        message = Lang.GameEndCompletedMessage;
+                        break;
+                }
+
+                dialogService.showInfo(string.Format(Lang.GameEndLoadingResults, message), title);
+
+                Dispose();
+                navigationService.navigateTo<PostMatchResultsPage>();
+            });
         }
 
-        public async Task movePiece(PuzzlePieceViewModel piece, double newX, double newY)
-        {
-            if (piece == null || piece.IsHeldByOther) return;
-
-            try
-            {
-                await matchmakingService.requestPieceMoveAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
-            }
-            catch (Exception)
-            {
-                System.Diagnostics.Debug.WriteLine("Error sending move request");
-            }
-        }
-
-        public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
-        {
-            if (piece == null || piece.IsHeldByOther) return;
-            if (string.IsNullOrEmpty(currentMatchService.LobbyId))
-            {
-                System.Diagnostics.Debug.WriteLine("[CLIENT ERROR] Intento de DropPiece con LobbyId NULO.");
-                return;
-            }
-
-            try
-            {
-                await matchmakingService.requestPieceDropAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
-            }
-            catch (Exception ex)
-            {
-                dialogService.showError($"Error al soltar pieza: {ex.Message}", "Error");
-                piece.X = piece.OriginalX;
-                piece.Y = piece.OriginalY;
-
-            }
-        }
-
-        private void OnServerPieceDragStarted(int pieceId, string username)
+        private void onServerPieceDragStarted(int pieceId, string username)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece == null) return;
-                bool amIDragging = (username == SessionService.Username);
+
+                bool amIDragging = username == SessionService.Username;
 
                 if (amIDragging)
                 {
@@ -444,20 +520,18 @@ namespace MindWeaveClient.ViewModel.Game
                     }
                 }
 
-                piece.ZIndex = 100;
-
+                piece.ZIndex = ZINDEX_DRAGGING_PIECE;
             });
         }
 
-
-        private void OnServerPieceMoved(int pieceId, double newX, double newY, string username)
+        private void onServerPieceMoved(int pieceId, double newX, double newY, string username)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece == null) return;
-                bool amIMoving = (username == SessionService.Username);
-                Debug.WriteLine($"[CLIENT PIECE MOVED] Piece {pieceId} to ({newX}, {newY}) by {username} (amI: {amIMoving})");
+
+                bool amIMoving = username == SessionService.Username;
 
                 if (!amIMoving)
                 {
@@ -469,13 +543,12 @@ namespace MindWeaveClient.ViewModel.Game
                     {
                         piece.BorderColor = playerColorsMap[username];
                     }
-                    piece.ZIndex = 100;
-
+                    piece.ZIndex = ZINDEX_DRAGGING_PIECE;
                 }
             });
         }
 
-        private void OnServerPieceDragReleased(int pieceId, string username)
+        private void onServerPieceDragReleased(int pieceId, string username)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -484,11 +557,64 @@ namespace MindWeaveClient.ViewModel.Game
 
                 piece.IsHeldByOther = false;
                 piece.BorderColor = Brushes.Transparent;
-                piece.ZIndex = 1;
+                piece.ZIndex = ZINDEX_DEFAULT_PIECE;
+
                 attemptRemoteMerge(piece);
+
                 if (username == SessionService.Username)
                 {
                     ForceReleaseLocalDrag?.Invoke();
+                }
+            });
+        }
+
+        private void onServerPiecePlaced(int pieceId, double correctX, double correctY, string scoringUsername, int newScore, string bonusType)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
+
+                if (piece != null)
+                {
+                    piece.X = correctX;
+                    piece.Y = correctY;
+                    piece.IsPlaced = true;
+                    piece.IsHeldByOther = false;
+                    piece.BorderColor = Brushes.Transparent;
+                    piece.ZIndex = ZINDEX_PLACED_PIECE;
+                    audioService.playSoundEffect(SOUND_SNAP);
+                }
+
+                var player = PlayerScores.FirstOrDefault(p => p.Username == scoringUsername);
+                if (player != null)
+                {
+                    player.Score = newScore;
+                }
+
+                if (!string.IsNullOrEmpty(bonusType))
+                {
+                    handleBonusEffects(scoringUsername, bonusType);
+                }
+            });
+        }
+
+        private void onServerPlayerPenalty(string username, int pointsLost, int newScore, string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var player = PlayerScores.FirstOrDefault(p => p.Username == username);
+                if (player != null)
+                {
+                    player.Score = newScore;
+                }
+
+                if (username == SessionService.Username)
+                {
+                    string msg = getPenaltyMessage(reason, pointsLost);
+
+                    audioService.playSoundEffect(SOUND_ERROR);
+                    NotificationColor = Brushes.Red;
+                    showBonusNotification(msg);
                 }
             });
         }
@@ -528,20 +654,20 @@ namespace MindWeaveClient.ViewModel.Game
 
                 if (isNeighbor)
                 {
-                    double distSquared = (Math.Pow(potentialNeighbor.X - expectedPos.X, 2) + Math.Pow(potentialNeighbor.Y - expectedPos.Y, 2));
+                    double distSquared = Math.Pow(potentialNeighbor.X - expectedPos.X, 2) +
+                                         Math.Pow(potentialNeighbor.Y - expectedPos.Y, 2);
 
-                    if (distSquared < (REMOTE_SNAP_THRESHOLD * REMOTE_SNAP_THRESHOLD))
+                    if (distSquared < REMOTE_SNAP_THRESHOLD * REMOTE_SNAP_THRESHOLD)
                     {
                         potentialNeighbor.X = expectedPos.X;
                         potentialNeighbor.Y = expectedPos.Y;
-
                         mergeGroups(piece, potentialNeighbor);
                     }
                 }
             }
         }
 
-        private void mergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
+        private static void mergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
         {
             var group1 = p1.PieceGroup;
             var group2 = p2.PieceGroup;
@@ -559,105 +685,71 @@ namespace MindWeaveClient.ViewModel.Game
             group2.Clear();
         }
 
-        private void OnServerPiecePlaced(int pieceId, double correctX, double correctY, string scoringUsername, int newScore, string bonusType)
+        private static void resetPiecePosition(PuzzlePieceViewModel piece)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            if (piece != null)
             {
-                var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-
-                if (piece != null)
-                {
-                    piece.X = correctX;
-                    piece.Y = correctY;
-                    piece.IsPlaced = true;
-                    piece.IsHeldByOther = false;
-                    piece.BorderColor = Brushes.Transparent;
-                    piece.ZIndex = -1;
-                    audioService.playSoundEffect("snap_sound.mp3");
-                }
-
-                var player = PlayerScores.FirstOrDefault(p => p.Username == scoringUsername);
-                if (player != null)
-                {
-                    player.Score = newScore;
-                }
-
-                if (!string.IsNullOrEmpty(bonusType))
-                {
-                    handleBonusEffects(scoringUsername, bonusType);
-                }
-
-                Debug.WriteLine($"[PIECE PLACED] Piece {pieceId} at ({correctX}, {correctY}) by {scoringUsername}, new score: {newScore}");
-            });
-        }
-
-        private void OnServerPlayerPenalty(string username, int pointsLost, int newScore, string reason)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var player = PlayerScores.FirstOrDefault(p => p.Username == username);
-                if (player != null)
-                {
-                    player.Score = newScore;
-                }
-
-                if (username == SessionService.Username)
-                {
-                    string msg = "";
-                    switch (reason)
-                    {
-                        case "HOARDING": msg = $"Don't hoard! -{pointsLost}"; break;
-                        case "MISS": msg = $"Miss! -{pointsLost}"; break;
-                        case "WRONG_SPOT": msg = $"Wrong Piece! -{pointsLost}"; break;
-                        default: msg = $"-{pointsLost}"; break;
-                    }
-
-                    audioService.playSoundEffect("error_sound.mp3");
-
-                    NotificationColor = Brushes.Red;
-                    showBonusNotification(msg);
-                }
-            });
+                piece.X = piece.OriginalX;
+                piece.Y = piece.OriginalY;
+            }
         }
 
         private void handleBonusEffects(string username, string bonusType)
         {
             if (username != SessionService.Username) return;
 
-            string message = "";
-            string soundFile = "";
+            string message = string.Empty;
+            string soundFile = string.Empty;
 
-            var bonuses = bonusType.Split(',');
+            var bonuses = bonusType.Split(BONUS_SEPARATOR);
 
             foreach (var bonus in bonuses)
             {
                 switch (bonus)
                 {
-                    case "FIRST_BLOOD":
-                        message = "🩸 FIRST BLOOD! (+25)";
-                        soundFile = "bonus.mp3";
+                    case BONUS_FIRST_BLOOD:
+                        message = BONUS_MSG_FIRST_BLOOD;
+                        soundFile = SOUND_BONUS;
                         break;
-                    case "STREAK":
-                        message = "🔥 STREAK! (+10)";
-                        soundFile = "bonus.mp3";
+                    case BONUS_STREAK:
+                        message = BONUS_MSG_STREAK;
+                        soundFile = SOUND_BONUS;
                         break;
-                    case "FRENZY":
-                        message = "⚡ FRENZY! (+40)";
-                        soundFile = "bonus.mp3";
+                    case BONUS_FRENZY:
+                        message = BONUS_MSG_FRENZY;
+                        soundFile = SOUND_BONUS;
                         break;
-                    case "LAST_HIT":
-                        message = "🏆 LAST HIT! (+50)";
-                        soundFile = "bonus.mp3";
+                    case BONUS_LAST_HIT:
+                        message = BONUS_MSG_LAST_HIT;
+                        soundFile = SOUND_BONUS;
                         break;
                 }
             }
 
             if (!string.IsNullOrEmpty(message))
             {
-                NotificationColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1C40F")); 
+                NotificationColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(COLOR_BONUS_NOTIFICATION));
                 showBonusNotification(message);
+
                 if (!string.IsNullOrEmpty(soundFile))
+                {
                     audioService.playSoundEffect(soundFile);
+                }
+            }
+        }
+
+        private string getPenaltyMessage(string reason, int pointsLost)
+        {
+            switch (reason)
+            {
+                case PENALTY_REASON_HOARDING:
+                    return string.Format(PENALTY_MSG_HOARDING_FORMAT, pointsLost);
+                case PENALTY_REASON_MISS:
+                    return string.Format(PENALTY_MSG_MISS_FORMAT, pointsLost);
+                case PENALTY_REASON_WRONG_SPOT:
+                    return string.Format(PENALTY_MSG_WRONG_SPOT_FORMAT, pointsLost);
+                default:
+                    return string.Format(PENALTY_MSG_DEFAULT_FORMAT, pointsLost);
             }
         }
 
@@ -666,7 +758,10 @@ namespace MindWeaveClient.ViewModel.Game
             BonusNotification = message;
             IsBonusVisible = true;
 
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(NOTIFICATION_DISPLAY_SECONDS)
+            };
             timer.Tick += (s, e) =>
             {
                 IsBonusVisible = false;
@@ -675,9 +770,15 @@ namespace MindWeaveClient.ViewModel.Game
             timer.Start();
         }
 
+        private void executeToggleHelpPopup(object parameter)
+        {
+            IsHelpPopupVisible = !IsHelpPopupVisible;
+        }
+
         private static BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0) return null;
+
             try
             {
                 var bitmapImage = new BitmapImage();
@@ -694,14 +795,12 @@ namespace MindWeaveClient.ViewModel.Game
                 bitmapImage.Freeze();
                 return bitmapImage;
             }
-            catch { return null; }
+            catch
+            {
+                return null;
+            }
         }
 
-        public void Dispose()
-        {
-            dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
         protected virtual void dispose(bool disposing)
         {
@@ -710,18 +809,7 @@ namespace MindWeaveClient.ViewModel.Game
             if (disposing)
             {
                 visualTimer?.Stop();
-
-                if (currentMatchService != null)
-                {
-                    currentMatchService.PuzzleReady -= OnPuzzleReady;
-                }
-
-                MatchmakingCallbackHandler.PieceDragStartedHandler -= OnServerPieceDragStarted;
-                MatchmakingCallbackHandler.PiecePlacedHandler -= OnServerPiecePlaced;
-                MatchmakingCallbackHandler.PieceMovedHandler -= OnServerPieceMoved;
-                MatchmakingCallbackHandler.PieceDragReleasedHandler -= OnServerPieceDragReleased;
-                MatchmakingCallbackHandler.PlayerPenaltyHandler -= OnServerPlayerPenalty;
-                MatchmakingCallbackHandler.GameEndedStatic -= OnGameEnded;
+                unsubscribeFromEvents();
             }
 
             isDisposed = true;

@@ -4,6 +4,9 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
 using System;
 using System.Linq;
+using System.Net.Sockets;
+using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace MindWeaveClient.Services.Implementations
@@ -15,6 +18,7 @@ namespace MindWeaveClient.Services.Implementations
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentLobbyService currentLobbyService;
         private readonly ISocialService socialService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private bool isProcessingInvite;
 
@@ -23,13 +27,15 @@ namespace MindWeaveClient.Services.Implementations
             IMatchmakingService matchmakingService,
             IWindowNavigationService windowNavigationService,
             ICurrentLobbyService currentLobbyService,
-            ISocialService socialService)
+            ISocialService socialService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.dialogService = dialogService;
             this.matchmakingService = matchmakingService;
             this.windowNavigationService = windowNavigationService;
             this.currentLobbyService = currentLobbyService;
             this.socialService = socialService;
+            this.exceptionHandler = exceptionHandler;
         }
 
         public void subscribeToGlobalInvites()
@@ -82,7 +88,7 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        private async System.Threading.Tasks.Task joinLobbyFromInvite(string lobbyId)
+        private async Task joinLobbyFromInvite(string lobbyId)
         {
             try
             {
@@ -101,11 +107,47 @@ namespace MindWeaveClient.Services.Implementations
                     windowNavigationService.closeWindow<View.Main.MainWindow>();
                 });
             }
-            catch (Exception ex)
+            catch (EndpointNotFoundException ex)
             {
-                dialogService.showError(Lang.ErrorJoiningLobby + ex.Message, Lang.ErrorTitle);
+                exceptionHandler.handleExceptionAsync(ex, Lang.JoinLobbyOperation);
+                disconnectMatchmakingSafe();
+            }
+            catch (CommunicationObjectFaultedException ex)
+            {
+                exceptionHandler.handleExceptionAsync(ex, Lang.JoinLobbyOperation);
+                disconnectMatchmakingSafe();
+            }
+            catch (CommunicationException ex)
+            {
+                exceptionHandler.handleExceptionAsync(ex, Lang.JoinLobbyOperation);
+                disconnectMatchmakingSafe();
+            }
+            catch (TimeoutException ex)
+            {
+                exceptionHandler.handleExceptionAsync(ex, Lang.JoinLobbyOperation);
+                disconnectMatchmakingSafe();
+            }
+            catch (SocketException ex)
+            {
+                exceptionHandler.handleExceptionAsync(ex, Lang.JoinLobbyOperation);
+                disconnectMatchmakingSafe();
+            }
+
+        }
+
+        private void disconnectMatchmakingSafe()
+        {
+            try
+            {
                 matchmakingService.disconnect();
             }
+            catch (CommunicationException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
+
     }
 }

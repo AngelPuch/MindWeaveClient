@@ -6,7 +6,6 @@ using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -41,6 +40,7 @@ namespace MindWeaveClient.ViewModel.Main
     {
         private readonly IDialogService dialogService;
         private readonly ISocialService socialService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private string searchQueryValue;
         private bool isFriendsListCheckedValue = true;
@@ -108,13 +108,16 @@ namespace MindWeaveClient.ViewModel.Main
         public SocialViewModel(
             INavigationService navigationService,
             IDialogService dialogService,
-            ISocialService socialService)
+            ISocialService socialService,
+            IServiceExceptionHandler exceptionHandler)
         {
             var navigationService1 = navigationService;
             this.dialogService = dialogService;
             this.socialService = socialService;
-            currentUserUsername = SessionService.Username;
+            this.exceptionHandler = exceptionHandler;
 
+            currentUserUsername = SessionService.Username;
+            
             LoadFriendsListCommand = new RelayCommand(async (param) => await executeLoadFriendsListAsync(), (param) => !IsBusy);
             LoadRequestsCommand = new RelayCommand(async (param) => await executeLoadRequestsAsync(), (param) => !IsBusy);
             SearchCommand = new RelayCommand(async (param) => await executeSearchAsync(), (param) => !IsBusy && !string.IsNullOrWhiteSpace(SearchQuery));
@@ -159,21 +162,9 @@ namespace MindWeaveClient.ViewModel.Main
                     }
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorLoadingFriends, ex);
+                exceptionHandler.handleException(ex, Lang.LoadFriendsOperation);
             }
             finally
             {
@@ -193,21 +184,9 @@ namespace MindWeaveClient.ViewModel.Main
                     foreach (var req in requests) ReceivedRequests.Add(req);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorLoadingRequests, ex);
+                exceptionHandler.handleException(ex, Lang.LoadRequestsOperation);
             }
             finally
             {
@@ -227,21 +206,9 @@ namespace MindWeaveClient.ViewModel.Main
                     foreach (var user in results) SearchResults.Add(user);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorSearchingPlayer, ex);
+                exceptionHandler.handleException(ex, Lang.SearchPlayersOperation);
             }
             finally
             {
@@ -267,21 +234,9 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showWarning(result.Message, Lang.WarningTitle);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorSendingRequest, ex);
+                exceptionHandler.handleException(ex, Lang.SendFriendRequestOperation);
             }
             finally
             {
@@ -311,21 +266,9 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorRespondingRequest, ex);
+                exceptionHandler.handleException(ex, Lang.RespondFriendRequestOperation);
             }
             finally
             {
@@ -358,21 +301,9 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorRemovingFriend, ex);
+                exceptionHandler.handleException(ex, Lang.RemoveFriendOperation);
             }
             finally
             {
@@ -429,12 +360,6 @@ namespace MindWeaveClient.ViewModel.Main
                     friend.IsOnline = isOnline;
                 }
             });
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
 
         public void cleanup()

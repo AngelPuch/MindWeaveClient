@@ -9,7 +9,6 @@ using MindWeaveClient.View.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -27,6 +26,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentLobbyService currentLobbyService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         public string LobbyCode
         {
@@ -117,7 +117,8 @@ namespace MindWeaveClient.ViewModel.Authentication
             GuestJoinValidator validator,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            ICurrentLobbyService currentLobbyService)
+            ICurrentLobbyService currentLobbyService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
@@ -125,6 +126,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
             this.currentLobbyService = currentLobbyService;
+            this.exceptionHandler = exceptionHandler;
 
             JoinAsGuestCommand = new RelayCommand(async param => await executeJoinAsGuestAsync(), param => canExecuteJoin());
             GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
@@ -171,36 +173,15 @@ namespace MindWeaveClient.ViewModel.Authentication
                     if (!serviceResult.DidMatchmakingConnect) { matchmakingService.disconnect(); }
                 }
             }
-            catch (FaultException<ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-                matchmakingService.disconnect();
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                matchmakingService.disconnect();
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                matchmakingService.disconnect();
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgGuestJoinFailed, ex);
+                exceptionHandler.handleException(ex, Lang.GuestJoinOperation);
                 matchmakingService.disconnect();
             }
             finally
             {
                 SetBusy(false);
             }
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            string errorDetails = ex?.Message ?? Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}:\n{errorDetails}", Lang.ErrorTitle);
         }
     }
 }

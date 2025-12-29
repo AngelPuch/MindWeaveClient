@@ -18,6 +18,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly IDialogService dialogService;
         private readonly PasswordRecoveryValidator validator;
         private readonly INavigationService navigationService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private bool isStep1Visible = true;
         private bool isStep2Visible;
@@ -172,12 +173,15 @@ namespace MindWeaveClient.ViewModel.Authentication
             IAuthenticationService authenticationService,
             IDialogService dialogService,
             PasswordRecoveryValidator validator,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.authenticationService = authenticationService;
             this.dialogService = dialogService;
             this.validator = validator;
             this.navigationService = navigationService;
+            this.exceptionHandler = exceptionHandler;
+
 
             SendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(), param => !HasErrors && !IsBusy);
             VerifyCodeCommand = new RelayCommand(async param => await executeVerifyCodeAsync(), param => !HasErrors && !IsBusy);
@@ -217,21 +221,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else { dialogService.showError(result.Message, Lang.ErrorTitle); }
             }
-            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgResendCodeFailed, ex);
+                exceptionHandler.handleException(ex, Lang.PasswordRecoveryOperation);
             }
             finally
             {
@@ -292,21 +284,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                     }
                 }
             }
-            catch (FaultException<AuthenticationService.ServiceFaultDto> ex)
-            {
-                dialogService.showError(ex.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ErrorMsgPasswordResetFailed, ex);
+                exceptionHandler.handleException(ex, Lang.PasswordRecoveryOperation);
             }
             finally
             {
@@ -354,12 +334,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 validate(validator, this, "Step3");
             }
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
         }
     }
 }

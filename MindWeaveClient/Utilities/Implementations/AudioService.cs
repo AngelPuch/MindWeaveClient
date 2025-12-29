@@ -10,16 +10,30 @@ namespace MindWeaveClient.Utilities.Implementations
 {
     internal class AudioService : IAudioService
     {
-        private readonly MediaPlayer musicPlayer = new MediaPlayer();
-        private readonly MediaPlayer sfxPlayer = new MediaPlayer();
+        private const string MUSIC_RESOURCE_PATH = "/Resources/Audio/audio_background.mp3";
+        private const string SFX_RESOURCE_PATH_FORMAT = "/MindWeaveClient;component/Resources/Audio/{0}";
+
+        private const string TEMP_MUSIC_FILE_PREFIX = "MindWeave_";
+        private const string TEMP_SFX_FILE_PREFIX = "MW_SFX_";
+        private const string MP3_EXTENSION = ".mp3";
+
+        private const double VOLUME_MIN = 0.0;
+        private const double VOLUME_MAX = 1.0;
+        private const double VOLUME_DEFAULT = 0.5;
+
+        private const double VOLUME_PERCENTAGE_DIVISOR = 100.0;
+
+        private readonly MediaPlayer musicPlayer;
+        private readonly MediaPlayer sfxPlayer;
         private bool isMusicLoaded;
         private string tempMusicFilePath;
-
-        
         private bool disposedValue;
+
 
         public AudioService()
         {
+            musicPlayer = new MediaPlayer();
+            sfxPlayer = new MediaPlayer();
             loadInitialVolumes();
         }
 
@@ -27,103 +41,23 @@ namespace MindWeaveClient.Utilities.Implementations
         {
             try
             {
-                string resourcePath = "/Resources/Audio/audio_background.mp3";
-                Uri resourceUri = new Uri(resourcePath, UriKind.Relative);
-                var resourceInfo = Application.GetResourceStream(resourceUri);
-
-                if (resourceInfo != null)
-                {
-                    tempMusicFilePath = Path.Combine(Path.GetTempPath(), $"MindWeave_{Guid.NewGuid()}.mp3");
-                    using (Stream resourceStream = resourceInfo.Stream)
-                    using (FileStream fileStream = new FileStream(tempMusicFilePath, FileMode.Create, FileAccess.Write))
-                    {
-                        resourceStream.CopyTo(fileStream);
-                    }
-
-                    Uri fileUri = new Uri(tempMusicFilePath, UriKind.Absolute);
-
-                    musicPlayer.MediaOpened += (sender, e) =>
-                    {
-                        isMusicLoaded = true;
-
-                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
-                        {
-                            if (isMusicLoaded && musicPlayer.Source != null && musicPlayer.Volume > 0)
-                            {
-                                musicPlayer.Play();
-                            }
-                        }));
-                    };
-
-                    musicPlayer.MediaFailed += (sender, e) =>
-                    {
-                        isMusicLoaded = false;
-                        cleanupTempFile();
-                    };
-
-                    musicPlayer.MediaEnded += (s, e) =>
-                    {
-                        musicPlayer.Position = TimeSpan.Zero;
-                        musicPlayer.Play();
-                    };
-                    musicPlayer.Open(fileUri);
-                }
-                else
-                {
-                    isMusicLoaded = false;
-                }
+                initializeBackgroundMusic();
             }
-            catch (Exception ex)
+            catch (IOException)
             {
                 isMusicLoaded = false;
                 cleanupTempFile();
             }
-        }
-
-        private void cleanupTempFile()
-        {
-            if (tempMusicFilePath != null && File.Exists(tempMusicFilePath))
+            catch (InvalidOperationException)
             {
-                try
-                {
-                    File.Delete(tempMusicFilePath);
-                }
-                catch
-                {
-                    // Ignoramos errores de borrado al cerrar para no bloquear el dispose
-                }
-                tempMusicFilePath = null;
+                isMusicLoaded = false;
+                cleanupTempFile();
             }
-        }
-
-        private void loadInitialVolumes()
-        {
-            try
+            catch (UnauthorizedAccessException)
             {
-                double initialMusicVolume = Settings.Default.MusicVolumeSetting;
-                double initialSfxVolume = Settings.Default.SoundEffectsVolumeSetting;
-                setMusicVolumeInternal(initialMusicVolume / 100.0);
-                setSoundEffectsVolumeInternal(initialSfxVolume / 100.0);
+                isMusicLoaded = false;
+                cleanupTempFile();
             }
-            catch (Exception ex)
-            {
-                setMusicVolumeInternal(0.5);
-                setSoundEffectsVolumeInternal(0.5);
-            }
-        }
-
-        private void setMusicVolumeInternal(double volume)
-        {
-            if (volume < 0) volume = 0;
-            if (volume > 1) volume = 1;
-            musicPlayer.Volume = volume;
-        }
-
-        private void setSoundEffectsVolumeInternal(double volume)
-        {
-            if (volume < 0) volume = 0;
-            if (volume > 1) volume = 1;
-            sfxPlayer.Volume = volume;
         }
 
         public void setMusicVolume(double volume)
@@ -138,9 +72,15 @@ namespace MindWeaveClient.Utilities.Implementations
 
         public void stopMusic()
         {
-            if (musicPlayer.CanPause)
+            try
             {
-                musicPlayer.Stop();
+                if (musicPlayer.CanPause)
+                {
+                    musicPlayer.Stop();
+                }
+            }
+            catch (InvalidOperationException)
+            {
             }
         }
 
@@ -150,53 +90,210 @@ namespace MindWeaveClient.Utilities.Implementations
 
             try
             {
-                Uri resourceUri = new Uri($"/MindWeaveClient;component/Resources/Audio/{soundFileName}", UriKind.Relative);
-                var resourceInfo = Application.GetResourceStream(resourceUri);
-
-                if (resourceInfo != null)
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), $"MW_SFX_{soundFileName}");
-
-                    if (!File.Exists(tempPath))
-                    {
-                        using (Stream resourceStream = resourceInfo.Stream)
-                        using (FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
-                        {
-                            resourceStream.CopyTo(fileStream);
-                        }
-                    }
-
-                    sfxPlayer.Open(new Uri(tempPath, UriKind.Absolute));
-                    sfxPlayer.Play();
-                }
+                playSound(soundFileName);
             }
-            catch (Exception ex)
+            catch (IOException)
             {
-                System.Diagnostics.Debug.WriteLine($"Error playing SFX: {ex.Message}");
             }
-        }
-
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
+            catch (InvalidOperationException)
             {
-                if (disposing)
-                {
-                    stopMusic();
-                    musicPlayer.Close();
-                    sfxPlayer.Close();
-                    cleanupTempFile();
-                }
-
-                disposedValue = true;
+            }
+            catch (UnauthorizedAccessException)
+            {
             }
         }
 
         public void Dispose()
         {
-            Dispose(disposing: true);
+            dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        private void initializeBackgroundMusic()
+        {
+            Uri resourceUri = new Uri(MUSIC_RESOURCE_PATH, UriKind.Relative);
+            var resourceInfo = Application.GetResourceStream(resourceUri);
+
+            if (resourceInfo == null)
+            {
+                isMusicLoaded = false;
+                return;
+            }
+
+            tempMusicFilePath = createTempMusicFile(resourceInfo);
+            configureMusicPlayer(tempMusicFilePath);
+        }
+
+        private string createTempMusicFile(System.Windows.Resources.StreamResourceInfo resourceInfo)
+        {
+            string tempPath = Path.Combine(
+                Path.GetTempPath(),
+                TEMP_MUSIC_FILE_PREFIX + Guid.NewGuid() + MP3_EXTENSION);
+
+            using (Stream resourceStream = resourceInfo.Stream)
+            using (FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+            {
+                resourceStream.CopyTo(fileStream);
+            }
+
+            return tempPath;
+        }
+
+        private void configureMusicPlayer(string filePath)
+        {
+            Uri fileUri = new Uri(filePath, UriKind.Absolute);
+
+            musicPlayer.MediaOpened += onMusicMediaOpened;
+            musicPlayer.MediaFailed += onMusicMediaFailed;
+            musicPlayer.MediaEnded += onMusicMediaEnded;
+
+            musicPlayer.Open(fileUri);
+        }
+
+        private void loadInitialVolumes()
+        {
+            try
+            {
+                double initialMusicVolume = Settings.Default.MusicVolumeSetting;
+                double initialSfxVolume = Settings.Default.SoundEffectsVolumeSetting;
+
+                setMusicVolumeInternal(initialMusicVolume / VOLUME_PERCENTAGE_DIVISOR);
+                setSoundEffectsVolumeInternal(initialSfxVolume / VOLUME_PERCENTAGE_DIVISOR);
+            }
+            catch (Exception)
+            {
+                setMusicVolumeInternal(VOLUME_DEFAULT);
+                setSoundEffectsVolumeInternal(VOLUME_DEFAULT);
+            }
+        }
+
+        private void onMusicMediaOpened(object sender, EventArgs e)
+        {
+            isMusicLoaded = true;
+
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Loaded,
+                new Action(() =>
+                {
+                    if (isMusicLoaded && musicPlayer.Source != null && musicPlayer.Volume > VOLUME_MIN)
+                    {
+                        musicPlayer.Play();
+                    }
+                }));
+        }
+
+        private void onMusicMediaFailed(object sender, ExceptionEventArgs e)
+        {
+            isMusicLoaded = false;
+            cleanupTempFile();
+        }
+
+        private void onMusicMediaEnded(object sender, EventArgs e)
+        {
+            musicPlayer.Position = TimeSpan.Zero;
+            musicPlayer.Play();
+        }
+
+        private void setMusicVolumeInternal(double volume)
+        {
+            musicPlayer.Volume = clampVolume(volume);
+        }
+
+        private void setSoundEffectsVolumeInternal(double volume)
+        {
+            sfxPlayer.Volume = clampVolume(volume);
+        }
+
+        private static double clampVolume(double volume)
+        {
+            if (volume < VOLUME_MIN) return VOLUME_MIN;
+            if (volume > VOLUME_MAX) return VOLUME_MAX;
+            return volume;
+        }
+
+        private void playSound(string soundFileName)
+        {
+            string resourcePath = string.Format(SFX_RESOURCE_PATH_FORMAT, soundFileName);
+            Uri resourceUri = new Uri(resourcePath, UriKind.Relative);
+            var resourceInfo = Application.GetResourceStream(resourceUri);
+
+            if (resourceInfo == null)
+            {
+                return;
+            }
+
+            string tempPath = getOrCreateSfxTempFile(soundFileName, resourceInfo);
+
+            sfxPlayer.Open(new Uri(tempPath, UriKind.Absolute));
+            sfxPlayer.Play();
+        }
+
+        private string getOrCreateSfxTempFile(string soundFileName, System.Windows.Resources.StreamResourceInfo resourceInfo)
+        {
+            string tempPath = Path.Combine(Path.GetTempPath(), TEMP_SFX_FILE_PREFIX + soundFileName);
+
+            if (!File.Exists(tempPath))
+            {
+                using (Stream resourceStream = resourceInfo.Stream)
+                using (FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+                {
+                    resourceStream.CopyTo(fileStream);
+                }
+            }
+
+            return tempPath;
+        }
+
+        private void cleanupTempFile()
+        {
+            if (string.IsNullOrEmpty(tempMusicFilePath)) return;
+
+            try
+            {
+                if (File.Exists(tempMusicFilePath))
+                {
+                    File.Delete(tempMusicFilePath);
+                }
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException )
+            {
+            }
+            finally
+            {
+                tempMusicFilePath = null;
+            }
+        }
+
+        protected virtual void dispose(bool disposing)
+        {
+            if (disposedValue) return;
+
+            if (disposing)
+            {
+                try
+                {
+                    stopMusic();
+
+                    musicPlayer.MediaOpened -= onMusicMediaOpened;
+                    musicPlayer.MediaFailed -= onMusicMediaFailed;
+                    musicPlayer.MediaEnded -= onMusicMediaEnded;
+
+                    musicPlayer.Close();
+                    sfxPlayer.Close();
+                }
+                catch (InvalidOperationException)
+                {
+                }
+                finally
+                {
+                    cleanupTempFile();
+                }
+            }
+
+            disposedValue = true;
         }
     }
 }

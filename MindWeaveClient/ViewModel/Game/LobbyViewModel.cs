@@ -11,9 +11,9 @@ using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -26,12 +26,29 @@ namespace MindWeaveClient.ViewModel.Game
 {
     public class LobbyViewModel : BaseViewModel, IDisposable
     {
+        private const string LOBBY_CODE_JOINING = "Joining...";
+        private const string HOST_USERNAME_LOADING = "Loading...";
+
+        private const string PUZZLE_IMAGE_BASE_PATH = "/Resources/Images/Puzzles/";
+        private const string DEFAULT_PUZZLE_IMAGE_PATH = "/Resources/Images/Puzzles/puzzleDefault.png";
+
+        private const string SYSTEM_MSG_PREFIX_WARN_STRIKE = "WARN_STRIKE:";
+        private const string SYSTEM_MSG_LOBBY_CLOSED_HOST_BAN = "LOBBY_CLOSED_HOST_BAN";
+        private const string SYSTEM_MSG_SENDER = "SYSTEM";
+
+        private const string EMAIL_REGEX_PATTERN = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+        private const char PATH_SEPARATOR = '/';
+        private const char STRIKE_SEPARATOR = ':';
+
+
         private readonly IMatchmakingService matchmakingService;
         private readonly ISocialService socialService;
         private readonly IChatService chatService;
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private LobbyStateDto lobbyState;
         private bool isChatConnected;
@@ -41,10 +58,11 @@ namespace MindWeaveClient.ViewModel.Game
 
         public static bool IsGuestUser => SessionService.IsGuest;
         public ImageSource PuzzleImage { get; private set; }
-        public string LobbyCode { get; private set; } = "Joining...";
-        public string HostUsername { get; private set; } = "Loading...";
+        public string LobbyCode { get; private set; } = LOBBY_CODE_JOINING;
+        public string HostUsername { get; private set; } = HOST_USERNAME_LOADING;
         public bool IsHost => lobbyState?.HostUsername == SessionService.Username;
         public LobbySettingsDto CurrentSettings { get; private set; }
+
         public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
         public ObservableCollection<FriendDtoDisplay> OnlineFriends { get; } = new ObservableCollection<FriendDtoDisplay>();
         public ObservableCollection<ChatMessageDisplayViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageDisplayViewModel>();
@@ -60,7 +78,7 @@ namespace MindWeaveClient.ViewModel.Game
             get => isChatConnected;
             set { isChatConnected = value; OnPropertyChanged(); }
         }
-
+        
         public ICommand LeaveLobbyCommand { get; }
         public ICommand StartGameCommand { get; }
         public ICommand InviteFriendCommand { get; }
@@ -68,7 +86,7 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand RefreshFriendsCommand { get; }
         public ICommand SendMessageCommand { get; }
         public ICommand InviteGuestCommand { get; }
-
+        
         public LobbyViewModel(
             IMatchmakingService matchmakingService,
             ISocialService socialService,
@@ -76,7 +94,8 @@ namespace MindWeaveClient.ViewModel.Game
             IDialogService dialogService,
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
-            ICurrentLobbyService currentLobbyService)
+            ICurrentLobbyService currentLobbyService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.matchmakingService = matchmakingService;
             this.socialService = socialService;
@@ -84,13 +103,14 @@ namespace MindWeaveClient.ViewModel.Game
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.windowNavigationService = windowNavigationService;
+            this.exceptionHandler = exceptionHandler;
 
-            LeaveLobbyCommand = new RelayCommand(async p => await executeLeaveLobby(), p => !IsBusy);
-            StartGameCommand = new RelayCommand(async p => await executeStartGame(), p => IsHost && !IsBusy && !IsGuestUser);
-            InviteFriendCommand = new RelayCommand(async p => await executeInviteFriend(p), canInviteFriend);
-            KickPlayerCommand = new RelayCommand(async p => await executeKickPlayer(p), p => IsHost && !IsBusy && !IsGuestUser && p is string target && target != HostUsername);
+            LeaveLobbyCommand = new RelayCommand(async p => await executeLeaveLobbyAsync(), p => !IsBusy);
+            StartGameCommand = new RelayCommand(async p => await executeStartGameAsync(), p => IsHost && !IsBusy && !IsGuestUser);
+            InviteFriendCommand = new RelayCommand(async p => await executeInviteFriendAsync(p), canInviteFriend);
+            KickPlayerCommand = new RelayCommand(async p => await executeKickPlayerAsync(p), canKickPlayer);
             RefreshFriendsCommand = new RelayCommand(async p => await executeRefreshFriendsAsync(), p => IsHost && !IsBusy && !IsGuestUser);
-            SendMessageCommand = new RelayCommand(async p => await executeSendMessage(), canExecuteSendMessage);
+            SendMessageCommand = new RelayCommand(async p => await executeSendMessageAsync(), canExecuteSendMessage);
             InviteGuestCommand = new RelayCommand(async p => await executeInviteGuestAsync(), p => IsHost && !IsBusy && !IsGuestUser);
 
             subscribeToServiceEvents();
@@ -118,16 +138,29 @@ namespace MindWeaveClient.ViewModel.Game
             matchmakingService.OnLobbyCreationFailed += handleFatalError;
             matchmakingService.OnKicked += handleKicked;
             matchmakingService.OnLobbyActionFailed += handleActionFailed;
+            matchmakingService.OnLobbyDestroyed += handleLobbyDestroyed;
             chatService.OnMessageReceived += onChatMessageReceived;
             chatService.OnSystemMessageReceived += handleSystemMessage;
-            matchmakingService.OnLobbyDestroyed += handleLobbyDestroyed;
         }
 
+        private void unsubscribeFromServiceEvents()
+        {
+            matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
+            matchmakingService.OnLobbyCreationFailed -= handleFatalError;
+            matchmakingService.OnKicked -= handleKicked;
+            matchmakingService.OnGameStarted -= handleGameStarted;
+            matchmakingService.OnLobbyActionFailed -= handleActionFailed;
+            matchmakingService.OnLobbyDestroyed -= handleLobbyDestroyed;
+            chatService.OnMessageReceived -= onChatMessageReceived;
+            chatService.OnSystemMessageReceived -= handleSystemMessage;
+        }
+        
         private async Task executeRefreshFriendsAsync()
         {
             if (!IsHost || IsGuestUser) return;
 
             SetBusy(true);
+
             try
             {
                 OnlineFriends.Clear();
@@ -143,11 +176,189 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception ex)
             {
-                handleError(Lang.LoadFriendsError, ex);
+                exceptionHandler.handleException(ex, Lang.LoadFriendsOperation);
             }
             finally
             {
                 SetBusy(false);
+            }
+        }
+
+        private async Task executeLeaveLobbyAsync()
+        {
+            SetBusy(true);
+
+            try
+            {
+                await cleanupAsync();
+            }
+            catch (EndpointNotFoundException)
+            {
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+            catch (SocketException)
+            {
+            }
+            finally
+            {
+                windowNavigationService.closeWindow<GameWindow>();
+                windowNavigationService.openWindow<MainWindow>();
+                SetBusy(false);
+            }
+        }
+
+        private async Task executeStartGameAsync()
+        {
+            SetBusy(true);
+
+            try
+            {
+                var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
+
+                if (string.IsNullOrEmpty(currentMatchService.LobbyId) && !string.IsNullOrEmpty(LobbyCode))
+                {
+                    currentMatchService.initializeMatch(
+                        LobbyCode,
+                        Players.ToList(),
+                        CurrentSettings,
+                        lobbyState?.PuzzleImagePath);
+                }
+
+                await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler.handleException(ex, Lang.StartGameOperation);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
+        private bool canKickPlayer(object parameter)
+        {
+            return IsHost && !IsBusy && !IsGuestUser &&
+                   parameter is string target && target != HostUsername;
+        }
+
+        private async Task executeKickPlayerAsync(object parameter)
+        {
+            if (!(parameter is string playerToKick)) return;
+
+            var confirm = dialogService.showConfirmation(
+                string.Format(Lang.KickPlayerMessage, playerToKick),
+                Lang.KickPlayerTitle);
+
+            if (!confirm) return;
+
+            SetBusy(true);
+
+            try
+            {
+                await matchmakingService.kickPlayerAsync(SessionService.Username, playerToKick, LobbyCode);
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler.handleException(ex, Lang.KickPlayerOperation);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
+        private bool canInviteFriend(object parameter)
+        {
+            if (parameter is FriendDtoDisplay friend)
+            {
+                return IsHost && !IsBusy && !IsGuestUser &&
+                       friend.IsOnline && !Players.Contains(friend.Username);
+            }
+            return false;
+        }
+
+        private async Task executeInviteFriendAsync(object parameter)
+        {
+            if (!(parameter is FriendDtoDisplay friendToInvite)) return;
+
+            SetBusy(true);
+
+            try
+            {
+                await matchmakingService.inviteToLobbyAsync(SessionService.Username, friendToInvite.Username, LobbyCode);
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler.handleException(ex, Lang.InviteFriendOperation);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
+        private async Task executeInviteGuestAsync()
+        {
+            if (!dialogService.showGuestInputDialog(out string guestEmail)) return;
+
+            if (string.IsNullOrWhiteSpace(guestEmail) || !Regex.IsMatch(guestEmail, EMAIL_REGEX_PATTERN))
+            {
+                dialogService.showError(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle);
+                return;
+            }
+
+            SetBusy(true);
+
+            var invitationData = new GuestInvitationDto
+            {
+                InviterUsername = SessionService.Username,
+                GuestEmail = guestEmail.Trim(),
+                LobbyCode = LobbyCode
+            };
+
+            try
+            {
+                await matchmakingService.inviteGuestByEmailAsync(invitationData);
+                dialogService.showInfo(
+                    string.Format(Lang.InviteSentBody, guestEmail),
+                    Lang.InviteSentTitle);
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler.handleException(ex, Lang.InviteGuestOperation);
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
+        private bool canExecuteSendMessage(object parameter)
+        {
+            return !string.IsNullOrWhiteSpace(CurrentChatMessage) && IsChatConnected;
+        }
+
+        private async Task executeSendMessageAsync()
+        {
+            if (string.IsNullOrWhiteSpace(CurrentChatMessage)) return;
+
+            string messageToSend = CurrentChatMessage;
+            CurrentChatMessage = string.Empty;
+
+            try
+            {
+                await chatService.sendLobbyMessageAsync(SessionService.Username, LobbyCode, messageToSend);
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler.handleException(ex, Lang.SendMessageOperation);
+                await attemptChatReconnectAsync();
             }
         }
 
@@ -170,46 +381,26 @@ namespace MindWeaveClient.ViewModel.Game
         private void handleFatalError(string reason)
         {
             Application.Current.Dispatcher.Invoke(() =>
-            { 
+            {
                 dialogService.showError(reason, Lang.ErrorTitle);
-                _ = forceExitLobby();
+                _ = forceExitLobbyAsync();
             });
         }
-        
+
         private void handleKicked(string reason)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 dialogService.showInfo(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
-
-                _ = forceExitLobby();
+                _ = forceExitLobbyAsync();
             });
-        }
-
-
-        private async Task forceExitLobby()
-        {
-            try
-            {
-                await disconnectFromChatAsync();
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceWarning($"Error desconectando chat al salir forzosamente: {ex.Message}");
-            }
-
-            Dispose();
-            matchmakingService.disconnect();
-
-            windowNavigationService.openWindow<MainWindow>();
-            windowNavigationService.closeWindow<GameWindow>();
         }
 
         private void handleLobbyStateUpdated(LobbyStateDto newState)
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
-                bool isInitialJoin = string.IsNullOrEmpty(this.LobbyCode) || this.LobbyCode == "Joining...";
+                bool isInitialJoin = string.IsNullOrEmpty(LobbyCode) || LobbyCode == LOBBY_CODE_JOINING;
 
                 SetBusy(false);
 
@@ -218,23 +409,9 @@ namespace MindWeaveClient.ViewModel.Game
                 HostUsername = newState.HostUsername;
                 CurrentSettings = newState.CurrentSettingsDto;
 
-
                 updatePuzzleImage(newState);
-                var playersToRemove = Players.Except(newState.Players).ToList();
-                var playersToAdd = newState.Players.Except(Players).ToList();
-                foreach (var p in playersToRemove) Players.Remove(p);
-                foreach (var p in playersToAdd) Players.Add(p);
-
-                var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
-                if (currentMatchService != null)
-                {
-                    currentMatchService.initializeMatch(
-                        newState.LobbyId,
-                        newState.Players.ToList(),
-                        newState.CurrentSettingsDto,
-                        newState.PuzzleImagePath
-                    );
-                }
+                updatePlayersList(newState);
+                initializeMatchService(newState);
 
                 OnPropertyChanged(nameof(LobbyCode));
                 OnPropertyChanged(nameof(HostUsername));
@@ -251,36 +428,116 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
+        private void handleLobbyDestroyed(string reason)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                dialogService.showInfo(reason, Lang.LobbyClosedTitle);
+
+                windowNavigationService.closeWindow<GameWindow>();
+                windowNavigationService.openWindow<MainWindow>();
+
+                Dispose();
+            });
+        }
+
+        private void handleSystemMessage(string messageCode)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                string finalMessage = messageCode;
+
+                if (messageCode.StartsWith(SYSTEM_MSG_PREFIX_WARN_STRIKE))
+                {
+                    string strikeCount = messageCode.Split(STRIKE_SEPARATOR)[1];
+                    finalMessage = string.Format(Lang.SystemMessageBlocked, strikeCount);
+                }
+                else if (messageCode == SYSTEM_MSG_LOBBY_CLOSED_HOST_BAN)
+                {
+                    finalMessage = Lang.SystemHostExpelled;
+                }
+
+                var sysMsg = new ChatMessageDto
+                {
+                    SenderUsername = SYSTEM_MSG_SENDER,
+                    Content = finalMessage,
+                    Timestamp = DateTime.Now
+                };
+
+                ChatMessages.Add(new ChatMessageDisplayViewModel(sysMsg));
+            });
+        }
+
+        private void onChatMessageReceived(ChatMessageDto messageDto)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
+            });
+        }
+
+        private void updatePlayersList(LobbyStateDto newState)
+        {
+            var playersToRemove = Players.Except(newState.Players).ToList();
+            var playersToAdd = newState.Players.Except(Players).ToList();
+
+            foreach (var p in playersToRemove) Players.Remove(p);
+            foreach (var p in playersToAdd) Players.Add(p);
+        }
+
+        private static void initializeMatchService(LobbyStateDto newState)
+        {
+            var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
+            if (currentMatchService != null)
+            {
+                currentMatchService.initializeMatch(
+                    newState.LobbyId,
+                    newState.Players.ToList(),
+                    newState.CurrentSettingsDto,
+                    newState.PuzzleImagePath);
+            }
+        }
+
         private void updatePuzzleImage(LobbyStateDto newState)
         {
-            if (newState.CurrentSettingsDto?.CustomPuzzleImage != null && newState.CurrentSettingsDto.CustomPuzzleImage.Length > 0)
+            if (newState.CurrentSettingsDto?.CustomPuzzleImage != null &&
+                newState.CurrentSettingsDto.CustomPuzzleImage.Length > 0)
             {
                 PuzzleImage = convertBytesToImageSource(newState.CurrentSettingsDto.CustomPuzzleImage);
             }
             else if (!string.IsNullOrEmpty(newState.PuzzleImagePath))
             {
                 string rawPath = newState.PuzzleImagePath;
-                string finalPath = rawPath.StartsWith("/") ? rawPath : $"/Resources/Images/Puzzles/{rawPath}";
+                string finalPath = rawPath.StartsWith(PATH_SEPARATOR.ToString())
+                    ? rawPath
+                    : PUZZLE_IMAGE_BASE_PATH + rawPath;
+
                 try
                 {
                     PuzzleImage = new BitmapImage(new Uri(finalPath, UriKind.Relative));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Trace.TraceError("Failed to load pre-loaded puzzle image: " + ex.Message);
-                    PuzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative)); // Fallback
+                    PuzzleImage = getDefaultPuzzleImage();
                 }
             }
             else
             {
-                PuzzleImage = new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative));
+                PuzzleImage = getDefaultPuzzleImage();
             }
+
             OnPropertyChanged(nameof(PuzzleImage));
         }
 
-        private ImageSource convertBytesToImageSource(byte[] imageBytes)
+        private static ImageSource getDefaultPuzzleImage()
+        {
+            return new BitmapImage(new Uri(DEFAULT_PUZZLE_IMAGE_PATH, UriKind.Relative));
+        }
+
+        private static ImageSource convertBytesToImageSource(byte[] imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0) return null;
+
             try
             {
                 var bitmapImage = new BitmapImage();
@@ -297,19 +554,10 @@ namespace MindWeaveClient.ViewModel.Game
                 bitmapImage.Freeze();
                 return bitmapImage;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Trace.TraceError("Failed to convert byte array to ImageSource: " + ex.Message);
-                return new BitmapImage(new Uri("/Resources/Images/Puzzles/puzzleDefault.png", UriKind.Relative)); // Fallback
+                return getDefaultPuzzleImage();
             }
-        }
-
-        private void onChatMessageReceived(ChatMessageDto messageDto)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
-            });
         }
 
         private async Task connectToChatAsync(string lobbyIdToConnect)
@@ -319,7 +567,22 @@ namespace MindWeaveClient.ViewModel.Game
                 await chatService.connectAsync(SessionService.Username, lobbyIdToConnect);
                 IsChatConnected = true;
             }
-            catch (Exception)
+            catch (EndpointNotFoundException)
+            {
+                dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
+                IsChatConnected = false;
+            }
+            catch (CommunicationException)
+            {
+                dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
+                IsChatConnected = false;
+            }
+            catch (TimeoutException)
+            {
+                dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
+                IsChatConnected = false;
+            }
+            catch (SocketException)
             {
                 dialogService.showError(Lang.ChatConnectError, Lang.ErrorTitle);
                 IsChatConnected = false;
@@ -328,253 +591,19 @@ namespace MindWeaveClient.ViewModel.Game
 
         private async Task disconnectFromChatAsync()
         {
-            if (IsChatConnected)
-            {
-                try
-                {
-                    await chatService.disconnectAsync(SessionService.Username, LobbyCode);
-                }
-                catch (Exception ex)
-                {
-                    Trace.TraceWarning($"Failed to disconnect chat cleanly: {ex.Message}");
-                }
-                finally
-                {
-                    IsChatConnected = false;
-                }
-            }
-        }
+            if (!IsChatConnected) return;
 
-        private async Task executeLeaveLobby()
-        {
-            SetBusy(true);
             try
             {
-                await cleanup();
-            }
-            catch (EndpointNotFoundException)
-            {
-            }
-            catch (TimeoutException)
-            {
-            }
-            catch (CommunicationException)
-            {
-            }
-            catch (Exception ex)
-            {
-                handleError(Lang.ErrorLeavingLobby, ex);
+                await chatService.disconnectAsync(SessionService.Username, LobbyCode);
             }
             finally
             {
-                windowNavigationService.closeWindow<GameWindow>();
-                windowNavigationService.openWindow<MainWindow>();
-
-                SetBusy(false);
+                IsChatConnected = false;
             }
         }
 
-        private async Task executeStartGame()
-        {
-            /*
-            if (Players.Count != 4) 
-            { 
-                dialogService.showError(Lang.Need4PlayersError, Lang.ErrorTitle); 
-                return;
-            }
-            */
-
-            SetBusy(true);
-            try
-            {
-                var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
-
-                if (string.IsNullOrEmpty(currentMatchService.LobbyId) && !string.IsNullOrEmpty(this.LobbyCode))
-                {
-                    currentMatchService.initializeMatch(
-                        this.LobbyCode,
-                        this.Players.ToList(),
-                        this.CurrentSettings,
-                        lobbyState?.PuzzleImagePath
-                    );
-                }
-
-
-                await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (Exception ex)
-            {
-                handleError(Lang.GameStartError, ex);
-            }
-            finally
-            {
-                SetBusy(false);
-            }
-        }
-
-        private async Task executeKickPlayer(object parameter)
-        {
-            if (!(parameter is string playerToKick)) return;
-
-            var confirm = dialogService.showConfirmation(
-                string.Format(Lang.KickPlayerMessage, playerToKick),
-                Lang.KickPlayerTitle
-            );
-
-            if (!confirm) return;
-            SetBusy(true);
-
-            try
-            {
-                await matchmakingService.kickPlayerAsync(SessionService.Username, playerToKick, LobbyCode);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (Exception ex)
-            {
-                handleError(Lang.ErrorKickingPlayer, ex);
-            }
-            finally
-            {
-                SetBusy(false);
-            }
-        }
-
-        private bool canInviteFriend(object parameter)
-        {
-            if (parameter is FriendDtoDisplay friend)
-            {
-                return IsHost && !IsBusy && !IsGuestUser &&
-                       friend.IsOnline && !Players.Contains(friend.Username);
-            }
-            return false;
-        }
-
-        private async Task executeInviteFriend(object parameter)
-        {
-            if (!(parameter is FriendDtoDisplay friendToInvite)) return;
-
-            SetBusy(true);
-            try
-            {
-                await matchmakingService.inviteToLobbyAsync(SessionService.Username, friendToInvite.Username, LobbyCode);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (Exception ex)
-            {
-                handleError(Lang.SendInviteError, ex);
-            }
-            finally
-            {
-                SetBusy(false);
-            }
-        }
-
-        private async Task executeInviteGuestAsync()
-        {
-            if (dialogService.showGuestInputDialog(out string guestEmail))
-            {
-                if (string.IsNullOrWhiteSpace(guestEmail) || !Regex.IsMatch(guestEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                {
-                    dialogService.showError(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle);
-                    return;
-                }
-
-                SetBusy(true);
-                var invitationData = new GuestInvitationDto
-                {
-                    InviterUsername = SessionService.Username,
-                    GuestEmail = guestEmail.Trim(),
-                    LobbyCode = this.LobbyCode
-                };
-
-                try
-                {
-                    await matchmakingService.inviteGuestByEmailAsync(invitationData);
-                    dialogService.showInfo(
-                        string.Format(Lang.InviteSentBody, guestEmail),
-                        Lang.InviteSentTitle);
-                }
-                catch (EndpointNotFoundException ex)
-                {
-                    handleError(Lang.ErrorMsgServerOffline, ex);
-                }
-                catch (TimeoutException ex)
-                {
-                    handleError(Lang.ErrorMsgServerOffline, ex);
-                }
-                catch (Exception ex)
-                {
-                    handleError(Lang.GuestInviteError, ex);
-                }
-                finally
-                {
-                    SetBusy(false);
-                }
-            }
-        }
-
-        private bool canExecuteSendMessage(object parameter)
-        {
-            return !string.IsNullOrWhiteSpace(CurrentChatMessage) && IsChatConnected;
-        }
-
-        private async Task executeSendMessage()
-        {
-            if (string.IsNullOrWhiteSpace(CurrentChatMessage)) return;
-
-            string messageToSend = CurrentChatMessage;
-            CurrentChatMessage = string.Empty;
-
-            try
-            {
-                await chatService.sendLobbyMessageAsync(SessionService.Username, LobbyCode, messageToSend);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                await attemptChatReconnect();
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-                await attemptChatReconnect();
-            }
-            catch (InvalidOperationException ex)
-            {
-                handleError(Lang.ChatConnectError, ex);
-                await attemptChatReconnect();
-            }
-            catch (Exception ex)
-            {
-                handleError(Lang.SendChatError, ex);
-                await attemptChatReconnect();
-            }
-
-        }
-
-        private async Task attemptChatReconnect()
+        private async Task attemptChatReconnectAsync()
         {
             try
             {
@@ -583,20 +612,38 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (CommunicationException)
             {
-
+                // Ignore reconnection failures
             }
             catch (TimeoutException)
             {
-
+                // Ignore reconnection failures
             }
         }
 
-        public async Task cleanup()
+        private async Task forceExitLobbyAsync()
+        {
+            try
+            {
+                await disconnectFromChatAsync();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            Dispose();
+            matchmakingService.disconnect();
+
+            windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
+        }
+
+        public async Task cleanupAsync()
         {
             if (isCleaningUp) return;
             isCleaningUp = true;
 
-            if (!string.IsNullOrEmpty(LobbyCode) && LobbyCode != "Joining...")
+            if (!string.IsNullOrEmpty(LobbyCode) && LobbyCode != LOBBY_CODE_JOINING)
             {
                 try
                 {
@@ -604,31 +651,25 @@ namespace MindWeaveClient.ViewModel.Game
                 }
                 catch (EndpointNotFoundException)
                 {
-
-                }
-                catch (TimeoutException)
-                {
-
                 }
                 catch (CommunicationException)
                 {
-
+                }
+                catch (TimeoutException)
+                {
                 }
 
                 try
                 {
                     await disconnectFromChatAsync();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Trace.TraceError($"Error disconnecting chat: {ex.Message}");
+                    // ignored
                 }
             }
-            matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
-            matchmakingService.OnLobbyCreationFailed -= handleFatalError;
-            matchmakingService.OnKicked -= handleKicked;
-            matchmakingService.OnGameStarted -= handleGameStarted;
 
+            unsubscribeFromServiceEvents();
         }
 
         public void Dispose()
@@ -644,61 +685,13 @@ namespace MindWeaveClient.ViewModel.Game
             if (disposing)
             {
                 chatService.OnMessageReceived -= onChatMessageReceived;
+                chatService.OnSystemMessageReceived -= handleSystemMessage;
                 Players.Clear();
                 OnlineFriends.Clear();
                 ChatMessages.Clear();
             }
 
             isDisposed = true;
-        }
-
-        private void handleSystemMessage(string messageCode)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                string finalMessage = messageCode;
-
-                if (messageCode.StartsWith("WARN_STRIKE:"))
-                {
-                    string strikeCount = messageCode.Split(':')[1];
-
-                    
-                    finalMessage = string.Format(Lang.SystemMessageBlocked, strikeCount);
-                }
-                else if (messageCode == "LOBBY_CLOSED_HOST_BAN")
-                {
-                    finalMessage = Lang.SystemHostExpelled;
-                }
-
-                var sysMsg = new ChatMessageDto
-                {
-                    SenderUsername = "SYSTEM", 
-                    Content = finalMessage,
-                    Timestamp = DateTime.Now
-                };
-
-                
-                ChatMessages.Add(new ChatMessageDisplayViewModel(sysMsg));
-            });
-        }
-
-        private void handleLobbyDestroyed(string reason)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-               
-                dialogService.showInfo(reason, "Lobby Closed");
-
-                windowNavigationService.closeWindow<GameWindow>();
-                windowNavigationService.openWindow<MainWindow>();
-
-                Dispose();
-            });
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            dialogService.showError($"{message}: {ex.Message}", Lang.ErrorTitle);
         }
     }
 }

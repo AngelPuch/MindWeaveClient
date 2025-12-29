@@ -5,10 +5,8 @@ using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MindWeaveClient.ProfileService;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -32,6 +30,7 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly INavigationService navigationService;
         private readonly IProfileService profileService;
         private readonly IDialogService dialogService;
+        private readonly IServiceExceptionHandler exceptionHandler;
 
         private ObservableCollection<AvatarData> availableAvatarsValue;
         private AvatarData selectedAvatarValue;
@@ -62,11 +61,13 @@ namespace MindWeaveClient.ViewModel.Main
         public SelectAvatarViewModel(
             INavigationService navigationService,
             IProfileService profileService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            IServiceExceptionHandler exceptionHandler)
         {
             this.navigationService = navigationService;
             this.profileService = profileService;
             this.dialogService = dialogService;
+            this.exceptionHandler = exceptionHandler;
 
             CancelCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
             SaveSelectionCommand = new RelayCommand(async p => await saveSelectionAsync(), p => CanSave);
@@ -83,7 +84,8 @@ namespace MindWeaveClient.ViewModel.Main
                 AvailableAvatars.Add(new AvatarData { ImagePath = path });
             }
 
-            var currentAvatar = AvailableAvatars.FirstOrDefault(a => a.ImagePath.Equals(SessionService.AvatarPath, StringComparison.OrdinalIgnoreCase));
+            var currentAvatar = AvailableAvatars.FirstOrDefault(
+                a => a.ImagePath.Equals(SessionService.AvatarPath, StringComparison.OrdinalIgnoreCase));
             if (currentAvatar != null)
             {
                 SelectedAvatar = currentAvatar;
@@ -110,21 +112,9 @@ namespace MindWeaveClient.ViewModel.Main
                     dialogService.showError(result.Message, Lang.ErrorTitle);
                 }
             }
-            catch (FaultException<ServiceFaultDto> faultEx)
-            {
-                dialogService.showError(faultEx.Detail.Message, Lang.ErrorTitle);
-            }
-            catch (EndpointNotFoundException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
-            catch (TimeoutException ex)
-            {
-                handleError(Lang.ErrorMsgServerOffline, ex);
-            }
             catch (Exception ex)
             {
-                handleError(Lang.ProfileUpdateError, ex);
+                exceptionHandler.handleException(ex, Lang.UpdateAvatarOperation);
             }
             finally
             {
@@ -141,11 +131,6 @@ namespace MindWeaveClient.ViewModel.Main
         private void raiseCanExecuteChanged()
         {
             OnPropertyChanged(nameof(CanSave));
-        }
-
-        private void handleError(string message, Exception ex)
-        {
-            dialogService.showError(message, Lang.ErrorTitle);
         }
     }
 }

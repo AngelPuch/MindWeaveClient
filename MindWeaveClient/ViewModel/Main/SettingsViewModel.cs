@@ -1,10 +1,11 @@
 ﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Utilities.Abstractions;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.Utilities.Abstractions;
-using System;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -21,6 +22,13 @@ namespace MindWeaveClient.ViewModel.Main
 
     public class SettingsViewModel : BaseViewModel
     {
+        private const double VOLUME_PERCENTAGE_DIVISOR = 100.0;
+
+        private const string LANGUAGE_CODE_ENGLISH = "en-US";
+        private const string LANGUAGE_CODE_SPANISH = "es-MX";
+
+        private const int DEFAULT_LANGUAGE_INDEX = 0;
+
         private readonly IAudioService audioService;
         private readonly IDialogService dialogService;
 
@@ -39,7 +47,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 musicVolumeValue = value;
                 OnPropertyChanged();
-                audioService.setMusicVolume(value / 100.0);
+                audioService.setMusicVolume(value / VOLUME_PERCENTAGE_DIVISOR);
             }
         }
 
@@ -50,7 +58,7 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 soundEffectsVolumeValue = value;
                 OnPropertyChanged();
-                audioService.setSoundEffectsVolume(value / 100.0);
+                audioService.setSoundEffectsVolume(value / VOLUME_PERCENTAGE_DIVISOR);
             }
         }
 
@@ -78,10 +86,11 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand CancelCommand { get; }
         public ICommand ShowCreditsCommand { get; }
 
+
         public SettingsViewModel(IAudioService audioService, IDialogService dialogService)
         {
-            this.audioService = audioService;
-            this.dialogService = dialogService;
+            this.audioService = audioService ?? throw new ArgumentNullException(nameof(audioService));
+            this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
             loadSettings();
             initializeLanguages();
@@ -101,12 +110,13 @@ namespace MindWeaveClient.ViewModel.Main
         {
             AvailableLanguages = new List<LanguageOption>
             {
-                new LanguageOption { Name = Lang.SettingsOptEnglish, Code = "en-US" },
-                new LanguageOption { Name = Lang.SettingsOptSpanish, Code = "es-MX" }
+                new LanguageOption { Name = Lang.SettingsOptEnglish, Code = LANGUAGE_CODE_ENGLISH },
+                new LanguageOption { Name = Lang.SettingsOptSpanish, Code = LANGUAGE_CODE_SPANISH }
             };
 
             string currentLangCode = Properties.Settings.Default.languageCode;
-            SelectedLanguage = AvailableLanguages.FirstOrDefault(lang => lang.Code == currentLangCode) ?? AvailableLanguages[0];
+            SelectedLanguage = AvailableLanguages.FirstOrDefault(lang => lang.Code == currentLangCode)
+                               ?? AvailableLanguages[DEFAULT_LANGUAGE_INDEX];
         }
 
         private void loadSettings()
@@ -120,52 +130,80 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void executeSave()
         {
-            Properties.Settings.Default.MusicVolumeSetting = MusicVolume;
-            Properties.Settings.Default.SoundEffectsVolumeSetting = SoundEffectsVolume;
-            string previousLanguageCode = Properties.Settings.Default.languageCode;
-            Properties.Settings.Default.languageCode = SelectedLanguage.Code;
-            Properties.Settings.Default.Save();
+            saveVolumeSettings();
+            bool languageChanged = saveLanguageSetting();
 
-            if (previousLanguageCode != SelectedLanguage.Code)
+            if (languageChanged)
             {
-                applyLanguageChange();
+                promptForRestart();
             }
 
-            setDialogResultAction?.Invoke(true);
-            closeWindowAction?.Invoke();
-        }
-
-        private void applyLanguageChange()
-        {
-            bool restartTime = dialogService.showConfirmation(
-                Lang.RestartRequiredMessage,
-                Lang.RestartRequiredTitle
-            );
-
-            if (restartTime)
-            {
-                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
-                Application.Current.Shutdown();
-            }
+            closeDialog(dialogResult: true);
         }
 
         private void executeCancel()
         {
             loadSettings();
-
-            audioService.setMusicVolume(MusicVolume / 100.0);
-            audioService.setSoundEffectsVolume(SoundEffectsVolume / 100.0);
-
-            setDialogResultAction?.Invoke(false);
-            closeWindowAction?.Invoke();
+            restoreAudioVolumes();
+            closeDialog(dialogResult: false);
         }
 
         private void executeShowCredits()
         {
-            dialogService.showInfo(
-                Lang.CreditsContent,
-                Lang.SettingsBtnCredits
-            );
+            dialogService.showInfo(Lang.CreditsContent, Lang.SettingsBtnCredits);
+        }
+
+        private void saveVolumeSettings()
+        {
+            Properties.Settings.Default.MusicVolumeSetting = MusicVolume;
+            Properties.Settings.Default.SoundEffectsVolumeSetting = SoundEffectsVolume;
+            Properties.Settings.Default.Save();
+        }
+
+        private bool saveLanguageSetting()
+        {
+            string previousLanguageCode = Properties.Settings.Default.languageCode;
+            Properties.Settings.Default.languageCode = SelectedLanguage.Code;
+            Properties.Settings.Default.Save();
+
+            return previousLanguageCode != SelectedLanguage.Code;
+        }
+
+        private void restoreAudioVolumes()
+        {
+            audioService.setMusicVolume(MusicVolume / VOLUME_PERCENTAGE_DIVISOR);
+            audioService.setSoundEffectsVolume(SoundEffectsVolume / VOLUME_PERCENTAGE_DIVISOR);
+        }
+
+        private void promptForRestart()
+        {
+            bool shouldRestart = dialogService.showConfirmation(
+                Lang.RestartRequiredMessage,
+                Lang.RestartRequiredTitle);
+
+            if (shouldRestart)
+            {
+                restartApplication();
+            }
+        }
+
+        private void restartApplication()
+        {
+            try
+            {
+                Process.Start(Application.ResourceAssembly.Location);
+                Application.Current.Shutdown();
+            }
+            catch (Exception)
+            {
+                dialogService.showError(Lang.ErrorRestartFailed, Lang.ErrorTitle);
+            }
+        }
+
+        private void closeDialog(bool dialogResult)
+        {
+            setDialogResultAction?.Invoke(dialogResult);
+            closeWindowAction?.Invoke();
         }
     }
 }
