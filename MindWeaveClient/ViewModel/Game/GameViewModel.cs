@@ -40,9 +40,9 @@ namespace MindWeaveClient.ViewModel.Game
         private const double TIMER_ROUND_ADJUSTMENT_SECONDS = 0.9;
         private const double NOTIFICATION_DISPLAY_SECONDS = 2.0;
 
-        private const int ZINDEX_PLACED_PIECE = -1;
-        private const int ZINDEX_DRAGGING_PIECE = 100;
-        private const int ZINDEX_DEFAULT_PIECE = 1;
+        private const int ZINDEX_PLACED_PIECE = 1;
+        private const int ZINDEX_IDLE_BASE = 100;
+        private const int ZINDEX_DRAGGING_BASE = 1000;
 
         private const string TIMER_FORMAT = @"mm\:ss";
         private const string TIMER_ZERO_DISPLAY = "00:00";
@@ -80,7 +80,6 @@ namespace MindWeaveClient.ViewModel.Game
         private const string COLOR_PLAYER_GREEN = "#2ECC71";
         private const string COLOR_PLAYER_YELLOW = "#F1C40F";
 
-
         private readonly ICurrentMatchService currentMatchService;
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
@@ -109,6 +108,8 @@ namespace MindWeaveClient.ViewModel.Game
         private Brush notificationColor;
         private bool isHelpPopupVisible;
         private ImageSource targetPuzzleImage;
+
+        private int currentIdleZIndex = ZINDEX_IDLE_BASE;
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
@@ -166,7 +167,8 @@ namespace MindWeaveClient.ViewModel.Game
         public RelayCommand ToggleHelpPopupCommand { get; }
 
         public event Action ForceReleaseLocalDrag;
-        
+
+
         public GameViewModel(
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
@@ -207,8 +209,7 @@ namespace MindWeaveClient.ViewModel.Game
             initializeGameTimer();
             tryLoadExistingPuzzle();
         }
-
-
+        
         public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
             if (piece == null || piece.IsPlaced || piece.IsHeldByOther) return;
@@ -407,6 +408,7 @@ namespace MindWeaveClient.ViewModel.Game
                 foreach (var pieceDef in puzzleDto.Pieces)
                 {
                     var pieceViewModel = new PuzzlePieceViewModel(fullImage, pieceDef);
+                    pieceViewModel.ZIndex = ZINDEX_IDLE_BASE;
                     PiecesCollection.Add(pieceViewModel);
 
                     var slotViewModel = new PuzzleSlotViewModel(pieceDef.CorrectX, pieceDef.CorrectY, pieceDef.Width, pieceDef.Height);
@@ -486,9 +488,16 @@ namespace MindWeaveClient.ViewModel.Game
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece == null) return;
 
-                bool amIDragging = username == SessionService.Username;
+                bool isMyAction = username == SessionService.Username;
 
-                if (amIDragging)
+                currentIdleZIndex++;
+
+                if (currentIdleZIndex >= ZINDEX_DRAGGING_BASE)
+                {
+                    normalizeAllIdleZIndexes();
+                }
+
+                if (isMyAction)
                 {
                     piece.IsHeldByOther = false;
                     piece.BorderColor = Brushes.Transparent;
@@ -500,9 +509,8 @@ namespace MindWeaveClient.ViewModel.Game
                     {
                         piece.BorderColor = playerColorsMap[username];
                     }
+                    piece.ZIndex = ZINDEX_DRAGGING_BASE;
                 }
-
-                piece.ZIndex = ZINDEX_DRAGGING_PIECE;
             });
         }
 
@@ -523,7 +531,7 @@ namespace MindWeaveClient.ViewModel.Game
                     {
                         piece.BorderColor = playerColorsMap[username];
                     }
-                    piece.ZIndex = ZINDEX_DRAGGING_PIECE;
+                    piece.ZIndex = ZINDEX_DRAGGING_BASE;
                 }
             });
         }
@@ -537,13 +545,17 @@ namespace MindWeaveClient.ViewModel.Game
 
                 piece.IsHeldByOther = false;
                 piece.BorderColor = Brushes.Transparent;
-                piece.ZIndex = ZINDEX_DEFAULT_PIECE;
 
-                attemptRemoteMerge(piece);
+                piece.ZIndex = currentIdleZIndex;
 
                 if (username == SessionService.Username)
                 {
                     ForceReleaseLocalDrag?.Invoke();
+                }
+
+                if (username != SessionService.Username)
+                {
+                    attemptRemoteMerge(piece);
                 }
             });
         }
@@ -561,7 +573,9 @@ namespace MindWeaveClient.ViewModel.Game
                     piece.IsPlaced = true;
                     piece.IsHeldByOther = false;
                     piece.BorderColor = Brushes.Transparent;
+
                     piece.ZIndex = ZINDEX_PLACED_PIECE;
+
                     audioService.playSoundEffect(SOUND_SNAP);
                 }
 
@@ -598,6 +612,22 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
+        private void normalizeAllIdleZIndexes()
+        {
+            var idlePieces = PiecesCollection
+                .Where(p => !p.IsPlaced && p.ZIndex >= ZINDEX_IDLE_BASE && p.ZIndex < ZINDEX_DRAGGING_BASE)
+                .OrderBy(p => p.ZIndex)
+                .ToList();
+
+            int newZIndex = ZINDEX_IDLE_BASE;
+            foreach (var piece in idlePieces)
+            {
+                piece.ZIndex = newZIndex++;
+            }
+
+            currentIdleZIndex = newZIndex;
+        }
+        
         private void attemptRemoteMerge(PuzzlePieceViewModel piece)
         {
             if (piece == null || piece.IsPlaced) return;
@@ -672,6 +702,7 @@ namespace MindWeaveClient.ViewModel.Game
                 piece.Y = piece.OriginalY;
             }
         }
+
 
         private void handleBonusEffects(string username, string bonusType)
         {
@@ -749,11 +780,12 @@ namespace MindWeaveClient.ViewModel.Game
             timer.Start();
         }
 
+
         private void executeToggleHelpPopup(object parameter)
         {
             IsHelpPopupVisible = !IsHelpPopupVisible;
         }
-
+        
         private static BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0) return null;
@@ -779,7 +811,7 @@ namespace MindWeaveClient.ViewModel.Game
                 return null;
             }
         }
-
+        
         protected virtual void dispose(bool disposing)
         {
             if (isDisposed) return;

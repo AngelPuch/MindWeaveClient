@@ -143,7 +143,7 @@ namespace MindWeaveClient.ViewModel.Puzzle
             int safeWidth = Math.Min(data.Width, availableWidth);
             int safeHeight = Math.Min(data.Height, availableHeight);
 
-            if (safeWidth <= 0 || safeHeight <= 0) // Invalid crop, set to minimal size
+            if (safeWidth <= 0 || safeHeight <= 0)
             {
                 safeWidth = 1;
                 safeHeight = 1;
