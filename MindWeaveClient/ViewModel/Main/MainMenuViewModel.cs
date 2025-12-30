@@ -19,6 +19,8 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class MainMenuViewModel : BaseViewModel, IDisposable
     {
+        private const int MAX_LOBBY_CODE_LENGTH = 6;
+
         private readonly IMatchmakingService matchmakingService;
         private readonly ISessionCleanupService cleanupService;
         private readonly MainMenuValidator validator;
@@ -44,16 +46,22 @@ namespace MindWeaveClient.ViewModel.Main
             get => joinLobbyCode;
             set
             {
-                joinLobbyCode = value?.Trim() ?? string.Empty;
-                OnPropertyChanged();
+                string normalizedValue = value?.Trim().ToUpper();
+                string processedValue = clampString(normalizedValue, MAX_LOBBY_CODE_LENGTH);
 
-                if (!string.IsNullOrEmpty(joinLobbyCode))
+                if (joinLobbyCode != processedValue)
                 {
-                    markAsTouched(nameof(JoinLobbyCode));
-                }
+                    joinLobbyCode = processedValue;
+                    OnPropertyChanged();
 
-                validate(validator, this, "JoinLobby");
-                OnPropertyChanged(nameof(JoinLobbyCodeError));
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(JoinLobbyCode));
+                    }
+
+                    validate(validator, this, "JoinLobby");
+                    OnPropertyChanged(nameof(JoinLobbyCodeError));
+                }
             }
         }
 
@@ -105,9 +113,18 @@ namespace MindWeaveClient.ViewModel.Main
             JoinLobbyCommand = new RelayCommand(async p => 
                 await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
             LogOutCommand = new RelayCommand(async p => await executeLogOutAsync(), p => !IsBusy);
-            ExitCommand = new RelayCommand(async p => await executeExitAsync());
+            ExitCommand = new RelayCommand(p => executeExit());
 
             validate(validator, this, "JoinLobby");
+        }
+
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
@@ -174,31 +191,11 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private async Task executeExitAsync()
+        private static void executeExit()
         {
-            SetBusy(true);
-            try
-            {
-                await cleanupService.cleanUpSessionAsync();
-            }
-            catch (EndpointNotFoundException)
-            {
-            }
-            catch (CommunicationException)
-            {
-            }
-            catch (TimeoutException)
-            {
-            }
-            catch (SocketException)
-            {
-            }
-            finally
-            {
-                SetBusy(false);
-                Application.Current.Shutdown();
-            }
 
+            var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            mainWindow?.Close();
         }
 
         private void forceLocalLogout()

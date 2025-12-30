@@ -16,6 +16,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class GuestJoinViewModel : BaseViewModel
     {
+        private const int MAX_LENGTH_LOBBY_CODE = 6;
+        private const int MAX_LENGTH_EMAIL = 45; 
+        private const int MAX_LENGTH_USERNAME = 16;
+
         private string lobbyCode;
         private string guestEmail;
         private string desiredUsername;
@@ -33,14 +37,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => lobbyCode;
             set
             {
-                lobbyCode = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value?.ToUpper(), MAX_LENGTH_LOBBY_CODE);
+
+                if (lobbyCode != processedValue)
                 {
-                    markAsTouched(nameof(LobbyCode));
+                    lobbyCode = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(LobbyCode));
+                    }
+                    validate(validator, this);
+                    OnPropertyChanged(nameof(LobbyCodeError));
                 }
-                validate(validator, this);
-                OnPropertyChanged(nameof(LobbyCodeError));
             }
         }
 
@@ -49,14 +59,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => guestEmail;
             set
             {
-                guestEmail = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_EMAIL);
+
+                if (guestEmail != processedValue)
                 {
-                    markAsTouched(nameof(GuestEmail));
+                    guestEmail = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(GuestEmail));
+                    }
+                    validate(validator, this);
+                    OnPropertyChanged(nameof(GuestEmailError));
                 }
-                validate(validator, this);
-                OnPropertyChanged(nameof(GuestEmailError));
             }
         }
 
@@ -65,14 +81,21 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => desiredUsername;
             set
             {
-                desiredUsername = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_USERNAME);
+
+                if (desiredUsername != processedValue)
                 {
-                    markAsTouched(nameof(DesiredUsername));
+                    desiredUsername = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(DesiredUsername));
+                    }
+
+                    validate(validator, this);
+                    OnPropertyChanged(nameof(DesiredUsernameError));
                 }
-                validate(validator, this);
-                OnPropertyChanged(nameof(DesiredUsernameError));
             }
         }
         public string LobbyCodeError
@@ -132,6 +155,16 @@ namespace MindWeaveClient.ViewModel.Authentication
             GoBackCommand = new RelayCommand(param => executeGoBack(), param => !IsBusy);
 
             validate(validator, this);
+        }
+
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private bool canExecuteJoin()

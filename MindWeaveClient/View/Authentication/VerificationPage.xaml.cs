@@ -12,11 +12,5 @@ namespace MindWeaveClient.View.Authentication
             InitializeComponent();
             this.DataContext = viewModel;
         }
-
-        private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            var regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
     }
 }

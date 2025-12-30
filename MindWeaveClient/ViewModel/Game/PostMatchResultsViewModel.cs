@@ -1,5 +1,4 @@
 ﻿using MindWeaveClient.Properties.Langs;
-using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Utilities.Abstractions;
@@ -98,7 +97,9 @@ namespace MindWeaveClient.ViewModel.Game
 
                 foreach (var playerDto in results.PlayerResults.OrderBy(p => p.Rank))
                 {
-                    string avatar = getPlayerAvatar(playerDto.Username);
+                    string avatarToDisplay = !string.IsNullOrEmpty(playerDto.AvatarPath)
+                        ? playerDto.AvatarPath
+                        : DEFAULT_AVATAR_PATH;
 
                     var displayItem = new ResultDisplayItem
                     {
@@ -107,7 +108,7 @@ namespace MindWeaveClient.ViewModel.Game
                         Score = playerDto.Score,
                         PiecesPlaced = playerDto.PiecesPlaced,
                         IsWinner = playerDto.IsWinner,
-                        AvatarPath = avatar
+                        AvatarPath = avatarToDisplay
                     };
 
                     AllParticipants.Add(displayItem);
@@ -120,15 +121,6 @@ namespace MindWeaveClient.ViewModel.Game
 
                 updateResultDisplay();
             });
-        }
-
-        private static string getPlayerAvatar(string username)
-        {
-            if (username == SessionService.Username)
-            {
-                return SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
-            }
-            return DEFAULT_AVATAR_PATH;
         }
 
         private void updateResultDisplay()

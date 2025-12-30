@@ -73,7 +73,7 @@
                                  Visibility="{Binding ElementName=ToggleShowPass, Path=IsChecked, Converter={StaticResource BoolToVis}}"/>
 
                         <ToggleButton x:Name="ToggleShowPass"
-                                      Click="ToggleShowPass_OnClick"
+                                      Click="toggleShowPassOnClick"
                                       HorizontalAlignment="Right"
                                       VerticalAlignment="Center"
                                       Margin="0,0,10,0"

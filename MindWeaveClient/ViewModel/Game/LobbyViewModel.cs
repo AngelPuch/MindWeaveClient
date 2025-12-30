@@ -26,6 +26,9 @@ namespace MindWeaveClient.ViewModel.Game
 {
     public class LobbyViewModel : BaseViewModel, IDisposable
     {
+        private const int MAX_CHAT_MESSAGE_LENGTH = 200;
+        private const int MAX_EMAIL_LENGTH = 45;
+
         private const string LOBBY_CODE_JOINING = "Joining...";
         private const string HOST_USERNAME_LOADING = "Loading...";
 
@@ -70,7 +73,16 @@ namespace MindWeaveClient.ViewModel.Game
         public string CurrentChatMessage
         {
             get => currentChatMessage;
-            set { currentChatMessage = value; OnPropertyChanged(); }
+            set
+            {
+                string processedValue = clampString(value, MAX_CHAT_MESSAGE_LENGTH);
+
+                if (currentChatMessage != processedValue)
+                {
+                    currentChatMessage = processedValue;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public bool IsChatConnected
@@ -129,6 +141,14 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 RefreshFriendsCommand.Execute(null);
             }
+        }
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private void subscribeToServiceEvents()
@@ -313,6 +333,8 @@ namespace MindWeaveClient.ViewModel.Game
         {
             if (!dialogService.showGuestInputDialog(out string guestEmail)) return;
 
+            string processedEmail = clampString(guestEmail?.Trim(), MAX_EMAIL_LENGTH);
+
             if (string.IsNullOrWhiteSpace(guestEmail) || !Regex.IsMatch(guestEmail, EMAIL_REGEX_PATTERN))
             {
                 dialogService.showError(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle);
@@ -324,7 +346,7 @@ namespace MindWeaveClient.ViewModel.Game
             var invitationData = new GuestInvitationDto
             {
                 InviterUsername = SessionService.Username,
-                GuestEmail = guestEmail.Trim(),
+                GuestEmail = processedEmail,
                 LobbyCode = LobbyCode
             };
 

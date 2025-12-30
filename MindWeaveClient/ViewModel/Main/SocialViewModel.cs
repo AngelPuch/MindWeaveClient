@@ -38,6 +38,7 @@ namespace MindWeaveClient.ViewModel.Main
 
     public class SocialViewModel : BaseViewModel
     {
+        private const int MAX_SEARCH_LENGTH = 16;
         private readonly IDialogService dialogService;
         private readonly ISocialService socialService;
         private readonly IServiceExceptionHandler exceptionHandler;
@@ -57,9 +58,14 @@ namespace MindWeaveClient.ViewModel.Main
             get => searchQueryValue;
             set
             {
-                searchQueryValue = value;
-                OnPropertyChanged();
-                RaiseCanExecuteChangedOnCommands();
+                string processedValue = clampString(value, MAX_SEARCH_LENGTH);
+
+                if (searchQueryValue != processedValue)
+                {
+                    searchQueryValue = processedValue;
+                    OnPropertyChanged();
+                    RaiseCanExecuteChangedOnCommands();
+                }
             }
         }
 
@@ -131,6 +137,15 @@ namespace MindWeaveClient.ViewModel.Main
 
             if (IsFriendsListChecked) LoadFriendsListCommand.Execute(null);
             else if (IsRequestsChecked) LoadRequestsCommand.Execute(null);
+        }
+
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private void subscribeToEvents()

@@ -6,14 +6,17 @@ namespace MindWeaveClient.Validators
 {
     public class MainMenuValidator : AbstractValidator<MainMenuViewModel>
     {
+        private const int LOBBY_CODE_LENGTH = 6;
+        private const string LOBBY_CODE_REGEX = "^[a-zA-Z0-9]{6}$";
+
         public MainMenuValidator()
         {
             RuleSet("JoinLobby", () =>
             {
                 RuleFor(vm => vm.JoinLobbyCode)
                     .NotEmpty().WithMessage(Lang.ValidationLobbyCodeRequired)
-                    .Length(6).WithMessage(Lang.ValidationLobbyCodeFormat)
-                    .Matches("^[a-zA-Z0-9]{6}$").WithMessage(Lang.ValidationLobbyCodeFormat);
+                    .Length(LOBBY_CODE_LENGTH).WithMessage(Lang.ValidationLobbyCodeFormat)
+                    .Matches(LOBBY_CODE_REGEX).WithMessage(Lang.ValidationLobbyCodeFormat);
             });
         }
     }

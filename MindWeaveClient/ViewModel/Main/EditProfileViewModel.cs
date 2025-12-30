@@ -7,7 +7,6 @@ using MindWeaveClient.Validators;
 using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -19,6 +18,9 @@ namespace MindWeaveClient.ViewModel.Main
         private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
         private const string PROFILE_RULESET_NAME = "Profile";
         private const string PASSWORD_RULESET_NAME = "Password";
+        private const int MAX_LENGTH_FIRST_NAME = 45;
+        private const int MAX_LENGTH_LAST_NAME = 45;
+        private const int MAX_LENGTH_PASSWORD = 128;
 
         private readonly INavigationService navigationService;
         private readonly IProfileService profileService;
@@ -29,9 +31,9 @@ namespace MindWeaveClient.ViewModel.Main
         private string firstNameValue;
         private string lastNameValue;
         private DateTime? dateOfBirthValue;
-        private GenderDto selectedGenderValue;
-        private ObservableCollection<GenderDto> gendersValue;
         private string avatarSourceValue;
+
+        private int originalGenderId;
 
         private bool isChangePasswordSectionVisibleValue;
         private string currentPasswordValue;
@@ -43,14 +45,20 @@ namespace MindWeaveClient.ViewModel.Main
             get => firstNameValue;
             set
             {
-                firstNameValue = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_FIRST_NAME);
+
+                if (firstNameValue != processedValue)
                 {
-                    markAsTouched(nameof(FirstName));
+                    firstNameValue = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(FirstName));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(FirstNameError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(FirstNameError));
             }
         }
 
@@ -59,14 +67,20 @@ namespace MindWeaveClient.ViewModel.Main
             get => lastNameValue;
             set
             {
-                lastNameValue = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_LAST_NAME);
+
+                if (lastNameValue != processedValue)
                 {
-                    markAsTouched(nameof(LastName));
+                    lastNameValue = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(LastName));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(LastNameError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(LastNameError));
             }
         }
 
@@ -83,32 +97,6 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 validateCurrentStep();
                 OnPropertyChanged(nameof(DateOfBirthError));
-            }
-        }
-
-        public GenderDto SelectedGender
-        {
-            get => selectedGenderValue;
-            set
-            {
-                selectedGenderValue = value;
-                OnPropertyChanged();
-                if (value != null)
-                {
-                    markAsTouched(nameof(SelectedGender));
-                }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(SelectedGenderError));
-            }
-        }
-
-        public ObservableCollection<GenderDto> Genders
-        {
-            get => gendersValue;
-            set
-            {
-                gendersValue = value;
-                OnPropertyChanged();
             }
         }
 
@@ -138,14 +126,20 @@ namespace MindWeaveClient.ViewModel.Main
             get => currentPasswordValue;
             set
             {
-                currentPasswordValue = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_PASSWORD);
+
+                if (currentPasswordValue != processedValue)
                 {
-                    markAsTouched(nameof(CurrentPassword));
+                    currentPasswordValue = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(CurrentPassword));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(CurrentPasswordError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(CurrentPasswordError));
             }
         }
 
@@ -154,14 +148,20 @@ namespace MindWeaveClient.ViewModel.Main
             get => newPasswordValue;
             set
             {
-                newPasswordValue = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_PASSWORD);
+
+                if (newPasswordValue != processedValue)
                 {
-                    markAsTouched(nameof(NewPassword));
+                    newPasswordValue = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(NewPassword));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(NewPasswordError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(NewPasswordError));
             }
         }
 
@@ -170,14 +170,20 @@ namespace MindWeaveClient.ViewModel.Main
             get => confirmPasswordValue;
             set
             {
-                confirmPasswordValue = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_PASSWORD);
+
+                if (confirmPasswordValue != processedValue)
                 {
-                    markAsTouched(nameof(ConfirmPassword));
+                    confirmPasswordValue = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(ConfirmPassword));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(ConfirmPasswordError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(ConfirmPasswordError));
             }
         }
 
@@ -204,15 +210,6 @@ namespace MindWeaveClient.ViewModel.Main
             get
             {
                 var errors = GetErrors(nameof(DateOfBirth)) as List<string>;
-                return errors?.FirstOrDefault();
-            }
-        }
-
-        public string SelectedGenderError
-        {
-            get
-            {
-                var errors = GetErrors(nameof(SelectedGender)) as List<string>;
                 return errors?.FirstOrDefault();
             }
         }
@@ -274,10 +271,17 @@ namespace MindWeaveClient.ViewModel.Main
             SaveNewPasswordCommand = new RelayCommand(async p => await executeSaveNewPasswordAsync(), p => CanSaveNewPassword);
             CancelChangePasswordCommand = new RelayCommand(executeCancelChangePassword, p => !IsBusy);
 
-            Genders = new ObservableCollection<GenderDto>();
             _ = loadEditableData();
         }
 
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
         public void refreshAvatar()
         {
             AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
@@ -371,7 +375,6 @@ namespace MindWeaveClient.ViewModel.Main
             markAsTouched(nameof(FirstName));
             markAsTouched(nameof(LastName));
             markAsTouched(nameof(DateOfBirth));
-            markAsTouched(nameof(SelectedGender));
 
             if (HasErrors) return;
 
@@ -380,7 +383,7 @@ namespace MindWeaveClient.ViewModel.Main
                 FirstName = this.FirstName,
                 LastName = this.LastName,
                 DateOfBirth = this.DateOfBirth,
-                IdGender = this.SelectedGender.IdGender,
+                IdGender = originalGenderId,
                 AvailableGenders = null
             };
 
@@ -414,17 +417,7 @@ namespace MindWeaveClient.ViewModel.Main
             FirstName = profileData.FirstName;
             LastName = profileData.LastName;
             DateOfBirth = profileData.DateOfBirth;
-
-            Genders.Clear();
-            if (profileData.AvailableGenders != null)
-            {
-                foreach (var gender in profileData.AvailableGenders)
-                {
-                    Genders.Add(gender);
-                }
-            }
-
-            SelectedGender = Genders.FirstOrDefault(g => g.IdGender == profileData.IdGender);
+            originalGenderId = profileData.IdGender;
         }
 
         private void setBusy(bool value)

@@ -18,6 +18,7 @@
   <xs:element name="ArrayOfPlayerResultDto" nillable="true" type="tns:ArrayOfPlayerResultDto" />
   <xs:complexType name="PlayerResultDto">
     <xs:sequence>
+      <xs:element minOccurs="0" name="AvatarPath" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="IsWinner" type="xs:boolean" />
       <xs:element minOccurs="0" name="PiecesPlaced" type="xs:int" />
       <xs:element minOccurs="0" name="PlayerId" type="xs:int" />

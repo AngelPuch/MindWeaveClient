@@ -63,8 +63,7 @@
                          Style="{StaticResource AuthInputBoxStyle}"
                          MaxLength="6"
                          FontSize="20"
-                         TextAlignment="Center"
-                         PreviewTextInput="CodeTextBox_PreviewTextInput"/>
+                         TextAlignment="Center"/>
                 <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
                            Text="{Binding LobbyCodeError}" 
                            HorizontalAlignment="Center"/>

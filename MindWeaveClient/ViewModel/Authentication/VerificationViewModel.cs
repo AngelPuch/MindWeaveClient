@@ -15,6 +15,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class VerificationViewModel : BaseViewModel
     {
+        private const int MAX_LENGTH_EMAIL = 45;
+        private const int MAX_LENGTH_CODE = 6;
+
         private string email;
         private string verificationCode;
 
@@ -29,8 +32,12 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => email;
             set
             {
-                email = value;
-                OnPropertyChanged();
+                string processedValue = clampString(value, MAX_LENGTH_EMAIL);
+                if (email != processedValue)
+                {
+                    email = processedValue;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -39,16 +46,21 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => verificationCode;
             set
             {
-                verificationCode = value;
-                OnPropertyChanged();
+                string processedValue = clampString(value, MAX_LENGTH_CODE);
 
-                if (!string.IsNullOrEmpty(value))
+                if (verificationCode != processedValue)
                 {
-                    markAsTouched(nameof(VerificationCode));
-                }
+                    verificationCode = processedValue;
+                    OnPropertyChanged();
 
-                validate(validator, this);
-                OnPropertyChanged(nameof(VerificationCodeError));
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(VerificationCode));
+                    }
+
+                    validate(validator, this);
+                    OnPropertyChanged(nameof(VerificationCodeError));
+                }
             }
         }
 
@@ -91,6 +103,15 @@ namespace MindWeaveClient.ViewModel.Authentication
             ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
 
             validate(validator, this);
+        }
+
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private bool canExecuteVerify()

@@ -45,7 +45,6 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Título -->
                 <TextBlock Grid.Row="0" 
                            Text="{x:Static language:Lang.GlobalCommonEditProfile}"
                            Foreground="#2c3e50" 
@@ -54,14 +53,12 @@
                            HorizontalAlignment="Center" 
                            Margin="0,0,0,30"/>
 
-                <!-- Contenido principal -->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Panel de Avatar y botones laterales -->
                     <StackPanel Grid.Column="0" 
                                 VerticalAlignment="Top" 
                                 HorizontalAlignment="Center" 
@@ -92,7 +89,6 @@
                                 IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
                     </StackPanel>
 
-                    <!-- Sección de edición de perfil -->
                     <StackPanel Grid.Column="1" 
                                 Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}">
 
@@ -132,27 +128,8 @@
                         <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
                                    Text="{Binding DateOfBirthError}"/>
 
-                        <TextBlock Text="{x:Static language:Lang.GlobalLbGender}" 
-                                   Foreground="#34495e" 
-                                   FontSize="14" 
-                                   FontWeight="SemiBold" 
-                                   Margin="5,0,5,5"/>
-                        <ComboBox ItemsSource="{Binding Genders}"
-                                  SelectedItem="{Binding SelectedGender, UpdateSourceTrigger=PropertyChanged}"
-                                  DisplayMemberPath="name"
-                                  Height="45" 
-                                  Padding="10,5" 
-                                  Background="#22FFFFFF" 
-                                  BorderBrush="{StaticResource PrimaryColor}" 
-                                  BorderThickness="2" 
-                                  FontSize="16"
-                                  Margin="0,0,0,0" 
-                                  IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
-                        <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
-                                   Text="{Binding SelectedGenderError}"/>
                     </StackPanel>
 
-                    <!-- Sección de cambio de contraseña -->
                     <StackPanel Grid.Column="1" 
                                 Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource BoolToVis}}">
 
@@ -211,7 +188,6 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Botones de acción para perfil -->
                 <Grid Grid.Row="3" 
                       Margin="0,30,0,0" 
                       Visibility="{Binding IsChangePasswordSectionVisible, Converter={StaticResource InverseBoolToVis}}">
@@ -234,7 +210,6 @@
                             IsEnabled="{Binding CanSaveChanges}"/>
                 </Grid>
 
-                <!-- Indicador de Busy -->
                 <Border Grid.Row="1" 
                         Grid.ColumnSpan="2" 
                         Background="#88000000" 

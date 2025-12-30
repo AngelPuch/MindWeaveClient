@@ -17,7 +17,10 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="{x:Static lang:Lang.GuestInvitePromptMessage}" TextWrapping="Wrap" Margin="0,0,0,10"/>
-        <TextBox Grid.Row="1" x:Name="EmailTextBox" Style="{StaticResource AuthInputBoxStyle}" Height="35"/>
+        <TextBox Grid.Row="1" x:Name="EmailTextBox" 
+                 Style="{StaticResource AuthInputBoxStyle}" 
+                 Height="35"
+                 MaxLength="45"/>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="{x:Static lang:Lang.GuestInviteBtnSend}" Style="{StaticResource PrimaryButtonStyle}" Width="100" Height="35" Margin="0,0,10,0" Click="OkButton_Click"/>

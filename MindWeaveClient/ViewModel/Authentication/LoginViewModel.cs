@@ -15,6 +15,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class LoginViewModel : BaseViewModel
     {
+        private const int MAX_LENGTH_EMAIL = 45;
+        private const int MAX_LENGTH_PASSWORD = 128;
+
         private string email;
         private string password;
         private bool showUnverifiedControls;
@@ -32,16 +35,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => email;
             set
             {
-                email = value;
-                OnPropertyChanged();
+                string processedValue = clampString(value, MAX_LENGTH_EMAIL);
 
-                if (!string.IsNullOrEmpty(value))
+                if (email != processedValue)
                 {
-                    markAsTouched(nameof(Email));
-                }
+                    email = processedValue;
+                    OnPropertyChanged();
 
-                validate(validator, this);
-                OnPropertyChanged(nameof(EmailError));
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(email));
+                    }
+                    validate(validator, this);
+                    OnPropertyChanged(nameof(EmailError));
+                }
             }
         }
 
@@ -50,16 +57,21 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => password;
             set
             {
-                password = value;
-                OnPropertyChanged();
+                string processedValue = clampString(value, MAX_LENGTH_PASSWORD);
 
-                if (!string.IsNullOrEmpty(value))
+                if (password != processedValue)
                 {
-                    markAsTouched(nameof(Password));
-                }
+                    password = processedValue;
+                    OnPropertyChanged();
 
-                validate(validator, this);
-                OnPropertyChanged(nameof(PasswordError));
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(Password));
+                    }
+
+                    validate(validator, this);
+                    OnPropertyChanged(nameof(PasswordError));
+                }
             }
         }
 
@@ -122,6 +134,15 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             validate(validator, this);
             this.exceptionHandler = exceptionHandler;
+        }
+
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private bool canExecuteLogin()

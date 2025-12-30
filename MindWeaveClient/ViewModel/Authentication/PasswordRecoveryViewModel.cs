@@ -14,6 +14,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 {
     public class PasswordRecoveryViewModel : BaseViewModel
     {
+        private const int MAX_LENGTH_EMAIL = 45;
+        private const int MAX_LENGTH_CODE = 6;
+        private const int MAX_LENGTH_PASSWORD = 128;
+
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
         private readonly PasswordRecoveryValidator validator;
@@ -60,14 +64,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => email;
             set
             {
-                email = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_EMAIL);
+
+                if (email != processedValue)
                 {
-                    markAsTouched(nameof(Email));
+                    email = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(Email));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(EmailError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(EmailError));
             }
         }
 
@@ -77,14 +87,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => verificationCode;
             set
             {
-                verificationCode = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_CODE);
+
+                if (verificationCode != processedValue)
                 {
-                    markAsTouched(nameof(VerificationCode));
+                    verificationCode = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(VerificationCode));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(VerificationCodeError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(VerificationCodeError));
             }
         }
 
@@ -94,14 +110,21 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => newPassword;
             set
             {
-                newPassword = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_PASSWORD);
+
+                if (newPassword != processedValue)
                 {
-                    markAsTouched(nameof(NewPassword));
+                    newPassword = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(NewPassword));
+                    }
+
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(NewPasswordError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(NewPasswordError));
             }
         }
 
@@ -111,14 +134,20 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => confirmPassword;
             set
             {
-                confirmPassword = value;
-                OnPropertyChanged();
-                if (!string.IsNullOrEmpty(value))
+                string processedValue = clampString(value, MAX_LENGTH_PASSWORD);
+
+                if (confirmPassword != processedValue)
                 {
-                    markAsTouched(nameof(ConfirmPassword));
+                    confirmPassword = processedValue;
+                    OnPropertyChanged();
+
+                    if (!string.IsNullOrEmpty(processedValue))
+                    {
+                        markAsTouched(nameof(ConfirmPassword));
+                    }
+                    validateCurrentStep();
+                    OnPropertyChanged(nameof(ConfirmPasswordError));
                 }
-                validateCurrentStep();
-                OnPropertyChanged(nameof(ConfirmPasswordError));
             }
         }
         public string EmailError
@@ -190,6 +219,15 @@ namespace MindWeaveClient.ViewModel.Authentication
             GoBackCommand = new RelayCommand(param => executeGoBack());
 
             validateCurrentStep();
+        }
+
+        private static string clampString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         private async Task executeSendCodeAsync(bool isResend = false)

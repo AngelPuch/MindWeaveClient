@@ -7,37 +7,44 @@ namespace MindWeaveClient.Validators
 {
     public class EditProfileValidator : AbstractValidator<EditProfileViewModel>
     {
+        private const string PROFILE = "Profile";
+        private const string PASSWORD = "Password";
         private const string PASSWORD_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
+        private const int MAX_NAME_LENGTH = 45;
+        private const int MAX_PASSWORD_INPUT_LENGTH = 128;
+        private const int MIN_AGE = -13;
 
         public EditProfileValidator()
         {
-            RuleSet("Profile", () =>
+            RuleSet(PROFILE, () =>
             {
                 RuleFor(x => x.FirstName)
-                    .NotEmpty().WithMessage(Lang.ValidationFirstNameRequired);
+                    .NotEmpty().WithMessage(Lang.ValidationFirstNameRequired)
+                    .MaximumLength(MAX_NAME_LENGTH);
 
                 RuleFor(x => x.LastName)
-                    .NotEmpty().WithMessage(Lang.ValidationLastNameRequired);
+                    .NotEmpty().WithMessage(Lang.ValidationLastNameRequired)
+                    .MaximumLength(MAX_NAME_LENGTH);
 
                 RuleFor(x => x.DateOfBirth)
                     .NotNull().WithMessage(Lang.ValidationBirthDateRequired)
-                    .LessThan(DateTime.Now.AddYears(-13)).WithMessage(Lang.ValidationBirthDateInvalid);
-
-                RuleFor(x => x.SelectedGender)
-                    .NotNull().WithMessage(Lang.ValidationGenderRequired);
+                    .LessThan(DateTime.Now.AddYears(MIN_AGE)).WithMessage(Lang.ValidationBirthDateInvalid);
             });
 
-            RuleSet("Password", () =>
+            RuleSet(PASSWORD, () =>
             {
                 RuleFor(x => x.CurrentPassword)
-                    .NotEmpty().WithMessage(Lang.ValidationCurrentPasswordRequired);
+                    .NotEmpty().WithMessage(Lang.ValidationCurrentPasswordRequired)
+                    .MaximumLength(MAX_PASSWORD_INPUT_LENGTH);
 
                 RuleFor(x => x.NewPassword)
                     .NotEmpty().WithMessage(Lang.ValidationPasswordRequired)
+                    .MaximumLength(MAX_PASSWORD_INPUT_LENGTH)
                     .Matches(PASSWORD_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
 
                 RuleFor(x => x.ConfirmPassword)
-                    .Equal(x => x.NewPassword).WithMessage(Lang.ValidationPasswordsDoNotMatch);
+                    .Equal(x => x.NewPassword).WithMessage(Lang.ValidationPasswordsDoNotMatch)
+                    .MaximumLength(MAX_PASSWORD_INPUT_LENGTH);
             });
         }
     }

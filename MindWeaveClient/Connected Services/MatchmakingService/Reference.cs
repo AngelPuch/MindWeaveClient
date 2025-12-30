@@ -1077,6 +1077,9 @@ namespace MindWeaveClient.MatchmakingService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AvatarPathField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool IsWinnerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -1104,6 +1107,19 @@ namespace MindWeaveClient.MatchmakingService {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AvatarPath {
+            get {
+                return this.AvatarPathField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AvatarPathField, value) != true)) {
+                    this.AvatarPathField = value;
+                    this.RaisePropertyChanged("AvatarPath");
+                }
             }
         }
         

@@ -13,7 +13,7 @@ namespace MindWeaveClient.View.Authentication
             this.DataContext = viewModel;
         }
 
-        private void ToggleShowPass_OnClick(object sender, RoutedEventArgs e)
+        private void toggleShowPassOnClick(object sender, RoutedEventArgs e)
         {
             bool isVisible = ToggleShowPass.IsChecked == true;
 
@@ -34,8 +34,7 @@ namespace MindWeaveClient.View.Authentication
                 }
                 catch
                 {
-                    // Si falla por permisos de seguridad restringidos en el SO, simplemente se queda al inicio.
-                    // Pero en Windows Desktop normal funcionará perfecto.
+                    // ignored
                 }
             }
         }
