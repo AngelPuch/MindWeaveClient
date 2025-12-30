@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -110,7 +109,7 @@ namespace MindWeaveClient.ViewModel.Game
         private Brush notificationColor;
         private bool isHelpPopupVisible;
         private ImageSource targetPuzzleImage;
-        
+
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
         public ObservableCollection<PuzzleSlotViewModel> PuzzleSlots { get; }
         public ObservableCollection<PlayerScoreViewModel> PlayerScores { get; }
@@ -167,8 +166,7 @@ namespace MindWeaveClient.ViewModel.Game
         public RelayCommand ToggleHelpPopupCommand { get; }
 
         public event Action ForceReleaseLocalDrag;
-
-
+        
         public GameViewModel(
             ICurrentMatchService currentMatchService,
             IMatchmakingService matchmakingService,
@@ -210,12 +208,10 @@ namespace MindWeaveClient.ViewModel.Game
             tryLoadExistingPuzzle();
         }
 
+
         public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
-            if (piece == null || piece.IsPlaced || piece.IsHeldByOther)
-            {
-                return;
-            }
+            if (piece == null || piece.IsPlaced || piece.IsHeldByOther) return;
 
             try
             {
@@ -235,25 +231,16 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await matchmakingService.requestPieceMoveAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
             }
-            catch (CommunicationException)
+            catch (Exception ex)
             {
-            }
-            catch (TimeoutException)
-            {
-            }
-            catch (InvalidOperationException)
-            {
+                exceptionHandler.handleExceptionSilent(ex);
             }
         }
 
         public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
             if (piece == null || piece.IsHeldByOther) return;
-
-            if (string.IsNullOrEmpty(currentMatchService.LobbyId))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(currentMatchService.LobbyId)) return;
 
             try
             {
@@ -317,47 +304,6 @@ namespace MindWeaveClient.ViewModel.Game
             visualTimer.Start();
         }
 
-        private void initializePlayerScores()
-        {
-            PlayerScores.Clear();
-            playerColorsMap.Clear();
-            MyPlayer = null;
-
-            if (currentMatchService.Players == null || !currentMatchService.Players.Any()) return;
-
-            int colorIndex = 0;
-            foreach (var username in currentMatchService.Players)
-            {
-                var newPlayerVm = new PlayerScoreViewModel
-                {
-                    Username = username,
-                    Score = 0
-                };
-
-                PlayerScores.Add(newPlayerVm);
-
-                playerColorsMap[username] = definedColors[colorIndex % definedColors.Length];
-
-                if (username == SessionService.Username)
-                {
-                    MyPlayer = newPlayerVm;
-                }
-
-                colorIndex++;
-            }
-
-            OnPropertyChanged(nameof(MyPlayer));
-        }
-
-        private void tryLoadExistingPuzzle()
-        {
-            var puzzleDto = currentMatchService.getCurrentPuzzle();
-            if (puzzleDto != null && !puzzleLoaded)
-            {
-                loadPuzzle(puzzleDto);
-            }
-        }
-        
         private void localTimerTick(object sender, EventArgs e)
         {
             updateRemainingTime();
@@ -385,6 +331,46 @@ namespace MindWeaveClient.ViewModel.Game
             TimeDisplay = timeRemaining.Add(TimeSpan.FromSeconds(TIMER_ROUND_ADJUSTMENT_SECONDS)).ToString(TIMER_FORMAT);
         }
 
+        private void initializePlayerScores()
+        {
+            PlayerScores.Clear();
+            playerColorsMap.Clear();
+            MyPlayer = null;
+
+            if (currentMatchService.Players == null || !currentMatchService.Players.Any()) return;
+
+            int colorIndex = 0;
+            foreach (var username in currentMatchService.Players)
+            {
+                var newPlayerVm = new PlayerScoreViewModel
+                {
+                    Username = username,
+                    Score = 0
+                };
+
+                PlayerScores.Add(newPlayerVm);
+                playerColorsMap[username] = definedColors[colorIndex % definedColors.Length];
+
+                if (username == SessionService.Username)
+                {
+                    MyPlayer = newPlayerVm;
+                }
+
+                colorIndex++;
+            }
+
+            OnPropertyChanged(nameof(MyPlayer));
+        }
+
+        private void tryLoadExistingPuzzle()
+        {
+            var puzzleDto = currentMatchService.getCurrentPuzzle();
+            if (puzzleDto != null && !puzzleLoaded)
+            {
+                loadPuzzle(puzzleDto);
+            }
+        }
+
         private void onPuzzleReady()
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -409,7 +395,6 @@ namespace MindWeaveClient.ViewModel.Game
                 if (fullImage == null) return;
 
                 TargetPuzzleImage = fullImage;
-
                 PiecesCollection.Clear();
                 PuzzleSlots.Clear();
 
@@ -478,12 +463,10 @@ namespace MindWeaveClient.ViewModel.Game
                         title = Lang.GameEndTimeoutTitle;
                         message = Lang.GameEndTimeoutMessage;
                         break;
-
                     case END_REASON_FORFEIT:
                         title = Lang.GameEndForfeitTitle;
                         message = Lang.GameEndForfeitMessage;
                         break;
-
                     default:
                         title = Lang.GameEndCompletedTitle;
                         message = Lang.GameEndCompletedMessage;
@@ -491,7 +474,6 @@ namespace MindWeaveClient.ViewModel.Game
                 }
 
                 dialogService.showInfo(string.Format(Lang.GameEndLoadingResults, message), title);
-
                 Dispose();
                 navigationService.navigateTo<PostMatchResultsPage>();
             });
@@ -531,9 +513,7 @@ namespace MindWeaveClient.ViewModel.Game
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
                 if (piece == null) return;
 
-                bool amIMoving = username == SessionService.Username;
-
-                if (!amIMoving)
+                if (username != SessionService.Username)
                 {
                     piece.X = newX;
                     piece.Y = newY;
@@ -611,7 +591,6 @@ namespace MindWeaveClient.ViewModel.Game
                 if (username == SessionService.Username)
                 {
                     string msg = getPenaltyMessage(reason, pointsLost);
-
                     audioService.playSoundEffect(SOUND_ERROR);
                     NotificationColor = Brushes.Red;
                     showBonusNotification(msg);
@@ -801,7 +780,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-
         protected virtual void dispose(bool disposing)
         {
             if (isDisposed) return;
@@ -814,6 +792,5 @@ namespace MindWeaveClient.ViewModel.Game
 
             isDisposed = true;
         }
-
     }
 }

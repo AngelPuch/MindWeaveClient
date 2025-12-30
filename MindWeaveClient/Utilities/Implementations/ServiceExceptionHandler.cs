@@ -15,15 +15,16 @@ namespace MindWeaveClient.Utilities.Implementations
 {
     public class ServiceExceptionHandler : IServiceExceptionHandler
     {
-        private const int WSAENETDOWN = 10050;        
-        private const int WSAENETUNREACH = 10051;     
-        private const int WSAENETRESET = 10052;       
+        private const int WSAENETDOWN = 10050;
+        private const int WSAENETUNREACH = 10051;
+        private const int WSAENETRESET = 10052;
         private const int WSAECONNABORTED = 10053;
-        private const int WSAENOTCONN = 10057;        
-        private const int WSAEHOSTDOWN = 10064;       
-        private const int WSAEHOSTUNREACH = 10065;    
-        private const int WSASYSNOTREADY = 10091;     
-        private const int WSANOTINITIALISED = 10093;  
+        private const int WSAECONNRESET = 10054;
+        private const int WSAENOTCONN = 10057;
+        private const int WSAEHOSTDOWN = 10064;
+        private const int WSAEHOSTUNREACH = 10065;
+        private const int WSASYSNOTREADY = 10091;
+        private const int WSANOTINITIALISED = 10093;
 
         private const string KEYWORD_CONNECTION = "connection";
         private const string KEYWORD_SOCKET = "socket";
@@ -31,6 +32,13 @@ namespace MindWeaveClient.Utilities.Implementations
         private const string KEYWORD_RESET = "reset";
         private const string KEYWORD_NETWORK = "network";
         private const string KEYWORD_UNREACHABLE = "unreachable";
+        private const string KEYWORD_CHANNEL = "channel";
+        private const string KEYWORD_FAULTED = "faulted";
+        private const string KEYWORD_CLOSED = "closed";
+        private const string KEYWORD_ABORTED = "aborted";
+        private const string KEYWORD_CANNOT_BE_USED = "cannot be used";
+        private const string KEYWORD_COMMUNICATION_OBJECT = "communication object";
+        private const string KEYWORD_STATE = "state";
 
         private readonly IDialogService dialogService;
         private readonly IWindowNavigationService windowNavigationService;
@@ -52,6 +60,12 @@ namespace MindWeaveClient.Utilities.Implementations
         public bool handleException(Exception exception, string operationContext = null)
         {
             if (exception == null) return false;
+
+            if (isChannelStateError(exception))
+            {
+                handleCriticalConnectionError(exception);
+                return true;
+            }
 
             if (isNetworkUnavailableError(exception))
             {
@@ -84,25 +98,102 @@ namespace MindWeaveClient.Utilities.Implementations
             });
         }
 
+        public bool handleExceptionSilent(Exception exception)
+        {
+            if (exception == null) return false;
+
+            bool isCritical = isChannelStateError(exception) ||
+                              isNetworkUnavailableError(exception) ||
+                              isCriticalConnectionError(exception);
+
+            if (!isCritical)
+            {
+                return false;
+            }
+
+            lock (lockObject)
+            {
+                if (isHandlingCriticalError)
+                {
+                    return true;
+                }
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                handleException(exception, null);
+            }));
+
+            return true;
+        }
+
+        public bool isChannelStateError(Exception exception)
+        {
+            if (exception == null) return false;
+
+            if (exception is InvalidOperationException invalidOpEx)
+            {
+                string message = invalidOpEx.Message.ToLowerInvariant();
+
+                if (message.Contains(KEYWORD_CHANNEL) ||
+                    message.Contains(KEYWORD_FAULTED) ||
+                    message.Contains(KEYWORD_CLOSED) ||
+                    message.Contains(KEYWORD_ABORTED) ||
+                    message.Contains(KEYWORD_CANNOT_BE_USED) ||
+                    message.Contains(KEYWORD_COMMUNICATION_OBJECT) ||
+                    (message.Contains(KEYWORD_STATE) && message.Contains(KEYWORD_FAULTED)))
+                {
+                    return true;
+                }
+
+                if (message.Contains("canal") ||
+                    message.Contains("estado") ||
+                    message.Contains("comunicación") ||
+                    message.Contains("comunicacion") ||
+                    message.Contains("no se puede"))
+                {
+                    return true;
+                }
+            }
+
+            if (exception is ObjectDisposedException)
+            {
+                return true;
+            }
+
+            if (exception.InnerException != null)
+            {
+                return isChannelStateError(exception.InnerException);
+            }
+
+            return false;
+        }
+
         public bool isCriticalConnectionError(Exception exception)
         {
             if (exception == null) return false;
 
             if (exception is EndpointNotFoundException) return true;
             if (exception is CommunicationObjectFaultedException) return true;
+            if (exception is CommunicationObjectAbortedException) return true;
             if (exception is ChannelTerminatedException) return true;
             if (exception is ServerTooBusyException) return true;
+            if (exception is ObjectDisposedException) return true;
 
             if (exception is CommunicationException commEx)
             {
                 if (commEx.InnerException is SocketException) return true;
                 if (commEx.InnerException is WebException) return true;
+                if (commEx.InnerException is ObjectDisposedException) return true;
 
                 string message = commEx.Message.ToLowerInvariant();
                 if (message.Contains(KEYWORD_CONNECTION) ||
                     message.Contains(KEYWORD_SOCKET) ||
                     message.Contains(KEYWORD_REFUSED) ||
-                    message.Contains(KEYWORD_RESET))
+                    message.Contains(KEYWORD_RESET) ||
+                    message.Contains(KEYWORD_FAULTED) ||
+                    message.Contains(KEYWORD_ABORTED) ||
+                    message.Contains(KEYWORD_CLOSED))
                 {
                     return true;
                 }
@@ -111,6 +202,18 @@ namespace MindWeaveClient.Utilities.Implementations
             if (exception is TimeoutException) return true;
             if (exception is SocketException) return true;
             if (exception is WebException) return true;
+
+            if (exception is InvalidOperationException invalidOpEx)
+            {
+                string message = invalidOpEx.Message.ToLowerInvariant();
+                if (message.Contains(KEYWORD_CHANNEL) ||
+                    message.Contains(KEYWORD_COMMUNICATION_OBJECT) ||
+                    message.Contains(KEYWORD_FAULTED) ||
+                    message.Contains(KEYWORD_CLOSED))
+                {
+                    return true;
+                }
+            }
 
             if (exception.InnerException != null)
             {
@@ -227,6 +330,7 @@ namespace MindWeaveClient.Utilities.Implementations
             }
         }
 
+
         private static bool isNetworkDownSocketError(SocketError errorCode)
         {
             switch (errorCode)
@@ -235,6 +339,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 case SocketError.NetworkUnreachable:
                 case SocketError.NetworkReset:
                 case SocketError.ConnectionAborted:
+                case SocketError.ConnectionReset:
                 case SocketError.NotConnected:
                 case SocketError.HostDown:
                 case SocketError.HostUnreachable:
@@ -254,6 +359,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 case WSAENETUNREACH:
                 case WSAENETRESET:
                 case WSAECONNABORTED:
+                case WSAECONNRESET:
                 case WSAENOTCONN:
                 case WSAEHOSTDOWN:
                 case WSAEHOSTUNREACH:
@@ -350,6 +456,7 @@ namespace MindWeaveClient.Utilities.Implementations
             showErrorOnUIThread(message, Lang.ErrorTitle);
         }
 
+
         private static string getNetworkUnavailableMessage(Exception exception)
         {
             SocketException socketEx = findSocketException(exception);
@@ -359,17 +466,13 @@ namespace MindWeaveClient.Utilities.Implementations
                 {
                     case SocketError.NetworkDown:
                         return Lang.ErrorNetworkDown;
-
                     case SocketError.NetworkUnreachable:
                     case SocketError.HostUnreachable:
                         return Lang.ErrorNetworkUnreachable;
-
                     case SocketError.NotConnected:
                         return Lang.ErrorNotConnectedToNetwork;
-
                     case SocketError.HostDown:
                         return Lang.ErrorHostDown;
-
                     case SocketError.SystemNotReady:
                     case SocketError.NotInitialized:
                         return Lang.ErrorNetworkNotReady;
@@ -383,7 +486,6 @@ namespace MindWeaveClient.Utilities.Implementations
                 {
                     case WebExceptionStatus.NameResolutionFailure:
                         return Lang.ErrorDnsResolutionFailed;
-
                     case WebExceptionStatus.ConnectFailure:
                         return Lang.ErrorCannotConnectToNetwork;
                 }
@@ -394,6 +496,14 @@ namespace MindWeaveClient.Utilities.Implementations
 
         private static string getCriticalErrorMessage(Exception exception)
         {
+            if (exception is InvalidOperationException ||
+                exception is ObjectDisposedException ||
+                exception is CommunicationObjectFaultedException ||
+                exception is CommunicationObjectAbortedException)
+            {
+                return Lang.ErrorServerWentDown;
+            }
+
             if (exception is EndpointNotFoundException)
             {
                 return Lang.ErrorServiceNotFound;
@@ -402,11 +512,6 @@ namespace MindWeaveClient.Utilities.Implementations
             if (exception is TimeoutException)
             {
                 return Lang.ErrorServerTimeout;
-            }
-
-            if (exception is CommunicationObjectFaultedException)
-            {
-                return Lang.ErrorConnectionLost;
             }
 
             if (exception is ChannelTerminatedException)
@@ -419,12 +524,19 @@ namespace MindWeaveClient.Utilities.Implementations
                 return Lang.ErrorServerBusy;
             }
 
-            if (exception is CommunicationException)
+            if (exception is CommunicationException commEx)
             {
-                if (exception.InnerException is SocketException socketEx)
+                string message = commEx.Message.ToLowerInvariant();
+                if (message.Contains(KEYWORD_FAULTED) || message.Contains(KEYWORD_ABORTED))
+                {
+                    return Lang.ErrorServerWentDown;
+                }
+
+                if (commEx.InnerException is SocketException socketEx)
                 {
                     return getSocketErrorMessage(socketEx);
                 }
+
                 return Lang.ErrorConnectionLost;
             }
 
@@ -442,26 +554,19 @@ namespace MindWeaveClient.Utilities.Implementations
             {
                 case SocketError.ConnectionRefused:
                     return Lang.ErrorConnectionRefused;
-
                 case SocketError.ConnectionReset:
                     return Lang.ErrorConnectionReset;
-
                 case SocketError.HostUnreachable:
                 case SocketError.NetworkUnreachable:
                     return Lang.ErrorNetworkUnreachable;
-
                 case SocketError.HostNotFound:
                     return Lang.ErrorHostNotFound;
-
                 case SocketError.TimedOut:
                     return Lang.ErrorServerTimeout;
-
                 case SocketError.NetworkDown:
                     return Lang.ErrorNetworkDown;
-
                 case SocketError.NotConnected:
                     return Lang.ErrorNotConnectedToNetwork;
-
                 default:
                     return Lang.ErrorConnectionLost;
             }
@@ -470,39 +575,25 @@ namespace MindWeaveClient.Utilities.Implementations
         private static string getExceptionMessage(Exception exception, string operationContext)
         {
             if (exception is SecurityNegotiationException)
-            {
                 return Lang.ErrorSecurityNegotiation;
-            }
 
             if (exception is MessageSecurityException)
-            {
                 return Lang.ErrorMessageSecurity;
-            }
 
             if (exception is QuotaExceededException)
-            {
                 return Lang.ErrorQuotaExceeded;
-            }
 
             if (exception is ProtocolException)
-            {
                 return Lang.ErrorProtocol;
-            }
 
             if (exception is ActionNotSupportedException)
-            {
                 return Lang.ErrorActionNotSupported;
-            }
 
             if (exception is InvalidOperationException)
-            {
                 return Lang.ErrorInvalidOperation;
-            }
 
             if (exception is ArgumentException)
-            {
                 return Lang.ErrorInvalidData;
-            }
 
             return string.Format(Lang.ErrorGenericOperation, operationContext ?? Lang.GlobalLbUnknown);
         }
@@ -510,14 +601,10 @@ namespace MindWeaveClient.Utilities.Implementations
         private static SocketException findSocketException(Exception exception)
         {
             if (exception is SocketException socketEx)
-            {
                 return socketEx;
-            }
 
             if (exception.InnerException != null)
-            {
                 return findSocketException(exception.InnerException);
-            }
 
             return null;
         }
@@ -525,14 +612,10 @@ namespace MindWeaveClient.Utilities.Implementations
         private static WebException findWebException(Exception exception)
         {
             if (exception is WebException webEx)
-            {
                 return webEx;
-            }
 
             if (exception.InnerException != null)
-            {
                 return findWebException(exception.InnerException);
-            }
 
             return null;
         }
@@ -555,7 +638,6 @@ namespace MindWeaveClient.Utilities.Implementations
         private void resetApplicationWindows()
         {
             var loginWindow = getOrCreateLoginWindow();
-
             if (loginWindow == null) return;
 
             Application.Current.MainWindow = loginWindow;

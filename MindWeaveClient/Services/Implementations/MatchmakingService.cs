@@ -334,11 +334,25 @@ namespace MindWeaveClient.Services.Implementations
 
         private void validateProxyState()
         {
-            if (proxy == null || proxy.State == CommunicationState.Faulted)
+            if (proxy == null)
             {
-                throw new InvalidOperationException(Lang.ErrorMsgServerOffline);
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
+            }
+
+            if (proxy.State == CommunicationState.Faulted)
+            {
+                abortProxySafe();
+                proxy = null;
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
+            }
+
+            if (proxy.State == CommunicationState.Closed)
+            {
+                proxy = null;
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
             }
         }
+
 
         private void handleLobbyStateUpdated(LobbyStateDto state)
         {

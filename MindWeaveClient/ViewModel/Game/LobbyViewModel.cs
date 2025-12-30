@@ -206,8 +206,14 @@ namespace MindWeaveClient.ViewModel.Game
             }
             finally
             {
-                windowNavigationService.closeWindow<GameWindow>();
+                var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+                if (gameWindow != null)
+                {
+                    gameWindow.IsExitConfirmed = true;
+                }
                 windowNavigationService.openWindow<MainWindow>();
+                windowNavigationService.closeWindow<GameWindow>();
+
                 SetBusy(false);
             }
         }
@@ -434,8 +440,14 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 dialogService.showInfo(reason, Lang.LobbyClosedTitle);
 
-                windowNavigationService.closeWindow<GameWindow>();
+                var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+                if (gameWindow != null)
+                {
+                    gameWindow.IsExitConfirmed = true;
+                }
+
                 windowNavigationService.openWindow<MainWindow>();
+                windowNavigationService.closeWindow<GameWindow>();
 
                 Dispose();
             });
@@ -612,11 +624,11 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (CommunicationException)
             {
-                // Ignore reconnection failures
+                // Ignored
             }
             catch (TimeoutException)
             {
-                // Ignore reconnection failures
+                // Ignored
             }
         }
 

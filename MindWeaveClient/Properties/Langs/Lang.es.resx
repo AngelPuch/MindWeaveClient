@@ -1053,4 +1053,7 @@
   <data name="ErrorCannotConnectToNetwork" xml:space="preserve">
     <value>No se puede conectar a la red. Por favor verifica que tu conexión a internet funcione.</value>
   </data>
+  <data name="ErrorServerWentDown" xml:space="preserve">
+    <value>Se perdió la conexión con el servidor. El servidor puede haberse caído.</value>
+  </data>
 </root>

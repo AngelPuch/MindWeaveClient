@@ -81,7 +81,6 @@ namespace MindWeaveClient.Services.Implementations
                 cleanupOnError();
                 throw;
             }
-
         }
 
         public async Task disconnectAsync()
@@ -113,7 +112,7 @@ namespace MindWeaveClient.Services.Implementations
             {
                 abortProxySafe();
             }
-            catch (CommunicationException)  
+            catch (CommunicationException)
             {
                 abortProxySafe();
             }
@@ -129,15 +128,11 @@ namespace MindWeaveClient.Services.Implementations
             {
                 cleanup();
             }
-
         }
 
         public async Task sendLobbyMessageAsync(string username, string lobbyId, string message)
         {
-            if (!isConnected())
-            {
-                throw new InvalidOperationException(Lang.ChatConnectError);
-            }
+            validateProxyState();
 
             try
             {
@@ -167,6 +162,27 @@ namespace MindWeaveClient.Services.Implementations
             {
                 cleanupOnError();
                 throw;
+            }
+        }
+
+        private void validateProxyState()
+        {
+            if (proxy == null)
+            {
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
+            }
+
+            if (proxy.State == CommunicationState.Faulted)
+            {
+                abortProxySafe();
+                cleanup();
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
+            }
+
+            if (proxy.State == CommunicationState.Closed || proxy.State == CommunicationState.Closing)
+            {
+                cleanup();
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
             }
         }
 

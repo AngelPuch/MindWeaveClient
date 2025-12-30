@@ -835,6 +835,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a The server connection was lost. The server may have gone down..
+        /// </summary>
+        public static string ErrorServerWentDown {
+            get {
+                return ResourceManager.GetString("ErrorServerWentDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Could not connect to the server. Please verify the server is running and try again..
         /// </summary>
         public static string ErrorServiceNotFound {

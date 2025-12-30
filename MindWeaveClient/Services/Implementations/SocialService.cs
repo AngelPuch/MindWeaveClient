@@ -1,4 +1,5 @@
-﻿using MindWeaveClient.Services.Abstractions;
+﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.SocialManagerService;
 using System;
@@ -20,7 +21,6 @@ namespace MindWeaveClient.Services.Implementations
         public event Action<string, bool> FriendResponseReceived;
         public event Action<string, string> LobbyInviteReceived;
 
-        
         public SocialService(ISocialManagerCallback callbackHandler)
         {
             this.callbackHandler = callbackHandler as SocialCallbackHandler;
@@ -85,7 +85,6 @@ namespace MindWeaveClient.Services.Implementations
                 cleanupProxy();
                 throw;
             }
-
         }
 
         public async Task disconnectAsync(string username)
@@ -175,10 +174,7 @@ namespace MindWeaveClient.Services.Implementations
 
         private async Task<T> executeServiceCallAsync<T>(Func<Task<T>> call)
         {
-            if (proxy == null || proxy.State != CommunicationState.Opened)
-            {
-                throw new InvalidOperationException("Social service is not connected.");
-            }
+            validateProxyState();
 
             try
             {
@@ -208,6 +204,29 @@ namespace MindWeaveClient.Services.Implementations
             {
                 cleanupProxy();
                 throw;
+            }
+        }
+
+        private void validateProxyState()
+        {
+            if (proxy == null)
+            {
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
+            }
+
+            if (proxy.State == CommunicationState.Faulted)
+            {
+                abortProxySafe();
+                proxy = null;
+                currentUsername = null;
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
+            }
+
+            if (proxy.State == CommunicationState.Closed || proxy.State == CommunicationState.Closing)
+            {
+                proxy = null;
+                currentUsername = null;
+                throw new CommunicationObjectFaultedException(Lang.ErrorMsgServerOffline);
             }
         }
 
@@ -256,7 +275,7 @@ namespace MindWeaveClient.Services.Implementations
                 }
                 catch
                 {
-                    // ignored
+                    // Ignored
                 }
             }
 
