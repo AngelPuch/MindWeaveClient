@@ -1,4 +1,5 @@
-﻿using MindWeaveClient.MatchmakingService;
+﻿using MindWeaveClient.Helpers;
+using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
@@ -202,7 +203,12 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    dialogService.showError(serviceResult.WcfResult.Message, Lang.ErrorTitle);
+                    string localizedMessage = MessageCodeInterpreter.Translate(
+                    serviceResult.WcfResult.MessageCode,
+                    serviceResult.WcfResult.Message
+                );
+
+                    dialogService.showError(localizedMessage, Lang.ErrorTitle);
                     if (!serviceResult.DidMatchmakingConnect) { matchmakingService.disconnect(); }
                 }
             }

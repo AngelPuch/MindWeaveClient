@@ -1,15 +1,16 @@
-﻿using MindWeaveClient.Properties.Langs;
+﻿using MindWeaveClient.Helpers;
+using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
+using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MindWeaveClient.Services;
-using MindWeaveClient.Validators;
-using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -204,7 +205,12 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
             else
             {
-                dialogService.showError(result.WcfLoginResult.OperationResult.Message, Lang.ErrorTitle);
+                string localizedMessage = MessageCodeInterpreter.Translate(
+                    result.WcfLoginResult.OperationResult.MessageCode,
+                    result.WcfLoginResult.OperationResult.Message
+                );
+
+                dialogService.showError(localizedMessage, Lang.ErrorTitle);
             }
 
         }
@@ -224,7 +230,12 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    handleError(result.Message, null);
+                    string localizedMessage = MessageCodeInterpreter.Translate(
+                    result.MessageCode,
+                    result.Message
+                );
+
+                    dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -257,10 +268,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void handleError(string message, Exception ex)
-        {
-            string errorDetails = ex != null ? ex.Message : Lang.ErrorMsgNoDetails;
-            dialogService.showError($"{message}\n{Lang.ErrorTitleDetails}: {errorDetails}", Lang.ErrorTitle);
-        }
+       
     }
 }

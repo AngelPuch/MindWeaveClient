@@ -17,6 +17,7 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Profile" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IProfileManager_getPlayerProfileView_InputMessage">
@@ -184,9 +185,9 @@
   </wsdl:binding>
   <wsdl:service name="ProfileManagerService">
     <wsdl:port name="NetTcpBinding_IProfileManager" binding="tns:NetTcpBinding_IProfileManager">
-      <soap12:address location="net.tcp://192.168.1.102:8734/MindWeaveServer/Services/ProfileManagerService/" />
+      <soap12:address location="net.tcp://localhost:8734/MindWeaveServer/Services/ProfileManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.1.102:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://localhost:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

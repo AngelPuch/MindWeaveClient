@@ -9,6 +9,7 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
+using MindWeaveClient.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -43,7 +44,6 @@ namespace MindWeaveClient.ViewModel.Game
 
         private const char PATH_SEPARATOR = '/';
         private const char STRIKE_SEPARATOR = ':';
-
 
         private readonly IMatchmakingService matchmakingService;
         private readonly ISocialService socialService;
@@ -90,7 +90,7 @@ namespace MindWeaveClient.ViewModel.Game
             get => isChatConnected;
             set { isChatConnected = value; OnPropertyChanged(); }
         }
-        
+
         public ICommand LeaveLobbyCommand { get; }
         public ICommand StartGameCommand { get; }
         public ICommand InviteFriendCommand { get; }
@@ -98,7 +98,7 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand RefreshFriendsCommand { get; }
         public ICommand SendMessageCommand { get; }
         public ICommand InviteGuestCommand { get; }
-        
+
         public LobbyViewModel(
             IMatchmakingService matchmakingService,
             ISocialService socialService,
@@ -142,6 +142,7 @@ namespace MindWeaveClient.ViewModel.Game
                 RefreshFriendsCommand.Execute(null);
             }
         }
+
         private static string clampString(string value, int maxLength)
         {
             if (string.IsNullOrEmpty(value))
@@ -174,7 +175,7 @@ namespace MindWeaveClient.ViewModel.Game
             chatService.OnMessageReceived -= onChatMessageReceived;
             chatService.OnSystemMessageReceived -= handleSystemMessage;
         }
-        
+
         private async Task executeRefreshFriendsAsync()
         {
             if (!IsHost || IsGuestUser) return;
@@ -212,18 +213,10 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await cleanupAsync();
             }
-            catch (EndpointNotFoundException)
-            {
-            }
-            catch (CommunicationException)
-            {
-            }
-            catch (TimeoutException)
-            {
-            }
-            catch (SocketException)
-            {
-            }
+            catch (EndpointNotFoundException) { }
+            catch (CommunicationException) { }
+            catch (TimeoutException) { }
+            catch (SocketException) { }
             finally
             {
                 var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
@@ -390,11 +383,12 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private void handleActionFailed(string message)
+        private void handleActionFailed(string messageCode)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                dialogService.showWarning(message, Lang.WarningTitle);
+                string localizedMessage = MessageCodeInterpreter.Translate(messageCode, messageCode);
+                dialogService.showWarning(localizedMessage, Lang.WarningTitle);
             });
         }
 
@@ -406,20 +400,23 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        private void handleFatalError(string reason)
+        private void handleFatalError(string reasonCode)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                dialogService.showError(reason, Lang.ErrorTitle);
+                string localizedReason = MessageCodeInterpreter.Translate(reasonCode, reasonCode);
+                dialogService.showError(localizedReason, Lang.ErrorTitle);
                 _ = forceExitLobbyAsync();
             });
         }
 
-        private void handleKicked(string reason)
+        private void handleKicked(string reasonCode)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                dialogService.showInfo(string.Format(Lang.KickedMessage, reason), Lang.KickedTitle);
+                string localizedReason = MessageCodeInterpreter.Translate(reasonCode, reasonCode);
+                dialogService.showInfo(localizedReason, Lang.KickedTitle);
+
                 _ = forceExitLobbyAsync();
             });
         }
@@ -456,11 +453,12 @@ namespace MindWeaveClient.ViewModel.Game
             });
         }
 
-        private void handleLobbyDestroyed(string reason)
+        private void handleLobbyDestroyed(string reasonCode)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                dialogService.showInfo(reason, Lang.LobbyClosedTitle);
+                string localizedReason = MessageCodeInterpreter.Translate(reasonCode, reasonCode);
+                dialogService.showInfo(localizedReason, Lang.LobbyClosedTitle);
 
                 var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
                 if (gameWindow != null)
@@ -479,6 +477,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                
                 string finalMessage = messageCode;
 
                 if (messageCode.StartsWith(SYSTEM_MSG_PREFIX_WARN_STRIKE))
@@ -489,6 +488,14 @@ namespace MindWeaveClient.ViewModel.Game
                 else if (messageCode == SYSTEM_MSG_LOBBY_CLOSED_HOST_BAN)
                 {
                     finalMessage = Lang.SystemHostExpelled;
+                }
+                else
+                {
+                    string translated = MessageCodeInterpreter.Translate(messageCode, null);
+                    if (translated != Lang.ErrorGeneric) 
+                    {
+                        finalMessage = translated;
+                    }
                 }
 
                 var sysMsg = new ChatMessageDto
@@ -509,6 +516,7 @@ namespace MindWeaveClient.ViewModel.Game
                 ChatMessages.Add(new ChatMessageDisplayViewModel(messageDto));
             });
         }
+
 
         private void updatePlayersList(LobbyStateDto newState)
         {
@@ -644,14 +652,8 @@ namespace MindWeaveClient.ViewModel.Game
                 await disconnectFromChatAsync();
                 await connectToChatAsync(LobbyCode);
             }
-            catch (CommunicationException)
-            {
-                // Ignored
-            }
-            catch (TimeoutException)
-            {
-                // Ignored
-            }
+            catch (CommunicationException) {  }
+            catch (TimeoutException) {  }
         }
 
         private async Task forceExitLobbyAsync()
@@ -660,10 +662,7 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await disconnectFromChatAsync();
             }
-            catch (Exception)
-            {
-                // ignored
-            }
+            catch (Exception) {  }
 
             Dispose();
             matchmakingService.disconnect();
@@ -683,24 +682,15 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
                 }
-                catch (EndpointNotFoundException)
-                {
-                }
-                catch (CommunicationException)
-                {
-                }
-                catch (TimeoutException)
-                {
-                }
+                catch (EndpointNotFoundException) { }
+                catch (CommunicationException) { }
+                catch (TimeoutException) { }
 
                 try
                 {
                     await disconnectFromChatAsync();
                 }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                catch (Exception) {  }
             }
 
             unsubscribeFromServiceEvents();

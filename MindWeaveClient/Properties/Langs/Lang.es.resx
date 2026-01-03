@@ -1056,4 +1056,103 @@
   <data name="ErrorServerWentDown" xml:space="preserve">
     <value>Se perdió la conexión con el servidor. El servidor puede haberse caído.</value>
   </data>
+  <data name="LoginSuccessful" xml:space="preserve">
+    <value>Inicio de sesión exitoso.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Inicio de sesión exitoso.</value>
+  </data>
+  <data name="LoginInvalidCredentials" xml:space="preserve">
+    <value>Usuario o contraseña inválidos.</value>
+  </data>
+  <data name="RegistrationSuccessful" xml:space="preserve">
+    <value>Registro exitoso. Revisa tu correo.</value>
+  </data>
+  <data name="RegistrationSuccess" xml:space="preserve">
+    <value>Registro exitoso.</value>
+  </data>
+  <data name="VerificationInvalidOrExpiredCode" xml:space="preserve">
+    <value>El código de verificación es inválido o expiró.</value>
+  </data>
+  <data name="VerificationSuccessful" xml:space="preserve">
+    <value>Cuenta verificada exitosamente.</value>
+  </data>
+  <data name="VerificationEmailAndCodeRequired" xml:space="preserve">
+    <value>El correo y el código son obligatorios.</value>
+  </data>
+  <data name="VerificationAccountAlreadyVerified" xml:space="preserve">
+    <value>Esta cuenta ya ha sido verificada.</value>
+  </data>
+  <data name="ValidationProfileOrPasswordRequired" xml:space="preserve">
+    <value>La información de perfil y contraseña son requeridas.</value>
+  </data>
+  <data name="InfoRecoveryCodeSent" xml:space="preserve">
+    <value>Código de recuperación enviado a tu correo.</value>
+  </data>
+  <data name="InfoPasswordResetSuccess" xml:space="preserve">
+    <value>Contraseña restablecida exitosamente.</value>
+  </data>
+  <data name="ErrorUserAlreadyExists" xml:space="preserve">
+    <value>El usuario o correo ya están registrados.</value>
+  </data>
+  <data name="ErrorUserAlreadyLoggedIn" xml:space="preserve">
+    <value>Este usuario ya tiene una sesión activa.</value>
+  </data>
+  <data name="ErrorAccountNotFound" xml:space="preserve">
+    <value>Cuenta no encontrada.</value>
+  </data>
+  <data name="ErrorAllFieldsRequired" xml:space="preserve">
+    <value>Todos los campos son obligatorios.</value>
+  </data>
+  <data name="ErrorDatabaseConnection" xml:space="preserve">
+    <value>No se pudo conectar a la base de datos.</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>Ocurrió un error inesperado.</value>
+  </data>
+  <data name="ErrorUserAlreadyInGame" xml:space="preserve">
+    <value>El usuario ya está en una partida o sala.</value>
+  </data>
+  <data name="ErrorLobbyNotFound" xml:space="preserve">
+    <value>Sala no encontrada o inactiva.</value>
+  </data>
+  <data name="ErrorLobbyIsFull" xml:space="preserve">
+    <value>La sala está llena.</value>
+  </data>
+  <data name="ErrorPlayerAlreadyInLobby" xml:space="preserve">
+    <value>El jugador ya está en la sala.</value>
+  </data>
+  <data name="ErrorUserNotOnline" xml:space="preserve">
+    <value>El usuario no está en línea.</value>
+  </data>
+  <data name="ErrorNotHost" xml:space="preserve">
+    <value>Solo el anfitrión puede realizar esta acción.</value>
+  </data>
+  <data name="ErrorNotEnoughPlayers" xml:space="preserve">
+    <value>No hay suficientes jugadores para iniciar.</value>
+  </data>
+  <data name="ErrorHostCannotKickSelf" xml:space="preserve">
+    <value>No puedes expulsarte a ti mismo.</value>
+  </data>
+  <data name="ErrorLobbyCreationFailed" xml:space="preserve">
+    <value>Error al crear la sala.</value>
+  </data>
+  <data name="SuccessGuestJoined" xml:space="preserve">
+    <value>Unido a la sala como invitado.</value>
+  </data>
+  <data name="ErrorInvalidGuestInvite" xml:space="preserve">
+    <value>Invitación inválida o expirada.</value>
+  </data>
+  <data name="ErrorPuzzleNotFound" xml:space="preserve">
+    <value>Archivo del rompecabezas no encontrado.</value>
+  </data>
+  <data name="ErrorCommunication" xml:space="preserve">
+    <value>Error de comunicación.</value>
+  </data>
+  <data name="InfoKickedByHost" xml:space="preserve">
+    <value>Has sido expulsado por el anfitrión.</value>
+  </data>
+  <data name="InfoHostLeftLobby" xml:space="preserve">
+    <value>El anfitrión ha abandonado la sala.</value>
+  </data>
 </root>

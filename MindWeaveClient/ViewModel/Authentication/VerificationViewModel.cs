@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.AuthenticationService;
+using MindWeaveClient.Helpers;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
@@ -137,7 +138,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                     navigationService.navigateTo<LoginPage>();
                     executeGoBack();
                 }
-                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+                else {
+                    string localizedMessage = MessageCodeInterpreter.Translate(
+                    result.MessageCode,
+                    result.Message
+                );
+
+                    dialogService.showError(localizedMessage, Lang.ErrorTitle);
+                }
             }
             catch (Exception ex)
             {
@@ -169,7 +177,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                     VerificationCode = string.Empty;
                     clearTouchedState();
                 }
-                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+                else {
+                    string localizedMessage = MessageCodeInterpreter.Translate(
+                    result.MessageCode,
+                    result.Message
+                );
+
+                    dialogService.showError(localizedMessage, Lang.ErrorTitle);
+                }
             }
             catch (Exception ex)
             {
