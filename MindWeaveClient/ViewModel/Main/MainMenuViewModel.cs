@@ -46,7 +46,7 @@ namespace MindWeaveClient.ViewModel.Main
             get => joinLobbyCode;
             set
             {
-                string normalizedValue = value?.Trim().ToUpper();
+                string normalizedValue = value?.Trim();
                 string processedValue = clampString(normalizedValue, MAX_LOBBY_CODE_LENGTH);
 
                 if (joinLobbyCode != processedValue)

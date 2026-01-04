@@ -38,7 +38,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             get => lobbyCode;
             set
             {
-                string processedValue = clampString(value?.ToUpper(), MAX_LENGTH_LOBBY_CODE);
+                string processedValue = clampString(value, MAX_LENGTH_LOBBY_CODE);
 
                 if (lobbyCode != processedValue)
                 {
