@@ -154,11 +154,8 @@ namespace MindWeaveClient.ViewModel.Game
         {
             SessionService.clearSession();
 
-            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
-            if (gameWindow != null)
-            {
-                gameWindow.IsExitConfirmed = true;
-            }
+            markGameAsEndedNaturally();
+            clearMatchData();
 
             windowNavigationService.openWindow<AuthenticationWindow>();
             windowNavigationService.closeWindow<GameWindow>();
@@ -180,12 +177,6 @@ namespace MindWeaveClient.ViewModel.Game
 
         private void navigateToMainMenu()
         {
-            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
-            if (gameWindow != null)
-            {
-                gameWindow.IsExitConfirmed = true;
-            }
-
             windowNavigationService.openWindow<MainWindow>();
             windowNavigationService.closeWindow<GameWindow>();
         }

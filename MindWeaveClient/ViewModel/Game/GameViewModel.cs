@@ -90,6 +90,7 @@ namespace MindWeaveClient.ViewModel.Game
 
         private static Guid activeGameInstanceId;
         private readonly Guid myInstanceId;
+        private int? currentLocalDraggedPieceId;
 
         private readonly Dictionary<string, SolidColorBrush> playerColorsMap;
         private readonly SolidColorBrush[] definedColors;
@@ -214,12 +215,15 @@ namespace MindWeaveClient.ViewModel.Game
         {
             if (piece == null || piece.IsPlaced || piece.IsHeldByOther) return;
 
+            currentLocalDraggedPieceId = piece.PieceId;
+
             try
             {
                 await matchmakingService.requestPieceDragAsync(currentMatchService.LobbyId, piece.PieceId);
             }
             catch (Exception ex)
             {
+                currentLocalDraggedPieceId = null;
                 exceptionHandler.handleException(ex, Lang.DragPieceOperation);
             }
         }
@@ -240,8 +244,20 @@ namespace MindWeaveClient.ViewModel.Game
 
         public async Task dropPiece(PuzzlePieceViewModel piece, double newX, double newY)
         {
-            if (piece == null || piece.IsHeldByOther) return;
-            if (string.IsNullOrEmpty(currentMatchService.LobbyId)) return;
+            if (currentLocalDraggedPieceId == piece.PieceId)
+            {
+                currentLocalDraggedPieceId = null;
+            }
+
+            if (piece == null || piece.IsHeldByOther)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(currentMatchService.LobbyId))
+            {
+                return;
+            }
 
             try
             {
@@ -486,7 +502,10 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece == null) return;
+                if (piece == null)
+                {
+                    return;
+                }
 
                 bool isMyAction = username == SessionService.Username;
 
@@ -505,6 +524,12 @@ namespace MindWeaveClient.ViewModel.Game
                 else
                 {
                     piece.IsHeldByOther = true;
+                    if (currentLocalDraggedPieceId == pieceId)
+                    {
+                        ForceReleaseLocalDrag?.Invoke();
+                        currentLocalDraggedPieceId = null;
+                    }
+
                     if (playerColorsMap.ContainsKey(username))
                     {
                         piece.BorderColor = playerColorsMap[username];
@@ -550,6 +575,10 @@ namespace MindWeaveClient.ViewModel.Game
 
                 if (username == SessionService.Username)
                 {
+                    if (currentLocalDraggedPieceId == pieceId)
+                    {
+                        currentLocalDraggedPieceId = null;
+                    }
                     ForceReleaseLocalDrag?.Invoke();
                 }
 
