@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.Utilities.Implementations;
+using MindWeaveClient.View.Authentication;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -418,7 +419,7 @@ namespace MindWeaveClient.ViewModel.Game
                 string localizedReason = MessageCodeInterpreter.translate(reasonCode, reasonCode);
                 dialogService.showInfo(localizedReason, Lang.KickedTitle);
 
-                _ = forceExitLobbyAsync();
+                _ = handleKickedExitAsync();
             });
         }
 
@@ -669,6 +670,36 @@ namespace MindWeaveClient.ViewModel.Game
             matchmakingService.disconnect();
 
             windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
+        }
+
+        private async Task handleKickedExitAsync()
+        {
+            try
+            {
+                await disconnectFromChatAsync();
+            }
+            catch (Exception) { }
+
+            Dispose();
+            matchmakingService.disconnect();
+
+            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+            if (gameWindow != null)
+            {
+                gameWindow.IsExitConfirmed = true;
+            }
+
+            if (SessionService.IsGuest)
+            {
+                SessionService.clearSession();
+                windowNavigationService.openWindow<AuthenticationWindow>();
+            }
+            else
+            {
+                windowNavigationService.openWindow<MainWindow>();
+            }
+
             windowNavigationService.closeWindow<GameWindow>();
         }
 

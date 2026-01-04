@@ -1,14 +1,16 @@
 ﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.View.Authentication;
+using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -27,7 +29,6 @@ namespace MindWeaveClient.ViewModel.Game
         private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
         private const string DRAW_TITLE = "¡EMPATE!";
 
-
         private readonly IWindowNavigationService windowNavigationService;
         private readonly ICurrentMatchService currentMatchService;
 
@@ -37,6 +38,7 @@ namespace MindWeaveClient.ViewModel.Game
         private Visibility winnerSectionVisibility;
         private Visibility drawSectionVisibility;
 
+        public bool IsGuest => SessionService.IsGuest;
 
         public string ResultTitle
         {
@@ -69,6 +71,7 @@ namespace MindWeaveClient.ViewModel.Game
         }
 
         public ICommand GoToMainMenuCommand { get; }
+        public ICommand ExitToLoginCommand { get; }
 
         public PostMatchResultsViewModel(
             IWindowNavigationService windowNavigationService,
@@ -80,6 +83,7 @@ namespace MindWeaveClient.ViewModel.Game
             allParticipants = new ObservableCollection<ResultDisplayItem>();
 
             GoToMainMenuCommand = new RelayCommand(executeGoToMainMenu);
+            ExitToLoginCommand = new RelayCommand(executeExitToLogin);
 
             loadData();
         }
@@ -144,6 +148,20 @@ namespace MindWeaveClient.ViewModel.Game
             markGameAsEndedNaturally();
             clearMatchData();
             navigateToMainMenu();
+        }
+
+        private void executeExitToLogin(object obj)
+        {
+            SessionService.clearSession();
+
+            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+            if (gameWindow != null)
+            {
+                gameWindow.IsExitConfirmed = true;
+            }
+
+            windowNavigationService.openWindow<AuthenticationWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
         }
 
         private void markGameAsEndedNaturally()
