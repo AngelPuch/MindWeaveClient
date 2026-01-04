@@ -8,6 +8,7 @@ namespace MindWeaveClient.Validators
     public class CreateAccountValidator : AbstractValidator<CreateAccountViewModel>
     {
         private const string PASSWORD_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
+        private const string EMAIL_REGEX = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         private const int MAX_LENGTH_FIRST_NAME = 45;
         private const int MAX_LENGTH_LAST_NAME = 45;
         private const int MAX_LENGTH_USERNAME = 16;
@@ -32,6 +33,8 @@ namespace MindWeaveClient.Validators
             RuleFor(vm => vm.Email)
                 .NotEmpty().WithMessage(Lang.ValidationEmailRequired)
                 .EmailAddress().WithMessage(Lang.ValidationEmailInvalid)
+                .Matches(EMAIL_REGEX)
+                .WithMessage(Lang.ValidationEmailInvalid)
                 .MaximumLength(MAX_LENGTH_EMAIL);
 
             RuleFor(vm => vm.BirthDate)

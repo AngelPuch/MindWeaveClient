@@ -8,6 +8,8 @@ namespace MindWeaveClient.Validators
     {
         private const string LOBBY_CODE_REGEX = "^[a-zA-Z0-9]{6}$";
         private const string DESIRED_USERNAME_REGEX = "^[a-zA-Z0-9]{3,16}$";
+        private const string EMAIL_REGEX = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
         private const int LOBBY_CODE_LENGTH = 6;
         private const int MAX_EMAIL_LENGTH = 45;
 
@@ -20,8 +22,10 @@ namespace MindWeaveClient.Validators
 
             RuleFor(vm => vm.GuestEmail)
                 .NotEmpty().WithMessage(Lang.ValidationEmailRequired)
-                .MaximumLength(MAX_EMAIL_LENGTH)
-                .EmailAddress().WithMessage(Lang.ValidationEmailInvalid);
+                .EmailAddress().WithMessage(Lang.ValidationEmailInvalid)
+                .Matches(EMAIL_REGEX)
+                .WithMessage(Lang.ValidationEmailInvalid)
+                .MaximumLength(MAX_EMAIL_LENGTH);
 
             RuleFor(vm => vm.DesiredUsername)
                 .NotEmpty().WithMessage(Lang.ValidationUsernameRequired)

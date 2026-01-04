@@ -11,6 +11,7 @@ namespace MindWeaveClient.Validators
         private const string STEP3 = "Step3";
         private const string PASSWORD_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
         private const string VERIFICATION_CODE_REGEX = "^[0-9]{6}$";
+        private const string EMAIL_REGEX = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         private const int MAX_EMAIL_LENGTH = 45;
         private const int VERIFICATION_CODE_LENGTH = 6;
 
@@ -23,6 +24,8 @@ namespace MindWeaveClient.Validators
                 RuleFor(vm => vm.Email)
                     .NotEmpty().WithMessage(Lang.ValidationEmailRequired)
                     .MaximumLength(MAX_EMAIL_LENGTH)
+                    .Matches(EMAIL_REGEX)
+                    .WithMessage(Lang.ValidationEmailInvalid)
                     .EmailAddress().WithMessage(Lang.ValidationEmailInvalid);
             });
 
