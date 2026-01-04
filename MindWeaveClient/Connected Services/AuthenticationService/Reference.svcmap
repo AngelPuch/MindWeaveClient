@@ -19,15 +19,15 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="f88aad82-73ec-4619-bf90-e757b2f4a807" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="9594f2c5-7470-4c70-8bb3-668c66beab39" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="c1dad82f-d311-4454-b7c8-d8f2b97c4213" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Authentication.xsd" MetadataType="Schema" ID="327a36e0-f3f4-4a1d-b4d6-ae6be50032a5" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared.xsd" MetadataType="Schema" ID="6ce4bc3f-12ca-46bf-820e-61b78db4d7b9" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
-    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="12fbf38e-cee6-41dc-aad4-ff25390270ba" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="service2.wsdl" MetadataType="Wsdl" ID="8c7619f2-9f74-4941-9b7f-864b5e6d1d84" SourceId="1" SourceUrl="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="9f0de08e-474d-4b30-97a4-42bb50d42c48" SourceId="1" SourceUrl="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="service4.xsd" MetadataType="Schema" ID="6de5cae9-66fb-449e-ba4d-e8d103d6dfca" SourceId="1" SourceUrl="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Authentication2.xsd" MetadataType="Schema" ID="176706e4-1e83-467e-90d6-acc418197a22" SourceId="1" SourceUrl="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared2.xsd" MetadataType="Schema" ID="782dfbf9-e8c6-44b3-8942-fa92f87e7e3b" SourceId="1" SourceUrl="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
+    <MetadataFile FileName="Arrays2.xsd" MetadataType="Schema" ID="74031e1e-d34f-4b7e-a9e5-9a64ce4e4587" SourceId="1" SourceUrl="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

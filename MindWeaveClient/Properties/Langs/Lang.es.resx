@@ -547,7 +547,7 @@
     <value>La fecha de nacimiento es obligatoria.</value>
   </data>
   <data name="ValidationBirthDateInvalid" xml:space="preserve">
-    <value>Debes tener al menos 13 años y la fecha no puede ser futura.</value>
+    <value>Debes tener entre 13 y 100 años.</value>
   </data>
   <data name="ValidationGenderRequired" xml:space="preserve">
     <value>Debes seleccionar un género.</value>

@@ -15,6 +15,8 @@ namespace MindWeaveClient.Validators
         private const int MIN_LENGTH_USERNAME = 3;
         private const int MAX_LENGTH_EMAIL = 45;
         private const int MAX_LENGTH_PASSWORD = 128;
+        private const int MIN_AGE_REQUIRED = 13;
+        private const int MAX_AGE_ALLOWED = 100;
 
         public CreateAccountValidator()
         {
@@ -58,9 +60,11 @@ namespace MindWeaveClient.Validators
 
             var date = birthDate.Value.Date;
             var today = DateTime.Today;
-            var minAgeDate = today.AddYears(-13);
 
-            return date <= today && date <= minAgeDate;
+            DateTime maxDateForMinAge = today.AddYears(-MIN_AGE_REQUIRED);
+            DateTime minDateForMaxAge = today.AddYears(-MAX_AGE_ALLOWED);
+
+            return date <= maxDateForMinAge && date >= minDateForMaxAge;
         }
     }
 }

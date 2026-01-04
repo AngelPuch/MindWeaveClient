@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" name="AuthenticationManagerService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IAuthenticationManager_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <wsaw:UsingAddressing>
+        </wsaw:UsingAddressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Authentication" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IAuthenticationManager_login_InputMessage">
+    <wsdl:part name="parameters" element="tns:login" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_login_OutputMessage">
+    <wsdl:part name="parameters" element="tns:loginResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_login_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q1:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_register_InputMessage">
+    <wsdl:part name="parameters" element="tns:register" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_register_OutputMessage">
+    <wsdl:part name="parameters" element="tns:registerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_register_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q2:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_verifyAccount_InputMessage">
+    <wsdl:part name="parameters" element="tns:verifyAccount" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_verifyAccount_OutputMessage">
+    <wsdl:part name="parameters" element="tns:verifyAccountResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_verifyAccount_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q3:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_resendVerificationCode_InputMessage">
+    <wsdl:part name="parameters" element="tns:resendVerificationCode" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_resendVerificationCode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:resendVerificationCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_resendVerificationCode_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q4:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_sendPasswordRecoveryCode_InputMessage">
+    <wsdl:part name="parameters" element="tns:sendPasswordRecoveryCode" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_sendPasswordRecoveryCode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:sendPasswordRecoveryCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_sendPasswordRecoveryCode_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q5:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_resetPasswordWithCode_InputMessage">
+    <wsdl:part name="parameters" element="tns:resetPasswordWithCode" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_resetPasswordWithCode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:resetPasswordWithCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_resetPasswordWithCode_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q6:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationManager_logOut_InputMessage">
+    <wsdl:part name="parameters" element="tns:logOut" />
+  </wsdl:message>
+  <wsdl:portType name="IAuthenticationManager">
+    <wsdl:operation name="login">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/login" message="tns:IAuthenticationManager_login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationManager/loginResponse" message="tns:IAuthenticationManager_login_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAuthenticationManager/loginServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IAuthenticationManager_login_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="register">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/register" message="tns:IAuthenticationManager_register_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationManager/registerResponse" message="tns:IAuthenticationManager_register_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAuthenticationManager/registerServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IAuthenticationManager_register_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="verifyAccount">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/verifyAccount" message="tns:IAuthenticationManager_verifyAccount_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationManager/verifyAccountResponse" message="tns:IAuthenticationManager_verifyAccount_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAuthenticationManager/verifyAccountServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IAuthenticationManager_verifyAccount_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="resendVerificationCode">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/resendVerificationCode" message="tns:IAuthenticationManager_resendVerificationCode_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationManager/resendVerificationCodeResponse" message="tns:IAuthenticationManager_resendVerificationCode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAuthenticationManager/resendVerificationCodeServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IAuthenticationManager_resendVerificationCode_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="sendPasswordRecoveryCode">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCode" message="tns:IAuthenticationManager_sendPasswordRecoveryCode_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCodeResponse" message="tns:IAuthenticationManager_sendPasswordRecoveryCode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCodeServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IAuthenticationManager_sendPasswordRecoveryCode_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="resetPasswordWithCode">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/resetPasswordWithCode" message="tns:IAuthenticationManager_resetPasswordWithCode_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationManager/resetPasswordWithCodeResponse" message="tns:IAuthenticationManager_resetPasswordWithCode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAuthenticationManager/resetPasswordWithCodeServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IAuthenticationManager_resetPasswordWithCode_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="logOut">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationManager/logOut" message="tns:IAuthenticationManager_logOut_InputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IAuthenticationManager" type="tns:IAuthenticationManager">
+    <wsp:PolicyReference URI="#NetTcpBinding_IAuthenticationManager_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="login">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="register">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/register" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="verifyAccount">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/verifyAccount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="resendVerificationCode">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/resendVerificationCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="sendPasswordRecoveryCode">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/sendPasswordRecoveryCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="resetPasswordWithCode">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/resetPasswordWithCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="logOut">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationManager/logOut" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AuthenticationManagerService">
+    <wsdl:port name="NetTcpBinding_IAuthenticationManager" binding="tns:NetTcpBinding_IAuthenticationManager">
+      <soap12:address location="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

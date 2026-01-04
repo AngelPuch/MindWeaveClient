@@ -335,10 +335,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             var userProfile = new UserProfileDto
             {
-                FirstName = this.FirstName,
-                LastName = this.LastName,
-                Username = this.Username,
-                Email = this.Email,
+                FirstName = this.FirstName.Trim(),
+                LastName = this.LastName.Trim(),
+                Username = this.Username.Trim(),
+                Email = this.Email.Trim(),
                 DateOfBirth = BirthDate.Value,
                 GenderId = getSelectedGenderId()
             };

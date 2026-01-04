@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" name="MatchmakingManagerService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IMatchmakingManager_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <wsaw:UsingAddressing>
+        </wsaw:UsingAddressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Matchmaking" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Puzzle" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Game" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IMatchmakingManager_createLobby_InputMessage">
+    <wsdl:part name="parameters" element="tns:createLobby" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_createLobby_OutputMessage">
+    <wsdl:part name="parameters" element="tns:createLobbyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_createLobby_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q1:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_inviteToLobby_InputMessage">
+    <wsdl:part name="parameters" element="tns:inviteToLobby" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_joinLobby_InputMessage">
+    <wsdl:part name="parameters" element="tns:joinLobby" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_leaveLobby_InputMessage">
+    <wsdl:part name="parameters" element="tns:leaveLobby" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_startGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:startGame" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_leaveGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:leaveGame" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_kickPlayer_InputMessage">
+    <wsdl:part name="parameters" element="tns:kickPlayer" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_changeDifficulty_InputMessage">
+    <wsdl:part name="parameters" element="tns:changeDifficulty" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_inviteGuestByEmail_InputMessage">
+    <wsdl:part name="parameters" element="tns:inviteGuestByEmail" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_InputMessage">
+    <wsdl:part name="parameters" element="tns:joinLobbyAsGuest" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_OutputMessage">
+    <wsdl:part name="parameters" element="tns:joinLobbyAsGuestResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_joinLobbyAsGuest_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q2:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_requestPieceDrag_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceDrag" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_requestPieceMove_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceMove" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_requestPieceDrop_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceDrop" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_requestPieceRelease_InputMessage">
+    <wsdl:part name="parameters" element="tns:requestPieceRelease" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_updateLobbyState_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:updateLobbyState" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_matchFound_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:matchFound" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_lobbyCreationFailed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:lobbyCreationFailed" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_notifyLobbyActionFailed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:notifyLobbyActionFailed" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_kickedFromLobby_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:kickedFromLobby" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onGameStarted_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onGameStarted" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPieceDragStarted_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPieceDragStarted" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPiecePlaced_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPiecePlaced" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPieceMoved_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPieceMoved" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPieceDragReleased_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPieceDragReleased" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onGameEnded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onGameEnded" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPlayerPenalty_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPlayerPenalty" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_lobbyDestroyed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:lobbyDestroyed" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_OnAchievementUnlocked_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnAchievementUnlocked" />
+  </wsdl:message>
+  <wsdl:message name="IMatchmakingManager_onPlayerLeftMatch_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:onPlayerLeftMatch" />
+  </wsdl:message>
+  <wsdl:portType name="IMatchmakingManager">
+    <wsdl:operation name="createLobby">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobby" message="tns:IMatchmakingManager_createLobby_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobbyResponse" message="tns:IMatchmakingManager_createLobby_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMatchmakingManager/createLobbyServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IMatchmakingManager_createLobby_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="inviteToLobby">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/inviteToLobby" message="tns:IMatchmakingManager_inviteToLobby_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="joinLobby">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobby" message="tns:IMatchmakingManager_joinLobby_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="leaveLobby">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/leaveLobby" message="tns:IMatchmakingManager_leaveLobby_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="startGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/startGame" message="tns:IMatchmakingManager_startGame_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="leaveGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/leaveGame" message="tns:IMatchmakingManager_leaveGame_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="kickPlayer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/kickPlayer" message="tns:IMatchmakingManager_kickPlayer_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="changeDifficulty">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/changeDifficulty" message="tns:IMatchmakingManager_changeDifficulty_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="inviteGuestByEmail">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/inviteGuestByEmail" message="tns:IMatchmakingManager_inviteGuestByEmail_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="joinLobbyAsGuest">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest" message="tns:IMatchmakingManager_joinLobbyAsGuest_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestResponse" message="tns:IMatchmakingManager_joinLobbyAsGuest_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuestServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IMatchmakingManager_joinLobbyAsGuest_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceDrag">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceDrag" message="tns:IMatchmakingManager_requestPieceDrag_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceMove">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceMove" message="tns:IMatchmakingManager_requestPieceMove_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceDrop">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceDrop" message="tns:IMatchmakingManager_requestPieceDrop_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceRelease">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMatchmakingManager/requestPieceRelease" message="tns:IMatchmakingManager_requestPieceRelease_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="updateLobbyState">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/updateLobbyState" message="tns:IMatchmakingManager_updateLobbyState_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="matchFound">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/matchFound" message="tns:IMatchmakingManager_matchFound_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="lobbyCreationFailed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/lobbyCreationFailed" message="tns:IMatchmakingManager_lobbyCreationFailed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="notifyLobbyActionFailed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/notifyLobbyActionFailed" message="tns:IMatchmakingManager_notifyLobbyActionFailed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="kickedFromLobby">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/kickedFromLobby" message="tns:IMatchmakingManager_kickedFromLobby_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onGameStarted">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onGameStarted" message="tns:IMatchmakingManager_onGameStarted_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragStarted">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceDragStarted" message="tns:IMatchmakingManager_onPieceDragStarted_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPiecePlaced">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPiecePlaced" message="tns:IMatchmakingManager_onPiecePlaced_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPieceMoved">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceMoved" message="tns:IMatchmakingManager_onPieceMoved_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragReleased">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPieceDragReleased" message="tns:IMatchmakingManager_onPieceDragReleased_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onGameEnded">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onGameEnded" message="tns:IMatchmakingManager_onGameEnded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPlayerPenalty">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPlayerPenalty" message="tns:IMatchmakingManager_onPlayerPenalty_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="lobbyDestroyed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/lobbyDestroyed" message="tns:IMatchmakingManager_lobbyDestroyed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnAchievementUnlocked">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked" message="tns:IMatchmakingManager_OnAchievementUnlocked_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="onPlayerLeftMatch">
+      <wsdl:output wsaw:Action="http://tempuri.org/IMatchmakingManager/onPlayerLeftMatch" message="tns:IMatchmakingManager_onPlayerLeftMatch_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IMatchmakingManager" type="tns:IMatchmakingManager">
+    <wsp:PolicyReference URI="#NetTcpBinding_IMatchmakingManager_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="createLobby">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/createLobby" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="inviteToLobby">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/inviteToLobby" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="joinLobby">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/joinLobby" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="leaveLobby">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/leaveLobby" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="startGame">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/startGame" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="leaveGame">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/leaveGame" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="kickPlayer">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/kickPlayer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="changeDifficulty">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/changeDifficulty" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="inviteGuestByEmail">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/inviteGuestByEmail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="joinLobbyAsGuest">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/joinLobbyAsGuest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceDrag">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceDrag" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceMove">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceMove" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceDrop">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceDrop" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="requestPieceRelease">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/requestPieceRelease" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="updateLobbyState">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/updateLobbyState" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="matchFound">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/matchFound" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="lobbyCreationFailed">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/lobbyCreationFailed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="notifyLobbyActionFailed">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/notifyLobbyActionFailed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="kickedFromLobby">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/kickedFromLobby" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onGameStarted">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onGameStarted" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragStarted">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPieceDragStarted" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPiecePlaced">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPiecePlaced" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPieceMoved">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPieceMoved" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPieceDragReleased">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPieceDragReleased" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onGameEnded">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onGameEnded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPlayerPenalty">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPlayerPenalty" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="lobbyDestroyed">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/lobbyDestroyed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnAchievementUnlocked">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/OnAchievementUnlocked" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="onPlayerLeftMatch">
+      <soap12:operation soapAction="http://tempuri.org/IMatchmakingManager/onPlayerLeftMatch" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MatchmakingManagerService">
+    <wsdl:port name="NetTcpBinding_IMatchmakingManager" binding="tns:NetTcpBinding_IMatchmakingManager">
+      <soap12:address location="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://192.168.100.37:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

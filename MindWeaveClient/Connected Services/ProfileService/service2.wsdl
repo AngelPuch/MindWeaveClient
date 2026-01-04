@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" name="ProfileManagerService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IProfileManager_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <wsaw:UsingAddressing>
+        </wsaw:UsingAddressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Profile" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IProfileManager_getPlayerProfileView_InputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerProfileView" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileView_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerProfileViewResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileView_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q1:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateProfile_InputMessage">
+    <wsdl:part name="parameters" element="tns:updateProfile" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateProfile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:updateProfileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateProfile_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q2:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileForEdit_InputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerProfileForEdit" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileForEdit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerProfileForEditResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerProfileForEdit_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q3:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateAvatarPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:updateAvatarPath" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateAvatarPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:updateAvatarPathResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_updateAvatarPath_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q4:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_changePassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:changePassword" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_changePassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:changePasswordResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_changePassword_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q5:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerAchievements_InputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerAchievements" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerAchievements_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getPlayerAchievementsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProfileManager_getPlayerAchievements_ServiceFaultDtoFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Shared" name="detail" element="q6:ServiceFaultDto" />
+  </wsdl:message>
+  <wsdl:portType name="IProfileManager">
+    <wsdl:operation name="getPlayerProfileView">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileView" message="tns:IProfileManager_getPlayerProfileView_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileViewResponse" message="tns:IProfileManager_getPlayerProfileView_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileViewServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_getPlayerProfileView_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="updateProfile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/updateProfile" message="tns:IProfileManager_updateProfile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/updateProfileResponse" message="tns:IProfileManager_updateProfile_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/updateProfileServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_updateProfile_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getPlayerProfileForEdit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEdit" message="tns:IProfileManager_getPlayerProfileForEdit_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEditResponse" message="tns:IProfileManager_getPlayerProfileForEdit_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/getPlayerProfileForEditServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_getPlayerProfileForEdit_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="updateAvatarPath">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/updateAvatarPath" message="tns:IProfileManager_updateAvatarPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/updateAvatarPathResponse" message="tns:IProfileManager_updateAvatarPath_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/updateAvatarPathServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_updateAvatarPath_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="changePassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/changePassword" message="tns:IProfileManager_changePassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/changePasswordResponse" message="tns:IProfileManager_changePassword_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/changePasswordServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_changePassword_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getPlayerAchievements">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProfileManager/getPlayerAchievements" message="tns:IProfileManager_getPlayerAchievements_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProfileManager/getPlayerAchievementsResponse" message="tns:IProfileManager_getPlayerAchievements_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IProfileManager/getPlayerAchievementsServiceFaultDtoFault" name="ServiceFaultDtoFault" message="tns:IProfileManager_getPlayerAchievements_ServiceFaultDtoFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IProfileManager" type="tns:IProfileManager">
+    <wsp:PolicyReference URI="#NetTcpBinding_IProfileManager_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="getPlayerProfileView">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/getPlayerProfileView" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateProfile">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/updateProfile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPlayerProfileForEdit">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/getPlayerProfileForEdit" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateAvatarPath">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/updateAvatarPath" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="changePassword">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/changePassword" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPlayerAchievements">
+      <soap12:operation soapAction="http://tempuri.org/IProfileManager/getPlayerAchievements" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ServiceFaultDtoFault">
+        <soap12:fault use="literal" name="ServiceFaultDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProfileManagerService">
+    <wsdl:port name="NetTcpBinding_IProfileManager" binding="tns:NetTcpBinding_IProfileManager">
+      <soap12:address location="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/ProfileManagerService/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://192.168.100.37:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

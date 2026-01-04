@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.Stats" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="PlayerProfileViewDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Achievements" nillable="true" type="tns:ArrayOfAchievementDto" />
+      <xs:element minOccurs="0" name="AvatarPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DateOfBirth" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FirstName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Gender" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LastName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Stats" nillable="true" type="tns:PlayerStatsDto" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PlayerProfileViewDto" nillable="true" type="tns:PlayerProfileViewDto" />
+  <xs:complexType name="ArrayOfAchievementDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AchievementDto" nillable="true" type="tns:AchievementDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAchievementDto" nillable="true" type="tns:ArrayOfAchievementDto" />
+  <xs:complexType name="AchievementDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IconPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IsUnlocked" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AchievementDto" nillable="true" type="tns:AchievementDto" />
+  <xs:complexType name="PlayerStatsDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="HighestScore" type="xs:int" />
+      <xs:element minOccurs="0" name="PuzzlesCompleted" type="xs:int" />
+      <xs:element minOccurs="0" name="PuzzlesWon" type="xs:int" />
+      <xs:element minOccurs="0" name="TotalPlaytime" type="ser:duration" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PlayerStatsDto" nillable="true" type="tns:PlayerStatsDto" />
+</xs:schema>

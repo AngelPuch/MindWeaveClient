@@ -3157,7 +3157,7 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a You must be at least 13 years old and the date cannot be in the future..
+        ///   Busca una cadena traducida similar a You must be between 13 and 100 years old..
         /// </summary>
         public static string ValidationBirthDateInvalid {
             get {

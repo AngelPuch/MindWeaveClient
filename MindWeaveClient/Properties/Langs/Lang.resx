@@ -547,7 +547,7 @@
     <value>Date of birth is required.</value>
   </data>
   <data name="ValidationBirthDateInvalid" xml:space="preserve">
-    <value>You must be at least 13 years old and the date cannot be in the future.</value>
+    <value>You must be between 13 and 100 years old.</value>
   </data>
   <data name="ValidationGenderRequired" xml:space="preserve">
     <value>You must select a gender option.</value>
