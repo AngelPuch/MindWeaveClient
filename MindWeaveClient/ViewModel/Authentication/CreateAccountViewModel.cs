@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MindWeaveClient.Services;
-using MindWeaveClient.Helpers;
+using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -354,11 +354,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    string localizedMessage = MessageCodeInterpreter.Translate(
-                    result.MessageCode,
-                    result.Message
-                );
-
+                    string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
             }

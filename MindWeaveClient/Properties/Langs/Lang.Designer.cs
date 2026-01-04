@@ -349,6 +349,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a You are already friends..
+        /// </summary>
+        public static string ErrorAlreadyFriends {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You cannot add yourself..
+        /// </summary>
+        public static string ErrorCannotAddSelf {
+            get {
+                return ResourceManager.GetString("ErrorCannotAddSelf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Cannot connect to the network. Please verify your internet connection is working..
         /// </summary>
         public static string ErrorCannotConnectToNetwork {
@@ -430,11 +448,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Current password is incorrect..
+        /// </summary>
+        public static string ErrorCurrentPasswordIncorrect {
+            get {
+                return ResourceManager.GetString("ErrorCurrentPasswordIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Could not connect to the database..
         /// </summary>
         public static string ErrorDatabaseConnection {
             get {
                 return ResourceManager.GetString("ErrorDatabaseConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to change difficulty..
+        /// </summary>
+        public static string ErrorDifficultyChange {
+            get {
+                return ResourceManager.GetString("ErrorDifficultyChange", resourceCulture);
             }
         }
         
@@ -466,6 +502,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Database error starting game..
+        /// </summary>
+        public static string ErrorGameStartDatabase {
+            get {
+                return ResourceManager.GetString("ErrorGameStartDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a An unexpected error occurred..
         /// </summary>
         public static string ErrorGeneric {
@@ -480,6 +525,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorGenericOperation {
             get {
                 return ResourceManager.GetString("ErrorGenericOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to generate guest name..
+        /// </summary>
+        public static string ErrorGuestNameGeneration {
+            get {
+                return ResourceManager.GetString("ErrorGuestNameGeneration", resourceCulture);
             }
         }
         
@@ -570,6 +624,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorJoiningLobby {
             get {
                 return ResourceManager.GetString("ErrorJoiningLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invalid lobby join data..
+        /// </summary>
+        public static string ErrorJoinLobbyData {
+            get {
+                return ResourceManager.GetString("ErrorJoinLobbyData", resourceCulture);
             }
         }
         
@@ -754,6 +817,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No active players connected..
+        /// </summary>
+        public static string ErrorNoActiveConnections {
+            get {
+                return ResourceManager.GetString("ErrorNoActiveConnections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a No internet connection. Please check your network settings and try again..
         /// </summary>
         public static string ErrorNoInternetConnection {
@@ -799,6 +871,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a You are not friends with this user..
+        /// </summary>
+        public static string ErrorNotFriends {
+            get {
+                return ResourceManager.GetString("ErrorNotFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Only the host can perform this action..
         /// </summary>
         public static string ErrorNotHost {
@@ -813,6 +894,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorPlayerAlreadyInLobby {
             get {
                 return ResourceManager.GetString("ErrorPlayerAlreadyInLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Player not found..
+        /// </summary>
+        public static string ErrorPlayerNotFound {
+            get {
+                return ResourceManager.GetString("ErrorPlayerNotFound", resourceCulture);
             }
         }
         
@@ -835,6 +925,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Profile not found..
+        /// </summary>
+        public static string ErrorProfileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorProfileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Protocol error communicating with the server..
         /// </summary>
         public static string ErrorProtocol {
@@ -846,9 +945,36 @@ namespace MindWeaveClient.Properties.Langs {
         /// <summary>
         ///   Busca una cadena traducida similar a Puzzle file not found..
         /// </summary>
-        public static string ErrorPuzzleNotFound {
+        public static string ErrorPuzzleFileNotFound {
             get {
-                return ResourceManager.GetString("ErrorPuzzleNotFound", resourceCulture);
+                return ResourceManager.GetString("ErrorPuzzleFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Image is too large..
+        /// </summary>
+        public static string ErrorPuzzleImageTooLarge {
+            get {
+                return ResourceManager.GetString("ErrorPuzzleImageTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to load puzzle..
+        /// </summary>
+        public static string ErrorPuzzleLoadFailed {
+            get {
+                return ResourceManager.GetString("ErrorPuzzleLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to upload puzzle..
+        /// </summary>
+        public static string ErrorPuzzleUploadFailed {
+            get {
+                return ResourceManager.GetString("ErrorPuzzleUploadFailed", resourceCulture);
             }
         }
         
@@ -885,6 +1011,33 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorRemovingFriend {
             get {
                 return ResourceManager.GetString("ErrorRemovingFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You already have a request from this user..
+        /// </summary>
+        public static string ErrorRequestAlreadyReceived {
+            get {
+                return ResourceManager.GetString("ErrorRequestAlreadyReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Request already sent..
+        /// </summary>
+        public static string ErrorRequestAlreadySent {
+            get {
+                return ResourceManager.GetString("ErrorRequestAlreadySent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Friend request not found..
+        /// </summary>
+        public static string ErrorRequestNotFound {
+            get {
+                return ResourceManager.GetString("ErrorRequestNotFound", resourceCulture);
             }
         }
         
@@ -934,6 +1087,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Failed to send invitation email..
+        /// </summary>
+        public static string ErrorSendingGuestInvite {
+            get {
+                return ResourceManager.GetString("ErrorSendingGuestInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error sending friend request..
         /// </summary>
         public static string ErrorSendingRequest {
@@ -970,6 +1132,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Connection to the service was closed..
+        /// </summary>
+        public static string ErrorServiceConnectionClosing {
+            get {
+                return ResourceManager.GetString("ErrorServiceConnectionClosing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Could not connect to the server. Please verify the server is running and try again..
         /// </summary>
         public static string ErrorServiceNotFound {
@@ -984,6 +1155,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorSessionExpired {
             get {
                 return ResourceManager.GetString("ErrorSessionExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Session mismatch detected..
+        /// </summary>
+        public static string ErrorSessionMismatch {
+            get {
+                return ResourceManager.GetString("ErrorSessionMismatch", resourceCulture);
             }
         }
         
@@ -1038,6 +1218,24 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ErrorUserAlreadyLoggedIn {
             get {
                 return ResourceManager.GetString("ErrorUserAlreadyLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You are banned from this lobby..
+        /// </summary>
+        public static string ErrorUserBanned {
+            get {
+                return ResourceManager.GetString("ErrorUserBanned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a User not found..
+        /// </summary>
+        public static string ErrorUserNotFound {
+            get {
+                return ResourceManager.GetString("ErrorUserNotFound", resourceCulture);
             }
         }
         
@@ -1524,6 +1722,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string InfoKickedByHost {
             get {
                 return ResourceManager.GetString("InfoKickedByHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a You were kicked for inappropriate language..
+        /// </summary>
+        public static string InfoKickedProfanity {
+            get {
+                return ResourceManager.GetString("InfoKickedProfanity", resourceCulture);
             }
         }
         
@@ -2275,6 +2482,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Recovery code sent to your email..
+        /// </summary>
+        public static string RecoveryCodeSent {
+            get {
+                return ResourceManager.GetString("RecoveryCodeSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a registration.
         /// </summary>
         public static string RegistrationOperation {
@@ -2779,6 +2995,51 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Avatar updated successfully..
+        /// </summary>
+        public static string SuccessAvatarUpdated {
+            get {
+                return ResourceManager.GetString("SuccessAvatarUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Friend removed..
+        /// </summary>
+        public static string SuccessFriendRemoved {
+            get {
+                return ResourceManager.GetString("SuccessFriendRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Friend request accepted..
+        /// </summary>
+        public static string SuccessFriendRequestAccepted {
+            get {
+                return ResourceManager.GetString("SuccessFriendRequestAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Friend request declined..
+        /// </summary>
+        public static string SuccessFriendRequestDeclined {
+            get {
+                return ResourceManager.GetString("SuccessFriendRequestDeclined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Friend request sent..
+        /// </summary>
+        public static string SuccessFriendRequestSent {
+            get {
+                return ResourceManager.GetString("SuccessFriendRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Joined lobby as guest..
         /// </summary>
         public static string SuccessGuestJoined {
@@ -2793,6 +3054,42 @@ namespace MindWeaveClient.Properties.Langs {
         public static string SuccessGuestJoinedLobby {
             get {
                 return ResourceManager.GetString("SuccessGuestJoinedLobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Lobby created successfully..
+        /// </summary>
+        public static string SuccessLobbyCreated {
+            get {
+                return ResourceManager.GetString("SuccessLobbyCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password changed successfully..
+        /// </summary>
+        public static string SuccessPasswordChanged {
+            get {
+                return ResourceManager.GetString("SuccessPasswordChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Profile updated successfully..
+        /// </summary>
+        public static string SuccessProfileUpdated {
+            get {
+                return ResourceManager.GetString("SuccessProfileUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Puzzle uploaded successfully..
+        /// </summary>
+        public static string SuccessPuzzleUploaded {
+            get {
+                return ResourceManager.GetString("SuccessPuzzleUploaded", resourceCulture);
             }
         }
         
@@ -2887,6 +3184,42 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a You must be at least 13 years old..
+        /// </summary>
+        public static string ValidationDateOfBirthMinimumAge {
+            get {
+                return ResourceManager.GetString("ValidationDateOfBirthMinimumAge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Please enter a valid date..
+        /// </summary>
+        public static string ValidationDateOfBirthRealistic {
+            get {
+                return ResourceManager.GetString("ValidationDateOfBirthRealistic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Date of birth is required..
+        /// </summary>
+        public static string ValidationDateOfBirthRequired {
+            get {
+                return ResourceManager.GetString("ValidationDateOfBirthRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invalid email format..
+        /// </summary>
+        public static string ValidationEmailFormat {
+            get {
+                return ResourceManager.GetString("ValidationEmailFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Email format is invalid..
         /// </summary>
         public static string ValidationEmailInvalid {
@@ -2950,6 +3283,42 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Name length is invalid..
+        /// </summary>
+        public static string ValidationNameLength {
+            get {
+                return ResourceManager.GetString("ValidationNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No leading or trailing spaces allowed..
+        /// </summary>
+        public static string ValidationNoLeadingOrTrailingWhitespace {
+            get {
+                return ResourceManager.GetString("ValidationNoLeadingOrTrailingWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Only letters are allowed..
+        /// </summary>
+        public static string ValidationOnlyLetters {
+            get {
+                return ResourceManager.GetString("ValidationOnlyLetters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password is too weak..
+        /// </summary>
+        public static string ValidationPasswordComplexity {
+            get {
+                return ResourceManager.GetString("ValidationPasswordComplexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Please confirm your password..
         /// </summary>
         public static string ValidationPasswordConfirmRequired {
@@ -2959,11 +3328,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Password is too short..
+        /// </summary>
+        public static string ValidationPasswordLength {
+            get {
+                return ResourceManager.GetString("ValidationPasswordLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a New password is required..
         /// </summary>
         public static string ValidationPasswordNewRequired {
             get {
                 return ResourceManager.GetString("ValidationPasswordNewRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password must not contain spaces..
+        /// </summary>
+        public static string ValidationPasswordNoSpaces {
+            get {
+                return ResourceManager.GetString("ValidationPasswordNoSpaces", resourceCulture);
             }
         }
         
@@ -3009,6 +3396,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ValidationProfileOrPasswordRequired {
             get {
                 return ResourceManager.GetString("ValidationProfileOrPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Username must be alphanumeric..
+        /// </summary>
+        public static string ValidationUsernameAlphanumeric {
+            get {
+                return ResourceManager.GetString("ValidationUsernameAlphanumeric", resourceCulture);
             }
         }
         
@@ -3103,6 +3499,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Verification code resent..
+        /// </summary>
+        public static string VerificationCodeResent {
+            get {
+                return ResourceManager.GetString("VerificationCodeResent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Email and verification code are required..
         /// </summary>
         public static string VerificationEmailAndCodeRequired {
@@ -3162,6 +3567,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string WarningMsgSocialConnectFailedGuest {
             get {
                 return ResourceManager.GetString("WarningMsgSocialConnectFailedGuest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Please watch your language..
+        /// </summary>
+        public static string WarningProfanityDetected {
+            get {
+                return ResourceManager.GetString("WarningProfanityDetected", resourceCulture);
             }
         }
         

@@ -1,5 +1,4 @@
-﻿using MindWeaveClient.Helpers;
-using MindWeaveClient.Properties.Langs;
+﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -202,12 +202,12 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (result.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED")
             {
                 ShowUnverifiedControls = true;
+                dialogService.showWarning(MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"), Lang.WarningTitle);
             }
             else
             {
-                string localizedMessage = MessageCodeInterpreter.Translate(
-                    result.WcfLoginResult.OperationResult.MessageCode,
-                    result.WcfLoginResult.OperationResult.Message
+                string localizedMessage = MessageCodeInterpreter.translate(
+                    result.WcfLoginResult.OperationResult.MessageCode
                 );
 
                 dialogService.showError(localizedMessage, Lang.ErrorTitle);
@@ -224,17 +224,14 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                 if (result.Success)
                 {
-                    dialogService.showInfo(result.Message, Lang.InfoMsgResendSuccessTitle);
+                    string successMessage = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showInfo(successMessage, Lang.InfoMsgResendSuccessTitle);
                     SessionService.PendingVerificationEmail = this.Email;
                     navigationService.navigateTo<VerificationPage>();
                 }
                 else
                 {
-                    string localizedMessage = MessageCodeInterpreter.Translate(
-                    result.MessageCode,
-                    result.Message
-                );
-
+                    string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
             }

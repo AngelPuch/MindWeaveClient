@@ -137,7 +137,10 @@ namespace MindWeaveClient.PuzzleManagerService {
         private MindWeaveClient.PuzzleManagerService.ServiceErrorType ErrorTypeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
+        private string MessageCodeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] MessageParamsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TargetField;
@@ -166,14 +169,27 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Message {
+        public string MessageCode {
             get {
-                return this.MessageField;
+                return this.MessageCodeField;
             }
             set {
-                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
-                    this.MessageField = value;
-                    this.RaisePropertyChanged("Message");
+                if ((object.ReferenceEquals(this.MessageCodeField, value) != true)) {
+                    this.MessageCodeField = value;
+                    this.RaisePropertyChanged("MessageCode");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] MessageParams {
+            get {
+                return this.MessageParamsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MessageParamsField, value) != true)) {
+                    this.MessageParamsField = value;
+                    this.RaisePropertyChanged("MessageParams");
                 }
             }
         }
@@ -258,9 +274,6 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string MessageCodeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -276,19 +289,6 @@ namespace MindWeaveClient.PuzzleManagerService {
             }
             set {
                 this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Message {
-            get {
-                return this.MessageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
-                    this.MessageField = value;
-                    this.RaisePropertyChanged("Message");
-                }
             }
         }
         

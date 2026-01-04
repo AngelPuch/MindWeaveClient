@@ -3,6 +3,7 @@ using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.SocialManagerService;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -241,12 +242,14 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.Success)
                 {
-                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
+                    string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showInfo(successMsg, Lang.InfoMsgTitleSuccess);
                     SearchResults.Remove(targetUser);
                 }
                 else
                 {
-                    dialogService.showWarning(result.Message, Lang.WarningTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showWarning(errorMsg, Lang.WarningTitle);
                 }
             }
             catch (Exception ex)
@@ -269,7 +272,8 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.Success)
                 {
-                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
+                    string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showInfo(successMsg, Lang.InfoMsgTitleSuccess);
                     ReceivedRequests.Remove(request);
                     if (accept && IsFriendsListChecked)
                     {
@@ -278,7 +282,8 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -308,12 +313,13 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.Success)
                 {
-                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
-                    FriendsList.Remove(friendToRemove);
+                    string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showInfo(successMsg, Lang.InfoMsgTitleSuccess);
                 }
                 else
                 {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)

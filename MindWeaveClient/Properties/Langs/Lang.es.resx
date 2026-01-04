@@ -1143,9 +1143,6 @@
   <data name="ErrorInvalidGuestInvite" xml:space="preserve">
     <value>Invitación inválida o expirada.</value>
   </data>
-  <data name="ErrorPuzzleNotFound" xml:space="preserve">
-    <value>Archivo del rompecabezas no encontrado.</value>
-  </data>
   <data name="ErrorCommunication" xml:space="preserve">
     <value>Error de comunicación.</value>
   </data>
@@ -1154,5 +1151,146 @@
   </data>
   <data name="InfoHostLeftLobby" xml:space="preserve">
     <value>El anfitrión ha abandonado la sala.</value>
+  </data>
+  <data name="VerificationCodeResent" xml:space="preserve">
+    <value>Código de verificación reenviado.</value>
+  </data>
+  <data name="RecoveryCodeSent" xml:space="preserve">
+    <value>Código de recuperación enviado a tu correo.</value>
+  </data>
+  <data name="ValidationPasswordLength" xml:space="preserve">
+    <value>La contraseña es demasiado corta.</value>
+  </data>
+  <data name="ValidationPasswordComplexity" xml:space="preserve">
+    <value>La contraseña es demasiado débil.</value>
+  </data>
+  <data name="ValidationPasswordNoSpaces" xml:space="preserve">
+    <value>La contraseña no debe contener espacios.</value>
+  </data>
+  <data name="ValidationUsernameAlphanumeric" xml:space="preserve">
+    <value>El nombre de usuario debe ser alfanumérico.</value>
+  </data>
+  <data name="ValidationEmailFormat" xml:space="preserve">
+    <value>El formato del correo no es válido.</value>
+  </data>
+  <data name="ValidationNameLength" xml:space="preserve">
+    <value>La longitud del nombre no es válida.</value>
+  </data>
+  <data name="ValidationOnlyLetters" xml:space="preserve">
+    <value>Solo se permiten letras.</value>
+  </data>
+  <data name="ValidationNoLeadingOrTrailingWhitespace" xml:space="preserve">
+    <value>No se permiten espacios al inicio o al final.</value>
+  </data>
+  <data name="ValidationDateOfBirthRequired" xml:space="preserve">
+    <value>La fecha de nacimiento es obligatoria.</value>
+  </data>
+  <data name="ValidationDateOfBirthMinimumAge" xml:space="preserve">
+    <value>Debes tener al menos 13 años.</value>
+  </data>
+  <data name="ValidationDateOfBirthRealistic" xml:space="preserve">
+    <value>Ingresa una fecha válida.</value>
+  </data>
+  <data name="ErrorServiceConnectionClosing" xml:space="preserve">
+    <value>La conexión con el servicio se cerró.</value>
+  </data>
+  <data name="ErrorSessionMismatch" xml:space="preserve">
+    <value>Se detectó una inconsistencia de sesión.</value>
+  </data>
+  <data name="ErrorUserBanned" xml:space="preserve">
+    <value>Has sido expulsado permanentemente de esta sala.</value>
+  </data>
+  <data name="ErrorPlayerNotFound" xml:space="preserve">
+    <value>Jugador no encontrado.</value>
+  </data>
+  <data name="SuccessLobbyCreated" xml:space="preserve">
+    <value>Sala creada correctamente.</value>
+  </data>
+  <data name="ErrorJoinLobbyData" xml:space="preserve">
+    <value>Datos inválidos para unirse a la sala.</value>
+  </data>
+  <data name="ErrorGuestNameGeneration" xml:space="preserve">
+    <value>Error al generar nombre de invitado.</value>
+  </data>
+  <data name="ErrorSendingGuestInvite" xml:space="preserve">
+    <value>Error al enviar la invitación.</value>
+  </data>
+  <data name="ErrorGameStartDatabase" xml:space="preserve">
+    <value>Error de base de datos al iniciar la partida.</value>
+  </data>
+  <data name="ErrorPuzzleFileNotFound" xml:space="preserve">
+    <value>Archivo del rompecabezas no encontrado.</value>
+  </data>
+  <data name="ErrorDifficultyChange" xml:space="preserve">
+    <value>Error al cambiar la dificultad.</value>
+  </data>
+  <data name="ErrorNoActiveConnections" xml:space="preserve">
+    <value>No hay jugadores conectados.</value>
+  </data>
+  <data name="InfoKickedProfanity" xml:space="preserve">
+    <value>Fuiste expulsado por lenguaje inapropiado.</value>
+  </data>
+  <data name="SuccessProfileUpdated" xml:space="preserve">
+    <value>Perfil actualizado correctamente.</value>
+  </data>
+  <data name="ErrorProfileNotFound" xml:space="preserve">
+    <value>Perfil no encontrado.</value>
+  </data>
+  <data name="SuccessAvatarUpdated" xml:space="preserve">
+    <value>Avatar actualizado correctamente.</value>
+  </data>
+  <data name="SuccessPasswordChanged" xml:space="preserve">
+    <value>Contraseña cambiada correctamente.</value>
+  </data>
+  <data name="ErrorCurrentPasswordIncorrect" xml:space="preserve">
+    <value>La contraseña actual es incorrecta.</value>
+  </data>
+  <data name="SuccessFriendRequestSent" xml:space="preserve">
+    <value>Solicitud de amistad enviada.</value>
+  </data>
+  <data name="SuccessFriendRequestAccepted" xml:space="preserve">
+    <value>Solicitud de amistad aceptada.</value>
+  </data>
+  <data name="SuccessFriendRequestDeclined" xml:space="preserve">
+    <value>Solicitud de amistad rechazada.</value>
+  </data>
+  <data name="SuccessFriendRemoved" xml:space="preserve">
+    <value>Amigo eliminado.</value>
+  </data>
+  <data name="ErrorAlreadyFriends" xml:space="preserve">
+    <value>Ya son amigos.</value>
+  </data>
+  <data name="ErrorRequestAlreadySent" xml:space="preserve">
+    <value>La solicitud ya fue enviada.</value>
+  </data>
+  <data name="ErrorRequestAlreadyReceived" xml:space="preserve">
+    <value>Ya tienes una solicitud de este usuario.</value>
+  </data>
+  <data name="ErrorCannotAddSelf" xml:space="preserve">
+    <value>No puedes agregarte a ti mismo.</value>
+  </data>
+  <data name="ErrorRequestNotFound" xml:space="preserve">
+    <value>Solicitud de amistad no encontrada.</value>
+  </data>
+  <data name="ErrorNotFriends" xml:space="preserve">
+    <value>No eres amigo de este usuario.</value>
+  </data>
+  <data name="SuccessPuzzleUploaded" xml:space="preserve">
+    <value>Rompecabezas subido correctamente.</value>
+  </data>
+  <data name="ErrorPuzzleUploadFailed" xml:space="preserve">
+    <value>Error al subir el rompecabezas.</value>
+  </data>
+  <data name="ErrorPuzzleImageTooLarge" xml:space="preserve">
+    <value>La imagen es demasiado grande.</value>
+  </data>
+  <data name="ErrorPuzzleLoadFailed" xml:space="preserve">
+    <value>Error al cargar el rompecabezas.</value>
+  </data>
+  <data name="WarningProfanityDetected" xml:space="preserve">
+    <value>Por favor cuida tu lenguaje.</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Usuario no encontrado.</value>
   </data>
 </root>

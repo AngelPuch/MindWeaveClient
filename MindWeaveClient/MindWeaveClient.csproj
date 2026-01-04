@@ -110,7 +110,7 @@
     <Compile Include="Helpers\InverseBoolConverter.cs" />
     <Compile Include="Helpers\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\KickButtonVisibilityConverter.cs" />
-    <Compile Include="Helpers\MessageCodeInterpreter.cs" />
+    <Compile Include="Utilities\Implementations\MessageCodeInterpreter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Helpers\StringEqualityToVisibilityConverterInverted.cs" />
     <Compile Include="Helpers\StringEquialityConverter.cs" />

@@ -1,6 +1,7 @@
 ﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using System;
@@ -17,6 +18,10 @@ namespace MindWeaveClient.ViewModel.Authentication
         private const int MAX_LENGTH_EMAIL = 45;
         private const int MAX_LENGTH_CODE = 6;
         private const int MAX_LENGTH_PASSWORD = 128;
+        private const string CODE_INVALID_OR_EXPIRED = "AUTH_CODE_INVALID_OR_EXPIRED";
+        private const string STEP1 = "Step1";
+        private const string STEP2 = "Step2";
+        private const string STEP3 = "Step3";
 
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
@@ -257,7 +262,11 @@ namespace MindWeaveClient.ViewModel.Authentication
                         validateCurrentStep();
                     }
                 }
-                else { dialogService.showError(result.Message, Lang.ErrorTitle); }
+                else
+                {
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
+                }
             }
             catch (Exception ex)
             {
@@ -308,9 +317,10 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
 
-                    if (result.Message.Contains(Lang.GlobalVerificationInvalidOrExpiredCode))
+                    if (result.MessageCode == CODE_INVALID_OR_EXPIRED)
                     {
                         IsStep1Visible = false;
                         IsStep2Visible = true;
@@ -362,15 +372,15 @@ namespace MindWeaveClient.ViewModel.Authentication
         {
             if (IsStep1Visible)
             {
-                validate(validator, this, "Step1");
+                validate(validator, this, STEP1);
             }
             else if (IsStep2Visible)
             {
-                validate(validator, this, "Step2");
+                validate(validator, this, STEP2);
             }
             else if (IsStep3Visible)
             {
-                validate(validator, this, "Step3");
+                validate(validator, this, STEP3);
             }
         }
     }

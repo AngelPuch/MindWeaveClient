@@ -5,6 +5,7 @@ using MindWeaveClient.PuzzleManagerService;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Puzzle;
@@ -168,7 +169,8 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    dialogService.showWarning(uploadResult.Message, Lang.UploadFailed);
+                    string errorMsg = MessageCodeInterpreter.translate(uploadResult.MessageCode);
+                    dialogService.showWarning(errorMsg, Lang.UploadFailed);
                 }
             }
             catch (Exception ex)
@@ -220,7 +222,8 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    dialogService.showError(result.Message ?? Lang.FailedToCreateLobby, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode, Lang.FailedToCreateLobby);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -278,7 +281,8 @@ namespace MindWeaveClient.ViewModel.Main
             AvailablePuzzles.Add(newPuzzleInfo);
             executeSelectPuzzle(newPuzzleInfo);
 
-            dialogService.showInfo(result.Message, Lang.UploadSuccessful);
+            string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
+            dialogService.showInfo(successMsg, Lang.UploadSuccessful);
         }
 
 

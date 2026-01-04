@@ -1,5 +1,4 @@
 ﻿using MindWeaveClient.AuthenticationService;
-using MindWeaveClient.Helpers;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -136,14 +136,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                     dialogService.showInfo(Lang.InfoMsgVerifySuccessBody, Lang.InfoMsgVerifySuccessTitle);
                     SessionService.PendingVerificationEmail = null;
                     navigationService.navigateTo<LoginPage>();
-                    executeGoBack();
                 }
                 else {
-                    string localizedMessage = MessageCodeInterpreter.Translate(
-                    result.MessageCode,
-                    result.Message
-                );
-
+                    string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
             }
@@ -178,11 +173,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                     clearTouchedState();
                 }
                 else {
-                    string localizedMessage = MessageCodeInterpreter.Translate(
-                    result.MessageCode,
-                    result.Message
-                );
-
+                    string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
             }

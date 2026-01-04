@@ -1,5 +1,4 @@
-﻿using MindWeaveClient.Helpers;
-using MindWeaveClient.MatchmakingService;
+﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -203,13 +203,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    string localizedMessage = MessageCodeInterpreter.Translate(
-                    serviceResult.WcfResult.MessageCode,
-                    serviceResult.WcfResult.Message
-                );
+                    string localizedMessage = MessageCodeInterpreter.translate(serviceResult.WcfResult.MessageCode);
 
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
-                    if (!serviceResult.DidMatchmakingConnect) { matchmakingService.disconnect(); }
+                    if (!serviceResult.DidMatchmakingConnect)
+                    {
+                        matchmakingService.disconnect();
+                    }
                 }
             }
             catch (Exception ex)

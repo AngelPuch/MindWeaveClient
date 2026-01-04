@@ -2,6 +2,7 @@
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -104,12 +105,14 @@ namespace MindWeaveClient.ViewModel.Main
                 if (result.Success)
                 {
                     SessionService.updateAvatarPath(SelectedAvatar.ImagePath);
-                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
+                    string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showInfo(successMsg, Lang.InfoMsgTitleSuccess);
                     navigationService.goBack();
                 }
                 else
                 {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)

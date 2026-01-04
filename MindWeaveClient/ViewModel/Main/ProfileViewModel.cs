@@ -13,6 +13,8 @@ namespace MindWeaveClient.ViewModel.Main
 {
     public class ProfileViewModel : BaseViewModel
     {
+        private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
+
         private readonly IProfileService profileService;
         private readonly IServiceExceptionHandler exceptionHandler;
 
@@ -65,7 +67,7 @@ namespace MindWeaveClient.ViewModel.Main
 
             Username = SessionService.Username ?? Lang.GlobalLbLoading;
             WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {Username.ToUpper()}!";
-            AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
             Achievements = new ObservableCollection<AchievementDto>();
 
             _ = loadProfileDataAsync();
@@ -74,7 +76,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
         {
-            AvatarSource = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
         }
 
         ~ProfileViewModel()
@@ -114,7 +116,7 @@ namespace MindWeaveClient.ViewModel.Main
         {
             Username = profileData.Username;
             WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {profileData.Username.ToUpper()}!";
-            AvatarSource = profileData.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            AvatarSource = profileData.AvatarPath ?? DEFAULT_AVATAR_PATH;
 
             FirstName = profileData.FirstName ?? Lang.GlobalLbNotSpecified;
             LastName = profileData.LastName ?? Lang.GlobalLbNotSpecified;

@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -387,7 +388,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                string localizedMessage = MessageCodeInterpreter.Translate(messageCode, messageCode);
+                string localizedMessage = MessageCodeInterpreter.translate(messageCode, messageCode);
                 dialogService.showWarning(localizedMessage, Lang.WarningTitle);
             });
         }
@@ -404,7 +405,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                string localizedReason = MessageCodeInterpreter.Translate(reasonCode, reasonCode);
+                string localizedReason = MessageCodeInterpreter.translate(reasonCode, reasonCode);
                 dialogService.showError(localizedReason, Lang.ErrorTitle);
                 _ = forceExitLobbyAsync();
             });
@@ -414,7 +415,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                string localizedReason = MessageCodeInterpreter.Translate(reasonCode, reasonCode);
+                string localizedReason = MessageCodeInterpreter.translate(reasonCode, reasonCode);
                 dialogService.showInfo(localizedReason, Lang.KickedTitle);
 
                 _ = forceExitLobbyAsync();
@@ -457,7 +458,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                string localizedReason = MessageCodeInterpreter.Translate(reasonCode, reasonCode);
+                string localizedReason = MessageCodeInterpreter.translate(reasonCode, reasonCode);
                 dialogService.showInfo(localizedReason, Lang.LobbyClosedTitle);
 
                 var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
@@ -491,7 +492,7 @@ namespace MindWeaveClient.ViewModel.Game
                 }
                 else
                 {
-                    string translated = MessageCodeInterpreter.Translate(messageCode, null);
+                    string translated = MessageCodeInterpreter.translate(messageCode, null);
                     if (translated != Lang.ErrorGeneric) 
                     {
                         finalMessage = translated;

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
+using MindWeaveClient.Validators;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+
 
 namespace MindWeaveClient.ViewModel
 {
@@ -98,11 +99,13 @@ namespace MindWeaveClient.ViewModel
             }
         }
 
-        protected void validate<TViewModel>(IValidator<TViewModel> validator, TViewModel viewModel, string ruleSet = null)
+        protected void validate<TValidator, TViewModel>(TValidator validator, TViewModel viewModel, string ruleSet = null)
+            where TValidator : AbstractValidator<TViewModel>
             where TViewModel : class
         {
-            var validationResult = string.IsNullOrEmpty(ruleSet) ? 
-                validator.Validate(viewModel) : validator.Validate(viewModel, v => v.IncludeRuleSets(ruleSet));
+            var validationResult = string.IsNullOrEmpty(ruleSet) ?
+                validator.Validate(viewModel) :
+                validator.Validate(viewModel, options => options.IncludeRuleSets(ruleSet));
 
             var propertyNamesWithErrors = errors.Keys.ToList();
             errors.Clear();
@@ -128,6 +131,7 @@ namespace MindWeaveClient.ViewModel
 
             OnPropertyChanged(nameof(HasErrors));
         }
+
 
         protected void OnErrorsChanged(string propertyName)
         {

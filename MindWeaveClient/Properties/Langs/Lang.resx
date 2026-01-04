@@ -1143,9 +1143,6 @@
   <data name="ErrorInvalidGuestInvite" xml:space="preserve">
     <value>Invalid or expired invitation.</value>
   </data>
-  <data name="ErrorPuzzleNotFound" xml:space="preserve">
-    <value>Puzzle file not found.</value>
-  </data>
   <data name="ErrorCommunication" xml:space="preserve">
     <value>Communication error.</value>
   </data>
@@ -1154,5 +1151,146 @@
   </data>
   <data name="InfoHostLeftLobby" xml:space="preserve">
     <value>The host has left the lobby.</value>
+  </data>
+  <data name="VerificationCodeResent" xml:space="preserve">
+    <value>Verification code resent.</value>
+  </data>
+  <data name="RecoveryCodeSent" xml:space="preserve">
+    <value>Recovery code sent to your email.</value>
+  </data>
+  <data name="ValidationPasswordLength" xml:space="preserve">
+    <value>Password is too short.</value>
+  </data>
+  <data name="ValidationPasswordComplexity" xml:space="preserve">
+    <value>Password is too weak.</value>
+  </data>
+  <data name="ValidationPasswordNoSpaces" xml:space="preserve">
+    <value>Password must not contain spaces.</value>
+  </data>
+  <data name="ValidationUsernameAlphanumeric" xml:space="preserve">
+    <value>Username must be alphanumeric.</value>
+  </data>
+  <data name="ValidationEmailFormat" xml:space="preserve">
+    <value>Invalid email format.</value>
+  </data>
+  <data name="ValidationNameLength" xml:space="preserve">
+    <value>Name length is invalid.</value>
+  </data>
+  <data name="ValidationOnlyLetters" xml:space="preserve">
+    <value>Only letters are allowed.</value>
+  </data>
+  <data name="ValidationNoLeadingOrTrailingWhitespace" xml:space="preserve">
+    <value>No leading or trailing spaces allowed.</value>
+  </data>
+  <data name="ValidationDateOfBirthRequired" xml:space="preserve">
+    <value>Date of birth is required.</value>
+  </data>
+  <data name="ValidationDateOfBirthMinimumAge" xml:space="preserve">
+    <value>You must be at least 13 years old.</value>
+  </data>
+  <data name="ValidationDateOfBirthRealistic" xml:space="preserve">
+    <value>Please enter a valid date.</value>
+  </data>
+  <data name="ErrorServiceConnectionClosing" xml:space="preserve">
+    <value>Connection to the service was closed.</value>
+  </data>
+  <data name="ErrorSessionMismatch" xml:space="preserve">
+    <value>Session mismatch detected.</value>
+  </data>
+  <data name="ErrorUserBanned" xml:space="preserve">
+    <value>You are banned from this lobby.</value>
+  </data>
+  <data name="ErrorPlayerNotFound" xml:space="preserve">
+    <value>Player not found.</value>
+  </data>
+  <data name="SuccessLobbyCreated" xml:space="preserve">
+    <value>Lobby created successfully.</value>
+  </data>
+  <data name="ErrorJoinLobbyData" xml:space="preserve">
+    <value>Invalid lobby join data.</value>
+  </data>
+  <data name="ErrorGuestNameGeneration" xml:space="preserve">
+    <value>Failed to generate guest name.</value>
+  </data>
+  <data name="ErrorSendingGuestInvite" xml:space="preserve">
+    <value>Failed to send invitation email.</value>
+  </data>
+  <data name="ErrorGameStartDatabase" xml:space="preserve">
+    <value>Database error starting game.</value>
+  </data>
+  <data name="ErrorPuzzleFileNotFound" xml:space="preserve">
+    <value>Puzzle file not found.</value>
+  </data>
+  <data name="ErrorDifficultyChange" xml:space="preserve">
+    <value>Failed to change difficulty.</value>
+  </data>
+  <data name="ErrorNoActiveConnections" xml:space="preserve">
+    <value>No active players connected.</value>
+  </data>
+  <data name="InfoKickedProfanity" xml:space="preserve">
+    <value>You were kicked for inappropriate language.</value>
+  </data>
+  <data name="SuccessProfileUpdated" xml:space="preserve">
+    <value>Profile updated successfully.</value>
+  </data>
+  <data name="ErrorProfileNotFound" xml:space="preserve">
+    <value>Profile not found.</value>
+  </data>
+  <data name="SuccessAvatarUpdated" xml:space="preserve">
+    <value>Avatar updated successfully.</value>
+  </data>
+  <data name="SuccessPasswordChanged" xml:space="preserve">
+    <value>Password changed successfully.</value>
+  </data>
+  <data name="ErrorCurrentPasswordIncorrect" xml:space="preserve">
+    <value>Current password is incorrect.</value>
+  </data>
+  <data name="SuccessFriendRequestSent" xml:space="preserve">
+    <value>Friend request sent.</value>
+  </data>
+  <data name="SuccessFriendRequestAccepted" xml:space="preserve">
+    <value>Friend request accepted.</value>
+  </data>
+  <data name="SuccessFriendRequestDeclined" xml:space="preserve">
+    <value>Friend request declined.</value>
+  </data>
+  <data name="SuccessFriendRemoved" xml:space="preserve">
+    <value>Friend removed.</value>
+  </data>
+  <data name="ErrorAlreadyFriends" xml:space="preserve">
+    <value>You are already friends.</value>
+  </data>
+  <data name="ErrorRequestAlreadySent" xml:space="preserve">
+    <value>Request already sent.</value>
+  </data>
+  <data name="ErrorRequestAlreadyReceived" xml:space="preserve">
+    <value>You already have a request from this user.</value>
+  </data>
+  <data name="ErrorCannotAddSelf" xml:space="preserve">
+    <value>You cannot add yourself.</value>
+  </data>
+  <data name="ErrorRequestNotFound" xml:space="preserve">
+    <value>Friend request not found.</value>
+  </data>
+  <data name="ErrorNotFriends" xml:space="preserve">
+    <value>You are not friends with this user.</value>
+  </data>
+  <data name="SuccessPuzzleUploaded" xml:space="preserve">
+    <value>Puzzle uploaded successfully.</value>
+  </data>
+  <data name="ErrorPuzzleUploadFailed" xml:space="preserve">
+    <value>Failed to upload puzzle.</value>
+  </data>
+  <data name="ErrorPuzzleImageTooLarge" xml:space="preserve">
+    <value>Image is too large.</value>
+  </data>
+  <data name="ErrorPuzzleLoadFailed" xml:space="preserve">
+    <value>Failed to load puzzle.</value>
+  </data>
+  <data name="WarningProfanityDetected" xml:space="preserve">
+    <value>Please watch your language.</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>User not found.</value>
   </data>
 </root>

@@ -3,6 +3,7 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Main;
 using System;
@@ -322,12 +323,14 @@ namespace MindWeaveClient.ViewModel.Main
 
                 if (result.Success)
                 {
-                    dialogService.showInfo(result.Message, Lang.InfoMsgTitleSuccess);
+                    string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showInfo(successMsg, Lang.InfoMsgTitleSuccess);
                     executeCancelChangePassword(null);
                 }
                 else
                 {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
@@ -399,7 +402,8 @@ namespace MindWeaveClient.ViewModel.Main
                 }
                 else
                 {
-                    dialogService.showError(result.Message, Lang.ErrorTitle);
+                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                    dialogService.showError(errorMsg, Lang.ErrorTitle);
                 }
             }
             catch (Exception ex)
