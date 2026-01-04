@@ -11,6 +11,9 @@
       d:DataContext="{d:DesignInstance Type=viewModel:VerificationViewModel}">
 
     <Page.Resources>
+        <!-- Agregar el converter aquí -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
         <Style x:Key="ValidationErrorTextBlockStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#e74c3c"/>
             <Setter Property="FontSize" Value="11"/>
@@ -68,10 +71,27 @@
                         Style="{StaticResource PrimaryButtonStyle}" 
                         Margin="0,30,0,10" />
 
-                <!-- Botón Resend Code -->
-                <Button Content="{x:Static language:Lang.VerificationCodeResend}" 
-                        Style="{StaticResource LinkButtonStyle}" 
-                        Command="{Binding ResendCodeCommand}" />
+                <!-- Botón Resend Code con Timer -->
+                <Grid Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Content="{x:Static language:Lang.VerificationCodeResend}" 
+                            Style="{StaticResource LinkButtonStyle}" 
+                            Command="{Binding ResendCodeCommand}"
+                            IsEnabled="{Binding CanResendCode}"/>
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ResendTimerText}"
+                               Foreground="#7f8c8d"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"
+                               Visibility="{Binding IsTimerVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </Grid>
 
                 <!-- Botón Back -->
                 <Button Command="{Binding GoBackCommand}" 

@@ -10,6 +10,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -18,6 +19,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private const int MAX_LENGTH_EMAIL = 45;
         private const int MAX_LENGTH_CODE = 6;
         private const int MAX_LENGTH_PASSWORD = 128;
+        private const int RESEND_COOLDOWN_SECONDS = 60;
         private const string CODE_INVALID_OR_EXPIRED = "AUTH_CODE_INVALID_OR_EXPIRED";
         private const string STEP1 = "Step1";
         private const string STEP2 = "Step2";
@@ -32,6 +34,9 @@ namespace MindWeaveClient.ViewModel.Authentication
         private bool isStep1Visible = true;
         private bool isStep2Visible;
         private bool isStep3Visible;
+        private bool canResendCode = true;
+        private int remainingSeconds = 0;
+        private DispatcherTimer resendTimer;
 
         public bool IsStep1Visible
         {
@@ -62,6 +67,23 @@ namespace MindWeaveClient.ViewModel.Authentication
                 OnPropertyChanged();
             }
         }
+
+        public bool CanResendCode
+        {
+            get => canResendCode;
+            set
+            {
+                if (canResendCode != value)
+                {
+                    canResendCode = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string ResendTimerText => $"⏱ {remainingSeconds}s";
+
+        public bool IsTimerVisible => !CanResendCode;
 
         private string email;
         public string Email
@@ -155,6 +177,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
             }
         }
+
         public string EmailError
         {
             get
@@ -216,14 +239,51 @@ namespace MindWeaveClient.ViewModel.Authentication
             this.navigationService = navigationService;
             this.exceptionHandler = exceptionHandler;
 
-
             SendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(), param => !HasErrors && !IsBusy);
             VerifyCodeCommand = new RelayCommand(async param => await executeVerifyCodeAsync(), param => !HasErrors && !IsBusy);
-            ResendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(true), param => !IsBusy);
+            ResendCodeCommand = new RelayCommand(async param => await executeSendCodeAsync(true), param => CanResendCode && !IsBusy);
             SavePasswordCommand = new RelayCommand(async param => await executeSavePasswordAsync(), param => !HasErrors && !IsBusy);
             GoBackCommand = new RelayCommand(param => executeGoBack());
 
+            initializeTimer();
             validateCurrentStep();
+        }
+
+        private void initializeTimer()
+        {
+            resendTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            resendTimer.Tick += onTimerTick;
+        }
+
+        private void onTimerTick(object sender, EventArgs e)
+        {
+            remainingSeconds--;
+            OnPropertyChanged(nameof(ResendTimerText));
+
+            if (remainingSeconds <= 0)
+            {
+                stopResendTimer();
+            }
+        }
+
+        private void startResendTimer()
+        {
+            CanResendCode = false;
+            remainingSeconds = RESEND_COOLDOWN_SECONDS;
+            OnPropertyChanged(nameof(ResendTimerText));
+            OnPropertyChanged(nameof(IsTimerVisible));
+            resendTimer.Start();
+        }
+
+        private void stopResendTimer()
+        {
+            resendTimer?.Stop();
+            CanResendCode = true;
+            remainingSeconds = 0;
+            OnPropertyChanged(nameof(IsTimerVisible));
         }
 
         private static string clampString(string value, int maxLength)
@@ -240,7 +300,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (!isResend)
             {
                 markAsTouched(nameof(Email));
-                if (HasErrors) { return;}
+                if (HasErrors) { return; }
             }
 
             SetBusy(true);
@@ -261,6 +321,9 @@ namespace MindWeaveClient.ViewModel.Authentication
                         clearTouchedState();
                         validateCurrentStep();
                     }
+
+                    // Iniciar timer después de enviar código exitosamente
+                    startResendTimer();
                 }
                 else
                 {
@@ -294,6 +357,9 @@ namespace MindWeaveClient.ViewModel.Authentication
             clearTouchedState();
             validateCurrentStep();
 
+            // Detener timer al pasar al siguiente paso
+            stopResendTimer();
+
             SetBusy(false);
             return Task.CompletedTask;
         }
@@ -313,6 +379,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.Success)
                 {
                     dialogService.showInfo(Lang.InfoMsgPasswordResetSuccessBody, Lang.InfoMsgPasswordResetSuccessTitle);
+                    stopResendTimer();
                     navigationService.navigateTo<LoginPage>();
                 }
                 else
@@ -359,11 +426,14 @@ namespace MindWeaveClient.ViewModel.Authentication
                 IsStep2Visible = false;
                 IsStep3Visible = false;
 
+                stopResendTimer();
+
                 clearTouchedState();
                 validateCurrentStep();
             }
             else
             {
+                stopResendTimer();
                 navigationService.goBack();
             }
         }

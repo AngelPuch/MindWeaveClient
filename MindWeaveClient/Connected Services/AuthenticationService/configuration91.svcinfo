@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="L4GIbqMNdEMpqLJEydh97V2gyeQKqcUAi8ATGz7nC8s=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="N+XJgYYDaJK8v5nl9JwvhVD7BYwEh49zhBpFJxZfwJk=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IAuthenticationManager">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IAuthenticationManager" contract="AuthenticationService.IAuthenticationManager" bindingType="netTcpBinding" address="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/" bindingConfiguration="NetTcpBinding_IAuthenticationManager">
+    <endpoint name="NetTcpBinding_IAuthenticationManager" contract="AuthenticationService.IAuthenticationManager" bindingType="netTcpBinding" address="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/" bindingConfiguration="NetTcpBinding_IAuthenticationManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/</serializedValue>
+          <serializedValue>net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

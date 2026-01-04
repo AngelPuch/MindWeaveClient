@@ -196,9 +196,9 @@
   </wsdl:binding>
   <wsdl:service name="AuthenticationManagerService">
     <wsdl:port name="NetTcpBinding_IAuthenticationManager" binding="tns:NetTcpBinding_IAuthenticationManager">
-      <soap12:address location="net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/" />
+      <soap12:address location="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.100.37:8734/MindWeaveServer/Services/AuthenticationManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.100.231:8734/MindWeaveServer/Services/AuthenticationManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

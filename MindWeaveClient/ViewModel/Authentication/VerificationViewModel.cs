@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Authentication
@@ -18,9 +19,13 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private const int MAX_LENGTH_EMAIL = 45;
         private const int MAX_LENGTH_CODE = 6;
+        private const int RESEND_COOLDOWN_SECONDS = 60;
 
         private string email;
         private string verificationCode;
+        private bool canResendCode = true;
+        private int remainingSeconds = 0;
+        private DispatcherTimer resendTimer;
 
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
@@ -74,6 +79,23 @@ namespace MindWeaveClient.ViewModel.Authentication
             }
         }
 
+        public bool CanResendCode
+        {
+            get => canResendCode;
+            set
+            {
+                if (canResendCode != value)
+                {
+                    canResendCode = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string ResendTimerText => $"⏱ {remainingSeconds}s";
+
+        public bool IsTimerVisible => !CanResendCode;
+
         public ICommand VerifyCommand { get; }
         public ICommand GoBackCommand { get; }
         public ICommand ResendCodeCommand { get; }
@@ -101,9 +123,47 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             VerifyCommand = new RelayCommand(async (param) => await executeVerifyAsync(), (param) => canExecuteVerify());
             GoBackCommand = new RelayCommand((param) => executeGoBack());
-            ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync());
+            ResendCodeCommand = new RelayCommand(async (param) => await executeResendCodeAsync(), (param) => CanResendCode);
 
+            initializeTimer();
             validate(validator, this);
+        }
+
+        private void initializeTimer()
+        {
+            resendTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            resendTimer.Tick += onTimerTick;
+        }
+
+        private void onTimerTick(object sender, EventArgs e)
+        {
+            remainingSeconds--;
+            OnPropertyChanged(nameof(ResendTimerText));
+
+            if (remainingSeconds <= 0)
+            {
+                stopResendTimer();
+            }
+        }
+
+        private void startResendTimer()
+        {
+            CanResendCode = false;
+            remainingSeconds = RESEND_COOLDOWN_SECONDS;
+            OnPropertyChanged(nameof(ResendTimerText));
+            OnPropertyChanged(nameof(IsTimerVisible));
+            resendTimer.Start();
+        }
+
+        private void stopResendTimer()
+        {
+            resendTimer.Stop();
+            CanResendCode = true;
+            remainingSeconds = 0;
+            OnPropertyChanged(nameof(IsTimerVisible));
         }
 
         private static string clampString(string value, int maxLength)
@@ -137,7 +197,8 @@ namespace MindWeaveClient.ViewModel.Authentication
                     SessionService.PendingVerificationEmail = null;
                     navigationService.navigateTo<LoginPage>();
                 }
-                else {
+                else
+                {
                     string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
@@ -154,6 +215,7 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private void executeGoBack()
         {
+            stopResendTimer();
             SessionService.PendingVerificationEmail = null;
             navigationService.navigateTo<LoginPage>();
         }
@@ -171,8 +233,11 @@ namespace MindWeaveClient.ViewModel.Authentication
 
                     VerificationCode = string.Empty;
                     clearTouchedState();
+
+                    startResendTimer();
                 }
-                else {
+                else
+                {
                     string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
