@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="2dfj2dBXvHj2il9aNjjKOzwhPsYmKZO7ntraVomvtrk=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="nGsfRWWyHFT0BYqGCcs1XUX4ZYv4ah/l5m1bw76bxDo=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_ISocialManager">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_ISocialManager" contract="SocialManagerService.ISocialManager" bindingType="netTcpBinding" address="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/" bindingConfiguration="NetTcpBinding_ISocialManager">
+    <endpoint name="NetTcpBinding_ISocialManager" contract="SocialManagerService.ISocialManager" bindingType="netTcpBinding" address="net.tcp://192.168.56.1:8734/MindWeaveServer/Services/SocialManagerService/" bindingConfiguration="NetTcpBinding_ISocialManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/</serializedValue>
+          <serializedValue>net.tcp://192.168.56.1:8734/MindWeaveServer/Services/SocialManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
