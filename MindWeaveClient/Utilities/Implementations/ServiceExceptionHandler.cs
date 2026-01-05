@@ -15,16 +15,16 @@ namespace MindWeaveClient.Utilities.Implementations
 {
     public class ServiceExceptionHandler : IServiceExceptionHandler
     {
-        private const int WSAENETDOWN = 10050;
-        private const int WSAENETUNREACH = 10051;
-        private const int WSAENETRESET = 10052;
-        private const int WSAECONNABORTED = 10053;
-        private const int WSAECONNRESET = 10054;
-        private const int WSAENOTCONN = 10057;
-        private const int WSAEHOSTDOWN = 10064;
-        private const int WSAEHOSTUNREACH = 10065;
-        private const int WSASYSNOTREADY = 10091;
-        private const int WSANOTINITIALISED = 10093;
+        private const int WSAE_NET_DOWN = 10050;
+        private const int WSAE_NET_UNREACH = 10051;
+        private const int WSAE_NET_RESET = 10052;
+        private const int WSAE_CONN_ABORTED = 10053;
+        private const int WSAE_CONN_RESET = 10054;
+        private const int WSAE_NOT_CONN = 10057;
+        private const int WSAE_HOST_DOWN = 10064;
+        private const int WSAE_HOST_UNREACH = 10065;
+        private const int WSA_SYS_NOT_READY = 10091;
+        private const int WSA_NOT_INITIALISED = 10093;
 
         private const string KEYWORD_CONNECTION = "connection";
         private const string KEYWORD_SOCKET = "socket";
@@ -61,6 +61,17 @@ namespace MindWeaveClient.Utilities.Implementations
         {
             if (exception == null) return false;
 
+            lock (lockObject)
+            {
+                if (isHandlingCriticalError) return true;
+            }
+
+            if (exception is FaultException faultException)
+            {
+                handleFaultException(faultException);
+                return false;
+            }
+
             if (isChannelStateError(exception))
             {
                 handleCriticalConnectionError(exception);
@@ -77,12 +88,6 @@ namespace MindWeaveClient.Utilities.Implementations
             {
                 handleCriticalConnectionError(exception);
                 return true;
-            }
-
-            if (exception is FaultException faultException)
-            {
-                handleFaultException(faultException);
-                return false;
             }
 
             string message = getExceptionMessage(exception, operationContext);
@@ -125,6 +130,82 @@ namespace MindWeaveClient.Utilities.Implementations
             }));
 
             return true;
+        }
+
+        public void performSoftReset()
+        {
+            lock (lockObject)
+            {
+                if (isHandlingCriticalError) return;
+                isHandlingCriticalError = true;
+            }
+
+            executeResetSequence();
+        }
+
+        private void handleNetworkUnavailableError(Exception exception)
+        {
+            lock (lockObject)
+            {
+                if (isHandlingCriticalError) return;
+                isHandlingCriticalError = true;
+            }
+
+            string message = getNetworkUnavailableMessage(exception);
+            showErrorOnUIThread(message, Lang.ErrorNoInternetTitle);
+
+            executeResetSequence();
+        }
+
+        private void handleCriticalConnectionError(Exception exception)
+        {
+            lock (lockObject)
+            {
+                if (isHandlingCriticalError) return;
+                isHandlingCriticalError = true;
+            }
+
+            string message = getCriticalErrorMessage(exception);
+            showErrorOnUIThread(message, Lang.ErrorConnectionLostTitle);
+
+            executeResetSequence();
+        }
+
+        private void executeResetSequence()
+        {
+            try
+            {
+                Application.Current.Dispatcher.Invoke(async () =>
+                {
+                    try
+                    {
+                        if (sessionCleanupServiceLazy != null && sessionCleanupServiceLazy.Value != null)
+                        {
+                            await sessionCleanupServiceLazy.Value.cleanUpSessionAsync();
+                        }
+
+                        resetApplicationWindows();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error during cleanup: " + ex.Message);
+                    }
+                    finally
+                    {
+                        lock (lockObject)
+                        {
+                            isHandlingCriticalError = false;
+                        }
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                lock (lockObject)
+                {
+                    isHandlingCriticalError = false;
+                }
+            }
         }
 
         public bool isChannelStateError(Exception exception)
@@ -295,42 +376,6 @@ namespace MindWeaveClient.Utilities.Implementations
             return false;
         }
 
-        public void performSoftReset()
-        {
-            lock (lockObject)
-            {
-                if (isHandlingCriticalError) return;
-                isHandlingCriticalError = true;
-            }
-
-            try
-            {
-                Application.Current.Dispatcher.Invoke(async () =>
-                {
-                    try
-                    {
-                        await sessionCleanupServiceLazy.Value.cleanUpSessionAsync();
-                        resetApplicationWindows();
-                    }
-                    finally
-                    {
-                        lock (lockObject)
-                        {
-                            isHandlingCriticalError = false;
-                        }
-                    }
-                });
-            }
-            catch (Exception)
-            {
-                lock (lockObject)
-                {
-                    isHandlingCriticalError = false;
-                }
-            }
-        }
-
-
         private static bool isNetworkDownSocketError(SocketError errorCode)
         {
             switch (errorCode)
@@ -355,16 +400,16 @@ namespace MindWeaveClient.Utilities.Implementations
         {
             switch (errorCode)
             {
-                case WSAENETDOWN:
-                case WSAENETUNREACH:
-                case WSAENETRESET:
-                case WSAECONNABORTED:
-                case WSAECONNRESET:
-                case WSAENOTCONN:
-                case WSAEHOSTDOWN:
-                case WSAEHOSTUNREACH:
-                case WSASYSNOTREADY:
-                case WSANOTINITIALISED:
+                case WSAE_NET_DOWN:
+                case WSAE_NET_UNREACH:
+                case WSAE_NET_RESET:
+                case WSAE_CONN_ABORTED:
+                case WSAE_CONN_RESET:
+                case WSAE_NOT_CONN:
+                case WSAE_HOST_DOWN:
+                case WSAE_HOST_UNREACH:
+                case WSA_SYS_NOT_READY:
+                case WSA_NOT_INITIALISED:
                     return true;
                 default:
                     return false;
@@ -407,55 +452,37 @@ namespace MindWeaveClient.Utilities.Implementations
             }
         }
 
-
-        private void handleNetworkUnavailableError(Exception exception)
-        {
-            lock (lockObject)
-            {
-                if (isHandlingCriticalError) return;
-            }
-
-            string message = getNetworkUnavailableMessage(exception);
-            showErrorOnUIThread(message, Lang.ErrorNoInternetTitle);
-            performSoftReset();
-        }
-
-        private void handleCriticalConnectionError(Exception exception)
-        {
-            lock (lockObject)
-            {
-                if (isHandlingCriticalError) return;
-            }
-
-            string message = getCriticalErrorMessage(exception);
-            showErrorOnUIThread(message, Lang.ErrorConnectionLostTitle);
-            performSoftReset();
-        }
-
         private void handleFaultException(FaultException faultException)
         {
-            string message = faultException.Message;
-
-            if (faultException.GetType().IsGenericType)
+            string localizedMessage = Lang.ErrorGeneric;
+            string messageCode = null;
+            var detailProperty = faultException.GetType().GetProperty("Detail");
+            if (detailProperty != null)
             {
-                var detailProperty = faultException.GetType().GetProperty("Detail");
-                if (detailProperty != null)
+                var detailValue = detailProperty.GetValue(faultException);
+                if (detailValue != null)
                 {
-                    var detail = detailProperty.GetValue(faultException);
-                    if (detail != null)
+                    var detailType = detailValue.GetType();
+
+                    var codeProperty = detailType.GetProperty("MessageCode");
+                    if (codeProperty != null)
                     {
-                        var messageProperty = detail.GetType().GetProperty("Message");
-                        if (messageProperty != null)
-                        {
-                            message = messageProperty.GetValue(detail)?.ToString() ?? message;
-                        }
+                        messageCode = codeProperty.GetValue(detailValue)?.ToString();
                     }
                 }
             }
 
-            showErrorOnUIThread(message, Lang.ErrorTitle);
-        }
+            if (!string.IsNullOrEmpty(messageCode))
+            {
+                localizedMessage = MessageCodeInterpreter.translate(messageCode);
+            }
+            else
+            {
+                localizedMessage = faultException.Message;
+            }
 
+            showErrorOnUIThread(localizedMessage, Lang.ErrorTitle);
+        }
 
         private static string getNetworkUnavailableMessage(Exception exception)
         {
