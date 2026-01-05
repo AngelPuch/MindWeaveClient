@@ -1302,4 +1302,7 @@
   <data name="LobbyBtnRefreshFriends" xml:space="preserve">
     <value>Refresh FriendList</value>
   </data>
+  <data name="WarningCannotInviteBaned" xml:space="preserve">
+    <value>User cannot be invited because is banned from this lobby</value>
+  </data>
 </root>

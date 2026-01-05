@@ -13,17 +13,21 @@ namespace MindWeaveClient.View.Main
     {
         private readonly ISessionCleanupService cleanupService;
         private readonly IInvitationService invitationService;
+        private readonly IDialogService dialogService;
 
+        private bool isExitDialogShown = false;
         public bool IsExitConfirmed { get; set; } = false;
 
         public MainWindow(
             INavigationService navigationService, 
             IInvitationService invitationService, 
-            ISessionCleanupService cleanupService)
+            ISessionCleanupService cleanupService,
+            IDialogService dialogService)
         {
             InitializeComponent();
             this.invitationService = invitationService;
             this.cleanupService = cleanupService;
+            this.dialogService = dialogService;
 
             navigationService.initialize(MainFrame);
             navigationService.navigateTo<MainMenuPage>();
@@ -42,6 +46,11 @@ namespace MindWeaveClient.View.Main
             {
                 return;
             }
+            if (isExitDialogShown)
+            {
+                e.Cancel = true;
+                return;
+            }
 
             bool isTransitioningToGame = Application.Current.Windows
                 .OfType<GameWindow>()
@@ -53,14 +62,15 @@ namespace MindWeaveClient.View.Main
             }
 
             e.Cancel = true;
+            isExitDialogShown = true;
 
-            var result = MessageBox.Show(
+            bool exitConfirmed = dialogService.showConfirmation(
                 Lang.GlobalExitConfirmMessage,
-                Lang.GlobalExitConfirmTitle,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+                Lang.GlobalExitConfirmTitle);
 
-            if (result == MessageBoxResult.Yes)
+            isExitDialogShown = false;
+
+            if (exitConfirmed)
             {
                 await cleanupService.cleanUpSessionAsync();
                 IsExitConfirmed = true;

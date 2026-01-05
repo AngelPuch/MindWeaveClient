@@ -3571,6 +3571,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a User cannot be invited because is banned from this lobby.
+        /// </summary>
+        public static string WarningCannotInviteBaned {
+            get {
+                return ResourceManager.GetString("WarningCannotInviteBaned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Could not connect to matchmaking service..
         /// </summary>
         public static string WarningMsgMatchmakingConnectFailed {

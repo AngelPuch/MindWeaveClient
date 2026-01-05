@@ -1302,4 +1302,7 @@
   <data name="LobbyBtnRefreshFriends" xml:space="preserve">
     <value>Refrescar Lista de Amigos</value>
   </data>
+  <data name="WarningCannotInviteBaned" xml:space="preserve">
+    <value>No se puede invitar al jugador porque está vetado de este lobby</value>
+  </data>
 </root>

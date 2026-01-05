@@ -12,6 +12,9 @@ namespace MindWeaveClient.View.Game
     {
         private readonly ISessionCleanupService cleanupService;
         private readonly ICurrentMatchService currentMatchService;
+        private readonly IDialogService dialogService;
+
+        private bool isExitDialogShown = false;
 
         public bool IsExitConfirmed { get; set; } = false;
         public bool GameEndedNaturally { get; set; } = false;
@@ -20,18 +23,29 @@ namespace MindWeaveClient.View.Game
             INavigationService navigationService,
             LobbyPage startPage,
             ISessionCleanupService cleanupService,
-            ICurrentMatchService currentMatchService)
+            ICurrentMatchService currentMatchService,
+            IDialogService dialogService)
         {
             InitializeComponent();
             this.cleanupService = cleanupService;
             this.currentMatchService = currentMatchService;
+            this.dialogService = dialogService;
             navigationService.initialize(GameFrame);
             GameFrame.Content = startPage;
         }
 
         private async void windowClosing(object sender, CancelEventArgs e)
         {
-            if (GameEndedNaturally || IsExitConfirmed) return;
+            if (GameEndedNaturally || IsExitConfirmed)
+            {
+                return;
+            }
+
+            if (isExitDialogShown)
+            {
+                e.Cancel = true;
+                return;
+            }
 
             bool isTransitioningToMain = Application.Current.Windows
                 .OfType<MainWindow>()
@@ -49,13 +63,13 @@ namespace MindWeaveClient.View.Game
 
             if (isGameInProgress)
             {
-                var result = MessageBox.Show(
+                isExitDialogShown = true;
+                bool result = dialogService.showConfirmation(
                     Lang.GameExitConfirmMessage,
-                    Lang.GameExitConfirmTitle,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    Lang.GameExitConfirmTitle);
+                isExitDialogShown = false;
 
-                if (result == MessageBoxResult.Yes)
+                if (result)
                 {
                     await cleanupService.exitGameInProcessAsync();
                     forceShutdown();
@@ -63,13 +77,13 @@ namespace MindWeaveClient.View.Game
             }
             else if (isInLobby)
             {
-                var result = MessageBox.Show(
+                isExitDialogShown = true;
+                bool result = dialogService.showConfirmation(
                     Lang.LobbyExitConfirmMessage,
-                    Lang.LobbyExitConfirmTitle,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    Lang.LobbyExitConfirmTitle);
+                isExitDialogShown = false;
 
-                if (result == MessageBoxResult.Yes)
+                if (result)
                 {
                     string lobbyCode = currentMatchService.LobbyId;
                     await cleanupService.exitLobbyAsync(lobbyCode);

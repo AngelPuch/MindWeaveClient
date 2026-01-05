@@ -115,6 +115,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 case "PUZZLE_UPLOAD_FAILED": return Lang.ErrorPuzzleUploadFailed;
                 case "PUZZLE_IMAGE_TOO_LARGE": return Lang.ErrorPuzzleImageTooLarge;
                 case "PUZZLE_LOAD_FAILED": return Lang.ErrorPuzzleLoadFailed;
+                case "MATCH_CANNOT_INVITE_BANNED": return Lang.WarningCannotInviteBaned;
 
                 case "CHAT_PROFANITY_WARNING": return Lang.WarningProfanityDetected;
 
