@@ -171,11 +171,10 @@
                                     <ItemsControl ItemsSource="{Binding OnlineFriends}" ItemTemplate="{StaticResource OnlineFriendInviteTemplate}"/>
                                 </ScrollViewer>
                                 <Button Grid.Row="2" 
-                                        Content="Refresh List" 
-                                        ToolTip="Refresh online friends" 
+                                        Content="{x:Static lang:Lang.LobbyBtnRefreshFriends}"
                                         Style="{StaticResource SecondaryButtonStyle}" 
                                         Height="30" FontSize="12" Padding="5,0" 
-                                        Command="{Binding RefreshFriendsCommand}" Grid.ColumnSpan="2" Margin="19,20,19,20"/>
+                                        Command="{Binding RefreshFriendsCommand}" Grid.ColumnSpan="2" Margin="19,20,19,20" Click="Button_Click"/>
 
                                 <Button Grid.Row="3"
                                         Content="{x:Static lang:Lang.LobbyBtnInviteGuest}"

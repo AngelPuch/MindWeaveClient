@@ -398,7 +398,7 @@ namespace MindWeaveClient.ViewModel.Main
                 if (result.Success)
                 {
                     dialogService.showInfo(Lang.ProfileUpdateSuccess, Lang.InfoMsgTitleSuccess);
-                    navigationService.goBack();
+                    navigationService.navigateTo<MainMenuPage>();
                 }
                 else
                 {

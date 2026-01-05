@@ -1299,4 +1299,7 @@
   <data name="LobbyExitConfirmTitle" xml:space="preserve">
     <value>Salir del Lobby</value>
   </data>
+  <data name="LobbyBtnRefreshFriends" xml:space="preserve">
+    <value>Refrescar Lista de Amigos</value>
+  </data>
 </root>

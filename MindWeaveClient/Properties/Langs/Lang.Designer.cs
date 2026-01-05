@@ -2023,6 +2023,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Refresh FriendList.
+        /// </summary>
+        public static string LobbyBtnRefreshFriends {
+            get {
+                return ResourceManager.GetString("LobbyBtnRefreshFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Upload Image....
         /// </summary>
         public static string LobbyBtnUploadImage {
