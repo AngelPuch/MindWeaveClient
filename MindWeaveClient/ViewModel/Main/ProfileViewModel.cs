@@ -11,13 +11,14 @@ using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel.Main
 {
-    public class ProfileViewModel : BaseViewModel
+    public class ProfileViewModel : BaseViewModel, IDisposable
     {
         private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
 
         private readonly IProfileService profileService;
         private readonly IServiceExceptionHandler exceptionHandler;
 
+        private bool isDisposed;
         private string welcomeMessage;
         private string username;
         private string avatarSource;
@@ -59,7 +60,6 @@ namespace MindWeaveClient.ViewModel.Main
             var navigationService1 = navigationService;
             this.exceptionHandler = exceptionHandler;
 
-
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
             BackCommand = new RelayCommand(p => navigationService1.goBack(), p => !IsBusy);
@@ -71,19 +71,13 @@ namespace MindWeaveClient.ViewModel.Main
             Achievements = new ObservableCollection<AchievementDto>();
 
             _ = loadProfileDataAsync();
-            loadAchievements();
+            _ = loadAchievementsAsync();
         }
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
         {
             AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
         }
-
-        ~ProfileViewModel()
-        {
-            SessionService.AvatarPathChanged -= OnAvatarPathChanged;
-        }
-
 
         private async Task loadProfileDataAsync()
         {
@@ -137,7 +131,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private async void loadAchievements()
+        private async Task loadAchievementsAsync()
         {
             if (SessionService.PlayerId <= 0)
             {
@@ -151,7 +145,6 @@ namespace MindWeaveClient.ViewModel.Main
                 AchievementsList.Clear();
                 foreach (var achievement in achievementList)
                 {
-
                     string fileName = System.IO.Path.GetFileName(achievement.IconPath);
                     achievement.IconPath = $"pack://application:,,,/MindWeaveClient;component/Resources/Images/achievements/{fileName}";
                     AchievementsList.Add(achievement);
@@ -161,6 +154,24 @@ namespace MindWeaveClient.ViewModel.Main
             {
                 exceptionHandler.handleException(ex, Lang.LoadAchievementsOperation);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
+            {
+                SessionService.AvatarPathChanged -= OnAvatarPathChanged;
+            }
+
+            isDisposed = true;
         }
     }
 }

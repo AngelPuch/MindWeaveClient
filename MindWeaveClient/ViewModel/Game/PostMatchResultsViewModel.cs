@@ -38,7 +38,7 @@ namespace MindWeaveClient.ViewModel.Game
         private Visibility winnerSectionVisibility;
         private Visibility drawSectionVisibility;
 
-        public bool IsGuest => SessionService.IsGuest;
+        public static bool IsGuest => SessionService.IsGuest;
 
         public string ResultTitle
         {
@@ -161,7 +161,7 @@ namespace MindWeaveClient.ViewModel.Game
             windowNavigationService.closeWindow<GameWindow>();
         }
 
-        private void markGameAsEndedNaturally()
+        private static void markGameAsEndedNaturally()
         {
             var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
             if (gameWindow != null)

@@ -29,8 +29,6 @@ namespace MindWeaveClient.Utilities.Implementations
         private string tempMusicFilePath;
         private bool isDisposed;
 
-        private bool disposedValue;
-
 
         public AudioService()
         {

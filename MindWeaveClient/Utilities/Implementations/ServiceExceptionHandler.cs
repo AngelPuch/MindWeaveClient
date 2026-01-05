@@ -254,54 +254,74 @@ namespace MindWeaveClient.Utilities.Implementations
         {
             if (exception == null) return false;
 
-            if (exception is EndpointNotFoundException) return true;
-            if (exception is CommunicationObjectFaultedException) return true;
-            if (exception is CommunicationObjectAbortedException) return true;
-            if (exception is ChannelTerminatedException) return true;
-            if (exception is ServerTooBusyException) return true;
-            if (exception is ObjectDisposedException) return true;
+            if (isCriticalExceptionType(exception)) return true;
 
-            if (exception is CommunicationException commEx)
+            if (exception is CommunicationException commEx && isCriticalCommunicationException(commEx))
             {
-                if (commEx.InnerException is SocketException) return true;
-                if (commEx.InnerException is WebException) return true;
-                if (commEx.InnerException is ObjectDisposedException) return true;
-
-                string message = commEx.Message.ToLowerInvariant();
-                if (message.Contains(KEYWORD_CONNECTION) ||
-                    message.Contains(KEYWORD_SOCKET) ||
-                    message.Contains(KEYWORD_REFUSED) ||
-                    message.Contains(KEYWORD_RESET) ||
-                    message.Contains(KEYWORD_FAULTED) ||
-                    message.Contains(KEYWORD_ABORTED) ||
-                    message.Contains(KEYWORD_CLOSED))
-                {
-                    return true;
-                }
+                return true;
             }
 
-            if (exception is TimeoutException) return true;
-            if (exception is SocketException) return true;
-            if (exception is WebException) return true;
-
-            if (exception is InvalidOperationException invalidOpEx)
+            if (exception is InvalidOperationException invalidOpEx && isCriticalInvalidOperationException(invalidOpEx))
             {
-                string message = invalidOpEx.Message.ToLowerInvariant();
-                if (message.Contains(KEYWORD_CHANNEL) ||
-                    message.Contains(KEYWORD_COMMUNICATION_OBJECT) ||
-                    message.Contains(KEYWORD_FAULTED) ||
-                    message.Contains(KEYWORD_CLOSED))
-                {
-                    return true;
-                }
+                return true;
             }
 
-            if (exception.InnerException != null)
+            return exception.InnerException != null && isCriticalConnectionError(exception.InnerException);
+        }
+
+        private static bool isCriticalExceptionType(Exception exception)
+        {
+            return exception is EndpointNotFoundException
+                || exception is CommunicationObjectFaultedException
+                || exception is CommunicationObjectAbortedException
+                || exception is ChannelTerminatedException
+                || exception is ServerTooBusyException
+                || exception is ObjectDisposedException
+                || exception is TimeoutException
+                || exception is SocketException
+                || exception is WebException;
+        }
+
+        private bool isCriticalCommunicationException(CommunicationException commEx)
+        {
+            if (hasCriticalInnerException(commEx.InnerException))
             {
-                return isCriticalConnectionError(exception.InnerException);
+                return true;
             }
 
-            return false;
+            return containsCriticalConnectionKeywords(commEx.Message);
+        }
+
+        private static bool hasCriticalInnerException(Exception innerException)
+        {
+            return innerException is SocketException
+                || innerException is WebException
+                || innerException is ObjectDisposedException;
+        }
+
+        private bool containsCriticalConnectionKeywords(string message)
+        {
+            if (string.IsNullOrEmpty(message)) return false;
+
+            string lowerMessage = message.ToLowerInvariant();
+
+            return lowerMessage.Contains(KEYWORD_CONNECTION)
+                || lowerMessage.Contains(KEYWORD_SOCKET)
+                || lowerMessage.Contains(KEYWORD_REFUSED)
+                || lowerMessage.Contains(KEYWORD_RESET)
+                || lowerMessage.Contains(KEYWORD_FAULTED)
+                || lowerMessage.Contains(KEYWORD_ABORTED)
+                || lowerMessage.Contains(KEYWORD_CLOSED);
+        }
+
+        private bool isCriticalInvalidOperationException(InvalidOperationException invalidOpEx)
+        {
+            string message = invalidOpEx.Message.ToLowerInvariant();
+
+            return message.Contains(KEYWORD_CHANNEL)
+                || message.Contains(KEYWORD_COMMUNICATION_OBJECT)
+                || message.Contains(KEYWORD_FAULTED)
+                || message.Contains(KEYWORD_CLOSED);
         }
 
         public bool isNetworkUnavailableError(Exception exception)
@@ -343,7 +363,7 @@ namespace MindWeaveClient.Utilities.Implementations
             return hasNetworkFailureStatus && !isNetworkAvailable();
         }
 
-        private bool isNetworkRelatedCommunicationException(CommunicationException commEx)
+        private static bool isNetworkRelatedCommunicationException(CommunicationException commEx)
         {
             string message = commEx.Message.ToLowerInvariant();
             if (message.Contains(KEYWORD_NETWORK) && message.Contains(KEYWORD_UNREACHABLE))

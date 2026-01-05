@@ -64,7 +64,7 @@ namespace MindWeaveClient.Services.Implementations
                     executeDisconnectionHandling(reason);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //ignored
             }

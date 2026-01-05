@@ -178,7 +178,7 @@ namespace MindWeaveClient.ViewModel.Game
             IServiceExceptionHandler exceptionHandler)
         {
             myInstanceId = Guid.NewGuid();
-            activeGameInstanceId = myInstanceId;
+            setActiveGameInstance(myInstanceId);
 
             this.currentMatchService = currentMatchService;
             this.matchmakingService = matchmakingService;
@@ -207,7 +207,13 @@ namespace MindWeaveClient.ViewModel.Game
             initializeGameTimer();
             tryLoadExistingPuzzle();
         }
-        
+
+        private static void setActiveGameInstance(Guid instanceId)
+        {
+            activeGameInstanceId = instanceId;
+        }
+
+
         public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
             if (piece == null || piece.IsPlaced || piece.IsHeldByOther) return;
@@ -715,13 +721,10 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (group1 == group2) return;
 
-            foreach (var p in group2)
+            foreach (var p in group2.Where(p => !group1.Contains(p)))
             {
-                if (!group1.Contains(p))
-                {
-                    group1.Add(p);
-                    p.PieceGroup = group1;
-                }
+                group1.Add(p);
+                p.PieceGroup = group1;
             }
             group2.Clear();
         }
@@ -780,7 +783,7 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        private string getPenaltyMessage(string reason, int pointsLost)
+        private static string getPenaltyMessage(string reason, int pointsLost)
         {
             switch (reason)
             {

@@ -216,10 +216,22 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await cleanupAsync();
             }
-            catch (EndpointNotFoundException) { }
-            catch (CommunicationException) { }
-            catch (TimeoutException) { }
-            catch (SocketException) { }
+            catch (EndpointNotFoundException)
+            {
+                // ignored
+            }
+            catch (CommunicationException)
+            {
+                // ignored
+            }
+            catch (TimeoutException)
+            {
+                // ignored
+            }
+            catch (SocketException)
+            {
+                // ignored
+            }
             finally
             {
                 var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
@@ -655,8 +667,14 @@ namespace MindWeaveClient.ViewModel.Game
                 await disconnectFromChatAsync();
                 await connectToChatAsync(LobbyCode);
             }
-            catch (CommunicationException) {  }
-            catch (TimeoutException) {  }
+            catch (CommunicationException)
+            {
+                // ignored
+            }
+            catch (TimeoutException)
+            {
+                // ignored
+            }
         }
 
         private async Task forceExitLobbyAsync()

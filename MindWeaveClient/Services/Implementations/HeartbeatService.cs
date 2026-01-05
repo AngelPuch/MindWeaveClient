@@ -211,16 +211,26 @@ namespace MindWeaveClient.Services.Implementations
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             if (isDisposed) return;
 
-            isDisposed = true;
-            forceStop();
-
-            if (callbackHandler != null)
+            if (disposing)
             {
-                callbackHandler.OnHeartbeatAckReceived -= handleHeartbeatAck;
-                callbackHandler.OnConnectionTerminatingReceived -= handleConnectionTerminating;
+                forceStop();
+
+                if (callbackHandler != null)
+                {
+                    callbackHandler.OnHeartbeatAckReceived -= handleHeartbeatAck;
+                    callbackHandler.OnConnectionTerminatingReceived -= handleConnectionTerminating;
+                }
             }
+
+            isDisposed = true;
         }
 
         private void startHeartbeatTimer()

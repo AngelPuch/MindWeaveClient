@@ -30,6 +30,7 @@ namespace MindWeaveClient.ViewModel.Main
         private readonly MainMenuValidator validator;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IServiceExceptionHandler exceptionHandler;
+        private bool isDisposed;
 
         public string PlayerUsername { get; }
 
@@ -245,15 +246,31 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (CommunicationException)
             {
+                //ignored
             }
             catch (ObjectDisposedException)
             {
+                //ignored
             }
         }
 
         public void Dispose()
         {
-            SessionService.AvatarPathChanged -= OnAvatarPathChanged;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
+            {
+                SessionService.AvatarPathChanged -= OnAvatarPathChanged;
+            }
+
+            isDisposed = true;
+        }
+
     }
 }

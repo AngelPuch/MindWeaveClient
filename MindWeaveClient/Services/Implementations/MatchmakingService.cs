@@ -109,7 +109,6 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        [Obsolete("Use joinLobbyWithConfirmationAsync instead")]
         public async Task joinLobbyAsync(string username, string lobbyCode)
         {
             ensureClientIsCreated();

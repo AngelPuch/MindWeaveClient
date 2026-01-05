@@ -183,7 +183,7 @@ namespace MindWeaveClient.Utilities.Implementations
             {
                 await heartbeatService.stopAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 forceStopHeartbeatSafe();
             }
@@ -195,7 +195,7 @@ namespace MindWeaveClient.Utilities.Implementations
             {
                 heartbeatService?.forceStop();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Ignore
             }

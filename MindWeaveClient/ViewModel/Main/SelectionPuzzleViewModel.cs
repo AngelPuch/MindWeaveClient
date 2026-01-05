@@ -157,8 +157,10 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 byte[] imageBytes = readAndValidateImage(filePath);
-                if (imageBytes == null) return;
-
+                if (imageBytes == null || imageBytes.Length == 0)
+                {
+                    return;
+                }
                 string fileName = Path.GetFileName(filePath);
 
                 UploadResultDto uploadResult = await puzzleService.uploadPuzzleImageAsync(SessionService.Username, imageBytes, fileName);
@@ -237,7 +239,7 @@ namespace MindWeaveClient.ViewModel.Main
             }
         }
 
-        private PuzzleDisplayInfo createPuzzleDisplayInfo(PuzzleInfoDto pzlDto)
+        private static PuzzleDisplayInfo createPuzzleDisplayInfo(PuzzleInfoDto pzlDto)
         {
             ImageSource puzzleImage;
             byte[] puzzleBytes = null;
@@ -286,7 +288,7 @@ namespace MindWeaveClient.ViewModel.Main
         }
 
 
-        private string selectImageFile()
+        private static string selectImageFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -305,7 +307,7 @@ namespace MindWeaveClient.ViewModel.Main
                 if (fileInfo.Length > MAX_IMAGE_SIZE_BYTES)
                 {
                     dialogService.showWarning(string.Format(Lang.ErrorImageTooLarge, MAX_IMAGE_SIZE_MB), Lang.UploadFailed);
-                    return null;
+                    return Array.Empty<byte>();
                 }
 
                 byte[] bytes = File.ReadAllBytes(filePath);
@@ -314,12 +316,12 @@ namespace MindWeaveClient.ViewModel.Main
             catch (IOException ex)
             {
                 handleError(Lang.ErrorReadingFile, ex);
-                return null;
+                return Array.Empty<byte>();
             }
             catch (Exception ex)
             {
                 handleError(Lang.ErrorProcessingFile, ex);
-                return null;
+                return Array.Empty<byte>();
             }
         }
 
