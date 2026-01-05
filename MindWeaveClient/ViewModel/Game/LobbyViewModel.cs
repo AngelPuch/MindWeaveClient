@@ -685,7 +685,10 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await disconnectFromChatAsync();
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
 
             matchmakingService.disconnect();
 
@@ -708,7 +711,10 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await disconnectFromChatAsync();
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                //ignored
+            }
 
             matchmakingService.disconnect();
 

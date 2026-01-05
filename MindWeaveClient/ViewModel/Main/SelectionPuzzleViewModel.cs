@@ -378,9 +378,11 @@ namespace MindWeaveClient.ViewModel.Main
             }
             catch (CommunicationException)
             {
+                //ignored
             }
             catch (ObjectDisposedException)
             {
+                //ignored
             }
         }
 

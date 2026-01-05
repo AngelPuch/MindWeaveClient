@@ -299,7 +299,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 || innerException is ObjectDisposedException;
         }
 
-        private bool containsCriticalConnectionKeywords(string message)
+        private static bool containsCriticalConnectionKeywords(string message)
         {
             if (string.IsNullOrEmpty(message)) return false;
 
@@ -314,7 +314,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 || lowerMessage.Contains(KEYWORD_CLOSED);
         }
 
-        private bool isCriticalInvalidOperationException(InvalidOperationException invalidOpEx)
+        private static bool isCriticalInvalidOperationException(InvalidOperationException invalidOpEx)
         {
             string message = invalidOpEx.Message.ToLowerInvariant();
 
