@@ -1,20 +1,26 @@
 ﻿using MindWeaveClient.MatchmakingService;
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
-using MindWeaveClient.Services.Callbacks; 
+using MindWeaveClient.Services.Callbacks;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.ServiceModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MindWeaveClient.Services.Implementations
 {
     public class MatchmakingService : IMatchmakingService
     {
+        private const int JOIN_LOBBY_TIMEOUT_MS = 15000;
+
         private MatchmakingManagerClient proxy;
-        private readonly IMatchmakingManagerCallback callbackHandler; 
-       
+        private readonly IMatchmakingManagerCallback callbackHandler;
+
+        private TaskCompletionSource<JoinLobbyResultDto> pendingJoinRequest;
+        private readonly object joinLock = new object();
+
         public event Action<LobbyStateDto> OnLobbyStateUpdated;
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
         public event Action<string> OnLobbyCreationFailed;
@@ -48,21 +54,71 @@ namespace MindWeaveClient.Services.Implementations
             return new GuestJoinServiceResultDto(wcfResult);
         }
 
+        public async Task<JoinLobbyResultDto> joinLobbyWithConfirmationAsync(string username, string lobbyCode)
+        {
+            ensureClientIsCreated();
+
+            TaskCompletionSource<JoinLobbyResultDto> tcs;
+
+            lock (joinLock)
+            {
+                pendingJoinRequest?.TrySetCanceled();
+                tcs = new TaskCompletionSource<JoinLobbyResultDto>();
+                pendingJoinRequest = tcs;
+            }
+
+            using (var cts = new CancellationTokenSource(JOIN_LOBBY_TIMEOUT_MS))
+            {
+                cts.Token.Register(() =>
+                {
+                    lock (joinLock)
+                    {
+                        if (pendingJoinRequest == tcs)
+                        {
+                            tcs.TrySetResult(new JoinLobbyResultDto
+                            {
+                                Success = false,
+                                MessageCode = "ERROR_TIMEOUT"
+                            });
+                            pendingJoinRequest = null;
+                        }
+                    }
+                });
+
+                try
+                {
+                    await executeOneWayCallAsync(() => proxy.joinLobby(username, lobbyCode));
+                    return await tcs.Task;
+                }
+                catch (Exception ex)
+                {
+                    lock (joinLock)
+                    {
+                        if (pendingJoinRequest == tcs)
+                        {
+                            pendingJoinRequest = null;
+                        }
+                    }
+
+                    return new JoinLobbyResultDto
+                    {
+                        Success = false,
+                        MessageCode = mapExceptionToMessageCode(ex)
+                    };
+                }
+            }
+        }
+
+        [Obsolete("Use joinLobbyWithConfirmationAsync instead")]
         public async Task joinLobbyAsync(string username, string lobbyCode)
         {
             ensureClientIsCreated();
-            await executeOneWayCallAsync(() =>
-            {
-                proxy.joinLobby(username, lobbyCode);
-            });
+            await executeOneWayCallAsync(() => proxy.joinLobby(username, lobbyCode));
         }
 
         public async Task leaveLobbyAsync(string username, string lobbyId)
         {
-            await executeOneWayCallAsync(() =>
-            {
-                proxy.leaveLobby(username, lobbyId);
-            });
+            await executeOneWayCallAsync(() => proxy.leaveLobby(username, lobbyId));
             disconnect();
         }
 
@@ -90,12 +146,11 @@ namespace MindWeaveClient.Services.Implementations
         {
             await executeOneWayCallAsync(() => proxy.inviteGuestByEmail(invitationData));
         }
-        
+
         public async Task requestPieceDragAsync(string lobbyCode, int pieceId)
         {
-            ensureClientIsCreated(); 
+            ensureClientIsCreated();
             await executeTaskCallAsync(async () => await proxy.requestPieceDragAsync(lobbyCode, pieceId));
-
         }
 
         public async Task requestPieceMoveAsync(string lobbyCode, int pieceId, double newX, double newY)
@@ -124,7 +179,14 @@ namespace MindWeaveClient.Services.Implementations
 
         public void disconnect()
         {
+            lock (joinLock)
+            {
+                pendingJoinRequest?.TrySetCanceled();
+                pendingJoinRequest = null;
+            }
+
             if (proxy == null) return;
+
             try
             {
                 if (proxy.State == CommunicationState.Opened)
@@ -185,7 +247,6 @@ namespace MindWeaveClient.Services.Implementations
             handler.OnGameStartedNavigation += handleGameStartedCallback;
         }
 
-
         private void unsubscribeFromCallbackEvents()
         {
             if (callbackHandler is MatchmakingCallbackHandler handler)
@@ -197,6 +258,7 @@ namespace MindWeaveClient.Services.Implementations
                 handler.OnGameStartedNavigation -= handleGameStartedCallback;
                 handler.OnLobbyDestroyedEvent -= handleLobbyDestroyedCallback;
                 handler.OnAchievementUnlockedEvent -= handleAchievementCallback;
+                handler.OnLobbyActionFailedEvent -= handleLobbyActionFailed;
             }
         }
 
@@ -353,9 +415,40 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
+        private static string mapExceptionToMessageCode(Exception ex)
+        {
+            switch (ex)
+            {
+                case EndpointNotFoundException _:
+                    return "ERROR_SERVER_UNAVAILABLE";
+                case CommunicationObjectFaultedException _:
+                    return "ERROR_CONNECTION_LOST";
+                case CommunicationException _:
+                    return "ERROR_COMMUNICATION";
+                case TimeoutException _:
+                    return "ERROR_TIMEOUT";
+                case SocketException _:
+                    return "ERROR_NETWORK";
+                default:
+                    return "ERROR_UNKNOWN";
+            }
+        }
 
         private void handleLobbyStateUpdated(LobbyStateDto state)
         {
+            lock (joinLock)
+            {
+                if (pendingJoinRequest != null)
+                {
+                    pendingJoinRequest.TrySetResult(new JoinLobbyResultDto
+                    {
+                        Success = true,
+                        InitialLobbyState = state
+                    });
+                    pendingJoinRequest = null;
+                }
+            }
+
             OnLobbyStateUpdated?.Invoke(state);
         }
 
@@ -366,6 +459,20 @@ namespace MindWeaveClient.Services.Implementations
 
         private void handleLobbyCreationFailed(string reason)
         {
+            lock (joinLock)
+            {
+                if (pendingJoinRequest != null)
+                {
+                    pendingJoinRequest.TrySetResult(new JoinLobbyResultDto
+                    {
+                        Success = false,
+                        MessageCode = reason
+                    });
+                    pendingJoinRequest = null;
+                    return;
+                }
+            }
+
             OnLobbyCreationFailed?.Invoke(reason);
         }
 

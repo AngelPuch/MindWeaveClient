@@ -119,6 +119,7 @@
     <Compile Include="Services\Callbacks\HeartbeatCallbackHandler.cs" />
     <Compile Include="Services\Implementations\HeartbeatConnectionHandler.cs" />
     <Compile Include="Services\Implementations\HeartbeatService.cs" />
+    <Compile Include="Services\JoinLobbyResultDto.cs" />
     <Compile Include="Utilities\Implementations\MessageCodeInterpreter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Helpers\StringEqualityToVisibilityConverterInverted.cs" />

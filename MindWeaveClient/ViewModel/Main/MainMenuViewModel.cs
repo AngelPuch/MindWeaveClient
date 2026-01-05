@@ -1,7 +1,9 @@
-﻿using MindWeaveClient.Properties.Langs;
+﻿using MindWeaveClient.Helpers;
+using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using MindWeaveClient.View.Game;
@@ -23,6 +25,8 @@ namespace MindWeaveClient.ViewModel.Main
 
         private readonly IMatchmakingService matchmakingService;
         private readonly ISessionCleanupService cleanupService;
+        private readonly ICurrentLobbyService currentLobbyService;
+        private readonly IDialogService dialogService;
         private readonly MainMenuValidator validator;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IServiceExceptionHandler exceptionHandler;
@@ -88,6 +92,8 @@ namespace MindWeaveClient.ViewModel.Main
             INavigationService navigationService,
             IWindowNavigationService windowNavigationService,
             ISessionCleanupService cleanupService,
+            ICurrentLobbyService currentLobbyService,
+            IDialogService dialogService,
             IServiceExceptionHandler exceptionHandler)
         {
             this.matchmakingService = matchmakingService;
@@ -95,6 +101,8 @@ namespace MindWeaveClient.ViewModel.Main
             var navigationService1 = navigationService;
             this.windowNavigationService = windowNavigationService;
             this.cleanupService = cleanupService;
+            this.currentLobbyService = currentLobbyService;
+            this.dialogService = dialogService;
             this.exceptionHandler = exceptionHandler;
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
@@ -102,15 +110,15 @@ namespace MindWeaveClient.ViewModel.Main
             PlayerUsername = SessionService.Username;
             PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
 
-            ProfileCommand = new RelayCommand(p => 
+            ProfileCommand = new RelayCommand(p =>
                 navigationService1.navigateTo<ProfilePage>(), p => !IsBusy);
-            CreateLobbyCommand = new RelayCommand(p => 
+            CreateLobbyCommand = new RelayCommand(p =>
                 navigationService1.navigateTo<SelectionPuzzlePage>(), p => !IsBusy);
-            SocialCommand = new RelayCommand(p => 
+            SocialCommand = new RelayCommand(p =>
                 navigationService1.navigateTo<SocialPage>(), p => !IsBusy);
-            SettingsCommand = new RelayCommand(p => 
+            SettingsCommand = new RelayCommand(p =>
                 this.windowNavigationService.openDialog<SettingsWindow>(Application.Current.MainWindow), p => !IsBusy);
-            JoinLobbyCommand = new RelayCommand(async p => 
+            JoinLobbyCommand = new RelayCommand(async p =>
                 await executeJoinLobbyAsync(), p => !HasErrors && !IsBusy);
             LogOutCommand = new RelayCommand(async p => await executeLogOutAsync(), p => !IsBusy);
             ExitCommand = new RelayCommand(p => executeExit());
@@ -139,16 +147,31 @@ namespace MindWeaveClient.ViewModel.Main
             if (HasErrors) return;
 
             SetBusy(true);
+
             try
             {
-                await matchmakingService.joinLobbyAsync(SessionService.Username, JoinLobbyCode);
-                windowNavigationService.openWindow<GameWindow>();
-                markWindowAsSafeClose();
-                windowNavigationService.closeWindow<MainWindow>();
+                var result = await matchmakingService.joinLobbyWithConfirmationAsync(
+                    SessionService.Username,
+                    JoinLobbyCode);
+
+                if (result.Success)
+                {
+                    currentLobbyService.setInitialState(result.InitialLobbyState);
+                    windowNavigationService.openWindow<GameWindow>();
+                    markWindowAsSafeClose();
+                    windowNavigationService.closeWindow<MainWindow>();
+                }
+                else
+                {
+                    string localizedMessage = MessageCodeInterpreter.translate(
+                        result.MessageCode,
+                        Lang.ErrorGeneric);
+                    dialogService.showWarning(localizedMessage, Lang.WarningTitle);
+                    disconnectMatchmakingSafe();
+                }
             }
             catch (Exception ex)
             {
-                SetBusy(false);
                 exceptionHandler.handleException(ex, Lang.JoinLobbyOperation);
                 disconnectMatchmakingSafe();
             }
@@ -193,7 +216,6 @@ namespace MindWeaveClient.ViewModel.Main
 
         private static void executeExit()
         {
-
             var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             mainWindow?.Close();
         }

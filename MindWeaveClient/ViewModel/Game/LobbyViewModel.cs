@@ -169,14 +169,15 @@ namespace MindWeaveClient.ViewModel.Game
         private void unsubscribeFromServiceEvents()
         {
             matchmakingService.OnLobbyStateUpdated -= handleLobbyStateUpdated;
+            matchmakingService.OnGameStarted -= handleGameStarted;
             matchmakingService.OnLobbyCreationFailed -= handleFatalError;
             matchmakingService.OnKicked -= handleKicked;
-            matchmakingService.OnGameStarted -= handleGameStarted;
             matchmakingService.OnLobbyActionFailed -= handleActionFailed;
             matchmakingService.OnLobbyDestroyed -= handleLobbyDestroyed;
             chatService.OnMessageReceived -= onChatMessageReceived;
             chatService.OnSystemMessageReceived -= handleSystemMessage;
         }
+
 
         private async Task executeRefreshFriendsAsync()
         {
@@ -660,28 +661,37 @@ namespace MindWeaveClient.ViewModel.Game
 
         private async Task forceExitLobbyAsync()
         {
-            try
-            {
-                await disconnectFromChatAsync();
-            }
-            catch (Exception) {  }
+            unsubscribeFromServiceEvents();
 
-            Dispose();
-            matchmakingService.disconnect();
-
-            windowNavigationService.openWindow<MainWindow>();
-            windowNavigationService.closeWindow<GameWindow>();
-        }
-
-        private async Task handleKickedExitAsync()
-        {
             try
             {
                 await disconnectFromChatAsync();
             }
             catch (Exception) { }
 
-            Dispose();
+            matchmakingService.disconnect();
+
+            var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
+            if (gameWindow != null)
+            {
+                gameWindow.IsExitConfirmed = true;
+            }
+
+            windowNavigationService.openWindow<MainWindow>();
+            windowNavigationService.closeWindow<GameWindow>();
+        }
+
+
+        private async Task handleKickedExitAsync()
+        {
+            unsubscribeFromServiceEvents();
+
+            try
+            {
+                await disconnectFromChatAsync();
+            }
+            catch (Exception) { }
+
             matchmakingService.disconnect();
 
             var gameWindow = Application.Current.Windows.OfType<GameWindow>().FirstOrDefault();
@@ -708,6 +718,8 @@ namespace MindWeaveClient.ViewModel.Game
             if (isCleaningUp) return;
             isCleaningUp = true;
 
+            unsubscribeFromServiceEvents();
+
             if (!string.IsNullOrEmpty(LobbyCode) && LobbyCode != LOBBY_CODE_JOINING)
             {
                 try
@@ -722,10 +734,8 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     await disconnectFromChatAsync();
                 }
-                catch (Exception) {  }
+                catch (Exception) { }
             }
-
-            unsubscribeFromServiceEvents();
         }
 
         public void Dispose()
@@ -740,8 +750,8 @@ namespace MindWeaveClient.ViewModel.Game
 
             if (disposing)
             {
-                chatService.OnMessageReceived -= onChatMessageReceived;
-                chatService.OnSystemMessageReceived -= handleSystemMessage;
+                unsubscribeFromServiceEvents();
+
                 Players.Clear();
                 OnlineFriends.Clear();
                 ChatMessages.Clear();
@@ -749,5 +759,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             isDisposed = true;
         }
+
     }
 }

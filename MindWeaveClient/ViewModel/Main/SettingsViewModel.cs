@@ -1,11 +1,13 @@
 ﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.View.Game;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -191,6 +193,12 @@ namespace MindWeaveClient.ViewModel.Main
         {
             try
             {
+                var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (mainWindow != null)
+                {
+                    mainWindow.IsExitConfirmed = true;
+                }
+
                 Process.Start(Application.ResourceAssembly.Location);
                 Application.Current.Shutdown();
             }
