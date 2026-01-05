@@ -101,6 +101,10 @@ namespace MindWeaveClient.ViewModel.Game
         public ICommand SendMessageCommand { get; }
         public ICommand InviteGuestCommand { get; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Major Code Smell",
+            "S107:Methods should not have too many parameters",
+            Justification = "Dependencies are injected via DI container - this is standard practice for ViewModels")]
         public LobbyViewModel(
             IMatchmakingService matchmakingService,
             ISocialService socialService,

@@ -282,7 +282,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 || exception is WebException;
         }
 
-        private bool isCriticalCommunicationException(CommunicationException commEx)
+        private static bool isCriticalCommunicationException(CommunicationException commEx)
         {
             if (hasCriticalInnerException(commEx.InnerException))
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 
 namespace MindWeaveClient.ViewModel
@@ -30,6 +31,8 @@ namespace MindWeaveClient.ViewModel
             execute(parameter);
         }
 
+        [SuppressMessage("Major Code Smell", "S2325:Methods and properties that don't access instance data should be static",
+            Justification = "Method is intentionally instance-based to allow fluent usage pattern: command.raiseCanExecuteChanged()")]
         public void raiseCanExecuteChanged()
         {
             CommandManager.InvalidateRequerySuggested();
