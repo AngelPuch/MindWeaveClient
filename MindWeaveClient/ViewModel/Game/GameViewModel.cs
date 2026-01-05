@@ -84,7 +84,6 @@ namespace MindWeaveClient.ViewModel.Game
         private readonly IMatchmakingService matchmakingService;
         private readonly IDialogService dialogService;
         private readonly INavigationService navigationService;
-        private readonly IWindowNavigationService windowNavigationService;
         private readonly IAudioService audioService;
         private readonly IServiceExceptionHandler exceptionHandler;
 
@@ -175,7 +174,6 @@ namespace MindWeaveClient.ViewModel.Game
             IMatchmakingService matchmakingService,
             IDialogService dialogService,
             INavigationService navigationService,
-            IWindowNavigationService windowNavigationService,
             IAudioService audioService,
             IServiceExceptionHandler exceptionHandler)
         {
@@ -186,7 +184,6 @@ namespace MindWeaveClient.ViewModel.Game
             this.matchmakingService = matchmakingService;
             this.dialogService = dialogService;
             this.navigationService = navigationService;
-            this.windowNavigationService = windowNavigationService;
             this.audioService = audioService;
             this.exceptionHandler = exceptionHandler;
 
@@ -270,11 +267,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-        public void Dispose()
-        {
-            dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
         private void subscribeToEvents()
         {
@@ -656,53 +648,64 @@ namespace MindWeaveClient.ViewModel.Game
 
             currentIdleZIndex = newZIndex;
         }
-        
+
         private void attemptRemoteMerge(PuzzlePieceViewModel piece)
         {
             if (piece == null || piece.IsPlaced) return;
 
             foreach (var potentialNeighbor in PiecesCollection)
             {
-                if (potentialNeighbor == piece || potentialNeighbor.IsPlaced || potentialNeighbor.PieceGroup == piece.PieceGroup)
-                    continue;
+                if (shouldSkipNeighborCheck(piece, potentialNeighbor)) continue;
 
-                bool isNeighbor = false;
-                Point expectedPos = new Point();
+                Point? expectedPos = getExpectedNeighborPosition(piece, potentialNeighbor);
 
-                if (piece.RightNeighborId == potentialNeighbor.PieceId)
+                if (expectedPos.HasValue && isWithinSnapThreshold(potentialNeighbor, expectedPos.Value))
                 {
-                    isNeighbor = true;
-                    expectedPos = new Point(piece.X + piece.Width, piece.Y);
-                }
-                else if (piece.LeftNeighborId == potentialNeighbor.PieceId)
-                {
-                    isNeighbor = true;
-                    expectedPos = new Point(piece.X - potentialNeighbor.Width, piece.Y);
-                }
-                else if (piece.BottomNeighborId == potentialNeighbor.PieceId)
-                {
-                    isNeighbor = true;
-                    expectedPos = new Point(piece.X, piece.Y + piece.Height);
-                }
-                else if (piece.TopNeighborId == potentialNeighbor.PieceId)
-                {
-                    isNeighbor = true;
-                    expectedPos = new Point(piece.X, piece.Y - potentialNeighbor.Height);
-                }
-
-                if (isNeighbor)
-                {
-                    double distSquared = Math.Pow(potentialNeighbor.X - expectedPos.X, 2) +
-                                         Math.Pow(potentialNeighbor.Y - expectedPos.Y, 2);
-
-                    if (distSquared < REMOTE_SNAP_THRESHOLD * REMOTE_SNAP_THRESHOLD)
-                    {
-                        potentialNeighbor.X = expectedPos.X;
-                        potentialNeighbor.Y = expectedPos.Y;
-                        mergeGroups(piece, potentialNeighbor);
-                    }
+                    potentialNeighbor.X = expectedPos.Value.X;
+                    potentialNeighbor.Y = expectedPos.Value.Y;
+                    mergeGroups(piece, potentialNeighbor);
                 }
             }
+        }
+
+        private static bool shouldSkipNeighborCheck(PuzzlePieceViewModel piece, PuzzlePieceViewModel potentialNeighbor)
+        {
+            return potentialNeighbor == piece ||
+                   potentialNeighbor.IsPlaced ||
+                   potentialNeighbor.PieceGroup == piece.PieceGroup;
+        }
+
+        private static Point? getExpectedNeighborPosition(PuzzlePieceViewModel piece, PuzzlePieceViewModel potentialNeighbor)
+        {
+            if (piece.RightNeighborId == potentialNeighbor.PieceId)
+            {
+                return new Point(piece.X + piece.Width, piece.Y);
+            }
+
+            if (piece.LeftNeighborId == potentialNeighbor.PieceId)
+            {
+                return new Point(piece.X - potentialNeighbor.Width, piece.Y);
+            }
+
+            if (piece.BottomNeighborId == potentialNeighbor.PieceId)
+            {
+                return new Point(piece.X, piece.Y + piece.Height);
+            }
+
+            if (piece.TopNeighborId == potentialNeighbor.PieceId)
+            {
+                return new Point(piece.X, piece.Y - potentialNeighbor.Height);
+            }
+
+            return null;
+        }
+
+        private static bool isWithinSnapThreshold(PuzzlePieceViewModel neighbor, Point expectedPos)
+        {
+            double distSquared = Math.Pow(neighbor.X - expectedPos.X, 2) +
+                                 Math.Pow(neighbor.Y - expectedPos.Y, 2);
+
+            return distSquared < REMOTE_SNAP_THRESHOLD * REMOTE_SNAP_THRESHOLD;
         }
 
         private static void mergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
@@ -840,8 +843,14 @@ namespace MindWeaveClient.ViewModel.Game
                 return null;
             }
         }
-        
-        protected virtual void dispose(bool disposing)
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (isDisposed) return;
 
@@ -853,5 +862,6 @@ namespace MindWeaveClient.ViewModel.Game
 
             isDisposed = true;
         }
+
     }
 }

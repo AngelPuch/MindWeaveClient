@@ -98,7 +98,7 @@ namespace MindWeaveClient.Services.Implementations
                     return;
                 }
 
-                await matchmakingService.joinLobbyAsync(SessionService.Username, lobbyId);
+                await matchmakingService.joinLobbyWithConfirmationAsync(SessionService.Username, lobbyId);
                 currentLobbyService.setInitialState(null);
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -143,9 +143,11 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch (CommunicationException)
             {
+                // ignore
             }
             catch (ObjectDisposedException)
             {
+                //ignore
             }
         }
 

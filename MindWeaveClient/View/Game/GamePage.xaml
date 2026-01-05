@@ -172,9 +172,9 @@
                                             <local:PuzzlePieceView 
                                                 DataContext="{Binding}"
                                                 Cursor="Hand"
-                                                MouseLeftButtonDown="Piece_MouseLeftButtonDown"
-                                                MouseMove="Piece_MouseMove"
-                                                MouseLeftButtonUp="Piece_MouseLeftButtonUp" />
+                                                MouseLeftButtonDown="pieceMouseLeftButtonDown"
+                                                MouseMove="pieceMouseMove"
+                                                MouseLeftButtonUp="pieceMouseLeftButtonUp" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
 

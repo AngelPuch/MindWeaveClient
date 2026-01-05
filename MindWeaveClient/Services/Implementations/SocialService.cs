@@ -14,6 +14,7 @@ namespace MindWeaveClient.Services.Implementations
         private SocialManagerClient proxy;
         private readonly SocialCallbackHandler callbackHandler;
         private string currentUsername;
+        private bool isDisposed;
         private readonly object lockObject = new object();
 
         public event Action<string, bool> FriendStatusChanged;
@@ -285,15 +286,28 @@ namespace MindWeaveClient.Services.Implementations
 
         public void Dispose()
         {
-            if (callbackHandler != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
             {
-                callbackHandler.FriendStatusChanged -= onFriendStatusChanged;
-                callbackHandler.FriendRequestReceived -= onFriendRequestReceived;
-                callbackHandler.FriendResponseReceived -= onFriendResponseReceived;
-                callbackHandler.LobbyInviteReceived -= onLobbyInviteReceived;
+                if (callbackHandler != null)
+                {
+                    callbackHandler.FriendStatusChanged -= onFriendStatusChanged;
+                    callbackHandler.FriendRequestReceived -= onFriendRequestReceived;
+                    callbackHandler.FriendResponseReceived -= onFriendResponseReceived;
+                    callbackHandler.LobbyInviteReceived -= onLobbyInviteReceived;
+                }
+
+                cleanupProxy();
             }
 
-            cleanupProxy();
+            isDisposed = true;
         }
     }
 }

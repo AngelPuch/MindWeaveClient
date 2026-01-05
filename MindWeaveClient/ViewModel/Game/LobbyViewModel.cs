@@ -726,25 +726,37 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
                 }
-                catch (EndpointNotFoundException) { }
-                catch (CommunicationException) { }
-                catch (TimeoutException) { }
+                catch (EndpointNotFoundException)
+                {
+                    // ignore
+                }
+                catch (CommunicationException)
+                {
+                    // ignore
+                }
+                catch (TimeoutException)
+                {
+                    // ignore
+                }
 
                 try
                 {
                     await disconnectFromChatAsync();
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    // ignore
+                }
             }
         }
 
         public void Dispose()
         {
-            dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (isDisposed) return;
 

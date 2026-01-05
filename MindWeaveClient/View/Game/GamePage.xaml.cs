@@ -34,13 +34,13 @@ namespace MindWeaveClient.View.Game
 
             if (this.gameViewModel != null)
             {
-                this.gameViewModel.ForceReleaseLocalDrag += OnForceReleaseLocalDrag;
+                this.gameViewModel.ForceReleaseLocalDrag += onForceReleaseLocalDrag;
             }
 
             this.Unloaded += gamePageUnloaded;
         }
 
-        private void OnForceReleaseLocalDrag()
+        private void onForceReleaseLocalDrag()
         {
             if (isLocalDragging)
             {
@@ -50,7 +50,7 @@ namespace MindWeaveClient.View.Game
             }
         }
 
-        private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void pieceMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pieceView = sender as PuzzlePieceView;
             if (pieceView == null) return;
@@ -79,28 +79,50 @@ namespace MindWeaveClient.View.Game
             e.Handled = true;
         }
 
-        private void Piece_MouseMove(object sender, MouseEventArgs e)
+        private void pieceMouseMove(object sender, MouseEventArgs e)
         {
             var now = DateTime.UtcNow;
-            if ((now - lastUiUpdate).TotalMilliseconds < 16) return;
+
+            if (!shouldProcessMouseMove(now, e)) return;
+
             lastUiUpdate = now;
 
-            if (this.draggedGroup == null || e.LeftButton != MouseButtonState.Pressed || !isLocalDragging) return;
-
             Point currentPoint = e.GetPosition(this.PuzzleItemsControl);
+            Rect validBounds = getValidBounds();
 
+            var proposedPositions = calculateProposedPositions(currentPoint);
+            var boundaryShifts = calculateBoundaryShifts(proposedPositions, validBounds);
+
+            applyPositionsWithOffset(proposedPositions, boundaryShifts);
+            sendMoveUpdatesIfNeeded(now);
+
+            e.Handled = true;
+        }
+
+        private bool shouldProcessMouseMove(DateTime now, MouseEventArgs e)
+        {
+            if ((now - lastUiUpdate).TotalMilliseconds < 16) return false;
+            if (this.draggedGroup == null) return false;
+            if (e.LeftButton != MouseButtonState.Pressed) return false;
+            if (!isLocalDragging) return false;
+
+            return true;
+        }
+
+        private Rect getValidBounds()
+        {
             GeneralTransform transform = this.TransformToDescendant(this.PuzzleItemsControl);
-            Rect validBounds;
 
             if (transform != null)
             {
-                validBounds = transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            }
-            else
-            {
-                validBounds = new Rect(0, 0, this.PuzzleItemsControl.ActualWidth, this.PuzzleItemsControl.ActualHeight);
+                return transform.TransformBounds(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
             }
 
+            return new Rect(0, 0, this.PuzzleItemsControl.ActualWidth, this.PuzzleItemsControl.ActualHeight);
+        }
+
+        private List<(PuzzlePieceViewModel piece, double x, double y)> calculateProposedPositions(Point currentPoint)
+        {
             var proposedPositions = new List<(PuzzlePieceViewModel piece, double x, double y)>();
 
             foreach (var piece in this.draggedGroup)
@@ -110,60 +132,107 @@ namespace MindWeaveClient.View.Game
                 proposedPositions.Add((piece, px, py));
             }
 
+            return proposedPositions;
+        }
+
+        private static (double offsetX, double offsetY) calculateBoundaryShifts(
+            List<(PuzzlePieceViewModel piece, double x, double y)> proposedPositions,
+            Rect validBounds)
+        {
             double requiredShiftRight = 0, requiredShiftLeft = 0;
             double requiredShiftDown = 0, requiredShiftUp = 0;
 
             foreach (var item in proposedPositions)
             {
-                if (item.x < validBounds.Left)
-                {
-                    double violation = validBounds.Left - item.x;
-                    if (violation > requiredShiftRight) requiredShiftRight = violation;
-                }
-
-                if (item.y < validBounds.Top)
-                {
-                    double violation = validBounds.Top - item.y;
-                    if (violation > requiredShiftDown) requiredShiftDown = violation;
-                }
-
-                double pieceRight = item.x + item.piece.Width;
-                if (pieceRight > validBounds.Right)
-                {
-                    double violation = pieceRight - validBounds.Right;
-                    if (violation > requiredShiftLeft) requiredShiftLeft = violation;
-                }
-
-                double pieceBottom = item.y + item.piece.Height;
-                if (pieceBottom > validBounds.Bottom)
-                {
-                    double violation = pieceBottom - validBounds.Bottom;
-                    if (violation > requiredShiftUp) requiredShiftUp = violation;
-                }
+                calculateHorizontalShifts(item, validBounds, ref requiredShiftRight, ref requiredShiftLeft);
+                calculateVerticalShifts(item, validBounds, ref requiredShiftDown, ref requiredShiftUp);
             }
 
-            double finalOffsetX = requiredShiftRight > 0 ? requiredShiftRight : (requiredShiftLeft > 0 ? -requiredShiftLeft : 0);
-            double finalOffsetY = requiredShiftDown > 0 ? requiredShiftDown : (requiredShiftUp > 0 ? -requiredShiftUp : 0);
+            double finalOffsetX = calculateFinalOffset(requiredShiftRight, requiredShiftLeft);
+            double finalOffsetY = calculateFinalOffset(requiredShiftDown, requiredShiftUp);
 
-            foreach (var item in proposedPositions)
-            {
-                item.piece.X = item.x + finalOffsetX;
-                item.piece.Y = item.y + finalOffsetY;
-            }
-
-            if ((now - lastMoveUpdateTime).TotalMilliseconds > MOVE_UPDATE_INTERVAL_MS)
-            {
-                lastMoveUpdateTime = now;
-                foreach (var piece in this.draggedGroup)
-                {
-                    _ = gameViewModel?.movePiece(piece, piece.X, piece.Y);
-                }
-            }
-
-            e.Handled = true;
+            return (finalOffsetX, finalOffsetY);
         }
 
-        private async void Piece_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private static void calculateHorizontalShifts(
+            (PuzzlePieceViewModel piece, double x, double y) item,
+            Rect validBounds,
+            ref double requiredShiftRight,
+            ref double requiredShiftLeft)
+        {
+            if (item.x < validBounds.Left)
+            {
+                double violation = validBounds.Left - item.x;
+                if (violation > requiredShiftRight) requiredShiftRight = violation;
+            }
+
+            double pieceRight = item.x + item.piece.Width;
+            if (pieceRight > validBounds.Right)
+            {
+                double violation = pieceRight - validBounds.Right;
+                if (violation > requiredShiftLeft) requiredShiftLeft = violation;
+            }
+        }
+
+        private static void calculateVerticalShifts(
+            (PuzzlePieceViewModel piece, double x, double y) item,
+            Rect validBounds,
+            ref double requiredShiftDown,
+            ref double requiredShiftUp)
+        {
+            if (item.y < validBounds.Top)
+            {
+                double violation = validBounds.Top - item.y;
+                if (violation > requiredShiftDown) requiredShiftDown = violation;
+            }
+
+            double pieceBottom = item.y + item.piece.Height;
+            if (pieceBottom > validBounds.Bottom)
+            {
+                double violation = pieceBottom - validBounds.Bottom;
+                if (violation > requiredShiftUp) requiredShiftUp = violation;
+            }
+        }
+
+        private static double calculateFinalOffset(double positiveShift, double negativeShift)
+        {
+            if (positiveShift > 0)
+            {
+                return positiveShift;
+            }
+
+            if (negativeShift > 0)
+            {
+                return -negativeShift;
+            }
+
+            return 0;
+        }
+
+        private static void applyPositionsWithOffset(
+            List<(PuzzlePieceViewModel piece, double x, double y)> proposedPositions,
+            (double offsetX, double offsetY) shifts)
+        {
+            foreach (var item in proposedPositions)
+            {
+                item.piece.X = item.x + shifts.offsetX;
+                item.piece.Y = item.y + shifts.offsetY;
+            }
+        }
+
+        private void sendMoveUpdatesIfNeeded(DateTime now)
+        {
+            if ((now - lastMoveUpdateTime).TotalMilliseconds <= MOVE_UPDATE_INTERVAL_MS) return;
+
+            lastMoveUpdateTime = now;
+
+            foreach (var piece in this.draggedGroup)
+            {
+                _ = gameViewModel?.movePiece(piece, piece.X, piece.Y);
+            }
+        }
+
+        private async void pieceMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (this.draggedGroup == null || !isLocalDragging) return;
 
@@ -196,7 +265,7 @@ namespace MindWeaveClient.View.Game
         {
             if (this.gameViewModel != null)
             {
-                this.gameViewModel.ForceReleaseLocalDrag -= OnForceReleaseLocalDrag;
+                this.gameViewModel.ForceReleaseLocalDrag -= onForceReleaseLocalDrag;
             }
 
             if (this.DataContext is IDisposable disposable)

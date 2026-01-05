@@ -12,8 +12,7 @@ namespace MindWeaveClient.Services.Callbacks
     public class MatchmakingCallbackHandler : IMatchmakingManagerCallback
     {
         private readonly ICurrentMatchService currentMatchService;
-        private readonly IDialogService dialogService;
-  
+
         public event Action<LobbyStateDto> OnLobbyStateUpdatedEvent;
         public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFoundEvent;
         public event Action<string> OnLobbyCreationFailedEvent;
@@ -39,7 +38,6 @@ namespace MindWeaveClient.Services.Callbacks
             IDialogService dialogService)
         {
             this.currentMatchService = currentMatchService;
-            this.dialogService = dialogService;
         }
 
 
@@ -168,14 +166,21 @@ namespace MindWeaveClient.Services.Callbacks
             OnAchievementUnlockedEvent?.Invoke(achievementName, imagePath);
         }
 
-        public void OnAchievementUnlocked(string achievementName, string errorMessage) 
+        public void OnAchievementUnlocked(string achievementKey, string imageName) 
         {
-            System.Diagnostics.Debug.WriteLine($"[Client Callback] Logro recibido: {achievementName}");
         }
 
         public void onPlayerLeftMatch(string username)
         {
             OnPlayerLeftEvent?.Invoke(username);
+        }
+
+        public static void clearAllHandlers()
+        {
+            PieceDragStartedHandler = null;
+            PiecePlacedHandler = null;
+            PieceMovedHandler = null;
+            PieceDragReleasedHandler = null;
         }
     }
 }

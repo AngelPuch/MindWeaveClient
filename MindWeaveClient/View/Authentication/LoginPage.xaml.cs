@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.ViewModel.Authentication;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,7 @@ namespace MindWeaveClient.View.Authentication
         public LoginPage(LoginViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext = viewModel;
+            DataContext = viewModel;
         }
 
         private void toggleShowPassOnClick(object sender, RoutedEventArgs e)
@@ -25,17 +26,23 @@ namespace MindWeaveClient.View.Authentication
             else
             {
                 pbPassword.Focus();
-                try
-                {
-                    var selectMethod = pbPassword.GetType().GetMethod("Select",
-                        BindingFlags.Instance | BindingFlags.NonPublic);
+                SetPasswordBoxCaretToEnd(pbPassword);
+            }
+        }
 
-                    selectMethod?.Invoke(pbPassword, new object[] { pbPassword.Password.Length, 0 });
-                }
-                catch
-                {
-                    // ignored
-                }
+        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility",
+            Justification = "WPF PasswordBox does not expose public API for caret positioning. This is a known limitation.")]
+        private static void SetPasswordBoxCaretToEnd(PasswordBox passwordBox)
+        {
+            try
+            {
+                var selectMethod = typeof(PasswordBox).GetMethod("Select",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                selectMethod?.Invoke(passwordBox, new object[] { passwordBox.Password.Length, 0 });
+            }
+            catch
+            {
+                // ignored
             }
         }
     }

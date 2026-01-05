@@ -43,11 +43,7 @@ namespace MindWeaveClient
             var invitationService = ServiceProvider.GetRequiredService<IInvitationService>();
             invitationService.subscribeToGlobalInvites();
 
-            // ╔═══════════════════════════════════════════════════════════════════╗
-            // ║ NEW: Initialize HeartbeatConnectionHandler on startup             ║
-            // ║ This subscribes to heartbeat events for application-wide handling ║
-            // ╚═══════════════════════════════════════════════════════════════════╝
-            var heartbeatHandler = ServiceProvider.GetRequiredService<HeartbeatConnectionHandler>();
+            ServiceProvider.GetRequiredService<HeartbeatConnectionHandler>();
 
             var authWindow = ServiceProvider.GetService<AuthenticationWindow>();
             authWindow.Show();
@@ -55,18 +51,11 @@ namespace MindWeaveClient
 
         private static void configureServices(IServiceCollection services)
         {
-            // ════════════════════════════════════════════════════════════════════
-            // CALLBACK HANDLERS
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IChatManagerCallback, ChatCallbackHandler>();
             services.AddSingleton<ISocialManagerCallback, SocialCallbackHandler>();
 
-            // NEW: Heartbeat callback handler
             services.AddSingleton<HeartbeatCallbackHandler>();
 
-            // ════════════════════════════════════════════════════════════════════
-            // CORE SERVICES
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
@@ -74,18 +63,12 @@ namespace MindWeaveClient
             services.AddSingleton<IAudioService, AudioService>();
             services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
 
-            // ════════════════════════════════════════════════════════════════════
-            // NEW: HEARTBEAT SERVICE
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IHeartbeatService>(provider =>
                 new Services.Implementations.HeartbeatService(
                     provider.GetRequiredService<HeartbeatCallbackHandler>()
                 )
             );
 
-            // ════════════════════════════════════════════════════════════════════
-            // MATCHMAKING CALLBACK (depends on ICurrentMatchService, IDialogService)
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IMatchmakingManagerCallback>(provider =>
                 new MatchmakingCallbackHandler(
                     provider.GetRequiredService<ICurrentMatchService>(),
@@ -93,9 +76,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // ════════════════════════════════════════════════════════════════════
-            // GAME SERVICES
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IProfileService, MindWeaveClient.Services.Implementations.ProfileService>();
             services.AddSingleton<IMatchmakingService, MindWeaveClient.Services.Implementations.MatchmakingService>();
             services.AddSingleton<ISocialService, SocialService>();
@@ -103,9 +83,6 @@ namespace MindWeaveClient
             services.AddSingleton<IPuzzleService, PuzzleService>();
             services.AddSingleton<IInvitationService, InvitationService>();
 
-            // ════════════════════════════════════════════════════════════════════
-            // UPDATED: AUTHENTICATION SERVICE (now includes IHeartbeatService)
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IAuthenticationService>(provider =>
                 new MindWeaveClient.Services.Implementations.AuthenticationService(
                     provider.GetRequiredService<ISocialService>(),
@@ -113,9 +90,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // ════════════════════════════════════════════════════════════════════
-            // UPDATED: SESSION CLEANUP SERVICE (now includes IHeartbeatService)
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<ISessionCleanupService>(provider =>
                 new SessionCleanupService(
                     provider.GetRequiredService<IAuthenticationService>(),
@@ -126,9 +100,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // ════════════════════════════════════════════════════════════════════
-            // SERVICE EXCEPTION HANDLER
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<IServiceExceptionHandler>(provider =>
                 new ServiceExceptionHandler(
                     provider.GetRequiredService<IDialogService>(),
@@ -137,9 +108,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // ════════════════════════════════════════════════════════════════════
-            // NEW: HEARTBEAT CONNECTION HANDLER (handles disconnection events)
-            // ════════════════════════════════════════════════════════════════════
             services.AddSingleton<HeartbeatConnectionHandler>(provider =>
                 new HeartbeatConnectionHandler(
                     provider.GetRequiredService<IHeartbeatService>(),
@@ -149,9 +117,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // ════════════════════════════════════════════════════════════════════
-            // VALIDATORS
-            // ════════════════════════════════════════════════════════════════════
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();
             services.AddTransient<GuestJoinValidator>();
@@ -160,9 +125,6 @@ namespace MindWeaveClient
             services.AddTransient<VerificationValidator>();
             services.AddTransient<EditProfileValidator>();
 
-            // ════════════════════════════════════════════════════════════════════
-            // VIEWMODELS
-            // ════════════════════════════════════════════════════════════════════
             services.AddTransient<LoginViewModel>();
             services.AddTransient<CreateAccountViewModel>();
             services.AddTransient<GuestJoinViewModel>();
@@ -179,9 +141,6 @@ namespace MindWeaveClient
             services.AddTransient<GameViewModel>();
             services.AddTransient<PostMatchResultsViewModel>();
 
-            // ════════════════════════════════════════════════════════════════════
-            // VIEWS
-            // ════════════════════════════════════════════════════════════════════
             services.AddTransient<LoginPage>();
             services.AddTransient<CreateAccountPage>();
             services.AddTransient<GuestJoinPage>();
@@ -197,9 +156,6 @@ namespace MindWeaveClient
             services.AddTransient<GamePage>();
             services.AddTransient<PostMatchResultsPage>();
 
-            // ════════════════════════════════════════════════════════════════════
-            // WINDOWS
-            // ════════════════════════════════════════════════════════════════════
             services.AddTransient<AuthenticationWindow>();
             services.AddTransient<MainWindow>();
             services.AddTransient<SettingsWindow>();
@@ -210,7 +166,6 @@ namespace MindWeaveClient
         {
             try
             {
-                // NEW: Cleanup heartbeat first
                 cleanupHeartbeatService();
 
                 cleanupCallbackHandlers();
@@ -226,10 +181,7 @@ namespace MindWeaveClient
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════════
-        // NEW: HEARTBEAT CLEANUP
-        // ════════════════════════════════════════════════════════════════════════
-        private void cleanupHeartbeatService()
+        private static void cleanupHeartbeatService()
         {
             try
             {
@@ -246,20 +198,12 @@ namespace MindWeaveClient
             }
         }
 
-        private void cleanupCallbackHandlers()
+        private static void cleanupCallbackHandlers()
         {
             try
             {
-                var callbackHandlerType = typeof(MatchmakingCallbackHandler);
-                var fieldFlags = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic;
+                MatchmakingCallbackHandler.clearAllHandlers();
 
-                var fields = new[] { "PieceDragStartedHandler", "PiecePlacedHandler", "PieceMovedHandler", "PieceDragReleasedHandler", "OnGameStartedNavigation" };
-
-                foreach (var fieldName in fields)
-                {
-                    var fieldInfo = callbackHandlerType.GetField(fieldName, fieldFlags);
-                    fieldInfo?.SetValue(null, null);
-                }
             }
             catch (Exception)
             {
@@ -267,7 +211,7 @@ namespace MindWeaveClient
             }
         }
 
-        private void cleanupServices()
+        private static void cleanupServices()
         {
             var audioService = ServiceProvider.GetService<IAudioService>();
             audioService?.Dispose();
@@ -302,12 +246,15 @@ namespace MindWeaveClient
             }
             catch (CommunicationException)
             {
+                //ignored
             }
             catch (TimeoutException)
             {
+                //ignored
             }
             catch (AggregateException)
             {
+                //ignored
             }
             finally
             {

@@ -27,6 +27,8 @@ namespace MindWeaveClient.Utilities.Implementations
         private readonly MediaPlayer sfxPlayer;
         private bool isMusicLoaded;
         private string tempMusicFilePath;
+        private bool isDisposed;
+
         private bool disposedValue;
 
 
@@ -81,6 +83,7 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (InvalidOperationException)
             {
+                // ignored
             }
         }
 
@@ -94,20 +97,18 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (IOException)
             {
+                // ignored
             }
             catch (InvalidOperationException)
             {
+                // ignored
             }
             catch (UnauthorizedAccessException)
             {
+                // ignored
             }
         }
 
-        public void Dispose()
-        {
-            dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
 
         private void initializeBackgroundMusic()
         {
@@ -124,7 +125,7 @@ namespace MindWeaveClient.Utilities.Implementations
             configureMusicPlayer(tempMusicFilePath);
         }
 
-        private string createTempMusicFile(System.Windows.Resources.StreamResourceInfo resourceInfo)
+        private static string createTempMusicFile(System.Windows.Resources.StreamResourceInfo resourceInfo)
         {
             string tempPath = Path.Combine(
                 Path.GetTempPath(),
@@ -228,7 +229,7 @@ namespace MindWeaveClient.Utilities.Implementations
             sfxPlayer.Play();
         }
 
-        private string getOrCreateSfxTempFile(string soundFileName, System.Windows.Resources.StreamResourceInfo resourceInfo)
+        private static string getOrCreateSfxTempFile(string soundFileName, System.Windows.Resources.StreamResourceInfo resourceInfo)
         {
             string tempPath = Path.Combine(Path.GetTempPath(), TEMP_SFX_FILE_PREFIX + soundFileName);
 
@@ -257,9 +258,11 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (IOException)
             {
+                // ignored
             }
             catch (UnauthorizedAccessException )
             {
+                // ignored
             }
             finally
             {
@@ -267,9 +270,16 @@ namespace MindWeaveClient.Utilities.Implementations
             }
         }
 
-        protected virtual void dispose(bool disposing)
+        public void Dispose()
         {
-            if (disposedValue) return;
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
 
             if (disposing)
             {
@@ -286,6 +296,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 }
                 catch (InvalidOperationException)
                 {
+                    // ignored
                 }
                 finally
                 {
@@ -293,7 +304,8 @@ namespace MindWeaveClient.Utilities.Implementations
                 }
             }
 
-            disposedValue = true;
+            isDisposed = true;
         }
+
     }
 }

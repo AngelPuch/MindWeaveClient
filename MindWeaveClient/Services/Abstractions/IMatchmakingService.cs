@@ -19,10 +19,7 @@ namespace MindWeaveClient.Services.Abstractions
         Task<LobbyCreationResultDto> createLobbyAsync(string hostUsername, LobbySettingsDto settings);
         Task<GuestJoinServiceResultDto> joinLobbyAsGuestAsync(GuestJoinRequestDto request);
         Task<JoinLobbyResultDto> joinLobbyWithConfirmationAsync(string username, string lobbyCode);
-
-        [Obsolete("Use joinLobbyWithConfirmationAsync instead for proper error handling")]
         Task joinLobbyAsync(string username, string lobbyCode);
-
         Task leaveLobbyAsync(string username, string lobbyId);
         Task startGameAsync(string hostUsername, string lobbyId);
         Task kickPlayerAsync(string hostUsername, string playerToKick, string lobbyId);

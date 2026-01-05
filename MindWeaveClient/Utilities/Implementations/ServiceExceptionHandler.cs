@@ -44,8 +44,8 @@ namespace MindWeaveClient.Utilities.Implementations
         private readonly IWindowNavigationService windowNavigationService;
         private readonly Lazy<ISessionCleanupService> sessionCleanupServiceLazy;
 
-        private static bool isHandlingCriticalError;
-        private static readonly object lockObject = new object();
+        private bool isHandlingCriticalError;
+        private readonly object lockObject = new object();
 
         public ServiceExceptionHandler(
             IDialogService dialogService,
@@ -126,7 +126,7 @@ namespace MindWeaveClient.Utilities.Implementations
 
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                handleException(exception, null);
+                handleException(exception);
             }));
 
             return true;
@@ -186,9 +186,9 @@ namespace MindWeaveClient.Utilities.Implementations
 
                         resetApplicationWindows();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Console.WriteLine("Error during cleanup: " + ex.Message);
+                        //ignored
                     }
                     finally
                     {
@@ -308,73 +308,64 @@ namespace MindWeaveClient.Utilities.Implementations
         {
             if (exception == null) return false;
 
-            if (exception is SocketException socketEx)
+            if (exception is SocketException socketEx &&
+                (isNetworkDownSocketError(socketEx.SocketErrorCode) || isNetworkDownErrorCode(socketEx.ErrorCode)))
             {
-                if (isNetworkDownSocketError(socketEx.SocketErrorCode) ||
-                    isNetworkDownErrorCode(socketEx.ErrorCode))
-                {
-                    return true;
-                }
+                return true;
             }
 
-            if (exception is WebException webEx)
+            if (exception is WebException webEx &&
+                isNetworkRelatedWebException(webEx))
             {
-                if (webEx.Status == WebExceptionStatus.NameResolutionFailure ||
-                    webEx.Status == WebExceptionStatus.ProxyNameResolutionFailure ||
-                    webEx.Status == WebExceptionStatus.ConnectFailure)
-                {
-                    if (!isNetworkAvailable())
-                    {
-                        return true;
-                    }
-                }
+                return true;
             }
 
-            if (exception is CommunicationException commEx)
+            if (exception is CommunicationException commEx &&
+                isNetworkRelatedCommunicationException(commEx))
             {
-                string message = commEx.Message.ToLowerInvariant();
-                if (message.Contains(KEYWORD_NETWORK) && message.Contains(KEYWORD_UNREACHABLE))
-                {
-                    return true;
-                }
-
-                if (commEx.InnerException is SocketException innerSocket)
-                {
-                    if (isNetworkDownSocketError(innerSocket.SocketErrorCode) ||
-                        isNetworkDownErrorCode(innerSocket.ErrorCode))
-                    {
-                        return true;
-                    }
-                }
-
-                if (commEx.InnerException is WebException innerWeb)
-                {
-                    if (innerWeb.Status == WebExceptionStatus.NameResolutionFailure ||
-                        innerWeb.Status == WebExceptionStatus.ConnectFailure)
-                    {
-                        if (!isNetworkAvailable())
-                        {
-                            return true;
-                        }
-                    }
-                }
+                return true;
             }
 
-            if (exception is EndpointNotFoundException)
+            if (exception is EndpointNotFoundException && !isNetworkAvailable())
             {
-                if (!isNetworkAvailable())
-                {
-                    return true;
-                }
+                return true;
             }
 
-            if (exception.InnerException != null)
+            return exception.InnerException != null && isNetworkUnavailableError(exception.InnerException);
+        }
+
+        private static bool isNetworkRelatedWebException(WebException webEx)
+        {
+            bool hasNetworkFailureStatus = webEx.Status == WebExceptionStatus.NameResolutionFailure ||
+                                           webEx.Status == WebExceptionStatus.ProxyNameResolutionFailure ||
+                                           webEx.Status == WebExceptionStatus.ConnectFailure;
+
+            return hasNetworkFailureStatus && !isNetworkAvailable();
+        }
+
+        private bool isNetworkRelatedCommunicationException(CommunicationException commEx)
+        {
+            string message = commEx.Message.ToLowerInvariant();
+            if (message.Contains(KEYWORD_NETWORK) && message.Contains(KEYWORD_UNREACHABLE))
             {
-                return isNetworkUnavailableError(exception.InnerException);
+                return true;
+            }
+
+            if (commEx.InnerException is SocketException innerSocket &&
+                (isNetworkDownSocketError(innerSocket.SocketErrorCode) || isNetworkDownErrorCode(innerSocket.ErrorCode)))
+            {
+                return true;
+            }
+
+            if (commEx.InnerException is WebException innerWeb &&
+                isNetworkRelatedWebException(innerWeb))
+            {
+                return true;
             }
 
             return false;
         }
+
 
         private static bool isNetworkDownSocketError(SocketError errorCode)
         {
@@ -454,7 +445,6 @@ namespace MindWeaveClient.Utilities.Implementations
 
         private void handleFaultException(FaultException faultException)
         {
-            string localizedMessage = Lang.ErrorGeneric;
             string messageCode = null;
             var detailProperty = faultException.GetType().GetProperty("Detail");
             if (detailProperty != null)
@@ -472,14 +462,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 }
             }
 
-            if (!string.IsNullOrEmpty(messageCode))
-            {
-                localizedMessage = MessageCodeInterpreter.translate(messageCode);
-            }
-            else
-            {
-                localizedMessage = faultException.Message;
-            }
+            var localizedMessage = !string.IsNullOrEmpty(messageCode) ? MessageCodeInterpreter.translate(messageCode) : faultException.Message;
 
             showErrorOnUIThread(localizedMessage, Lang.ErrorTitle);
         }
@@ -524,7 +507,6 @@ namespace MindWeaveClient.Utilities.Implementations
         private static string getCriticalErrorMessage(Exception exception)
         {
             if (exception is InvalidOperationException ||
-                exception is ObjectDisposedException ||
                 exception is CommunicationObjectFaultedException ||
                 exception is CommunicationObjectAbortedException)
             {

@@ -83,18 +83,23 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (EndpointNotFoundException)
             {
+                // Ignore
             }
             catch (CommunicationException)
             {
+                // Ignore
             }
             catch (TimeoutException)
             {
+                // Ignore
             }
             catch (SocketException)
             {
+                // Ignore
             }
             catch (ObjectDisposedException)
             {
+                // Ignore
             }
             finally
             {
@@ -113,18 +118,23 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (EndpointNotFoundException)
             {
+                // Ignore
             }
             catch (CommunicationException)
             {
+                // Ignore
             }
             catch (TimeoutException)
             {
+                // Ignore
             }
             catch (SocketException)
             {
+                // Ignore
             }
             catch (ObjectDisposedException)
             {
+                // Ignore
             }
             finally
             {
@@ -187,6 +197,7 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (Exception ex)
             {
+                // Ignore
             }
         }
     }
