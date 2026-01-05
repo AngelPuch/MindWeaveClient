@@ -1,13 +1,15 @@
 ﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.View.Main;
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -33,6 +35,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private readonly IAudioService audioService;
         private readonly IDialogService dialogService;
+        private readonly ISessionCleanupService cleanupService;
 
         private double musicVolumeValue;
         private double soundEffectsVolumeValue;
@@ -89,10 +92,12 @@ namespace MindWeaveClient.ViewModel.Main
         public ICommand ShowCreditsCommand { get; }
 
 
-        public SettingsViewModel(IAudioService audioService, IDialogService dialogService)
+        public SettingsViewModel(IAudioService audioService, IDialogService dialogService, ISessionCleanupService cleanupService)
         {
             this.audioService = audioService ?? throw new ArgumentNullException(nameof(audioService));
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this.cleanupService = cleanupService;
+
 
             loadSettings();
             initializeLanguages();
@@ -185,14 +190,16 @@ namespace MindWeaveClient.ViewModel.Main
 
             if (shouldRestart)
             {
-                restartApplication();
+                _ = restartApplication();
             }
         }
 
-        private void restartApplication()
+        private async Task restartApplication()
         {
             try
             {
+                await cleanupService.cleanUpSessionAsync();
+
                 var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (mainWindow != null)
                 {

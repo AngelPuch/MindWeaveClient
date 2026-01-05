@@ -2041,6 +2041,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a You are in a lobby. Are you sure you want to exit? Other players will be notified..
+        /// </summary>
+        public static string LobbyExitConfirmMessage {
+            get {
+                return ResourceManager.GetString("LobbyExitConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Exit Lobby.
+        /// </summary>
+        public static string LobbyExitConfirmTitle {
+            get {
+                return ResourceManager.GetString("LobbyExitConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Chat.
         /// </summary>
         public static string LobbyLbChat {

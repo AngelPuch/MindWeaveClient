@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using System.ComponentModel;
 using System.Linq;
@@ -10,17 +11,20 @@ namespace MindWeaveClient.View.Game
     public partial class GameWindow : Window
     {
         private readonly ISessionCleanupService cleanupService;
+        private readonly ICurrentMatchService currentMatchService;
+
         public bool IsExitConfirmed { get; set; } = false;
         public bool GameEndedNaturally { get; set; } = false;
 
         public GameWindow(
             INavigationService navigationService,
             LobbyPage startPage,
-            ISessionCleanupService cleanupService)
+            ISessionCleanupService cleanupService,
+            ICurrentMatchService currentMatchService)
         {
             InitializeComponent();
             this.cleanupService = cleanupService;
-
+            this.currentMatchService = currentMatchService;
             navigationService.initialize(GameFrame);
             GameFrame.Content = startPage;
         }
@@ -41,6 +45,7 @@ namespace MindWeaveClient.View.Game
             e.Cancel = true;
 
             bool isGameInProgress = GameFrame.Content is GamePage;
+            bool isInLobby = GameFrame.Content is LobbyPage;
 
             if (isGameInProgress)
             {
@@ -53,6 +58,21 @@ namespace MindWeaveClient.View.Game
                 if (result == MessageBoxResult.Yes)
                 {
                     await cleanupService.exitGameInProcessAsync();
+                    forceShutdown();
+                }
+            }
+            else if (isInLobby)
+            {
+                var result = MessageBox.Show(
+                    Lang.LobbyExitConfirmMessage,
+                    Lang.LobbyExitConfirmTitle,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    string lobbyCode = currentMatchService.LobbyId;
+                    await cleanupService.exitLobbyAsync(lobbyCode);
                     forceShutdown();
                 }
             }

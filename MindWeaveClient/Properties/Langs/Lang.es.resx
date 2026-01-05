@@ -1293,4 +1293,10 @@
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Usuario no encontrado.</value>
   </data>
+  <data name="LobbyExitConfirmMessage" xml:space="preserve">
+    <value>Estás en un lobby. ¿Seguro que deseas salir? Los demás jugadores serán notificados.</value>
+  </data>
+  <data name="LobbyExitConfirmTitle" xml:space="preserve">
+    <value>Salir del Lobby</value>
+  </data>
 </root>
