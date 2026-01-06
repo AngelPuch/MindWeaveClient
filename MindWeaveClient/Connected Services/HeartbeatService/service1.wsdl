@@ -93,9 +93,9 @@
   </wsdl:binding>
   <wsdl:service name="HeartbeatManagerService">
     <wsdl:port name="NetTcpBinding_IHeartbeatManager" binding="tns:NetTcpBinding_IHeartbeatManager">
-      <soap12:address location="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

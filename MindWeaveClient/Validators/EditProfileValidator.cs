@@ -9,7 +9,7 @@ namespace MindWeaveClient.Validators
     {
         private const string PROFILE = "Profile";
         private const string PASSWORD = "Password";
-        private const string PASSWORD_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
+        private const string CREDENTIAL_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
         private const int MAX_NAME_LENGTH = 45;
         private const int MAX_PASSWORD_INPUT_LENGTH = 128;
         private const int MIN_AGE = -13;
@@ -40,7 +40,7 @@ namespace MindWeaveClient.Validators
                 RuleFor(x => x.NewPassword)
                     .NotEmpty().WithMessage(Lang.ValidationPasswordRequired)
                     .MaximumLength(MAX_PASSWORD_INPUT_LENGTH)
-                    .Matches(PASSWORD_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
+                    .Matches(CREDENTIAL_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
 
                 RuleFor(x => x.ConfirmPassword)
                     .Equal(x => x.NewPassword).WithMessage(Lang.ValidationPasswordsDoNotMatch)

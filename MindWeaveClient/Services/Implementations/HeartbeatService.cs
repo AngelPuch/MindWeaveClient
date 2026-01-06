@@ -37,20 +37,6 @@ namespace MindWeaveClient.Services.Implementations
 
         public event Action<string> OnConnectionTerminated;
         public event Action OnConnectionUnhealthy;
-        public bool IsRunning => isRunning && !isDisposed;
-
-        public bool IsConnectionHealthy
-        {
-            get
-            {
-                if (!isRunning || isDisposed) return false;
-
-                long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                long timeSinceLastAck = now - lastAckReceivedTimestamp;
-                return timeSinceLastAck < heartbeatTimeoutMs
-                       && consecutiveMissedAcks < MAX_MISSED_ACKS;
-            }
-        }
 
         public HeartbeatService(HeartbeatCallbackHandler callbackHandler)
         {
@@ -91,14 +77,12 @@ namespace MindWeaveClient.Services.Implementations
                 var instanceContext = new InstanceContext(callbackHandler);
                 proxy = new HeartbeatManagerClient(instanceContext);
 
-                Debug.WriteLine($"[HEARTBEAT] Registering heartbeat for user: {username}");
                 HeartbeatRegistrationResult result = await Task.Run(() =>
                     proxy.registerForHeartbeat(username));
 
                 if (result == null || !result.Success)
                 {
                     string errorCode = result?.MessageCode ?? "UNKNOWN_ERROR";
-                    Debug.WriteLine($"[HEARTBEAT] Registration failed: {errorCode}");
                     abortProxySafe();
                     return false;
                 }
@@ -111,8 +95,6 @@ namespace MindWeaveClient.Services.Implementations
                 {
                     heartbeatTimeoutMs = result.TimeoutMs;
                 }
-
-                Debug.WriteLine($"[HEARTBEAT] Registered successfully. Interval: {heartbeatIntervalMs}ms, Timeout: {heartbeatTimeoutMs}ms");
 
                 subscribeToChannelEvents();
 

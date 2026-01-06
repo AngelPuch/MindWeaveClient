@@ -185,9 +185,9 @@
   </wsdl:binding>
   <wsdl:service name="ProfileManagerService">
     <wsdl:port name="NetTcpBinding_IProfileManager" binding="tns:NetTcpBinding_IProfileManager">
-      <soap12:address location="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/ProfileManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/ProfileManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.100.231:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.66:8734/MindWeaveServer/Services/ProfileManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

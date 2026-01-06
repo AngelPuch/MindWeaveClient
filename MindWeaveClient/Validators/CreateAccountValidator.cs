@@ -7,7 +7,7 @@ namespace MindWeaveClient.Validators
 {
     public class CreateAccountValidator : AbstractValidator<CreateAccountViewModel>
     {
-        private const string PASSWORD_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
+        private const string CREDENTIAL_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
         private const string EMAIL_REGEX = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         private const int MAX_LENGTH_FIRST_NAME = 45;
         private const int MAX_LENGTH_LAST_NAME = 45;
@@ -46,7 +46,7 @@ namespace MindWeaveClient.Validators
             RuleFor(vm => vm.Password)
                 .NotEmpty().WithMessage(Lang.ValidationPasswordRequired)
                 .MaximumLength(MAX_LENGTH_PASSWORD)
-                .Matches(PASSWORD_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
+                .Matches(CREDENTIAL_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
 
             RuleFor(vm => vm.IsFemale) 
                 .Must((vm, _) => vm.IsFemale || vm.IsMale || vm.IsOther || vm.IsPreferNotToSay)

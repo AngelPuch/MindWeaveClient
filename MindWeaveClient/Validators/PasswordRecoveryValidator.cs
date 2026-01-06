@@ -9,7 +9,7 @@ namespace MindWeaveClient.Validators
         private const string STEP1 = "Step1";
         private const string STEP2 = "Step2";
         private const string STEP3 = "Step3";
-        private const string PASSWORD_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
+        private const string CREDENTIAL_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
         private const string VERIFICATION_CODE_REGEX = "^[0-9]{6}$";
         private const string EMAIL_REGEX = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         private const int MAX_EMAIL_LENGTH = 45;
@@ -42,7 +42,7 @@ namespace MindWeaveClient.Validators
                 RuleFor(vm => vm.NewPassword)
                     .NotEmpty().WithMessage(Lang.ValidationPasswordNewRequired)
                     .MaximumLength(MAX_PASSWORD_INPUT_LENGTH)
-                    .Matches(PASSWORD_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
+                    .Matches(CREDENTIAL_POLICY_REGEX).WithMessage(Lang.ValidationPasswordPolicy);
 
                 RuleFor(vm => vm.ConfirmPassword)
                     .NotEmpty().WithMessage(Lang.ValidationPasswordConfirmRequired)

@@ -430,14 +430,14 @@
     <None Include="Connected Services\HeartbeatService\MindWeaveClient.HeartbeatService.HeartbeatRegistrationResult.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\HeartbeatService\MindWeaveServer.Contracts.DataContracts.Heartbeat.xsd">
+    <None Include="Connected Services\HeartbeatService\MindWeaveServer.Contracts.DataContracts.Heartbeat1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\HeartbeatService\service.wsdl" />
-    <None Include="Connected Services\HeartbeatService\service.xsd">
+    <None Include="Connected Services\HeartbeatService\service1.wsdl" />
+    <None Include="Connected Services\HeartbeatService\service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\HeartbeatService\service1.xsd">
+    <None Include="Connected Services\HeartbeatService\service21.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MatchmakingService\Arrays1.xsd">

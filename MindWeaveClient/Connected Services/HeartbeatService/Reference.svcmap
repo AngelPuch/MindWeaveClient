@@ -19,13 +19,13 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="dc42590c-8a4f-4351-ac4e-84465398218f" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="104e091d-9741-4bed-8eea-4a444191e9f4" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="c3cbe263-51fa-4b51-8c35-7403ffeb9130" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Heartbeat.xsd" MetadataType="Schema" ID="ac5b5b00-b3e3-4d56-ba07-1ebe0d31f29c" SourceId="1" SourceUrl="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="92721124-e6ab-40c8-8f8f-69bdc7341dfc" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="a95d3baf-c78d-4a23-b7dc-a5b5e3568dd3" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
+    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="3941859d-11a4-458f-a651-aefa729cf6a5" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Heartbeat1.xsd" MetadataType="Schema" ID="23af8b50-8f3c-4d6f-b8ba-a5a4c228f0e8" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/HeartbeatManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
