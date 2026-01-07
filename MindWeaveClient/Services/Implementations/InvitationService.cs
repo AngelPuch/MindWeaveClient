@@ -1,6 +1,7 @@
 ﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Game;
 using System;
 using System.Linq;
@@ -98,14 +99,23 @@ namespace MindWeaveClient.Services.Implementations
                     return;
                 }
 
-                await matchmakingService.joinLobbyWithConfirmationAsync(SessionService.Username, lobbyId);
-                currentLobbyService.setInitialState(null);
+                var joinResult = await matchmakingService.joinLobbyWithConfirmationAsync(SessionService.Username, lobbyId);
 
-                await Application.Current.Dispatcher.InvokeAsync(() =>
+                if (joinResult.Success)
                 {
-                    windowNavigationService.openWindow<GameWindow>();
-                    windowNavigationService.closeWindow<View.Main.MainWindow>();
-                });
+                    currentLobbyService.setInitialState(joinResult.InitialLobbyState);
+
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        windowNavigationService.openWindow<GameWindow>();
+                        windowNavigationService.closeWindow<View.Main.MainWindow>();
+                    });
+                }
+                else
+                {
+                    string errorMsg = MessageCodeInterpreter.translate(joinResult.MessageCode, joinResult.MessageCode); 
+                    dialogService.showError(Lang.ErrorTitle, errorMsg);
+                }
             }
             catch (EndpointNotFoundException ex)
             {
