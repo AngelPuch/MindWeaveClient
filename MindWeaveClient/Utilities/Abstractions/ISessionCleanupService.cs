@@ -6,7 +6,6 @@ namespace MindWeaveClient.Utilities.Abstractions
     {
         Task cleanUpSessionAsync();
         Task exitGameInProcessAsync();
-        Task exitLobbyAsync(string lobbyCode); 
-        Task handleHeartbeatDisconnectionAsync(string reason);
+        Task exitLobbyAsync(string lobbyCode);
     }
 }

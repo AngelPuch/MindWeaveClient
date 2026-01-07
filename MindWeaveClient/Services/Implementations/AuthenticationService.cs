@@ -10,12 +10,12 @@ namespace MindWeaveClient.Services.Implementations
     public class AuthenticationService : IAuthenticationService
     {
         private readonly ISocialService socialService;
-        private readonly IHeartbeatService heartbeatService;
+        // ELIMINADO: IHeartbeatService
 
-        public AuthenticationService(ISocialService socialService, IHeartbeatService heartbeatService)
+        public AuthenticationService(ISocialService socialService)
         {
             this.socialService = socialService;
-            this.heartbeatService = heartbeatService;
+            // ELIMINADO: heartbeatService
         }
 
         public async Task<LoginServiceResultDto> loginAsync(string email, string password)
@@ -33,9 +33,11 @@ namespace MindWeaveClient.Services.Implementations
             {
                 SessionService.setSession(result.PlayerId, result.Username, result.AvatarPath);
 
+                // Conectar al servicio social (esto establece la Reliable Session)
                 bool socialConnected = await connectSocialServiceSafeAsync(result.Username);
 
-                bool heartbeatStarted = await startHeartbeatServiceSafeAsync(result.Username);
+                // ELIMINADO: startHeartbeatServiceSafeAsync
+                // Las Reliable Sessions manejan la detección de desconexión automáticamente
 
                 return new LoginServiceResultDto(result, socialConnected, true);
             }
@@ -116,7 +118,7 @@ namespace MindWeaveClient.Services.Implementations
             try
             {
                 await socialService.connectAsync(username);
-                System.Diagnostics.Debug.WriteLine("[AUTH] Social service connected");
+                System.Diagnostics.Debug.WriteLine("[AUTH] Social service connected with Reliable Session");
                 return true;
             }
             catch (CommunicationException ex)
@@ -136,20 +138,7 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        private async Task<bool> startHeartbeatServiceSafeAsync(string username)
-        {
-            try
-            {
-                bool started = await heartbeatService.startAsync(username);
-                System.Diagnostics.Debug.WriteLine($"[AUTH] Heartbeat service started: {started}");
-                return started;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[AUTH] Error starting heartbeat: {ex.Message}");
-                return false;
-            }
-        }
+        // ELIMINADO: startHeartbeatServiceSafeAsync
 
         private static void closeClientSafe(AuthenticationManagerClient client)
         {
