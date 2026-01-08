@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="Beb9J+aWbVMfly93uOyd02iq8w6kH4dniVlUbhbA5sA=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="KQG9uttq6AGhNhUO0ZJp7FFyfiLE9WNx/k6TI29A11I=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IProfileManager">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IProfileManager" contract="ProfileService.IProfileManager" bindingType="netTcpBinding" address="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/ProfileManagerService/" bindingConfiguration="NetTcpBinding_IProfileManager">
+    <endpoint name="NetTcpBinding_IProfileManager" contract="ProfileService.IProfileManager" bindingType="netTcpBinding" address="net.tcp://localhost:8734/MindWeaveServer/Services/ProfileManagerService/" bindingConfiguration="NetTcpBinding_IProfileManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://192.168.1.66:8734/MindWeaveServer/Services/ProfileManagerService/</serializedValue>
+          <serializedValue>net.tcp://localhost:8734/MindWeaveServer/Services/ProfileManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

@@ -330,9 +330,7 @@ namespace MindWeaveClient.ViewModel.Authentication
             {
                 return;
             }
-
             SetBusy(true);
-
             var userProfile = new UserProfileDto
             {
                 FirstName = this.FirstName.Trim(),
@@ -350,10 +348,52 @@ namespace MindWeaveClient.ViewModel.Authentication
                 if (result.Success)
                 {
                     SessionService.PendingVerificationEmail = this.Email;
-                    navigationService.navigateTo<VerificationPage>();
+
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        navigationService.navigateTo<VerificationPage>();
+                    });
                 }
                 else
                 {
+
+                    if (result.MessageCode == "AUTH_ACCOUNT_NOT_VERIFIED")
+                    {
+                        bool userWantsToVerify = dialogService.showWarning(
+                            MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"),
+                            Lang.WarningTitle
+                        );
+
+                        if (userWantsToVerify)
+                        {
+                            var resendResult = await authenticationService.resendVerificationCodeAsync(this.Email);
+
+                            if (resendResult.Success)
+                            {
+                                SessionService.PendingVerificationEmail = this.Email;
+
+                                dialogService.showInfo(
+                                    MessageCodeInterpreter.translate(resendResult.MessageCode),
+                                    Lang.InfoMsgResendSuccessTitle
+                                );
+
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    navigationService.navigateTo<VerificationPage>();
+                                });
+                            }
+                            else
+                            {
+                                string resendError = MessageCodeInterpreter.translate(resendResult.MessageCode);
+                                dialogService.showError(resendError, Lang.ErrorTitle);
+                            }
+                            return;
+                        }
+
+                        
+                        return;
+                    }
+
                     string localizedMessage = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showError(localizedMessage, Lang.ErrorTitle);
                 }
@@ -361,7 +401,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             catch (Exception ex)
             {
                 exceptionHandler.handleException(ex, Lang.RegistrationOperation);
-
             }
             finally
             {

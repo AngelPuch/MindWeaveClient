@@ -168,7 +168,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
                 else
                 {
-                    handleFailedLogin(serviceResult);
+                    await handleFailedLogin(serviceResult);
                 }
             }
             catch (Exception ex)
@@ -197,23 +197,44 @@ namespace MindWeaveClient.ViewModel.Authentication
             windowNavigationService.closeWindow<AuthenticationWindow>();
         }
 
-        private void handleFailedLogin(LoginServiceResultDto result)
-        {
-            if (result.WcfLoginResult.ResultCode == "ACCOUNT_NOT_VERIFIED")
+            private async Task handleFailedLogin(LoginServiceResultDto result)
             {
-                ShowUnverifiedControls = true;
-                dialogService.showWarning(MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"), Lang.WarningTitle);
-            }
-            else
-            {
-                string localizedMessage = MessageCodeInterpreter.translate(
-                    result.WcfLoginResult.OperationResult.MessageCode
-                );
+                if (result.WcfLoginResult.ResultCode == "AUTH_ACCOUNT_NOT_VERIFIED")
+                {
+                    bool userWantsToVerify = dialogService.showWarning(
+                MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"),
+                Lang.WarningTitle);
 
-                dialogService.showError(localizedMessage, Lang.ErrorTitle);
-            }
+                    if (userWantsToVerify)
+                    {
+                        
+                        var resendResult = await authenticationService.resendVerificationCodeAsync(Email);
 
-        }
+                        if (resendResult.Success)
+                        {
+                            SessionService.PendingVerificationEmail = this.Email;
+
+                            dialogService.showInfo(MessageCodeInterpreter.translate(resendResult.MessageCode), Lang.InfoMsgResendSuccessTitle);
+
+                            navigationService.navigateTo<VerificationPage>();
+                        }
+                        else
+                        {
+                            
+                            string localizedMessage = MessageCodeInterpreter.translate(resendResult.MessageCode);
+                            dialogService.showError(localizedMessage, Lang.ErrorTitle);
+                        }
+                    }
+                }
+                else
+                {
+                    string localizedMessage = MessageCodeInterpreter.translate(
+                        result.WcfLoginResult.OperationResult.MessageCode
+                    );
+
+                    dialogService.showError(localizedMessage, Lang.ErrorTitle);
+                }
+            }
 
         private async Task executeResendVerificationAsync()
         {

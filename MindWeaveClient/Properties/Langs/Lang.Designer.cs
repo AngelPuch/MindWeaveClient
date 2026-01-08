@@ -484,6 +484,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a This email is already registered..
+        /// </summary>
+        public static string ErrorEmailAlreadyRegistered {
+            get {
+                return ResourceManager.GetString("ErrorEmailAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error al cargar los datos del perfil.
         /// </summary>
         public static string ErrorFailedToLoadProfile {
@@ -2122,7 +2131,7 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Account not verified.
+        ///   Busca una cadena traducida similar a This account is not verified yet. Do you want to receive a new code and verify it now?.
         /// </summary>
         public static string LoginAccountNotVerified {
             get {

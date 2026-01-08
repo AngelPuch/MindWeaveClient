@@ -385,7 +385,7 @@
     <value>¡Selecciona tu Avatar!</value>
   </data>
   <data name="LoginAccountNotVerified" xml:space="preserve">
-    <value>Cuenta no verificada</value>
+    <value>Esta cuenta no ha sido verificada aún. ¿Deseas recibir un nuevo código y verificarla ahora?</value>
   </data>
   <data name="MainMenuBtnCreateLobby" xml:space="preserve">
     <value>Crear Sala</value>
@@ -1304,5 +1304,9 @@
   </data>
   <data name="WarningCannotInviteBaned" xml:space="preserve">
     <value>No se puede invitar al jugador porque está vetado de este lobby</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ErrorEmailAlreadyRegistered" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

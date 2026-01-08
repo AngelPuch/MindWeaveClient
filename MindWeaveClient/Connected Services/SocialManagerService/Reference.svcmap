@@ -19,15 +19,15 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service2.wsdl" MetadataType="Wsdl" ID="9e0a163d-9e19-4cc2-9b3d-af8eacb56a54" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" />
-    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="aed07a5f-c086-490e-b2f0-3f367002ab6e" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" />
-    <MetadataFile FileName="service4.xsd" MetadataType="Schema" ID="22b9f68c-5b46-42a0-8693-64256e4e13d9" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Social2.xsd" MetadataType="Schema" ID="90817076-ab6a-48bb-9cf8-93da3d53e722" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared2.xsd" MetadataType="Schema" ID="fed9c914-8624-4191-b69d-c63870b9cb0b" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" />
-    <MetadataFile FileName="Arrays2.xsd" MetadataType="Schema" ID="1145c26f-c92c-43ad-af14-5160762d0ff8" SourceId="1" SourceUrl="net.tcp://192.168.1.66:8734/MindWeaveServer/Services/SocialManagerService/mex" />
+    <MetadataFile FileName="service2.wsdl" MetadataType="Wsdl" ID="3d728703-fb55-482b-b1f7-cbaa8ddadc3c" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" />
+    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="f1f8f742-c434-4249-9fd8-9342696ecb88" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" />
+    <MetadataFile FileName="service4.xsd" MetadataType="Schema" ID="54df7687-3278-4d6d-9e32-4c00a56dd529" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Social2.xsd" MetadataType="Schema" ID="1afd57eb-e2cd-40f1-b203-e97523640627" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Shared2.xsd" MetadataType="Schema" ID="10bf99e5-ef14-453c-9f83-1d7d7efc4f92" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" />
+    <MetadataFile FileName="Arrays2.xsd" MetadataType="Schema" ID="d3649a0b-6b47-4c65-9071-92bda2c1d13d" SourceId="1" SourceUrl="net.tcp://localhost:8734/MindWeaveServer/Services/SocialManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

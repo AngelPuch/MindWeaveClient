@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.Properties.Langs;
+using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.Utilities.Implementations;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -300,13 +302,14 @@ namespace MindWeaveClient.ViewModel.Authentication
             if (!isResend)
             {
                 markAsTouched(nameof(Email));
-                if (HasErrors) { return; }
+                if (HasErrors) return;
             }
 
             SetBusy(true);
             try
             {
                 var result = await authenticationService.sendPasswordRecoveryCodeAsync(Email);
+
                 if (result.Success)
                 {
                     dialogService.showInfo(Lang.ValidationPasswordRecoveryCodeSent, Lang.InfoMsgResendSuccessTitle);
@@ -322,14 +325,54 @@ namespace MindWeaveClient.ViewModel.Authentication
                         validateCurrentStep();
                     }
 
-                    // Iniciar timer después de enviar código exitosamente
                     startResendTimer();
+                    return;
                 }
-                else
+
+                bool isUnverified =
+                    result.MessageCode == "AUTH_ACCOUNT_NOT_VERIFIED" ||
+                    result.MessageCode == "ACCOUNT_NOT_VERIFIED";
+
+                if (isUnverified)
                 {
-                    string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
-                    dialogService.showError(errorMsg, Lang.ErrorTitle);
+                    bool userWantsToVerify = dialogService.showWarning(
+                        MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"),
+                        Lang.WarningTitle
+                    );
+
+                    if (!userWantsToVerify)
+                        return; // ✅ si cancela, ya no sigas
+
+                    var resendResult = await authenticationService.resendVerificationCodeAsync(Email);
+
+                    if (resendResult.Success)
+                    {
+                        SessionService.PendingVerificationEmail = Email;
+
+                        dialogService.showInfo(
+                            MessageCodeInterpreter.translate(resendResult.MessageCode),
+                            Lang.InfoMsgResendSuccessTitle
+                        );
+
+                        // ✅ navegar en UI thread por seguridad
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            navigationService.navigateTo<VerificationPage>();
+                        });
+
+                        return;
+                    }
+
+                    dialogService.showError(
+                        MessageCodeInterpreter.translate(resendResult.MessageCode),
+                        Lang.ErrorTitle
+                    );
+
+                    return;
                 }
+
+                string errorMsg = MessageCodeInterpreter.translate(result.MessageCode);
+                dialogService.showError(errorMsg, Lang.ErrorTitle);
             }
             catch (Exception ex)
             {
@@ -340,6 +383,8 @@ namespace MindWeaveClient.ViewModel.Authentication
                 SetBusy(false);
             }
         }
+
+
 
         private Task executeVerifyCodeAsync()
         {

@@ -385,7 +385,7 @@
     <value>Select your Avatar!</value>
   </data>
   <data name="LoginAccountNotVerified" xml:space="preserve">
-    <value>Account not verified</value>
+    <value>This account is not verified yet. Do you want to receive a new code and verify it now?</value>
   </data>
   <data name="MainMenuBtnCreateLobby" xml:space="preserve">
     <value>Create Lobby</value>
@@ -1304,5 +1304,8 @@
   </data>
   <data name="WarningCannotInviteBaned" xml:space="preserve">
     <value>User cannot be invited because is banned from this lobby</value>
+  </data>
+  <data name="ErrorEmailAlreadyRegistered" xml:space="preserve">
+    <value>This email is already registered.</value>
   </data>
 </root>

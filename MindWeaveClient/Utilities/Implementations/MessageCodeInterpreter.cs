@@ -19,6 +19,7 @@ namespace MindWeaveClient.Utilities.Implementations
                 case "AUTH_VERIFICATION_CODE_RESENT": return Lang.VerificationCodeResent;
                 case "AUTH_RECOVERY_CODE_SENT": return Lang.RecoveryCodeSent;
                 case "AUTH_PASSWORD_RESET_SUCCESS": return Lang.InfoPasswordResetSuccess;
+                case "AUTH_EMAIL_ALREADY_REGISTERED": return Lang.ErrorEmailAlreadyRegistered;
 
                 case "AUTH_INVALID_CREDENTIALS": return Lang.LoginInvalidCredentials;
                 case "AUTH_USER_ALREADY_LOGGED_IN": return Lang.ErrorUserAlreadyLoggedIn;
