@@ -1305,8 +1305,16 @@
   <data name="WarningCannotInviteBaned" xml:space="preserve">
     <value>No se puede invitar al jugador porque está vetado de este lobby</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ErrorEmailAlreadyRegistered" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="ErrorEmailAlreadyRegistered" xml:space="preserve">
+    <value>Este correo electrónico ya se encuentra registrado.</value>
+  </data>
+  <data name="ErrorImageTooSmall" xml:space="preserve">
+    <value>La imagen es demasiado pequeña. Debe ser de al menos {0}x{0} píxeles.</value>
+  </data>
+  <data name="ErrorImageDimensionsTooLarge" xml:space="preserve">
+    <value>Las dimensiones de la imagen son demasiado grandes. El máximo permitido es {0}x{0} píxeles.</value>
+  </data>
+  <data name="ErrorFileFormatNotAllowed" xml:space="preserve">
+    <value>Formato de archivo no permitido.</value>
   </data>
 </root>

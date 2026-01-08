@@ -32,6 +32,8 @@ namespace MindWeaveClient.ViewModel.Main
 
         private const int MAX_IMAGE_SIZE_MB = 5;
         private const int MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
+        private const int MIN_PIXEL_SIZE = 100;
+        private const int MAX_PIXEL_SIZE = 4096;
 
         private ObservableCollection<PuzzleDisplayInfo> availablePuzzles = new ObservableCollection<PuzzleDisplayInfo>();
         private PuzzleDisplayInfo selectedPuzzle;
@@ -292,7 +294,7 @@ namespace MindWeaveClient.ViewModel.Main
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg",
                 Title = Lang.SelectPuzzleImageTitle
             };
 
@@ -304,14 +306,41 @@ namespace MindWeaveClient.ViewModel.Main
             try
             {
                 var fileInfo = new FileInfo(filePath);
+                string ext = fileInfo.Extension.ToLower();
+                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                {
+                    dialogService.showWarning(Lang.ErrorFileFormatNotAllowed, Lang.UploadFailed);
+                    return Array.Empty<byte>();
+                }
                 if (fileInfo.Length > MAX_IMAGE_SIZE_BYTES)
                 {
                     dialogService.showWarning(string.Format(Lang.ErrorImageTooLarge, MAX_IMAGE_SIZE_MB), Lang.UploadFailed);
                     return Array.Empty<byte>();
                 }
 
-                byte[] bytes = File.ReadAllBytes(filePath);
-                return bytes;
+                using (var stream = File.OpenRead(filePath))
+                {
+                    var decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.None);
+                    if (decoder.Frames.Count > 0)
+                    {
+                        var frame = decoder.Frames[0];
+                        if (frame.PixelWidth < MIN_PIXEL_SIZE || frame.PixelHeight < MIN_PIXEL_SIZE)
+                        {
+                            string errorMsg = string.Format(Lang.ErrorImageTooSmall, MIN_PIXEL_SIZE);
+                            dialogService.showWarning(errorMsg, Lang.UploadFailed);
+                            return Array.Empty<byte>();
+                        }
+
+                        if (frame.PixelWidth > MAX_PIXEL_SIZE || frame.PixelHeight > MAX_PIXEL_SIZE)
+                        {
+                            string errorMsg = string.Format(Lang.ErrorImageDimensionsTooLarge, MAX_PIXEL_SIZE);
+                            dialogService.showWarning(errorMsg, Lang.UploadFailed);
+                            return Array.Empty<byte>();
+                        }
+                    }
+                }
+
+                return File.ReadAllBytes(filePath);
             }
             catch (IOException ex)
             {

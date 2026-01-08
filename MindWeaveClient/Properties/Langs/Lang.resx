@@ -1308,4 +1308,13 @@
   <data name="ErrorEmailAlreadyRegistered" xml:space="preserve">
     <value>This email is already registered.</value>
   </data>
+  <data name="ErrorImageTooSmall" xml:space="preserve">
+    <value>The image is too small. It must be at least {0}x{0} pixels.</value>
+  </data>
+  <data name="ErrorImageDimensionsTooLarge" xml:space="preserve">
+    <value>The image dimensions are too large. Max allowed is {0}x{0} pixels.</value>
+  </data>
+  <data name="ErrorFileFormatNotAllowed" xml:space="preserve">
+    <value>Value: File format not allowed.</value>
+  </data>
 </root>

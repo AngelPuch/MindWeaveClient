@@ -502,6 +502,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Value: File format not allowed..
+        /// </summary>
+        public static string ErrorFileFormatNotAllowed {
+            get {
+                return ResourceManager.GetString("ErrorFileFormatNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a The selected file is too large for the server configuration..
         /// </summary>
         public static string ErrorFileTooBigForServer {
@@ -583,11 +592,29 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a The image dimensions are too large. Max allowed is {0}x{0} pixels..
+        /// </summary>
+        public static string ErrorImageDimensionsTooLarge {
+            get {
+                return ResourceManager.GetString("ErrorImageDimensionsTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a The image is too large. Max size is {0}MB..
         /// </summary>
         public static string ErrorImageTooLarge {
             get {
                 return ResourceManager.GetString("ErrorImageTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The image is too small. It must be at least {0}x{0} pixels..
+        /// </summary>
+        public static string ErrorImageTooSmall {
+            get {
+                return ResourceManager.GetString("ErrorImageTooSmall", resourceCulture);
             }
         }
         
