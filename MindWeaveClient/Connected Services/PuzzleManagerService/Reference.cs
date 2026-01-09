@@ -387,6 +387,9 @@ namespace MindWeaveClient.PuzzleManagerService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int PuzzleWidthField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] SilhouetteImageBytesField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -449,6 +452,19 @@ namespace MindWeaveClient.PuzzleManagerService {
             }
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] SilhouetteImageBytes {
+            get {
+                return this.SilhouetteImageBytesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SilhouetteImageBytesField, value) != true)) {
+                    this.SilhouetteImageBytesField = value;
+                    this.RaisePropertyChanged("SilhouetteImageBytes");
+                }
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -491,7 +507,22 @@ namespace MindWeaveClient.PuzzleManagerService {
         private System.Nullable<int> LeftNeighborIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int OffsetXField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int OffsetYField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int PieceIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] PieceImageBytesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int RenderHeightField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int RenderWidthField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<int> RightNeighborIdField;
@@ -610,6 +641,32 @@ namespace MindWeaveClient.PuzzleManagerService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int OffsetX {
+            get {
+                return this.OffsetXField;
+            }
+            set {
+                if ((this.OffsetXField.Equals(value) != true)) {
+                    this.OffsetXField = value;
+                    this.RaisePropertyChanged("OffsetX");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int OffsetY {
+            get {
+                return this.OffsetYField;
+            }
+            set {
+                if ((this.OffsetYField.Equals(value) != true)) {
+                    this.OffsetYField = value;
+                    this.RaisePropertyChanged("OffsetY");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int PieceId {
             get {
                 return this.PieceIdField;
@@ -618,6 +675,45 @@ namespace MindWeaveClient.PuzzleManagerService {
                 if ((this.PieceIdField.Equals(value) != true)) {
                     this.PieceIdField = value;
                     this.RaisePropertyChanged("PieceId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] PieceImageBytes {
+            get {
+                return this.PieceImageBytesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PieceImageBytesField, value) != true)) {
+                    this.PieceImageBytesField = value;
+                    this.RaisePropertyChanged("PieceImageBytes");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int RenderHeight {
+            get {
+                return this.RenderHeightField;
+            }
+            set {
+                if ((this.RenderHeightField.Equals(value) != true)) {
+                    this.RenderHeightField = value;
+                    this.RaisePropertyChanged("RenderHeight");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int RenderWidth {
+            get {
+                return this.RenderWidthField;
+            }
+            set {
+                if ((this.RenderWidthField.Equals(value) != true)) {
+                    this.RenderWidthField = value;
+                    this.RaisePropertyChanged("RenderWidth");
                 }
             }
         }

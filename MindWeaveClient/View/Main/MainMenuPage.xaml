@@ -9,7 +9,7 @@
       mc:Ignorable="d"
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="MainMenuPage"
-      d:DataContext="{d:DesignInstance Type=vm:MainMenuViewModel, IsDesignTimeCreatable=True}">
+      d:DataContext="{d:DesignInstance Type=vm:MainMenuViewModel, IsDesignTimeCreatable=False}">
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>

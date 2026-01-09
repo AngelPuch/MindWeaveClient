@@ -6,6 +6,7 @@
       <xs:element minOccurs="0" name="Pieces" nillable="true" type="tns:ArrayOfPuzzlePieceDefinitionDto" />
       <xs:element minOccurs="0" name="PuzzleHeight" type="xs:int" />
       <xs:element minOccurs="0" name="PuzzleWidth" type="xs:int" />
+      <xs:element minOccurs="0" name="SilhouetteImageBytes" nillable="true" type="xs:base64Binary" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PuzzleDefinitionDto" nillable="true" type="tns:PuzzleDefinitionDto" />
@@ -24,7 +25,12 @@
       <xs:element minOccurs="0" name="InitialX" type="xs:double" />
       <xs:element minOccurs="0" name="InitialY" type="xs:double" />
       <xs:element minOccurs="0" name="LeftNeighborId" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="OffsetX" type="xs:int" />
+      <xs:element minOccurs="0" name="OffsetY" type="xs:int" />
       <xs:element minOccurs="0" name="PieceId" type="xs:int" />
+      <xs:element minOccurs="0" name="PieceImageBytes" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="RenderHeight" type="xs:int" />
+      <xs:element minOccurs="0" name="RenderWidth" type="xs:int" />
       <xs:element minOccurs="0" name="RightNeighborId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="SourceX" type="xs:int" />
       <xs:element minOccurs="0" name="SourceY" type="xs:int" />

@@ -14,9 +14,8 @@ namespace MindWeaveClient.View.Game
     public partial class GamePage : Page
     {
         private const double SNAP_THRESHOLD = 20.0;
-        private const double BOARD_SNAP_TOLERANCE = 10.0;
+        private const double BOARD_SNAP_TOLERANCE = 15.0;
         private const int MOVE_UPDATE_INTERVAL_MS = 50;
-
         private const int Z_INDEX_DRAGGING = 1000;
         private const int Z_INDEX_PLACED = 1;
 
@@ -166,7 +165,7 @@ namespace MindWeaveClient.View.Game
                 if (violation > requiredShiftRight) requiredShiftRight = violation;
             }
 
-            double pieceRight = item.x + item.piece.Width;
+            double pieceRight = item.x + item.piece.RenderWidth;
             if (pieceRight > validBounds.Right)
             {
                 double violation = pieceRight - validBounds.Right;
@@ -186,7 +185,7 @@ namespace MindWeaveClient.View.Game
                 if (violation > requiredShiftDown) requiredShiftDown = violation;
             }
 
-            double pieceBottom = item.y + item.piece.Height;
+            double pieceBottom = item.y + item.piece.RenderHeight;
             if (pieceBottom > validBounds.Bottom)
             {
                 double violation = pieceBottom - validBounds.Bottom;
@@ -297,18 +296,12 @@ namespace MindWeaveClient.View.Game
                 {
                     piece.X += snapOffsetX;
                     piece.Y += snapOffsetY;
-                    piece.IsPlaced = true;
-                    _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
                 }
-
-                updateGroupZIndex(groupToDrop, Z_INDEX_PLACED);
             }
-            else
+
+            foreach (var piece in groupToDrop)
             {
-                foreach (var piece in groupToDrop)
-                {
-                    _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
-                }
+                _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
             }
 
             return Task.CompletedTask;
@@ -391,7 +384,6 @@ namespace MindWeaveClient.View.Game
             {
                 piece.PieceGroup = stationaryGroup;
             }
-
         }
 
         private static void updateGroupZIndex(List<PuzzlePieceViewModel> group, int zIndex)

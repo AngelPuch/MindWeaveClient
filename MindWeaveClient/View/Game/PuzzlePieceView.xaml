@@ -3,41 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MindWeaveClient.View.Game"
-             mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100">
-
+             mc:Ignorable="d">
     <UserControl.CacheMode>
         <BitmapCache EnableClearType="False" RenderAtScale="1" SnapsToDevicePixels="False" />
     </UserControl.CacheMode>
-    <Border Width="{Binding Width}" 
-            Height="{Binding Height}"
-            BorderBrush="{Binding BorderColor}" 
-            BorderThickness="{Binding BorderThickness}"
-            SnapsToDevicePixels="True">
-
+    <Grid Width="{Binding RenderWidth}" Height="{Binding RenderHeight}">
+        <Border BorderBrush="{Binding BorderColor}" 
+                BorderThickness="{Binding BorderThickness}"
+                CornerRadius="3"
+                IsHitTestVisible="False"/>
         <Image Source="{Binding PieceImage}"
-               Stretch="Fill"
+               Stretch="None"
                RenderOptions.BitmapScalingMode="LowQuality">
-
             <Image.Effect>
-                <DropShadowEffect ShadowDepth="2" BlurRadius="5" Opacity="0.3" RenderingBias="Performance" />
+                <DropShadowEffect ShadowDepth="2" BlurRadius="5" Opacity="0.35" RenderingBias="Performance" />
             </Image.Effect>
-
             <Image.Style>
                 <Style TargetType="Image">
                     <Setter Property="Opacity" Value="1.0" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsPlaced}" Value="True">
-                            <Setter Property="Opacity" Value="0.7" />
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsHeldByOther}" Value="True">
                             <Setter Property="Opacity" Value="0.5" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Image.Style>
-
         </Image>
-    </Border>
+    </Grid>
 </UserControl>

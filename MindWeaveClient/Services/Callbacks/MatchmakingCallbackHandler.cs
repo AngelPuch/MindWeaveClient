@@ -79,6 +79,7 @@ namespace MindWeaveClient.Services.Callbacks
                 FullImageBytes = puzzleDefinition.FullImageBytes,
                 PuzzleHeight = puzzleDefinition.PuzzleHeight,
                 PuzzleWidth = puzzleDefinition.PuzzleWidth,
+                SilhouetteImageBytes = puzzleDefinition.SilhouetteImageBytes,
 
                 Pieces = puzzleDefinition.Pieces.Select(piece =>
                     new MindWeaveClient.PuzzleManagerService.PuzzlePieceDefinitionDto
@@ -95,12 +96,16 @@ namespace MindWeaveClient.Services.Callbacks
                         TopNeighborId = piece.TopNeighborId,
                         BottomNeighborId = piece.BottomNeighborId,
                         LeftNeighborId = piece.LeftNeighborId,
-                        RightNeighborId = piece.RightNeighborId
+                        RightNeighborId = piece.RightNeighborId,
+                        PieceImageBytes = piece.PieceImageBytes,
+                        RenderWidth = piece.RenderWidth,
+                        RenderHeight = piece.RenderHeight,
+                        OffsetX = piece.OffsetX,
+                        OffsetY = piece.OffsetY
                     }).ToArray()
             };
 
             currentMatchService?.setPuzzle(puzzleManagerDto);
-
             OnGameStartedNavigation?.Invoke(puzzleDefinition, matchDurationSeconds);
         }
 

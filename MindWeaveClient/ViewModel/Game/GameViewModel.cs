@@ -35,45 +35,35 @@ namespace MindWeaveClient.ViewModel.Game
     {
         private const double REMOTE_SNAP_THRESHOLD = 20.0;
         private const int DEFAULT_MATCH_DURATION_SECONDS = 300;
-
         private const double VISUAL_TIMER_INTERVAL_SECONDS = 0.5;
         private const double TIMER_ROUND_ADJUSTMENT_SECONDS = 0.9;
         private const double NOTIFICATION_DISPLAY_SECONDS = 2.0;
-
         private const int ZINDEX_PLACED_PIECE = 1;
         private const int ZINDEX_IDLE_BASE = 100;
         private const int ZINDEX_DRAGGING_BASE = 1000;
-
         private const string TIMER_FORMAT = @"mm\:ss";
         private const string TIMER_ZERO_DISPLAY = "00:00";
-
         private const string PENALTY_REASON_HOARDING = "HOARDING";
         private const string PENALTY_REASON_MISS = "MISS";
         private const string PENALTY_REASON_WRONG_SPOT = "WRONG_SPOT";
-
         private const string BONUS_FIRST_BLOOD = "FIRST_BLOOD";
         private const string BONUS_STREAK = "STREAK";
         private const string BONUS_FRENZY = "FRENZY";
         private const string BONUS_LAST_HIT = "LAST_HIT";
         private const char BONUS_SEPARATOR = ',';
-
         private const string BONUS_MSG_FIRST_BLOOD = "🩸 FIRST BLOOD! (+25)";
         private const string BONUS_MSG_STREAK = "STREAK! (+10)";
         private const string BONUS_MSG_FRENZY = "FRENZY! (+40)";
         private const string BONUS_MSG_LAST_HIT = "LAST HIT! (+50)";
-
         private const string PENALTY_MSG_HOARDING_FORMAT = "Don't hoard! -{0}";
         private const string PENALTY_MSG_MISS_FORMAT = "Miss! -{0}";
         private const string PENALTY_MSG_WRONG_SPOT_FORMAT = "Wrong Piece! -{0}";
         private const string PENALTY_MSG_DEFAULT_FORMAT = "-{0}";
-
         private const string SOUND_SNAP = "snap_sound.mp3";
         private const string SOUND_ERROR = "error_sound.mp3";
         private const string SOUND_BONUS = "bonus.mp3";
-
         private const string END_REASON_TIMEOUT = "TimeOut";
         private const string END_REASON_FORFEIT = "Forfeit";
-
         private const string COLOR_BONUS_NOTIFICATION = "#F1C40F";
         private const string COLOR_PLAYER_BLUE = "#3498DB";
         private const string COLOR_PLAYER_RED = "#E74C3C";
@@ -108,7 +98,7 @@ namespace MindWeaveClient.ViewModel.Game
         private Brush notificationColor;
         private bool isHelpPopupVisible;
         private ImageSource targetPuzzleImage;
-
+        private ImageSource silhouetteImage;
         private int currentIdleZIndex = ZINDEX_IDLE_BASE;
 
         public ObservableCollection<PuzzlePieceViewModel> PiecesCollection { get; }
@@ -164,10 +154,14 @@ namespace MindWeaveClient.ViewModel.Game
             set { targetPuzzleImage = value; OnPropertyChanged(); }
         }
 
+        public ImageSource SilhouetteImage
+        {
+            get => silhouetteImage;
+            set { silhouetteImage = value; OnPropertyChanged(); }
+        }
+
         public RelayCommand ToggleHelpPopupCommand { get; }
-
         public event Action ForceReleaseLocalDrag;
-
 
         public GameViewModel(
             ICurrentMatchService currentMatchService,
@@ -212,7 +206,6 @@ namespace MindWeaveClient.ViewModel.Game
         {
             activeGameInstanceId = instanceId;
         }
-
 
         public async Task startDraggingPiece(PuzzlePieceViewModel piece)
         {
@@ -272,7 +265,6 @@ namespace MindWeaveClient.ViewModel.Game
                 resetPiecePosition(piece);
             }
         }
-
 
         private void subscribeToEvents()
         {
@@ -410,6 +402,12 @@ namespace MindWeaveClient.ViewModel.Game
                 if (fullImage == null) return;
 
                 TargetPuzzleImage = fullImage;
+
+                if (puzzleDto.SilhouetteImageBytes != null && puzzleDto.SilhouetteImageBytes.Length > 0)
+                {
+                    SilhouetteImage = convertBytesToBitmapSource(puzzleDto.SilhouetteImageBytes);
+                }
+
                 PiecesCollection.Clear();
                 PuzzleSlots.Clear();
 
@@ -421,12 +419,9 @@ namespace MindWeaveClient.ViewModel.Game
 
                 foreach (var pieceDef in puzzleDto.Pieces)
                 {
-                    var pieceViewModel = new PuzzlePieceViewModel(fullImage, pieceDef);
+                    var pieceViewModel = new PuzzlePieceViewModel(pieceDef);
                     pieceViewModel.ZIndex = ZINDEX_IDLE_BASE;
                     PiecesCollection.Add(pieceViewModel);
-
-                    var slotViewModel = new PuzzleSlotViewModel(pieceDef.CorrectX, pieceDef.CorrectY, pieceDef.Width, pieceDef.Height);
-                    PuzzleSlots.Add(slotViewModel);
                 }
 
                 foreach (var piece in PiecesCollection)
@@ -500,10 +495,7 @@ namespace MindWeaveClient.ViewModel.Game
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var piece = PiecesCollection.FirstOrDefault(p => p.PieceId == pieceId);
-                if (piece == null)
-                {
-                    return;
-                }
+                if (piece == null) return;
 
                 bool isMyAction = username == SessionService.Username;
 
@@ -568,7 +560,6 @@ namespace MindWeaveClient.ViewModel.Game
 
                 piece.IsHeldByOther = false;
                 piece.BorderColor = Brushes.Transparent;
-
                 piece.ZIndex = currentIdleZIndex;
 
                 if (username == SessionService.Username)
@@ -600,7 +591,6 @@ namespace MindWeaveClient.ViewModel.Game
                     piece.IsPlaced = true;
                     piece.IsHeldByOther = false;
                     piece.BorderColor = Brushes.Transparent;
-
                     piece.ZIndex = ZINDEX_PLACED_PIECE;
 
                     audioService.playSoundEffect(SOUND_SNAP);
@@ -738,7 +728,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
         }
 
-
         private void handleBonusEffects(string username, string bonusType)
         {
             if (username != SessionService.Username) return;
@@ -815,12 +804,11 @@ namespace MindWeaveClient.ViewModel.Game
             timer.Start();
         }
 
-
         private void executeToggleHelpPopup(object parameter)
         {
             IsHelpPopupVisible = !IsHelpPopupVisible;
         }
-        
+
         private static BitmapSource convertBytesToBitmapSource(byte[] imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0) return null;
@@ -832,9 +820,8 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     memStream.Position = 0;
                     bitmapImage.BeginInit();
-                    bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    bitmapImage.CreateOptions = BitmapCreateOptions.None;
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.UriSource = null;
                     bitmapImage.StreamSource = memStream;
                     bitmapImage.EndInit();
                 }
@@ -865,6 +852,5 @@ namespace MindWeaveClient.ViewModel.Game
 
             isDisposed = true;
         }
-
     }
 }

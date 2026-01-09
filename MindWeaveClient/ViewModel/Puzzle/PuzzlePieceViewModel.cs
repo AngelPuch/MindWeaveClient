@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.PuzzleManagerService;
-using System;
 
 namespace MindWeaveClient.ViewModel.Puzzle
 {
     public class PuzzlePieceViewModel : BaseViewModel
     {
-        public CroppedBitmap PieceImage { get; set; }
+        public BitmapSource PieceImage { get; set; }
         public int PieceId { get; }
 
         public double OriginalX { get; }
@@ -17,6 +18,7 @@ namespace MindWeaveClient.ViewModel.Puzzle
 
         public double CorrectX { get; set; }
         public double CorrectY { get; set; }
+
 
         private bool isPlaced;
         public bool IsPlaced
@@ -94,65 +96,81 @@ namespace MindWeaveClient.ViewModel.Puzzle
         public int Width { get; private set; }
         public int Height { get; private set; }
 
+        public int RenderWidth { get; private set; }
+        public int RenderHeight { get; private set; }
+
+        public int OffsetX { get; private set; }
+        public int OffsetY { get; private set; }
+
         public int? TopNeighborId { get; }
-
         public int? BottomNeighborId { get; }
-
         public int? LeftNeighborId { get; }
-
         public int? RightNeighborId { get; }
 
         public List<PuzzlePieceViewModel> PieceGroup { get; set; }
 
         public double DragOffsetX { get; set; }
-
         public double DragOffsetY { get; set; }
 
-
-        public PuzzlePieceViewModel(BitmapSource fullImage, PuzzlePieceDefinitionDto data)
+        public PuzzlePieceViewModel(PuzzlePieceDefinitionDto data)
         {
-            this.PieceId = data.PieceId;
-            this.Width = data.Width;
-            this.Height = data.Height;
+            PieceId = data.PieceId;
+            Width = data.Width;
+            Height = data.Height;
 
-            this.CorrectX = data.CorrectX;
-            this.CorrectY = data.CorrectY;
+            RenderWidth = data.RenderWidth > 0 ? data.RenderWidth : data.Width;
+            RenderHeight = data.RenderHeight > 0 ? data.RenderHeight : data.Height;
+            OffsetX = data.OffsetX;
+            OffsetY = data.OffsetY;
 
-            this.OriginalX = data.InitialX;
-            this.OriginalY = data.InitialY;
-            this.X = data.InitialX;
-            this.Y = data.InitialY;
+            CorrectX = data.CorrectX;
+            CorrectY = data.CorrectY;
 
-            this.ZIndex = 0;
-            this.isPlaced = false;
-            this.isHeldByOther = false;
+            OriginalX = data.InitialX;
+            OriginalY = data.InitialY;
+            X = data.InitialX;
+            Y = data.InitialY;
 
-            this.TopNeighborId = data.TopNeighborId;
-            this.BottomNeighborId = data.BottomNeighborId;
-            this.LeftNeighborId = data.LeftNeighborId;
-            this.RightNeighborId = data.RightNeighborId;
+            ZIndex = 0;
+            isPlaced = false;
+            isHeldByOther = false;
+
+            TopNeighborId = data.TopNeighborId;
+            BottomNeighborId = data.BottomNeighborId;
+            LeftNeighborId = data.LeftNeighborId;
+            RightNeighborId = data.RightNeighborId;
 
             BorderColor = Brushes.Transparent;
-            int safeX = Math.Max(0, data.SourceX);
-            int safeY = Math.Max(0, data.SourceY);
 
-
-            int availableWidth = fullImage.PixelWidth - safeX;
-            int availableHeight = fullImage.PixelHeight - safeY;
-
-            int safeWidth = Math.Min(data.Width, availableWidth);
-            int safeHeight = Math.Min(data.Height, availableHeight);
-
-            if (safeWidth <= 0 || safeHeight <= 0)
+            if (data.PieceImageBytes != null && data.PieceImageBytes.Length > 0)
             {
-                safeWidth = 1;
-                safeHeight = 1;
-                safeX = 0;
-                safeY = 0;
+                PieceImage = ConvertBytesToBitmapSource(data.PieceImageBytes);
             }
+        }
 
-            Int32Rect cropRect = new Int32Rect(safeX, safeY, safeWidth, safeHeight); this.PieceImage = new CroppedBitmap(fullImage, cropRect);
-            this.PieceImage.Freeze();
+        private static BitmapSource ConvertBytesToBitmapSource(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0) return null;
+
+            try
+            {
+                var bitmapImage = new BitmapImage();
+                using (var memStream = new MemoryStream(imageBytes))
+                {
+                    memStream.Position = 0;
+                    bitmapImage.BeginInit();
+                    bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = memStream;
+                    bitmapImage.EndInit();
+                }
+                bitmapImage.Freeze();
+                return bitmapImage;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

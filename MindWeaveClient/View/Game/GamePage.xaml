@@ -14,7 +14,6 @@
 
     <Page.Resources>
         <controls:BooleanToVisibilityConverter x:Key="BoolToVis" />
-
         <SolidColorBrush x:Key="Player1Color" Color="#3498DB"/>
         <SolidColorBrush x:Key="Player2Color" Color="#E74C3C"/>
         <SolidColorBrush x:Key="Player3Color" Color="#2ECC71"/>
@@ -130,31 +129,11 @@
 
                         <Viewbox Stretch="Uniform">
                             <Grid Width="{Binding PuzzleWidth}" Height="{Binding PuzzleHeight}">
-                                <ItemsControl ItemsSource="{Binding PuzzleSlots}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <Canvas Width="{Binding PuzzleWidth}" 
-                                                    Height="{Binding PuzzleHeight}" 
-                                                    Background="#222222"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Width="{Binding Width}" 
-                                                    Height="{Binding Height}"
-                                                    BorderBrush="#33FFFFFF" 
-                                                    BorderThickness="1"
-                                                    Background="#10FFFFFF"
-                                                    SnapsToDevicePixels="True"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style TargetType="ContentPresenter">
-                                            <Setter Property="Canvas.Left" Value="{Binding X}" />
-                                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                </ItemsControl>
+
+                                <Image Source="{Binding SilhouetteImage}" 
+                                       Stretch="Fill"
+                                       IsHitTestVisible="False"
+                                       RenderOptions.BitmapScalingMode="LowQuality"/>
 
                                 <ItemsControl x:Name="PuzzleItemsControl" ItemsSource="{Binding PiecesCollection}">
                                     <ItemsControl.ItemsPanel>
@@ -183,11 +162,6 @@
                                             <Setter Property="Canvas.Left" Value="{Binding X}" />
                                             <Setter Property="Canvas.Top" Value="{Binding Y}" />
                                             <Setter Property="Panel.ZIndex" Value="{Binding ZIndex}" />
-                                            <Setter Property="RenderTransform">
-                                                <Setter.Value>
-                                                    <TranslateTransform X="0" Y="0" />
-                                                </Setter.Value>
-                                            </Setter>
                                         </Style>
                                     </ItemsControl.ItemContainerStyle>
                                 </ItemsControl>
@@ -207,7 +181,6 @@
                         </Border.Effect>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
                             <Button Command="{Binding ToggleHelpPopupCommand}"
                                     ToolTip="{x:Static lang:Lang.GameBtnViewImage}" 
                                     Width="60" Height="60"
@@ -227,7 +200,6 @@
                                     </Viewbox>
                                 </Button.Content>
                             </Button>
-
                         </StackPanel>
                     </Border>
                 </Grid>
