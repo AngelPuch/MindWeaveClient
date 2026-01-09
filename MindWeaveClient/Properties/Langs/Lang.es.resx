@@ -1317,4 +1317,16 @@
   <data name="ErrorFileFormatNotAllowed" xml:space="preserve">
     <value>Formato de archivo no permitido.</value>
   </data>
+  <data name="ValidationNameInvalidCharacters" xml:space="preserve">
+    <value>El nombre contiene caracteres inválidos o longitud incorrecta (3-45).</value>
+  </data>
+  <data name="ValidationUsernameInvalidFormat" xml:space="preserve">
+    <value>Debe iniciar con letra o número. Solo se permiten letras, números, '.', '_' y '-'.</value>
+  </data>
+  <data name="ValidationFirstNameLength" xml:space="preserve">
+    <value>El nombre debe tener entre 3 y 45 caracteres.</value>
+  </data>
+  <data name="ValidationLastNameLength" xml:space="preserve">
+    <value>El apellido debe tener entre 3 y 45 caracteres.</value>
+  </data>
 </root>

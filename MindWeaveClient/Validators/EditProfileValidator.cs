@@ -10,7 +10,10 @@ namespace MindWeaveClient.Validators
         private const string PROFILE = "Profile";
         private const string PASSWORD = "Password";
         private const string CREDENTIAL_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
+        private const string NAME_VALIDATOR_REGEX = @"^(?=.*\p{L})[\p{L}\p{M} '\-\.]+$";
+
         private const int MAX_NAME_LENGTH = 45;
+        private const int MIN_NAME_LENGTH = 3;
         private const int MAX_PASSWORD_INPUT_LENGTH = 128;
         private const int MIN_AGE = -13;
 
@@ -20,11 +23,13 @@ namespace MindWeaveClient.Validators
             {
                 RuleFor(x => x.FirstName)
                     .NotEmpty().WithMessage(Lang.ValidationFirstNameRequired)
-                    .MaximumLength(MAX_NAME_LENGTH);
+                    .Length(MIN_NAME_LENGTH, MAX_NAME_LENGTH).WithMessage(Lang.ValidationFirstNameLength)
+                    .Matches(NAME_VALIDATOR_REGEX).WithMessage(Lang.ValidationNameInvalidCharacters);
 
                 RuleFor(x => x.LastName)
                     .NotEmpty().WithMessage(Lang.ValidationLastNameRequired)
-                    .MaximumLength(MAX_NAME_LENGTH);
+                    .Length(MIN_NAME_LENGTH, MAX_NAME_LENGTH).WithMessage(Lang.ValidationLastNameLength)
+                    .Matches(NAME_VALIDATOR_REGEX).WithMessage(Lang.ValidationNameInvalidCharacters);
 
                 RuleFor(x => x.DateOfBirth)
                     .NotNull().WithMessage(Lang.ValidationBirthDateRequired)

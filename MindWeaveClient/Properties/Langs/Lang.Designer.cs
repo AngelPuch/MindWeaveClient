@@ -3301,6 +3301,15 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a First name must be between 3 and 45 characters..
+        /// </summary>
+        public static string ValidationFirstNameLength {
+            get {
+                return ResourceManager.GetString("ValidationFirstNameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a First name is required..
         /// </summary>
         public static string ValidationFirstNameRequired {
@@ -3315,6 +3324,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ValidationGenderRequired {
             get {
                 return ResourceManager.GetString("ValidationGenderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Last name must be between 3 and 45 characters..
+        /// </summary>
+        public static string ValidationLastNameLength {
+            get {
+                return ResourceManager.GetString("ValidationLastNameLength", resourceCulture);
             }
         }
         
@@ -3342,6 +3360,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ValidationLobbyCodeRequired {
             get {
                 return ResourceManager.GetString("ValidationLobbyCodeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Name contains invalid characters or incorrect length (3-45)..
+        /// </summary>
+        public static string ValidationNameInvalidCharacters {
+            get {
+                return ResourceManager.GetString("ValidationNameInvalidCharacters", resourceCulture);
             }
         }
         
@@ -3468,6 +3495,15 @@ namespace MindWeaveClient.Properties.Langs {
         public static string ValidationUsernameAlphanumeric {
             get {
                 return ResourceManager.GetString("ValidationUsernameAlphanumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Must start with a letter or number. Only letters, numbers, &apos;.&apos;, &apos;_&apos; and &apos;-&apos; allowed..
+        /// </summary>
+        public static string ValidationUsernameInvalidFormat {
+            get {
+                return ResourceManager.GetString("ValidationUsernameInvalidFormat", resourceCulture);
             }
         }
         

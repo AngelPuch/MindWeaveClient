@@ -1317,4 +1317,16 @@
   <data name="ErrorFileFormatNotAllowed" xml:space="preserve">
     <value>Value: File format not allowed.</value>
   </data>
+  <data name="ValidationNameInvalidCharacters" xml:space="preserve">
+    <value>Name contains invalid characters or incorrect length (3-45).</value>
+  </data>
+  <data name="ValidationUsernameInvalidFormat" xml:space="preserve">
+    <value>Must start with a letter or number. Only letters, numbers, '.', '_' and '-' allowed.</value>
+  </data>
+  <data name="ValidationFirstNameLength" xml:space="preserve">
+    <value>First name must be between 3 and 45 characters.</value>
+  </data>
+  <data name="ValidationLastNameLength" xml:space="preserve">
+    <value>Last name must be between 3 and 45 characters.</value>
+  </data>
 </root>
