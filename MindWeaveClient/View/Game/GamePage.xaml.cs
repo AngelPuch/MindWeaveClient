@@ -13,7 +13,6 @@ namespace MindWeaveClient.View.Game
 {
     public partial class GamePage : Page
     {
-        private const double SNAP_THRESHOLD = 20.0;
         private const double BOARD_SNAP_TOLERANCE = 15.0;
         private const int MOVE_UPDATE_INTERVAL_MS = 50;
         private const int Z_INDEX_DRAGGING = 1000;
@@ -240,20 +239,11 @@ namespace MindWeaveClient.View.Game
 
             pieceView.ReleaseMouseCapture();
 
-            bool pieceSnapOccurred = checkForPieceToPieceSnap();
+            // SNAP TO PIECE logic removed completely.
+            // Proceed directly to Board Snap check.
             var piecesToDrop = new List<PuzzlePieceViewModel>(this.draggedGroup);
 
-            if (pieceSnapOccurred)
-            {
-                foreach (var piece in piecesToDrop)
-                {
-                    _ = gameViewModel?.dropPiece(piece, piece.X, piece.Y);
-                }
-            }
-            else
-            {
-                await handleBoardSnapAndDrop(piecesToDrop);
-            }
+            await handleBoardSnapAndDrop(piecesToDrop);
 
             this.draggedGroup = null;
             isLocalDragging = false;
@@ -305,85 +295,6 @@ namespace MindWeaveClient.View.Game
             }
 
             return Task.CompletedTask;
-        }
-
-        private bool checkForPieceToPieceSnap()
-        {
-            var allPieces = gameViewModel.PiecesCollection;
-            var otherPieces = allPieces.Where(p => p.PieceGroup != this.draggedGroup).ToList();
-
-            foreach (var pieceFromDragGroup in this.draggedGroup)
-            {
-                if (pieceFromDragGroup.IsPlaced) continue;
-
-                if (tryFindSnapWithStationaryPieces(pieceFromDragGroup, otherPieces))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool tryFindSnapWithStationaryPieces(PuzzlePieceViewModel draggedPiece, List<PuzzlePieceViewModel> otherPieces)
-        {
-            foreach (var stationaryPiece in otherPieces)
-            {
-                Point? targetPos = getTargetSnapPosition(draggedPiece, stationaryPiece);
-
-                if (targetPos.HasValue && attemptSnapToTarget(draggedPiece, stationaryPiece, targetPos.Value))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static Point? getTargetSnapPosition(PuzzlePieceViewModel dragged, PuzzlePieceViewModel stationary)
-        {
-            if (dragged.RightNeighborId == stationary.PieceId)
-                return new Point(stationary.X - dragged.Width, stationary.Y);
-            if (dragged.LeftNeighborId == stationary.PieceId)
-                return new Point(stationary.X + stationary.Width, stationary.Y);
-            if (dragged.BottomNeighborId == stationary.PieceId)
-                return new Point(stationary.X, stationary.Y - dragged.Height);
-            if (dragged.TopNeighborId == stationary.PieceId)
-                return new Point(stationary.X, stationary.Y + stationary.Height);
-            return null;
-        }
-
-        private bool attemptSnapToTarget(PuzzlePieceViewModel dragged, PuzzlePieceViewModel stationary, Point target)
-        {
-            if (isClose(dragged, target.X, target.Y))
-            {
-                double snapOffsetX = target.X - dragged.X;
-                double snapOffsetY = target.Y - dragged.Y;
-                alignAndMerge(stationary.PieceGroup, snapOffsetX, snapOffsetY);
-                return true;
-            }
-            return false;
-        }
-
-        private static bool isClose(PuzzlePieceViewModel piece, double targetX, double targetY)
-        {
-            double deltaX = piece.X - targetX;
-            double deltaY = piece.Y - targetY;
-            return (deltaX * deltaX + deltaY * deltaY) < (SNAP_THRESHOLD * SNAP_THRESHOLD);
-        }
-
-        private void alignAndMerge(List<PuzzlePieceViewModel> stationaryGroup, double offsetX, double offsetY)
-        {
-            foreach (var piece in this.draggedGroup)
-            {
-                piece.X += offsetX;
-                piece.Y += offsetY;
-            }
-
-            stationaryGroup.AddRange(this.draggedGroup);
-            var piecesToReassign = new List<PuzzlePieceViewModel>(this.draggedGroup);
-            foreach (var piece in piecesToReassign)
-            {
-                piece.PieceGroup = stationaryGroup;
-            }
         }
 
         private static void updateGroupZIndex(List<PuzzlePieceViewModel> group, int zIndex)

@@ -102,11 +102,6 @@ namespace MindWeaveClient.ViewModel.Puzzle
         public int OffsetX { get; private set; }
         public int OffsetY { get; private set; }
 
-        public int? TopNeighborId { get; }
-        public int? BottomNeighborId { get; }
-        public int? LeftNeighborId { get; }
-        public int? RightNeighborId { get; }
-
         public List<PuzzlePieceViewModel> PieceGroup { get; set; }
 
         public double DragOffsetX { get; set; }
@@ -135,10 +130,6 @@ namespace MindWeaveClient.ViewModel.Puzzle
             isPlaced = false;
             isHeldByOther = false;
 
-            TopNeighborId = data.TopNeighborId;
-            BottomNeighborId = data.BottomNeighborId;
-            LeftNeighborId = data.LeftNeighborId;
-            RightNeighborId = data.RightNeighborId;
 
             BorderColor = Brushes.Transparent;
 

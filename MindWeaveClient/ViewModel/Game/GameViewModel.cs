@@ -33,7 +33,6 @@ namespace MindWeaveClient.ViewModel.Game
 
     public class GameViewModel : BaseViewModel, IDisposable
     {
-        private const double REMOTE_SNAP_THRESHOLD = 20.0;
         private const int DEFAULT_MATCH_DURATION_SECONDS = 300;
         private const double VISUAL_TIMER_INTERVAL_SECONDS = 0.5;
         private const double TIMER_ROUND_ADJUSTMENT_SECONDS = 0.9;
@@ -570,11 +569,6 @@ namespace MindWeaveClient.ViewModel.Game
                     }
                     ForceReleaseLocalDrag?.Invoke();
                 }
-
-                if (username != SessionService.Username)
-                {
-                    attemptRemoteMerge(piece);
-                }
             });
         }
 
@@ -643,80 +637,6 @@ namespace MindWeaveClient.ViewModel.Game
             }
 
             currentIdleZIndex = newZIndex;
-        }
-
-        private void attemptRemoteMerge(PuzzlePieceViewModel piece)
-        {
-            if (piece == null || piece.IsPlaced) return;
-
-            foreach (var potentialNeighbor in PiecesCollection)
-            {
-                if (shouldSkipNeighborCheck(piece, potentialNeighbor)) continue;
-
-                Point? expectedPos = getExpectedNeighborPosition(piece, potentialNeighbor);
-
-                if (expectedPos.HasValue && isWithinSnapThreshold(potentialNeighbor, expectedPos.Value))
-                {
-                    potentialNeighbor.X = expectedPos.Value.X;
-                    potentialNeighbor.Y = expectedPos.Value.Y;
-                    mergeGroups(piece, potentialNeighbor);
-                }
-            }
-        }
-
-        private static bool shouldSkipNeighborCheck(PuzzlePieceViewModel piece, PuzzlePieceViewModel potentialNeighbor)
-        {
-            return potentialNeighbor == piece ||
-                   potentialNeighbor.IsPlaced ||
-                   potentialNeighbor.PieceGroup == piece.PieceGroup;
-        }
-
-        private static Point? getExpectedNeighborPosition(PuzzlePieceViewModel piece, PuzzlePieceViewModel potentialNeighbor)
-        {
-            if (piece.RightNeighborId == potentialNeighbor.PieceId)
-            {
-                return new Point(piece.X + piece.Width, piece.Y);
-            }
-
-            if (piece.LeftNeighborId == potentialNeighbor.PieceId)
-            {
-                return new Point(piece.X - potentialNeighbor.Width, piece.Y);
-            }
-
-            if (piece.BottomNeighborId == potentialNeighbor.PieceId)
-            {
-                return new Point(piece.X, piece.Y + piece.Height);
-            }
-
-            if (piece.TopNeighborId == potentialNeighbor.PieceId)
-            {
-                return new Point(piece.X, piece.Y - potentialNeighbor.Height);
-            }
-
-            return null;
-        }
-
-        private static bool isWithinSnapThreshold(PuzzlePieceViewModel neighbor, Point expectedPos)
-        {
-            double distSquared = Math.Pow(neighbor.X - expectedPos.X, 2) +
-                                 Math.Pow(neighbor.Y - expectedPos.Y, 2);
-
-            return distSquared < REMOTE_SNAP_THRESHOLD * REMOTE_SNAP_THRESHOLD;
-        }
-
-        private static void mergeGroups(PuzzlePieceViewModel p1, PuzzlePieceViewModel p2)
-        {
-            var group1 = p1.PieceGroup;
-            var group2 = p2.PieceGroup;
-
-            if (group1 == group2) return;
-
-            foreach (var p in group2.Where(p => !group1.Contains(p)))
-            {
-                group1.Add(p);
-                p.PieceGroup = group1;
-            }
-            group2.Clear();
         }
 
         private static void resetPiecePosition(PuzzlePieceViewModel piece)
