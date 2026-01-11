@@ -3,15 +3,17 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
+using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using MindWeaveClient.View.Game;
+using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
-using MindWeaveClient.Utilities.Implementations;
 
 namespace MindWeaveClient.ViewModel.Authentication
 {
@@ -199,6 +201,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     currentLobbyService.setInitialState(serviceResult.WcfResult.InitialLobbyState);
                     windowNavigationService.openWindow<GameWindow>();
+
+                    var mainWindow = Application.Current.Windows.OfType<AuthenticationWindow>().FirstOrDefault();
+                    if (mainWindow != null)
+                    {
+                        mainWindow.IsExitConfirmed = true;
+                    }
+
                     windowNavigationService.closeWindow<AuthenticationWindow>();
                 }
                 else

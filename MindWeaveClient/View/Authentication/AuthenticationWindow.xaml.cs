@@ -4,6 +4,7 @@ using MindWeaveClient.View.Main;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using MindWeaveClient.View.Game;
 
 namespace MindWeaveClient.View.Authentication
 {
@@ -48,10 +49,15 @@ namespace MindWeaveClient.View.Authentication
                 .OfType<MainWindow>()
                 .Any();
 
-            if (isTransitioningToMain)
+            bool isTransitioningToGame = Application.Current.Windows
+                .OfType<GameWindow>()
+                .Any();
+
+            if (isTransitioningToMain || isTransitioningToGame)
             {
                 return;
             }
+
 
             e.Cancel = true;
 
