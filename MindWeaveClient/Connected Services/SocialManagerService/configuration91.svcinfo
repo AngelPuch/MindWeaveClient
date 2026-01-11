@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="IhqNNMN2xl1FOmwMQ2lpUdiCXXA2qy90VVzYOsvCjS0=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="xnciF+J9aT6bnePe+brDuoP7RFbXpMKsIUY5Mq9J7Yo=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_ISocialManager">
       <properties>
@@ -73,7 +73,7 @@
           <serializedValue>True</serializedValue>
         </property>
         <property path="/reliableSession/inactivityTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>00:05:00</serializedValue>
+          <serializedValue>00:02:00</serializedValue>
         </property>
         <property path="/reliableSession/enabled" isComplexType="false" isExplicitlyDefined="true" clrType="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>True</serializedValue>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_ISocialManager" contract="SocialManagerService.ISocialManager" bindingType="netTcpBinding" address="net.tcp://10.181.13.241:8734/MindWeaveServer/Services/SocialManagerService/" bindingConfiguration="NetTcpBinding_ISocialManager">
+    <endpoint name="NetTcpBinding_ISocialManager" contract="SocialManagerService.ISocialManager" bindingType="netTcpBinding" address="net.tcp://192.168.1.88:8734/MindWeaveServer/Services/SocialManagerService/" bindingConfiguration="NetTcpBinding_ISocialManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://10.181.13.241:8734/MindWeaveServer/Services/SocialManagerService/</serializedValue>
+          <serializedValue>net.tcp://192.168.1.88:8734/MindWeaveServer/Services/SocialManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

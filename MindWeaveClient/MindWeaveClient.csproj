@@ -398,30 +398,17 @@
     <None Include="Connected Services\AuthenticationService\service4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat1.xsd">
+    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat2.xsd">
+    <None Include="Connected Services\ChatManagerService\service.wsdl" />
+    <None Include="Connected Services\ChatManagerService\service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\service1.wsdl" />
-    <None Include="Connected Services\ChatManagerService\service2.wsdl" />
-    <None Include="Connected Services\ChatManagerService\service2.xsd">
+    <None Include="Connected Services\ChatManagerService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\service21.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ChatManagerService\service3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ChatManagerService\service4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\Arrays1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\Arrays2.xsd">
+    <None Include="Connected Services\MatchmakingService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.GuestJoinResultDto.datasource">
@@ -430,42 +417,23 @@
     <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.LobbyCreationResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Game1.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Game.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Game2.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking1.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Puzzle.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking2.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Puzzle1.xsd">
+    <None Include="Connected Services\MatchmakingService\service.wsdl" />
+    <None Include="Connected Services\MatchmakingService\service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Puzzle2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\service1.wsdl" />
-    <None Include="Connected Services\MatchmakingService\service2.wsdl" />
-    <None Include="Connected Services\MatchmakingService\service2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\service21.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\service3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MatchmakingService\service4.xsd">
+    <None Include="Connected Services\MatchmakingService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ProfileService\Arrays1.xsd">
@@ -559,10 +527,7 @@
     <None Include="Connected Services\PuzzleManagerService\service4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\Arrays1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\SocialManagerService\Arrays2.xsd">
+    <None Include="Connected Services\SocialManagerService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendDto.datasource">
@@ -577,30 +542,17 @@
     <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.PlayerSearchResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared1.xsd">
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared2.xsd">
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social1.xsd">
+    <None Include="Connected Services\SocialManagerService\service.wsdl" />
+    <None Include="Connected Services\SocialManagerService\service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\SocialManagerService\service1.wsdl" />
-    <None Include="Connected Services\SocialManagerService\service2.wsdl" />
-    <None Include="Connected Services\SocialManagerService\service2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\SocialManagerService\service21.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\SocialManagerService\service3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\SocialManagerService\service4.xsd">
+    <None Include="Connected Services\SocialManagerService\service1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
@@ -675,30 +627,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\SocialManagerService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\SocialManagerService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\SocialManagerService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\MatchmakingService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\MatchmakingService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\MatchmakingService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Connected Services\PuzzleManagerService\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -718,18 +646,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Puzzles\puzzleDefault.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ChatManagerService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ChatManagerService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ChatManagerService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Audio\audio_background.mp3" />
@@ -759,6 +675,42 @@
     <Resource Include="Resources\Images\achievements\achievement_win50games.png" />
     <Resource Include="Resources\Images\achievements\achievement_winHardMode.png" />
     <Resource Include="Resources\Images\achievements\achievement_winUnder5min.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ChatManagerService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ChatManagerService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ChatManagerService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\SocialManagerService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\SocialManagerService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\SocialManagerService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\MatchmakingService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\MatchmakingService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\MatchmakingService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

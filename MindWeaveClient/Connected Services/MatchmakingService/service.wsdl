@@ -3,6 +3,12 @@
   <wsp:Policy wsu:Id="NetTcpBinding_IMatchmakingManager_policy">
     <wsp:ExactlyOne>
       <wsp:All>
+        <wsrm:RMAssertion xmlns:wsrm="http://schemas.xmlsoap.org/ws/2005/02/rm/policy">
+          <wsrm:InactivityTimeout Milliseconds="120000">
+          </wsrm:InactivityTimeout>
+          <wsrm:AcknowledgementInterval Milliseconds="200">
+          </wsrm:AcknowledgementInterval>
+        </wsrm:RMAssertion>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
         </msb:BinaryEncoding>
         <wsaw:UsingAddressing>
@@ -406,9 +412,9 @@
   </wsdl:binding>
   <wsdl:service name="MatchmakingManagerService">
     <wsdl:port name="NetTcpBinding_IMatchmakingManager" binding="tns:NetTcpBinding_IMatchmakingManager">
-      <soap12:address location="net.tcp://192.168.100.231:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
+      <soap12:address location="net.tcp://192.168.1.88:8734/MindWeaveServer/Services/MatchmakingManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://192.168.100.231:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://192.168.1.88:8734/MindWeaveServer/Services/MatchmakingManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>
