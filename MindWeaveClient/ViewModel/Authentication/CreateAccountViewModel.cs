@@ -349,7 +349,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                 {
                     SessionService.PendingVerificationEmail = this.Email;
 
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                     {
                         navigationService.navigateTo<VerificationPage>();
                     });
@@ -377,7 +377,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                                     Lang.InfoMsgResendSuccessTitle
                                 );
 
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                                 {
                                     navigationService.navigateTo<VerificationPage>();
                                 });
