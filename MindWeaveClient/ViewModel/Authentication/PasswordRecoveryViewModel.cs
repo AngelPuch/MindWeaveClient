@@ -341,7 +341,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                     );
 
                     if (!userWantsToVerify)
-                        return; // ✅ si cancela, ya no sigas
+                        return; 
 
                     var resendResult = await authenticationService.resendVerificationCodeAsync(Email);
 
@@ -354,8 +354,7 @@ namespace MindWeaveClient.ViewModel.Authentication
                             Lang.InfoMsgResendSuccessTitle
                         );
 
-                        // ✅ navegar en UI thread por seguridad
-                        Application.Current.Dispatcher.Invoke(() =>
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
                         {
                             navigationService.navigateTo<VerificationPage>();
                         });
@@ -402,7 +401,6 @@ namespace MindWeaveClient.ViewModel.Authentication
             clearTouchedState();
             validateCurrentStep();
 
-            // Detener timer al pasar al siguiente paso
             stopResendTimer();
 
             SetBusy(false);
