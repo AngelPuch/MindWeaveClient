@@ -22,11 +22,6 @@ namespace MindWeaveClient.Utilities.Implementations
 
         public void navigateTo<TView>() where TView : Page
         {
-            if (navigationFrame == null)
-            {
-                throw new InvalidOperationException("NavigationService is not initialized. Call Initialize() first.");
-            }
-
             var page = serviceProvider.GetService<TView>();
 
             navigationFrame.Navigate(page);

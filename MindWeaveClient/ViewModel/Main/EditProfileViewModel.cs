@@ -8,7 +8,7 @@ using MindWeaveClient.Validators;
 using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel; // Necesario para la colección
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -42,7 +42,6 @@ namespace MindWeaveClient.ViewModel.Main
         private string newPasswordValue;
         private string confirmPasswordValue;
 
-        // AGREGADO: Colección para la UI
         public ObservableCollection<SocialMediaItem> SocialMediaList { get; set; }
 
         public string FirstName
@@ -269,7 +268,6 @@ namespace MindWeaveClient.ViewModel.Main
             this.validator = validator;
             this.exceptionHandler = exceptionHandler;
 
-            // Inicializar la colección
             SocialMediaList = new ObservableCollection<SocialMediaItem>();
 
             CancelCommand = new RelayCommand(p => this.navigationService.goBack(), p => !IsBusy);
@@ -389,14 +387,11 @@ namespace MindWeaveClient.ViewModel.Main
 
             if (HasErrors) return;
 
-            // AGREGADO: Convertir lista UI a lista DTO
-            // Nota: Usamos ToArray() asumiendo que WCF generó PlayerSocialMediaDto[] como array. 
-            // Si es List<T>, cambia a ToList().
             var socialMediaDtoList = SocialMediaList.Select(sm => new PlayerSocialMediaDto
             {
                 IdSocialMediaPlatform = sm.IdSocialMediaPlatform,
                 PlatformName = sm.PlatformName,
-                Username = sm.Username?.Trim() // Limpieza básica
+                Username = sm.Username?.Trim() 
             }).ToArray();
 
             var updatedProfile = new UserProfileForEditDto
@@ -406,7 +401,6 @@ namespace MindWeaveClient.ViewModel.Main
                 DateOfBirth = this.DateOfBirth,
                 IdGender = originalGenderId,
                 AvailableGenders = null,
-                // AGREGADO: Asignar al DTO
                 SocialMedia = socialMediaDtoList
             };
 
@@ -443,7 +437,6 @@ namespace MindWeaveClient.ViewModel.Main
             DateOfBirth = profileData.DateOfBirth;
             originalGenderId = profileData.IdGender;
 
-            // AGREGADO: Poblar la lista de redes sociales
             SocialMediaList.Clear();
             if (profileData.SocialMedia != null)
             {
@@ -453,7 +446,7 @@ namespace MindWeaveClient.ViewModel.Main
                     {
                         IdSocialMediaPlatform = smDto.IdSocialMediaPlatform,
                         PlatformName = smDto.PlatformName,
-                        Username = smDto.Username // Puede venir vacío si es nuevo, eso está bien para el TextBox
+                        Username = smDto.Username
                     });
                 }
             }
@@ -467,14 +460,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void validateCurrentStep()
         {
-            if (IsChangePasswordSectionVisible)
-            {
-                validate(validator, this, PASSWORD_RULESET_NAME);
-            }
-            else
-            {
-                validate(validator, this, PROFILE_RULESET_NAME);
-            }
+            validate(validator, this, IsChangePasswordSectionVisible ? PASSWORD_RULESET_NAME : PROFILE_RULESET_NAME);
             raiseCanExecuteChanged();
         }
 

@@ -127,37 +127,30 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void onPieceDragStarted(int pieceId, string username)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPieceDragStarted: Piece {pieceId} by {username}");
             PieceDragStartedHandler?.Invoke(pieceId, username);
         }
 
         public void onPiecePlaced(int pieceId, double correctX, double correctY, string username, int newScore, string bonusType)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPiecePlaced: Piece {pieceId} by {username} at ({correctX}, {correctY})");
             PiecePlacedHandler?.Invoke(pieceId, correctX, correctY, username, newScore, bonusType);
         }
 
         public void onPieceMoved(int pieceId, double newX, double newY, string username)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPieceMoved: Piece {pieceId} to ({newX}, {newY}) by {username}");
             PieceMovedHandler?.Invoke(pieceId, newX, newY, username);
         }
 
         public void onPieceDragReleased(int pieceId, string username)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onPieceDragReleased: Piece {pieceId} by {username}");
             PieceDragReleasedHandler?.Invoke(pieceId, username);
         }
         public void onPlayerPenalty(string username, int pointsLost, int newScore, string reason)
         {
-            System.Diagnostics.Debug.WriteLine($"[PENALTY] User: {username}, Lost: {pointsLost}, Reason: {reason}");
             PlayerPenaltyHandler?.Invoke(username, pointsLost, newScore, reason);
         }
 
         public void onGameEnded(MatchEndResultDto result)
         {
-            System.Diagnostics.Debug.WriteLine($"[CALLBACK] onGameEnded: Match {result.MatchId}, Reason {result.Reason}");
-
             LastMatchResults = result;
             GameEndedStatic?.Invoke(result);
         }

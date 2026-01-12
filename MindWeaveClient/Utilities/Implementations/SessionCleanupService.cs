@@ -14,27 +14,26 @@ namespace MindWeaveClient.Utilities.Implementations
         private readonly ISocialService socialService;
         private readonly IMatchmakingService matchmakingService;
         private readonly ICurrentMatchService currentMatchService;
-        // ELIMINADO: IHeartbeatService
+        private readonly IChatService chatService;
 
         public SessionCleanupService(
             IAuthenticationService authenticationService,
             ISocialService socialService,
             IMatchmakingService matchmakingService,
-            ICurrentMatchService currentMatchService)
+            ICurrentMatchService currentMatchService,
+            IChatService chatService)
         {
             this.authenticationService = authenticationService;
             this.socialService = socialService;
             this.matchmakingService = matchmakingService;
             this.currentMatchService = currentMatchService;
-            // ELIMINADO: heartbeatService
+            this.chatService = chatService;
         }
 
         public async Task cleanUpSessionAsync()
         {
             try
             {
-                // ELIMINADO: stopHeartbeatSafeAsync
-
                 if (!SessionService.IsGuest && !string.IsNullOrEmpty(SessionService.Username))
                 {
                     await authenticationService.logoutAsync(SessionService.Username);
@@ -45,28 +44,31 @@ namespace MindWeaveClient.Utilities.Implementations
             }
             catch (EndpointNotFoundException)
             {
-                // Servidor no disponible - solo limpiar localmente
+                // ignore
             }
             catch (CommunicationException)
             {
-                // Error de comunicación - solo limpiar localmente
+                // ignore
             }
             catch (TimeoutException)
             {
-                // Timeout - solo limpiar localmente
+                // ignore
             }
             catch (SocketException)
             {
-                // Error de red - solo limpiar localmente
+                // ignore
             }
             catch (ObjectDisposedException)
             {
-                // Canal ya cerrado - solo limpiar localmente
+                // ignore
             }
             finally
             {
                 currentMatchService.clearMatchData();
                 SessionService.clearSession();
+                await chatService.disconnectAsync(string.Empty, string.Empty, true);
+                await socialService.disconnectAsync(string.Empty, true);
+                matchmakingService.disconnect(true);
             }
         }
 
@@ -141,8 +143,5 @@ namespace MindWeaveClient.Utilities.Implementations
             }
         }
 
-        // ELIMINADO: handleHeartbeatDisconnectionAsync
-        // ELIMINADO: stopHeartbeatSafeAsync
-        // ELIMINADO: forceStopHeartbeatSafe
     }
 }

@@ -8,7 +8,6 @@ using MindWeaveClient.View.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -26,6 +25,8 @@ namespace MindWeaveClient.ViewModel.Authentication
         private const string STEP1 = "Step1";
         private const string STEP2 = "Step2";
         private const string STEP3 = "Step3";
+        private const string AUTH_ACCOUNT_NOT_VERIFIED = "AUTH_ACCOUNT_NOT_VERIFIED";
+        private const string ACCOUNT_NOT_VERIFIED = "ACCOUNT_NOT_VERIFIED";
 
         private readonly IAuthenticationService authenticationService;
         private readonly IDialogService dialogService;
@@ -330,13 +331,13 @@ namespace MindWeaveClient.ViewModel.Authentication
                 }
 
                 bool isUnverified =
-                    result.MessageCode == "AUTH_ACCOUNT_NOT_VERIFIED" ||
-                    result.MessageCode == "ACCOUNT_NOT_VERIFIED";
+                    result.MessageCode == AUTH_ACCOUNT_NOT_VERIFIED ||
+                    result.MessageCode == ACCOUNT_NOT_VERIFIED;
 
                 if (isUnverified)
                 {
                     bool userWantsToVerify = dialogService.showWarning(
-                        MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"),
+                        MessageCodeInterpreter.translate(AUTH_ACCOUNT_NOT_VERIFIED),
                         Lang.WarningTitle
                     );
 

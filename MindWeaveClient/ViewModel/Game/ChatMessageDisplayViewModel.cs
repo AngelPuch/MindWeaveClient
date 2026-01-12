@@ -6,6 +6,9 @@ namespace MindWeaveClient.ViewModel.Game
 {
     public class ChatMessageDisplayViewModel : BaseViewModel
     {
+        private const string RIGHT = "Right";
+        private const string LEFT = "Left";
+
         private readonly ChatMessageDto dto;
 
         public ChatMessageDisplayViewModel(ChatMessageDto dto)
@@ -16,6 +19,6 @@ namespace MindWeaveClient.ViewModel.Game
         public string Content => dto.Content;
         public string Time => dto.Timestamp.ToLocalTime().ToShortTimeString();     
         public bool IsMyMessage => dto.SenderUsername == SessionService.Username;
-        public string Alignment => IsMyMessage ? "Right" : "Left";
+        public string Alignment => IsMyMessage ? RIGHT : LEFT;
     }
 }

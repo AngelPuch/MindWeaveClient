@@ -43,7 +43,6 @@ namespace MindWeaveClient
             var invitationService = ServiceProvider.GetRequiredService<IInvitationService>();
             invitationService.subscribeToGlobalInvites();
 
-            // ELIMINADO: HeartbeatConnectionHandler - Ya no es necesario
 
             var authWindow = ServiceProvider.GetService<AuthenticationWindow>();
             authWindow.Show();
@@ -51,20 +50,15 @@ namespace MindWeaveClient
 
         private static void configureServices(IServiceCollection services)
         {
-            // Callbacks
             services.AddSingleton<IChatManagerCallback, ChatCallbackHandler>();
             services.AddSingleton<ISocialManagerCallback, SocialCallbackHandler>();
-            // ELIMINADO: HeartbeatCallbackHandler
-
-            // Utilidades
+         
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
             services.AddSingleton<ICurrentMatchService, CurrentMatchService>();
             services.AddSingleton<IAudioService, AudioService>();
             services.AddSingleton<ICurrentLobbyService, CurrentLobbyService>();
-
-            // ELIMINADO: IHeartbeatService
 
             services.AddSingleton<IMatchmakingManagerCallback>(provider =>
                 new MatchmakingCallbackHandler(
@@ -73,7 +67,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // Servicios
             services.AddSingleton<IProfileService, MindWeaveClient.Services.Implementations.ProfileService>();
             services.AddSingleton<IMatchmakingService, MindWeaveClient.Services.Implementations.MatchmakingService>();
             services.AddSingleton<ISocialService, SocialService>();
@@ -81,20 +74,20 @@ namespace MindWeaveClient
             services.AddSingleton<IPuzzleService, PuzzleService>();
             services.AddSingleton<IInvitationService, InvitationService>();
 
-            // AuthenticationService MODIFICADO - sin IHeartbeatService
             services.AddSingleton<IAuthenticationService>(provider =>
                 new MindWeaveClient.Services.Implementations.AuthenticationService(
                     provider.GetRequiredService<ISocialService>()
                 )
             );
 
-            // SessionCleanupService MODIFICADO - sin IHeartbeatService
             services.AddSingleton<ISessionCleanupService>(provider =>
                 new SessionCleanupService(
                     provider.GetRequiredService<IAuthenticationService>(),
                     provider.GetRequiredService<ISocialService>(),
                     provider.GetRequiredService<IMatchmakingService>(),
-                    provider.GetRequiredService<ICurrentMatchService>()
+                    provider.GetRequiredService<ICurrentMatchService>(),
+                    provider.GetRequiredService<IChatService>()
+
                 )
             );
 
@@ -106,9 +99,6 @@ namespace MindWeaveClient
                 )
             );
 
-            // ELIMINADO: HeartbeatConnectionHandler
-
-            // Validators
             services.AddTransient<LoginValidator>();
             services.AddTransient<CreateAccountValidator>();
             services.AddTransient<GuestJoinValidator>();
@@ -117,7 +107,6 @@ namespace MindWeaveClient
             services.AddTransient<VerificationValidator>();
             services.AddTransient<EditProfileValidator>();
 
-            // ViewModels
             services.AddTransient<LoginViewModel>();
             services.AddTransient<CreateAccountViewModel>();
             services.AddTransient<GuestJoinViewModel>();
@@ -134,7 +123,6 @@ namespace MindWeaveClient
             services.AddTransient<GameViewModel>();
             services.AddTransient<PostMatchResultsViewModel>();
 
-            // Views
             services.AddTransient<LoginPage>();
             services.AddTransient<CreateAccountPage>();
             services.AddTransient<GuestJoinPage>();
@@ -150,7 +138,6 @@ namespace MindWeaveClient
             services.AddTransient<GamePage>();
             services.AddTransient<PostMatchResultsPage>();
 
-            // Windows
             services.AddTransient<AuthenticationWindow>();
             services.AddTransient<MainWindow>();
             services.AddTransient<SettingsWindow>();
@@ -161,7 +148,6 @@ namespace MindWeaveClient
         {
             try
             {
-                // ELIMINADO: cleanupHeartbeatService()
                 cleanupCallbackHandlers();
                 cleanupServices();
             }
@@ -175,7 +161,6 @@ namespace MindWeaveClient
             }
         }
 
-        // ELIMINADO: cleanupHeartbeatService()
 
         private static void cleanupCallbackHandlers()
         {

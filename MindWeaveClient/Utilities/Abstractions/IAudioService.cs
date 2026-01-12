@@ -10,8 +10,6 @@ namespace MindWeaveClient.Utilities.Abstractions
 
         void setSoundEffectsVolume(double volume);
 
-        void stopMusic();
-
         void playSoundEffect(string soundFileName);
     }
 }

@@ -1,5 +1,4 @@
-﻿using MindWeaveClient.Helpers;
-using MindWeaveClient.Properties.Langs;
+﻿using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
@@ -22,6 +21,8 @@ namespace MindWeaveClient.ViewModel.Main
     public class MainMenuViewModel : BaseViewModel, IDisposable
     {
         private const int MAX_LOBBY_CODE_LENGTH = 6;
+        private const string JOIN_LOBBY = "JoinLobby";
+        private const string DEFAULT_AVATAR_PATH = "/Resources/Images/Avatar/default_avatar.png";
 
         private readonly IMatchmakingService matchmakingService;
         private readonly ISessionCleanupService cleanupService;
@@ -64,7 +65,7 @@ namespace MindWeaveClient.ViewModel.Main
                         markAsTouched(nameof(JoinLobbyCode));
                     }
 
-                    validate(validator, this, "JoinLobby");
+                    validate(validator, this, JOIN_LOBBY);
                     OnPropertyChanged(nameof(JoinLobbyCodeError));
                 }
             }
@@ -113,7 +114,7 @@ namespace MindWeaveClient.ViewModel.Main
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
             PlayerUsername = SessionService.Username;
-            PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            PlayerAvatarPath = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
 
             ProfileCommand = new RelayCommand(p =>
                 navigationService1.navigateTo<ProfilePage>(), p => !IsBusy);
@@ -128,7 +129,7 @@ namespace MindWeaveClient.ViewModel.Main
             LogOutCommand = new RelayCommand(async p => await executeLogOutAsync(), p => !IsBusy);
             ExitCommand = new RelayCommand(p => executeExit());
 
-            validate(validator, this, "JoinLobby");
+            validate(validator, this, JOIN_LOBBY);
         }
 
         private static string clampString(string value, int maxLength)
@@ -142,7 +143,7 @@ namespace MindWeaveClient.ViewModel.Main
 
         private void OnAvatarPathChanged(object sender, EventArgs e)
         {
-            PlayerAvatarPath = SessionService.AvatarPath ?? "/Resources/Images/Avatar/default_avatar.png";
+            PlayerAvatarPath = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
         }
 
         private async Task executeJoinLobbyAsync()

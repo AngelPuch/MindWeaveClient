@@ -9,7 +9,6 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.View.Main;
 using MindWeaveClient.ViewModel.Main;
-using MindWeaveClient.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;

@@ -10,12 +10,10 @@ namespace MindWeaveClient.Services.Implementations
     public class AuthenticationService : IAuthenticationService
     {
         private readonly ISocialService socialService;
-        // ELIMINADO: IHeartbeatService
 
         public AuthenticationService(ISocialService socialService)
         {
             this.socialService = socialService;
-            // ELIMINADO: heartbeatService
         }
 
         public async Task<LoginServiceResultDto> loginAsync(string email, string password)
@@ -33,11 +31,7 @@ namespace MindWeaveClient.Services.Implementations
             {
                 SessionService.setSession(result.PlayerId, result.Username, result.AvatarPath);
 
-                // Conectar al servicio social (esto establece la Reliable Session)
                 bool socialConnected = await connectSocialServiceSafeAsync(result.Username);
-
-                // ELIMINADO: startHeartbeatServiceSafeAsync
-                // Las Reliable Sessions manejan la detección de desconexión automáticamente
 
                 return new LoginServiceResultDto(result, socialConnected, true);
             }
@@ -118,27 +112,22 @@ namespace MindWeaveClient.Services.Implementations
             try
             {
                 await socialService.connectAsync(username);
-                System.Diagnostics.Debug.WriteLine("[AUTH] Social service connected with Reliable Session");
                 return true;
             }
-            catch (CommunicationException ex)
+            catch (CommunicationException)
             {
-                System.Diagnostics.Debug.WriteLine($"[AUTH] Social service connection failed: {ex.Message}");
                 return false;
             }
-            catch (TimeoutException ex)
+            catch (TimeoutException)
             {
-                System.Diagnostics.Debug.WriteLine($"[AUTH] Social service connection timeout: {ex.Message}");
                 return false;
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
-                System.Diagnostics.Debug.WriteLine($"[AUTH] Social service socket error: {ex.Message}");
                 return false;
             }
         }
 
-        // ELIMINADO: startHeartbeatServiceSafeAsync
 
         private static void closeClientSafe(AuthenticationManagerClient client)
         {

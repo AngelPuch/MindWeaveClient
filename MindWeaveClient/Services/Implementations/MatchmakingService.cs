@@ -109,12 +109,6 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        public async Task joinLobbyAsync(string username, string lobbyCode)
-        {
-            ensureClientIsCreated();
-            await executeOneWayCallAsync(() => proxy.joinLobby(username, lobbyCode));
-        }
-
         public async Task leaveLobbyAsync(string username, string lobbyId)
         {
             await executeOneWayCallAsync(() => proxy.leaveLobby(username, lobbyId));
@@ -134,11 +128,6 @@ namespace MindWeaveClient.Services.Implementations
         public async Task inviteToLobbyAsync(string inviter, string invited, string lobbyId)
         {
             await executeOneWayCallAsync(() => proxy.inviteToLobby(inviter, invited, lobbyId));
-        }
-
-        public async Task changeDifficultyAsync(string hostUsername, string lobbyId, int newDifficultyId)
-        {
-            await executeOneWayCallAsync(() => proxy.changeDifficulty(hostUsername, lobbyId, newDifficultyId));
         }
 
         public async Task inviteGuestByEmailAsync(GuestInvitationDto invitationData)
@@ -164,19 +153,13 @@ namespace MindWeaveClient.Services.Implementations
             await executeTaskCallAsync(async () => await proxy.requestPieceDropAsync(lobbyCode, pieceId, newX, newY));
         }
 
-        public async Task requestPieceReleaseAsync(string lobbyCode, int pieceId)
-        {
-            ensureClientIsCreated();
-            await executeTaskCallAsync(async () => await proxy.requestPieceReleaseAsync(lobbyCode, pieceId));
-        }
-
         public async Task leaveGameAsync(string username, string lobbyCode)
         {
             ensureClientIsCreated();
             await executeTaskCallAsync(async () => await proxy.leaveGameAsync(username, lobbyCode));
         }
 
-        public void disconnect()
+        public void disconnect(bool forceAbort = false)
         {
             lock (joinLock)
             {
@@ -184,17 +167,29 @@ namespace MindWeaveClient.Services.Implementations
                 pendingJoinRequest = null;
             }
 
+            unsubscribeFromCallbackEvents();
+
             if (proxy == null) return;
 
             try
             {
-                if (proxy.State == CommunicationState.Opened)
+                if (forceAbort)
                 {
-                    proxy.Close();
+                    if (proxy.State != CommunicationState.Closed)
+                    {
+                        abortProxySafe();
+                    }
                 }
                 else
                 {
-                    abortProxySafe();
+                    if (proxy.State == CommunicationState.Opened)
+                    {
+                        proxy.Close();
+                    }
+                    else
+                    {
+                        abortProxySafe();
+                    }
                 }
             }
             catch (CommunicationException)
@@ -207,7 +202,6 @@ namespace MindWeaveClient.Services.Implementations
             }
             finally
             {
-                unsubscribeFromCallbackEvents();
                 proxy = null;
             }
         }

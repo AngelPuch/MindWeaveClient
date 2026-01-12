@@ -88,18 +88,26 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        public async Task disconnectAsync(string username)
+        public async Task disconnectAsync(string username, bool forceAbort = false)
         {
-            if (proxy == null || proxy.State != CommunicationState.Opened)
-            {
-                cleanupProxy();
-                return;
-            }
-
             try
             {
-                await proxy.disconnectAsync(username);
-                closeProxySafe();
+                if (forceAbort)
+                {
+                    abortProxySafe();
+                }
+                else
+                {
+                    if (proxy != null && proxy.State == CommunicationState.Opened)
+                    {
+                        await proxy.disconnectAsync(username);
+                        closeProxySafe();
+                    }
+                    else
+                    {
+                        abortProxySafe();
+                    }
+                }
             }
             catch (EndpointNotFoundException)
             {

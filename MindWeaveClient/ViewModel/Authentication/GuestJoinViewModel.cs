@@ -7,7 +7,6 @@ using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.Validators;
 using MindWeaveClient.View.Authentication;
 using MindWeaveClient.View.Game;
-using MindWeaveClient.View.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;

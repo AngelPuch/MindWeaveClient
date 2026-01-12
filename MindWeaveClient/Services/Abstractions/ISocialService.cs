@@ -13,7 +13,7 @@ namespace MindWeaveClient.Services.Abstractions
 
         Task connectAsync(string username);
 
-        Task disconnectAsync(string username);
+        Task disconnectAsync(string username, bool forceAbort = false);
 
         Task<FriendDto[]> getFriendsListAsync(string username);
 

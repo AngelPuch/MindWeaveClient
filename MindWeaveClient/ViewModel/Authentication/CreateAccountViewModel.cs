@@ -21,8 +21,14 @@ namespace MindWeaveClient.ViewModel.Authentication
         private const int MAX_LENGTH_USERNAME = 16;
         private const int MAX_LENGTH_EMAIL = 45;
         private const int MAX_LENGTH_PASSWORD = 128;
+        private const int FEMALE = 1;
+        private const int MALE = 2;
+        private const int OTHER = 3;
+        private const int PREFER_NOT_SAY = 4;
+        private const string AUTH_ACCOUNT_NOT_VERIFIED = "AUTH_ACCOUNT_NOT_VERIFIED";
 
-        private string firstName;
+
+    private string firstName;
         private string lastName;
         private string username;
         private string email;
@@ -357,10 +363,10 @@ namespace MindWeaveClient.ViewModel.Authentication
                 else
                 {
 
-                    if (result.MessageCode == "AUTH_ACCOUNT_NOT_VERIFIED")
+                    if (result.MessageCode == AUTH_ACCOUNT_NOT_VERIFIED)
                     {
                         bool userWantsToVerify = dialogService.showWarning(
-                            MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"),
+                            MessageCodeInterpreter.translate(AUTH_ACCOUNT_NOT_VERIFIED),
                             Lang.WarningTitle
                         );
 
@@ -387,10 +393,8 @@ namespace MindWeaveClient.ViewModel.Authentication
                                 string resendError = MessageCodeInterpreter.translate(resendResult.MessageCode);
                                 dialogService.showError(resendError, Lang.ErrorTitle);
                             }
-                            return;
                         }
 
-                        
                         return;
                     }
 
@@ -415,9 +419,9 @@ namespace MindWeaveClient.ViewModel.Authentication
 
         private int getSelectedGenderId()
         {
-            if (IsFemale) return 1;
-            if (IsMale) return 2;
-            return IsOther ? 3 : 4;
+            if (IsFemale) return FEMALE;
+            if (IsMale) return MALE;
+            return IsOther ? OTHER : PREFER_NOT_SAY;
         }
     }
 }

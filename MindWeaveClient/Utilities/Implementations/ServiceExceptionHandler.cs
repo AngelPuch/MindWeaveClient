@@ -132,17 +132,6 @@ namespace MindWeaveClient.Utilities.Implementations
             return true;
         }
 
-        public void performSoftReset()
-        {
-            lock (lockObject)
-            {
-                if (isHandlingCriticalError) return;
-                isHandlingCriticalError = true;
-            }
-
-            executeResetSequence();
-        }
-
         private void handleNetworkUnavailableError(Exception exception)
         {
             lock (lockObject)

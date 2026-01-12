@@ -8,7 +8,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Linq; // Necesario para LINQ
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -32,10 +31,7 @@ namespace MindWeaveClient.ViewModel.Main
         private string totalPlaytime;
         private int highestScore;
 
-        // Unificamos en una sola colección pública para la UI
         public ObservableCollection<AchievementDto> AchievementsList { get; set; }
-
-        // NUEVO: Colección para Redes Sociales
         public ObservableCollection<SocialMediaItem> SocialMediaList { get; set; }
 
         public string WelcomeMessage { get => welcomeMessage; set { welcomeMessage = value; OnPropertyChanged(); } }
@@ -76,8 +72,6 @@ namespace MindWeaveClient.ViewModel.Main
             AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
 
             _ = loadProfileDataAsync();
-            // Nota: Si loadProfileDataAsync ya trae logros, loadAchievementsAsync podría ser redundante.
-            // Lo mantengo aquí por si tu lógica de negocio requiere obtenerlos por separado.
             _ = loadAchievementsAsync();
         }
 
@@ -132,7 +126,6 @@ namespace MindWeaveClient.ViewModel.Main
                 HighestScore = profileData.Stats.HighestScore;
             }
 
-            // Lógica de Redes Sociales
             SocialMediaList.Clear();
             if (profileData.SocialMedia != null)
             {
@@ -163,7 +156,6 @@ namespace MindWeaveClient.ViewModel.Main
                 foreach (var achievement in achievementList)
                 {
                     string fileName = System.IO.Path.GetFileName(achievement.IconPath);
-                    // Asegúrate de que esta ruta coincida con la estructura de tu proyecto
                     achievement.IconPath = $"pack://application:,,,/MindWeaveClient;component/Resources/Images/achievements/{fileName}";
                     AchievementsList.Add(achievement);
                 }

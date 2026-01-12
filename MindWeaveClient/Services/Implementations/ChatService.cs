@@ -83,30 +83,41 @@ namespace MindWeaveClient.Services.Implementations
             }
         }
 
-        public async Task disconnectAsync()
+        public async Task disconnectAsync(bool forceAbort = false)
         {
-            if (!string.IsNullOrEmpty(connectedUsername) && !string.IsNullOrEmpty(connectedLobbyId))
+            if (forceAbort)
+            {
+                await disconnectAsync(string.Empty, string.Empty, true);
+            }
+            else if (!string.IsNullOrEmpty(connectedUsername) && !string.IsNullOrEmpty(connectedLobbyId))
             {
                 await disconnectAsync(connectedUsername, connectedLobbyId);
             }
         }
 
-        public async Task disconnectAsync(string username, string lobbyId)
+        public async Task disconnectAsync(string username, string lobbyId, bool forceAbort = false)
         {
-            if (!isConnected())
-            {
-                return;
-            }
-
-            if (username != connectedUsername || lobbyId != connectedLobbyId)
-            {
-                return;
-            }
-
             try
             {
-                await Task.Run(() => proxy.leaveLobbyChat(username, lobbyId));
-                closeProxySafe();
+                if (forceAbort)
+                {
+                    abortProxySafe();
+                }
+                else
+                {
+                    if (!isConnected())
+                    {
+                        return;
+                    }
+
+                    if (username != connectedUsername || lobbyId != connectedLobbyId)
+                    {
+                        return;
+                    }
+
+                    await Task.Run(() => proxy.leaveLobbyChat(username, lobbyId));
+                    closeProxySafe();
+                }
             }
             catch (EndpointNotFoundException)
             {
@@ -121,6 +132,10 @@ namespace MindWeaveClient.Services.Implementations
                 abortProxySafe();
             }
             catch (SocketException)
+            {
+                abortProxySafe();
+            }
+            catch (Exception)
             {
                 abortProxySafe();
             }

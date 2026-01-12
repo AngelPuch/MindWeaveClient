@@ -24,7 +24,7 @@ namespace MindWeaveClient.ViewModel.Authentication
         private string email;
         private string verificationCode;
         private bool canResendCode = true;
-        private int remainingSeconds = 0;
+        private int remainingSeconds;
         private DispatcherTimer resendTimer;
 
         private readonly IAuthenticationService authenticationService;

@@ -8,19 +8,13 @@ namespace MindWeaveClient.Services.Abstractions
     {
         string LobbyId { get; }
         List<string> Players { get; }
-        bool IsMatchActive { get; }
-        LobbySettingsDto CurrentSettings { get; }
-        string PuzzleImagePath { get; }
 
-        event EventHandler OnMatchFound;
         event Action PuzzleReady;
 
         void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath);
 
         PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle();
         void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle);
-        void setMatchId(string matchId); 
-        string getMatchId();
         void clearMatchData();
     }
 }

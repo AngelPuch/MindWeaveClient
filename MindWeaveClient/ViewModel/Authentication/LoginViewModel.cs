@@ -18,6 +18,7 @@ namespace MindWeaveClient.ViewModel.Authentication
     {
         private const int MAX_LENGTH_EMAIL = 45;
         private const int MAX_LENGTH_PASSWORD = 128;
+        private const string AUTH_ACCOUNT_NOT_VERIFIED = "AUTH_ACCOUNT_NOT_VERIFIED";
 
         private string email;
         private string password;
@@ -29,8 +30,6 @@ namespace MindWeaveClient.ViewModel.Authentication
         private readonly INavigationService navigationService;
         private readonly IWindowNavigationService windowNavigationService;
         private readonly IServiceExceptionHandler exceptionHandler;
-
-
         public string Email
         {
             get => email;
@@ -199,10 +198,10 @@ namespace MindWeaveClient.ViewModel.Authentication
 
             private async Task handleFailedLogin(LoginServiceResultDto result)
             {
-                if (result.WcfLoginResult.ResultCode == "AUTH_ACCOUNT_NOT_VERIFIED")
+                if (result.WcfLoginResult.ResultCode == AUTH_ACCOUNT_NOT_VERIFIED)
                 {
                     bool userWantsToVerify = dialogService.showWarning(
-                MessageCodeInterpreter.translate("AUTH_ACCOUNT_NOT_VERIFIED"),
+                MessageCodeInterpreter.translate(AUTH_ACCOUNT_NOT_VERIFIED),
                 Lang.WarningTitle);
 
                     if (userWantsToVerify)
