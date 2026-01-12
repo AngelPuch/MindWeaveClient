@@ -54,6 +54,22 @@ namespace MindWeaveClient.ViewModel.Main
         public ObservableCollection<PlayerSearchResultDto> SearchResults { get; } = new ObservableCollection<PlayerSearchResultDto>();
         public ObservableCollection<FriendRequestInfoDto> ReceivedRequests { get; } = new ObservableCollection<FriendRequestInfoDto>();
 
+        private bool isBusy;
+        public bool IsBusy
+        {
+            get => isBusy;
+            set
+            {
+                if (isBusy != value)
+                {
+                    isBusy = value;
+                    OnPropertyChanged();
+
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
+        }
+
         public string SearchQuery
         {
             get => searchQueryValue;
@@ -65,7 +81,6 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     searchQueryValue = processedValue;
                     OnPropertyChanged();
-                    RaiseCanExecuteChangedOnCommands();
                 }
             }
         }
@@ -124,7 +139,7 @@ namespace MindWeaveClient.ViewModel.Main
             this.exceptionHandler = exceptionHandler;
 
             currentUserUsername = SessionService.Username;
-            
+
             LoadFriendsListCommand = new RelayCommand(async (param) => await executeLoadFriendsListAsync(), (param) => !IsBusy);
             LoadRequestsCommand = new RelayCommand(async (param) => await executeLoadRequestsAsync(), (param) => !IsBusy);
             SearchCommand = new RelayCommand(async (param) => await executeSearchAsync(), (param) => !IsBusy && !string.IsNullOrWhiteSpace(SearchQuery));
@@ -132,12 +147,18 @@ namespace MindWeaveClient.ViewModel.Main
             AcceptRequestCommand = new RelayCommand(async (param) => await executeRespondRequestAsync(param as FriendRequestInfoDto, true), (param) => !IsBusy && param is FriendRequestInfoDto);
             DeclineRequestCommand = new RelayCommand(async (param) => await executeRespondRequestAsync(param as FriendRequestInfoDto, false), (param) => !IsBusy && param is FriendRequestInfoDto);
             RemoveFriendCommand = new RelayCommand(async (param) => await executeRemoveFriendAsync(param as FriendDtoDisplay), (param) => !IsBusy && param is FriendDtoDisplay);
-            BackCommand = new RelayCommand((param) => navigationService1.goBack());
+            BackCommand = new RelayCommand((param) => navigationService1.goBack(), (param) => !IsBusy);
 
             subscribeToEvents();
 
-            if (IsFriendsListChecked) LoadFriendsListCommand.Execute(null);
-            else if (IsRequestsChecked) LoadRequestsCommand.Execute(null);
+            if (IsFriendsListChecked)
+            {
+                LoadFriendsListCommand.Execute(null);
+            }
+            else if (IsRequestsChecked)
+            {
+                LoadRequestsCommand.Execute(null);
+            }
         }
 
         private static string clampString(string value, int maxLength)
@@ -165,7 +186,8 @@ namespace MindWeaveClient.ViewModel.Main
 
         private async Task executeLoadFriendsListAsync()
         {
-            SetBusy(true);
+            if (IsBusy) return;
+            IsBusy = true;
             FriendsList.Clear();
             try
             {
@@ -184,13 +206,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false);
+                IsBusy = false;
             }
         }
 
         private async Task executeLoadRequestsAsync()
         {
-            SetBusy(true);
+            if (IsBusy) return;
+            IsBusy = true;
             ReceivedRequests.Clear();
             try
             {
@@ -206,13 +229,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false);
+                IsBusy = false;
             }
         }
 
         private async Task executeSearchAsync()
         {
-            SetBusy(true);
+            if (IsBusy) return;
+            IsBusy = true;
             SearchResults.Clear();
             try
             {
@@ -228,14 +252,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false);
+                IsBusy = false;
             }
         }
 
         private async Task executeSendRequestAsync(PlayerSearchResultDto targetUser)
         {
-            if (targetUser == null) return;
-            SetBusy(true);
+            if (targetUser == null || IsBusy) return;
+            IsBusy = true;
             try
             {
                 OperationResultDto result = await socialService.sendFriendRequestAsync(currentUserUsername, targetUser.Username);
@@ -258,14 +282,14 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false);
+                IsBusy = false;
             }
         }
 
         private async Task executeRespondRequestAsync(FriendRequestInfoDto request, bool accept)
         {
-            if (request == null) return;
-            SetBusy(true);
+            if (request == null || IsBusy) return;
+            IsBusy = true;
             try
             {
                 OperationResultDto result = await socialService.respondToFriendRequestAsync(currentUserUsername, request.RequesterUsername, accept);
@@ -292,13 +316,13 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false);
+                IsBusy = false;
             }
         }
 
         private async Task executeRemoveFriendAsync(FriendDtoDisplay friendToRemove)
         {
-            if (friendToRemove == null) return;
+            if (friendToRemove == null || IsBusy) return;
 
             bool confirmResult = dialogService.showConfirmation(
                 string.Format(Lang.SocialConfirmRemove, friendToRemove.Username),
@@ -306,7 +330,7 @@ namespace MindWeaveClient.ViewModel.Main
 
             if (!confirmResult) return;
 
-            SetBusy(true);
+            IsBusy = true;
             try
             {
                 OperationResultDto result = await socialService.removeFriendAsync(currentUserUsername, friendToRemove.Username);
@@ -315,6 +339,7 @@ namespace MindWeaveClient.ViewModel.Main
                 {
                     string successMsg = MessageCodeInterpreter.translate(result.MessageCode);
                     dialogService.showInfo(successMsg, Lang.InfoMsgTitleSuccess);
+                    FriendsList.Remove(friendToRemove);
                 }
                 else
                 {
@@ -328,10 +353,11 @@ namespace MindWeaveClient.ViewModel.Main
             }
             finally
             {
-                SetBusy(false);
+                IsBusy = false;
             }
         }
 
+        // Event Handlers
         private void handleFriendRequestReceived(string fromUsername)
         {
             Application.Current.Dispatcher.Invoke(async () =>
