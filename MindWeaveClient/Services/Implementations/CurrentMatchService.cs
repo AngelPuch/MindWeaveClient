@@ -7,7 +7,6 @@ namespace MindWeaveClient.Services.Implementations
 {
     public class CurrentMatchService : ICurrentMatchService
     {
-        private string matchId;
         private string lobbyId;
         private List<string> players;
         private PuzzleManagerService.PuzzleDefinitionDto currentPuzzle;
@@ -23,7 +22,6 @@ namespace MindWeaveClient.Services.Implementations
         {
             this.lobbyId = lobbyId;
             this.players = players;
-            this.matchId = lobbyId;
             OnMatchFound?.Invoke(this, EventArgs.Empty);
         }
 
@@ -40,7 +38,6 @@ namespace MindWeaveClient.Services.Implementations
 
         public void clearMatchData()
         {
-            matchId = null;
             lobbyId = null;
             players = null;
             currentPuzzle = null;

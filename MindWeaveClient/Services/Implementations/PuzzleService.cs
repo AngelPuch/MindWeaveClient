@@ -21,12 +21,6 @@ namespace MindWeaveClient.Services.Implementations
                 await client.uploadPuzzleImageAsync(username, imageBytes, fileName));
         }
 
-        public async Task<PuzzleDefinitionDto> getPuzzleDefinitionAsync(int puzzleId, int difficultyId)
-        {
-            return await executeServiceCallAsync(async (client) =>
-                await client.getPuzzleDefinitionAsync(puzzleId, difficultyId));
-        }
-
         private static async Task<T> executeServiceCallAsync<T>(Func<PuzzleManagerClient, Task<T>> action)
         {
             var client = new PuzzleManagerClient();

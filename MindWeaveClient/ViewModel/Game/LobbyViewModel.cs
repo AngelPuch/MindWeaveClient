@@ -356,7 +356,18 @@ namespace MindWeaveClient.ViewModel.Game
 
             string processedEmail = clampString(guestEmail?.Trim(), MAX_EMAIL_LENGTH);
 
-            if (string.IsNullOrWhiteSpace(guestEmail) || !Regex.IsMatch(guestEmail, EMAIL_REGEX_PATTERN))
+            bool isEmailValid;
+            try
+            {
+                isEmailValid = !string.IsNullOrWhiteSpace(guestEmail) &&
+                               Regex.IsMatch(guestEmail, EMAIL_REGEX_PATTERN, RegexOptions.None, TimeSpan.FromMilliseconds(500));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                isEmailValid = false;
+            }
+
+            if (!isEmailValid)
             {
                 dialogService.showError(Lang.GlobalErrorInvalidEmailFormat, Lang.ErrorTitle);
                 return;

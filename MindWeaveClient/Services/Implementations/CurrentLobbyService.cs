@@ -7,9 +7,9 @@ namespace MindWeaveClient.Services.Implementations
     {
         private LobbyStateDto initialState;
 
-        public void setInitialState(LobbyStateDto initialStateDto)
+        public void setInitialState(LobbyStateDto initialState)
         {
-            this.initialState = initialStateDto;
+            this.initialState = initialState;
         }
 
         public LobbyStateDto getInitialState()

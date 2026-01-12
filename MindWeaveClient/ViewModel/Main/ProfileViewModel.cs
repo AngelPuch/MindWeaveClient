@@ -6,6 +6,7 @@ using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Main;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -129,17 +130,14 @@ namespace MindWeaveClient.ViewModel.Main
             SocialMediaList.Clear();
             if (profileData.SocialMedia != null)
             {
-                foreach (var socialDto in profileData.SocialMedia)
+                foreach (var socialDto in profileData.SocialMedia.Where(s => !string.IsNullOrWhiteSpace(s.Username)))
                 {
-                    if (!string.IsNullOrWhiteSpace(socialDto.Username))
+                    SocialMediaList.Add(new SocialMediaItem
                     {
-                        SocialMediaList.Add(new SocialMediaItem
-                        {
-                            IdSocialMediaPlatform = socialDto.IdSocialMediaPlatform,
-                            PlatformName = socialDto.PlatformName,
-                            Username = socialDto.Username
-                        });
-                    }
+                        IdSocialMediaPlatform = socialDto.IdSocialMediaPlatform,
+                        PlatformName = socialDto.PlatformName,
+                        Username = socialDto.Username
+                    });
                 }
             }
         }
