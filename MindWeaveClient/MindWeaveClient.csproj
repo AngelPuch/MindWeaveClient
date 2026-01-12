@@ -185,6 +185,7 @@
     <Compile Include="ViewModel\Puzzle\PuzzlePieceViewModel.cs" />
     <Compile Include="ViewModel\Puzzle\PuzzleSlotViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\SocialMediaItem.cs" />
     <Compile Include="View\Authentication\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
@@ -711,6 +712,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Social\default.png" />
+    <Resource Include="Resources\Images\Social\facebook.png" />
+    <Resource Include="Resources\Images\Social\instagram.png" />
+    <Resource Include="Resources\Images\Social\youtube.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

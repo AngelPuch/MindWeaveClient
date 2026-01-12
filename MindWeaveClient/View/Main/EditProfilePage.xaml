@@ -128,6 +128,41 @@
                         <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
                                    Text="{Binding DateOfBirthError}"/>
 
+                        <TextBlock Text="{x:Static language:Lang.GlobalCommonSocial}" 
+                                   Foreground="#34495e" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   Margin="5,10,5,10"/>
+
+                        <ItemsControl ItemsSource="{Binding SocialMediaList}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image Grid.Column="0" 
+                                               Source="{Binding IconPath}" 
+                                               Width="28" 
+                                               Height="28" 
+                                               Margin="0,0,10,5" 
+                                               VerticalAlignment="Center"
+                                               RenderOptions.BitmapScalingMode="HighQuality"
+                                               ToolTip="{Binding PlatformName}"/>
+
+                                        <TextBox Grid.Column="1" 
+                                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Style="{StaticResource AuthInputBoxStyle}" 
+                                                 Tag="{Binding PlatformName}"
+                                                 Margin="0">
+                                        </TextBox>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" 

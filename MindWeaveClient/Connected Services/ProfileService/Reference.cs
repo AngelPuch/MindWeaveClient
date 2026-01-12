@@ -42,6 +42,9 @@ namespace MindWeaveClient.ProfileService {
         private string LastNameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.ProfileService.PlayerSocialMediaDto[] SocialMediaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private MindWeaveClient.ProfileService.PlayerStatsDto StatsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -131,6 +134,19 @@ namespace MindWeaveClient.ProfileService {
                 if ((object.ReferenceEquals(this.LastNameField, value) != true)) {
                     this.LastNameField = value;
                     this.RaisePropertyChanged("LastName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.ProfileService.PlayerSocialMediaDto[] SocialMedia {
+            get {
+                return this.SocialMediaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SocialMediaField, value) != true)) {
+                    this.SocialMediaField = value;
+                    this.RaisePropertyChanged("SocialMedia");
                 }
             }
         }
@@ -377,6 +393,84 @@ namespace MindWeaveClient.ProfileService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PlayerSocialMediaDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.P" +
+        "rofile")]
+    [System.SerializableAttribute()]
+    public partial class PlayerSocialMediaDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdSocialMediaPlatformField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PlatformNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UsernameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int IdSocialMediaPlatform {
+            get {
+                return this.IdSocialMediaPlatformField;
+            }
+            set {
+                if ((this.IdSocialMediaPlatformField.Equals(value) != true)) {
+                    this.IdSocialMediaPlatformField = value;
+                    this.RaisePropertyChanged("IdSocialMediaPlatform");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PlatformName {
+            get {
+                return this.PlatformNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PlatformNameField, value) != true)) {
+                    this.PlatformNameField = value;
+                    this.RaisePropertyChanged("PlatformName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Username {
+            get {
+                return this.UsernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ServiceFaultDto", Namespace="http://schemas.datacontract.org/2004/07/MindWeaveServer.Contracts.DataContracts.S" +
         "hared")]
     [System.SerializableAttribute()]
@@ -539,6 +633,9 @@ namespace MindWeaveClient.ProfileService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string LastNameField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private MindWeaveClient.ProfileService.PlayerSocialMediaDto[] SocialMediaField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -610,6 +707,19 @@ namespace MindWeaveClient.ProfileService {
                 if ((object.ReferenceEquals(this.LastNameField, value) != true)) {
                     this.LastNameField = value;
                     this.RaisePropertyChanged("LastName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public MindWeaveClient.ProfileService.PlayerSocialMediaDto[] SocialMedia {
+            get {
+                return this.SocialMediaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SocialMediaField, value) != true)) {
+                    this.SocialMediaField = value;
+                    this.RaisePropertyChanged("SocialMedia");
                 }
             }
         }

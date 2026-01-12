@@ -4,9 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:language="clr-namespace:MindWeaveClient.Properties.Langs"
+      xmlns:helpers="clr-namespace:MindWeaveClient.Helpers"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="ProfilePage">
+
 
     <Grid>
         <Grid.Background>
@@ -68,6 +70,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
+
                         <Border Background="#BFFFFFFF" CornerRadius="15" Padding="15" Margin="0,0,10,10">
                             <Border.Effect>
                                 <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="20" Opacity="0.2"/>
@@ -101,7 +104,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Background="#CCFFFFFF" CornerRadius="15" Padding="15" Margin="0,0,10,0">
+                        <Border Background="#CCFFFFFF" CornerRadius="15" Padding="15" Margin="0,0,10,10">
                             <Border.Effect>
                                 <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="20" Opacity="0.2"/>
                             </Border.Effect>
@@ -131,6 +134,46 @@
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static language:Lang.ProfileLbHighestScore}" Foreground="#34495e" FontSize="14" Margin="2"/>
                                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HighestScore}" d:Text="1500" Foreground="#2c3e50" FontSize="14" FontWeight="SemiBold" Margin="2"/>
                                 </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#CCFFFFFF" CornerRadius="15" Padding="15" Margin="0,0,10,0">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="20" Opacity="0.2"/>
+                            </Border.Effect>
+                            <StackPanel>
+                                <TextBlock Text="{x:Static language:Lang.GlobalCommonSocial}" Foreground="#2c3e50" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                                <ItemsControl ItemsSource="{Binding SocialMediaList}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,3">
+                                                <Image Source="{Binding IconPath}" Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                                                <TextBlock Text="{Binding Username}" 
+                                                           Foreground="#2c3e50" 
+                                                           FontSize="14" 
+                                                           FontWeight="SemiBold" 
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.Style>
+                                        <Style TargetType="ItemsControl">
+                                            <Style.Triggers>
+                                                <Trigger Property="HasItems" Value="False">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate>
+                                                                <TextBlock Text="No social media connected." FontStyle="Italic" Foreground="#7f8c8d" FontSize="12"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ItemsControl.Style>
+                                </ItemsControl>
                             </StackPanel>
                         </Border>
                     </StackPanel>

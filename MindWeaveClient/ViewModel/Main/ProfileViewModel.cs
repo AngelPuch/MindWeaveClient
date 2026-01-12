@@ -8,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Linq; // Necesario para LINQ
 
 namespace MindWeaveClient.ViewModel.Main
 {
@@ -30,8 +31,12 @@ namespace MindWeaveClient.ViewModel.Main
         private int puzzlesWon;
         private string totalPlaytime;
         private int highestScore;
-        private ObservableCollection<AchievementDto> achievements;
+
+        // Unificamos en una sola colección pública para la UI
         public ObservableCollection<AchievementDto> AchievementsList { get; set; }
+
+        // NUEVO: Colección para Redes Sociales
+        public ObservableCollection<SocialMediaItem> SocialMediaList { get; set; }
 
         public string WelcomeMessage { get => welcomeMessage; set { welcomeMessage = value; OnPropertyChanged(); } }
         public string Username { get => username; set { username = value; OnPropertyChanged(); } }
@@ -44,7 +49,6 @@ namespace MindWeaveClient.ViewModel.Main
         public int PuzzlesWon { get => puzzlesWon; set { puzzlesWon = value; OnPropertyChanged(); } }
         public string TotalPlaytime { get => totalPlaytime; set { totalPlaytime = value; OnPropertyChanged(); } }
         public int HighestScore { get => highestScore; set { highestScore = value; OnPropertyChanged(); } }
-        public ObservableCollection<AchievementDto> Achievements { get => achievements; set { achievements = value; OnPropertyChanged(); } }
 
         public ICommand BackCommand { get; }
         public ICommand EditProfileCommand { get; }
@@ -55,10 +59,12 @@ namespace MindWeaveClient.ViewModel.Main
             INavigationService navigationService,
             IServiceExceptionHandler exceptionHandler)
         {
-            AchievementsList = new ObservableCollection<AchievementDto>();
             this.profileService = profileService;
             var navigationService1 = navigationService;
             this.exceptionHandler = exceptionHandler;
+
+            AchievementsList = new ObservableCollection<AchievementDto>();
+            SocialMediaList = new ObservableCollection<SocialMediaItem>();
 
             SessionService.AvatarPathChanged += OnAvatarPathChanged;
 
@@ -68,9 +74,10 @@ namespace MindWeaveClient.ViewModel.Main
             Username = SessionService.Username ?? Lang.GlobalLbLoading;
             WelcomeMessage = $"{Lang.ProfileLbHi.TrimEnd('!')} {Username.ToUpper()}!";
             AvatarSource = SessionService.AvatarPath ?? DEFAULT_AVATAR_PATH;
-            Achievements = new ObservableCollection<AchievementDto>();
 
             _ = loadProfileDataAsync();
+            // Nota: Si loadProfileDataAsync ya trae logros, loadAchievementsAsync podría ser redundante.
+            // Lo mantengo aquí por si tu lógica de negocio requiere obtenerlos por separado.
             _ = loadAchievementsAsync();
         }
 
@@ -125,18 +132,28 @@ namespace MindWeaveClient.ViewModel.Main
                 HighestScore = profileData.Stats.HighestScore;
             }
 
-            if (profileData.Achievements != null)
+            // Lógica de Redes Sociales
+            SocialMediaList.Clear();
+            if (profileData.SocialMedia != null)
             {
-                Achievements = new ObservableCollection<AchievementDto>(profileData.Achievements);
+                foreach (var socialDto in profileData.SocialMedia)
+                {
+                    if (!string.IsNullOrWhiteSpace(socialDto.Username))
+                    {
+                        SocialMediaList.Add(new SocialMediaItem
+                        {
+                            IdSocialMediaPlatform = socialDto.IdSocialMediaPlatform,
+                            PlatformName = socialDto.PlatformName,
+                            Username = socialDto.Username
+                        });
+                    }
+                }
             }
         }
 
         private async Task loadAchievementsAsync()
         {
-            if (SessionService.PlayerId <= 0)
-            {
-                return;
-            }
+            if (SessionService.PlayerId <= 0) return;
 
             try
             {
@@ -146,6 +163,7 @@ namespace MindWeaveClient.ViewModel.Main
                 foreach (var achievement in achievementList)
                 {
                     string fileName = System.IO.Path.GetFileName(achievement.IconPath);
+                    // Asegúrate de que esta ruta coincida con la estructura de tu proyecto
                     achievement.IconPath = $"pack://application:,,,/MindWeaveClient;component/Resources/Images/achievements/{fileName}";
                     AchievementsList.Add(achievement);
                 }
