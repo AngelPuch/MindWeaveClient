@@ -54,21 +54,7 @@ namespace MindWeaveClient.ViewModel.Main
         public ObservableCollection<PlayerSearchResultDto> SearchResults { get; } = new ObservableCollection<PlayerSearchResultDto>();
         public ObservableCollection<FriendRequestInfoDto> ReceivedRequests { get; } = new ObservableCollection<FriendRequestInfoDto>();
 
-        private bool isBusy;
-        public bool IsBusy
-        {
-            get => isBusy;
-            set
-            {
-                if (isBusy != value)
-                {
-                    isBusy = value;
-                    OnPropertyChanged();
-
-                    CommandManager.InvalidateRequerySuggested();
-                }
-            }
-        }
+        
 
         public string SearchQuery
         {
