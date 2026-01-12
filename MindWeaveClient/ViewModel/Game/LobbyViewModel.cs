@@ -243,7 +243,17 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     gameWindow.IsExitConfirmed = true;
                 }
-                windowNavigationService.openWindow<MainWindow>();
+
+                if (IsGuestUser)
+                {
+                    SessionService.clearSession();
+                    windowNavigationService.openWindow<AuthenticationWindow>();
+                }
+                else
+                {
+                    windowNavigationService.openWindow<MainWindow>();
+                }
+
                 windowNavigationService.closeWindow<GameWindow>();
 
                 SetBusy(false);
@@ -485,7 +495,16 @@ namespace MindWeaveClient.ViewModel.Game
                     gameWindow.IsExitConfirmed = true;
                 }
 
-                windowNavigationService.openWindow<MainWindow>();
+                if (IsGuestUser)
+                {
+                    SessionService.clearSession();
+                    windowNavigationService.openWindow<AuthenticationWindow>();
+                }
+                else
+                {
+                    windowNavigationService.openWindow<MainWindow>();
+                }
+
                 windowNavigationService.closeWindow<GameWindow>();
 
                 Dispose();
@@ -702,7 +721,16 @@ namespace MindWeaveClient.ViewModel.Game
                 gameWindow.IsExitConfirmed = true;
             }
 
-            windowNavigationService.openWindow<MainWindow>();
+            if (IsGuestUser)
+            {
+                SessionService.clearSession();
+                windowNavigationService.openWindow<AuthenticationWindow>();
+            }
+            else
+            {
+                windowNavigationService.openWindow<MainWindow>();
+            }
+
             windowNavigationService.closeWindow<GameWindow>();
         }
 
