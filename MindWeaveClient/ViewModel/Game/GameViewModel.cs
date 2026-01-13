@@ -63,6 +63,7 @@ namespace MindWeaveClient.ViewModel.Game
         private const string SOUND_BONUS = "bonus.mp3";
         private const string END_REASON_TIMEOUT = "TimeOut";
         private const string END_REASON_FORFEIT = "Forfeit";
+        private const string END_REASON_DB_ERROR = "PuzzleSolved_NoSave";
         private const string COLOR_BONUS_NOTIFICATION = "#F1C40F";
         private const string COLOR_PLAYER_BLUE = "#3498DB";
         private const string COLOR_PLAYER_RED = "#E74C3C";
@@ -476,6 +477,10 @@ namespace MindWeaveClient.ViewModel.Game
                     case END_REASON_FORFEIT:
                         title = Lang.GameEndForfeitTitle;
                         message = Lang.GameEndForfeitMessage;
+                        break;
+                    case END_REASON_DB_ERROR:
+                        title = Lang.GameEndDbErrorTitle;
+                        message = Lang.GameEndDbErrorMessage;
                         break;
                     default:
                         title = Lang.GameEndCompletedTitle;

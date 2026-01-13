@@ -1329,4 +1329,10 @@
   <data name="ValidationLastNameLength" xml:space="preserve">
     <value>El apellido debe tener entre 3 y 45 caracteres.</value>
   </data>
+  <data name="GameEndDbErrorTitle" xml:space="preserve">
+    <value>Servicio BD no disponible</value>
+  </data>
+  <data name="GameEndDbErrorMessage" xml:space="preserve">
+    <value>No se pueden guardar los resultados porque el servicio de base de datos está apagado.</value>
+  </data>
 </root>

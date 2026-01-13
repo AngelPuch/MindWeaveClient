@@ -1321,6 +1321,24 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Results cannot be saved because the database service is offline..
+        /// </summary>
+        public static string GameEndDbErrorMessage {
+            get {
+                return ResourceManager.GetString("GameEndDbErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Service DB Unavailable.
+        /// </summary>
+        public static string GameEndDbErrorTitle {
+            get {
+                return ResourceManager.GetString("GameEndDbErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Your opponents have left the match. You win!.
         /// </summary>
         public static string GameEndForfeitMessage {

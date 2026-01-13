@@ -1329,4 +1329,10 @@
   <data name="ValidationLastNameLength" xml:space="preserve">
     <value>Last name must be between 3 and 45 characters.</value>
   </data>
+  <data name="GameEndDbErrorTitle" xml:space="preserve">
+    <value>Service DB Unavailable</value>
+  </data>
+  <data name="GameEndDbErrorMessage" xml:space="preserve">
+    <value>Results cannot be saved because the database service is offline.</value>
+  </data>
 </root>
