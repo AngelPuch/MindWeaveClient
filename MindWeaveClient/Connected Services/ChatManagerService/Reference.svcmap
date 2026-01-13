@@ -19,13 +19,13 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://10.237.134.241:8734/MindWeaveServer/Services/ChatManagerService/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="f7056498-3611-4636-a77f-10eb2b112235" SourceId="1" SourceUrl="net.tcp://10.237.134.241:8734/MindWeaveServer/Services/ChatManagerService/mex" />
-    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="b78367cf-dfaa-44c2-b6f7-0aa88764ebf3" SourceId="1" SourceUrl="net.tcp://10.237.134.241:8734/MindWeaveServer/Services/ChatManagerService/mex" />
-    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="7a77a9c8-5965-4952-94c1-c5aa7dd47667" SourceId="1" SourceUrl="net.tcp://10.237.134.241:8734/MindWeaveServer/Services/ChatManagerService/mex" />
-    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Chat1.xsd" MetadataType="Schema" ID="e3048de0-8699-46b8-ac3b-7c4c595f84a0" SourceId="1" SourceUrl="net.tcp://10.237.134.241:8734/MindWeaveServer/Services/ChatManagerService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="b698b452-ccb1-4e20-9676-b19e85d7b5e3" SourceId="1" SourceUrl="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="676b4c2c-97e4-42ad-ba47-ef6ed98693e9" SourceId="1" SourceUrl="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="a3226541-a8d4-47a6-a6c5-98311903e244" SourceId="1" SourceUrl="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/mex" />
+    <MetadataFile FileName="MindWeaveServer.Contracts.DataContracts.Chat.xsd" MetadataType="Schema" ID="4589a07f-bf1a-4c23-adc0-ecd2a2475628" SourceId="1" SourceUrl="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
