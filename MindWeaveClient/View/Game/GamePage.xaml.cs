@@ -14,7 +14,7 @@ namespace MindWeaveClient.View.Game
     public partial class GamePage : Page
     {
         private const double BOARD_SNAP_TOLERANCE = 15.0;
-        private const int MOVE_UPDATE_INTERVAL_MS = 50;
+        private const int MOVE_UPDATE_INTERVAL_MS = 1000;
         private const int Z_INDEX_DRAGGING = 1000;
 
         private List<PuzzlePieceViewModel> draggedGroup;

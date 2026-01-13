@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="Qckbg2wV1MAOqExMMXTaAMHQ3lB01NtzrAZ4S6hg5yA=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="4oGmcD1QeWl0NcZtQC1dJsNoXkoiVfAT95gp0nSEuMw=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IPuzzleManager">
       <properties>
@@ -121,10 +121,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IPuzzleManager" contract="PuzzleManagerService.IPuzzleManager" bindingType="netTcpBinding" address="net.tcp://10.181.13.241:8734/MindWeaveServer/Services/PuzzleManagerService/" bindingConfiguration="NetTcpBinding_IPuzzleManager">
+    <endpoint name="NetTcpBinding_IPuzzleManager" contract="PuzzleManagerService.IPuzzleManager" bindingType="netTcpBinding" address="net.tcp://10.237.134.241:8734/MindWeaveServer/Services/PuzzleManagerService/" bindingConfiguration="NetTcpBinding_IPuzzleManager">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://10.181.13.241:8734/MindWeaveServer/Services/PuzzleManagerService/</serializedValue>
+          <serializedValue>net.tcp://10.237.134.241:8734/MindWeaveServer/Services/PuzzleManagerService/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

@@ -399,17 +399,17 @@
     <None Include="Connected Services\AuthenticationService\service4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat.xsd">
+    <None Include="Connected Services\ChatManagerService\MindWeaveServer.Contracts.DataContracts.Chat1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\service.wsdl" />
-    <None Include="Connected Services\ChatManagerService\service.xsd">
+    <None Include="Connected Services\ChatManagerService\service1.wsdl" />
+    <None Include="Connected Services\ChatManagerService\service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ChatManagerService\service1.xsd">
+    <None Include="Connected Services\ChatManagerService\service21.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\Arrays.xsd">
+    <None Include="Connected Services\MatchmakingService\Arrays1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.GuestJoinResultDto.datasource">
@@ -418,23 +418,23 @@
     <None Include="Connected Services\MatchmakingService\MindWeaveClient.MatchmakingService.LobbyCreationResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Game.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Game1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Matchmaking1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Puzzle.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Puzzle1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
+    <None Include="Connected Services\MatchmakingService\MindWeaveServer.Contracts.DataContracts.Shared1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\service.wsdl" />
-    <None Include="Connected Services\MatchmakingService\service.xsd">
+    <None Include="Connected Services\MatchmakingService\service1.wsdl" />
+    <None Include="Connected Services\MatchmakingService\service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\MatchmakingService\service1.xsd">
+    <None Include="Connected Services\MatchmakingService\service21.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ProfileService\Arrays1.xsd">
@@ -528,7 +528,7 @@
     <None Include="Connected Services\PuzzleManagerService\service4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\Arrays.xsd">
+    <None Include="Connected Services\SocialManagerService\Arrays1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.FriendDto.datasource">
@@ -543,17 +543,17 @@
     <None Include="Connected Services\SocialManagerService\MindWeaveClient.SocialManagerService.PlayerSearchResultDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared.xsd">
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Shared1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social.xsd">
+    <None Include="Connected Services\SocialManagerService\MindWeaveServer.Contracts.DataContracts.Social1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\service.wsdl" />
-    <None Include="Connected Services\SocialManagerService\service.xsd">
+    <None Include="Connected Services\SocialManagerService\service1.wsdl" />
+    <None Include="Connected Services\SocialManagerService\service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\SocialManagerService\service1.xsd">
+    <None Include="Connected Services\SocialManagerService\service21.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />

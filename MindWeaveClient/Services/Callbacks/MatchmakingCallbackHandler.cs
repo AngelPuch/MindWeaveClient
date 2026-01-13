@@ -43,6 +43,7 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void kickedFromLobby(string reason)
         {
+            Console.WriteLine($"[MatchmakingCallbackHandler] Kicked from lobby: {reason}");
             OnKickedEvent?.Invoke(reason);
         }
 
@@ -179,6 +180,7 @@ namespace MindWeaveClient.Services.Callbacks
             PiecePlacedHandler = null;
             PieceMovedHandler = null;
             PieceDragReleasedHandler = null;
+            PlayerPenaltyHandler = null;
         }
     }
 }
