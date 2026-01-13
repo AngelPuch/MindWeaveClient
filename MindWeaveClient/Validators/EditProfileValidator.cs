@@ -12,6 +12,8 @@ namespace MindWeaveClient.Validators
         private const string CREDENTIAL_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
         private const string NAME_VALIDATOR_REGEX = @"^(?=.*\p{L})[\p{L}\p{M} '\-\.]+$";
 
+        private const string SOCIAL_USERNAME_REGEX = @"^[a-zA-Z0-9._-]+$";
+        private const int MAX_SOCIAL_USERNAME_LENGTH = 100;
         private const int MAX_NAME_LENGTH = 45;
         private const int MIN_NAME_LENGTH = 3;
         private const int MAX_PASSWORD_INPUT_LENGTH = 128;
@@ -36,6 +38,14 @@ namespace MindWeaveClient.Validators
                     .LessThan(DateTime.Now.AddYears(MIN_AGE)).WithMessage(Lang.ValidationBirthDateInvalid);
             });
 
+            RuleForEach(x => x.SocialMediaList).ChildRules(socialMedia =>
+            {
+                socialMedia.RuleFor(sm => sm.Username)
+                    .NotEmpty().WithMessage(Lang.ValidationSocialUsernameRequired) // Usar el nuevo mensaje específico
+                    .MaximumLength(MAX_SOCIAL_USERNAME_LENGTH).WithMessage(Lang.ValidationSocialUsernameLength) // Usar el nuevo mensaje de 100 chars
+                    .Matches(SOCIAL_USERNAME_REGEX).WithMessage(Lang.ValidationSocialUsernameInvalid); // Usar el nuevo mensaje específico
+            });
+
             RuleSet(PASSWORD, () =>
             {
                 RuleFor(x => x.CurrentPassword)
@@ -51,6 +61,8 @@ namespace MindWeaveClient.Validators
                     .Equal(x => x.NewPassword).WithMessage(Lang.ValidationPasswordsDoNotMatch)
                     .MaximumLength(MAX_PASSWORD_INPUT_LENGTH);
             });
+
+
         }
     }
 }

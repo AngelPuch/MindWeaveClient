@@ -1335,4 +1335,13 @@
   <data name="GameEndDbErrorMessage" xml:space="preserve">
     <value>No se pueden guardar los resultados porque el servicio de base de datos está apagado.</value>
   </data>
+  <data name="ValidationSocialUsernameRequired" xml:space="preserve">
+    <value>El usuario de red social es obligatorio.</value>
+  </data>
+  <data name="ValidationSocialUsernameLength" xml:space="preserve">
+    <value>El usuario no puede exceder los 100 caracteres.</value>
+  </data>
+  <data name="ValidationSocialUsernameInvalid" xml:space="preserve">
+    <value>El nombre de usuario de la red social contiene caracteres inválidos.</value>
+  </data>
 </root>

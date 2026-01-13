@@ -261,7 +261,9 @@ namespace MindWeaveClient.ViewModel.Game
 
         private async Task executeStartGameAsync()
         {
+            if (IsBusy) return; 
             SetBusy(true);
+            bool requestSentSuccessfully = false;
 
             try
             {
@@ -275,16 +277,20 @@ namespace MindWeaveClient.ViewModel.Game
                         CurrentSettings,
                         lobbyState?.PuzzleImagePath);
                 }
-
+                requestSentSuccessfully = true;
                 await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
             }
             catch (Exception ex)
             {
                 exceptionHandler.handleException(ex, Lang.StartGameOperation);
+
             }
             finally
             {
-                SetBusy(false);
+                if (!requestSentSuccessfully)
+                {
+                    SetBusy(false);
+                }
             }
         }
 
@@ -426,6 +432,7 @@ namespace MindWeaveClient.ViewModel.Game
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                SetBusy(false);
                 string localizedMessage = MessageCodeInterpreter.translate(messageCode, messageCode);
                 dialogService.showWarning(localizedMessage, Lang.WarningTitle);
             });

@@ -41,6 +41,9 @@ namespace MindWeaveClient.Utilities.Implementations
                 case "VALIDATION_PASSWORD_TOO_WEAK": return Lang.ValidationPasswordComplexity;
                 case "VALIDATION_PASSWORD_REQUIRED": return Lang.ValidationPasswordRequired;
                 case "VALIDATION_PASSWORD_NO_SPACES": return Lang.ValidationPasswordNoSpaces;
+                case "VALIDATION_SOCIAL_USERNAME_REQUIRED": return Lang.ValidationSocialUsernameRequired;
+                case "VALIDATION_SOCIAL_USERNAME_LENGTH": return Lang.ValidationSocialUsernameLength;
+                case "VALIDATION_SOCIAL_USERNAME_INVALID": return Lang.ValidationSocialUsernameInvalid;
 
                 case "VALIDATION_USERNAME_REQUIRED": return Lang.ValidationUsernameRequired;
                 case "VALIDATION_USERNAME_LENGTH": return Lang.ValidationUsernameLength;

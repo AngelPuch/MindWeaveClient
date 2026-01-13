@@ -1335,4 +1335,13 @@
   <data name="GameEndDbErrorMessage" xml:space="preserve">
     <value>Results cannot be saved because the database service is offline.</value>
   </data>
+  <data name="ValidationSocialUsernameRequired" xml:space="preserve">
+    <value>Social media username is required.</value>
+  </data>
+  <data name="ValidationSocialUsernameLength" xml:space="preserve">
+    <value>Username cannot exceed 100 characters.</value>
+  </data>
+  <data name="ValidationSocialUsernameInvalid" xml:space="preserve">
+    <value>Username social contains invalid characters.</value>
+  </data>
 </root>

@@ -3508,6 +3508,33 @@ namespace MindWeaveClient.Properties.Langs {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Username social contains invalid characters..
+        /// </summary>
+        public static string ValidationSocialUsernameInvalid {
+            get {
+                return ResourceManager.GetString("ValidationSocialUsernameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Username cannot exceed 100 characters..
+        /// </summary>
+        public static string ValidationSocialUsernameLength {
+            get {
+                return ResourceManager.GetString("ValidationSocialUsernameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Social media username is required..
+        /// </summary>
+        public static string ValidationSocialUsernameRequired {
+            get {
+                return ResourceManager.GetString("ValidationSocialUsernameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Username must be alphanumeric..
         /// </summary>
         public static string ValidationUsernameAlphanumeric {
