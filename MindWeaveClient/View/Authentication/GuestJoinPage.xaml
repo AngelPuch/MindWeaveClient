@@ -38,7 +38,6 @@
             </Border.Effect>
 
             <StackPanel VerticalAlignment="Center" Margin="40">
-                <!-- Título -->
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinTitle}" 
                            Foreground="#2c3e50" 
                            FontSize="32" 
@@ -48,14 +47,12 @@
                            TextWrapping="Wrap" 
                            TextAlignment="Center"/>
 
-                <!-- Información -->
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinInfo}" 
                            Foreground="#34495e" 
                            TextWrapping="Wrap" 
                            Margin="0,0,0,20" 
                            TextAlignment="Center"/>
 
-                <!-- Lobby Code -->
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinLbLobbyCode}" 
                            Foreground="#2c3e50" 
                            Margin="0,10,0,5"/>
@@ -68,7 +65,6 @@
                            Text="{Binding LobbyCodeError}" 
                            HorizontalAlignment="Center"/>
 
-                <!-- Guest Email -->
                 <TextBlock Text="{x:Static lang:Lang.GlobalLbEmail}" 
                            Foreground="#2c3e50" 
                            Margin="0,15,0,5"/>
@@ -77,7 +73,6 @@
                 <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
                            Text="{Binding GuestEmailError}"/>
 
-                <!-- Desired Username -->
                 <TextBlock Text="{x:Static lang:Lang.GuestJoinLbDesiredUsername}" 
                            Foreground="#2c3e50" 
                            Margin="0,15,0,5"/>
@@ -87,18 +82,15 @@
                 <TextBlock Style="{StaticResource ValidationErrorTextBlockStyle}" 
                            Text="{Binding DesiredUsernameError}"/>
 
-                <!-- Botón Join -->
                 <Button Command="{Binding JoinAsGuestCommand}" 
                         Content="{x:Static lang:Lang.GuestJoinBtnJoin}" 
                         Style="{StaticResource PrimaryButtonStyle}" 
                         Margin="0,30,0,10" />
 
-                <!-- Botón Back -->
                 <Button Command="{Binding GoBackCommand}" 
                         Content="{x:Static lang:Lang.GlobalBtnBack}" 
                         Style="{StaticResource LinkButtonStyle}" />
 
-                <!-- Indicador de Busy -->
                 <Border Background="#88000000" 
                         CornerRadius="10" 
                         Margin="0,10,0,0"

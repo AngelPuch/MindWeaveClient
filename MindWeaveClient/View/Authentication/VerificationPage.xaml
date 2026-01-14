@@ -11,7 +11,6 @@
       d:DataContext="{d:DesignInstance Type=viewModel:VerificationViewModel}">
 
     <Page.Resources>
-        <!-- Agregar el converter aquí -->
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <Style x:Key="ValidationErrorTextBlockStyle" TargetType="TextBlock">
@@ -47,14 +46,12 @@
                            TextWrapping="Wrap" 
                            TextAlignment="Center"/>
 
-                <!-- Instrucciones -->
                 <TextBlock Text="{x:Static language:Lang.VerificationAccountLbInstructions}" 
                            Foreground="#2c3e50" 
                            TextWrapping="Wrap" 
                            Margin="0,0,0,25" 
                            TextAlignment="Center"/>
 
-                <!-- Campo de código de verificación -->
                 <TextBox Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
                          Style="{StaticResource AuthInputBoxStyle}" 
                          MaxLength="6" 
@@ -65,13 +62,11 @@
                            Text="{Binding VerificationCodeError}"
                            HorizontalAlignment="Center"/>
 
-                <!-- Botón Verify -->
                 <Button Command="{Binding VerifyCommand}" 
                         Content="{x:Static language:Lang.VerificationAccountBtnVerify}" 
                         Style="{StaticResource PrimaryButtonStyle}" 
                         Margin="0,30,0,10" />
 
-                <!-- Botón Resend Code con Timer -->
                 <Grid Margin="0,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -93,7 +88,6 @@
                                Visibility="{Binding IsTimerVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
 
-                <!-- Botón Back -->
                 <Button Command="{Binding GoBackCommand}" 
                         Content="{x:Static language:Lang.GlobalBtnBack}" 
                         Style="{StaticResource LinkButtonStyle}" />

@@ -11,7 +11,6 @@
       Title="PostMatchResultsPage">
 
     <Page.Resources>
-        <!-- Convertidores EXISTENTES en tu proyecto -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <helpers:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
 
@@ -179,13 +178,11 @@
                     </ListView>
                 </Border>
 
-                <!-- SECCIÓN DE BOTONES - Usando TUS Helpers Existentes -->
                 <StackPanel Grid.Row="3"
                             Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="0,5,0,0">
 
-                    <!-- Botón MENÚ PRINCIPAL (solo visible para jugadores NO invitados) -->
                     <Button Content="{x:Static lang:Lang.PostMatchBtnMainMenu}"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding GoToMainMenuCommand}"
@@ -193,7 +190,6 @@
                             Width="180" Height="40"
                             Margin="5"/>
 
-                    <!-- Botón SALIR (solo visible para jugadores invitados) -->
                     <Button Content="{x:Static lang:Lang.GlobalBtnExit}"
                             Command="{Binding ExitToLoginCommand}"
                             Visibility="{Binding IsGuest, Converter={StaticResource BoolToVis}}"
