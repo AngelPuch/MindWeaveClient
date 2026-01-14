@@ -1,4 +1,5 @@
 ﻿using MindWeaveClient.MatchmakingService;
+using MindWeaveClient.Services.DataContracts;
 using System;
 using System.Collections.Generic;
 
@@ -11,8 +12,7 @@ namespace MindWeaveClient.Services.Abstractions
 
         event Action PuzzleReady;
 
-        void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath);
-
+        void initializeMatch(MatchFoundDto matchData);
         PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle();
         void setPuzzle(PuzzleManagerService.PuzzleDefinitionDto puzzle);
         void clearMatchData();

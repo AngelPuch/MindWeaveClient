@@ -38,12 +38,7 @@ namespace MindWeaveClient.Validators
                     .LessThan(DateTime.Now.AddYears(MIN_AGE)).WithMessage(Lang.ValidationBirthDateInvalid);
             });
 
-            RuleForEach(x => x.SocialMediaList).ChildRules(socialMedia =>
-            {
-                socialMedia.RuleFor(sm => sm.Username)
-                  .MaximumLength(MAX_SOCIAL_USERNAME_LENGTH).WithMessage(Lang.ValidationSocialUsernameLength) 
-                    .Matches(SOCIAL_USERNAME_REGEX).WithMessage(Lang.ValidationSocialUsernameInvalid); 
-            });
+            
 
             RuleSet(PASSWORD, () =>
             {

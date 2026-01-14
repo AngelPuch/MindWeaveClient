@@ -2,6 +2,7 @@
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
+using MindWeaveClient.Services.DataContracts;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -22,7 +23,7 @@ namespace MindWeaveClient.Services.Implementations
         private readonly object joinLock = new object();
 
         public event Action<LobbyStateDto> OnLobbyStateUpdated;
-        public event Action<string, List<string>, LobbySettingsDto, string> OnMatchFound;
+        public event Action<MatchFoundDto> OnMatchFound;
         public event Action<string> OnLobbyCreationFailed;
         public event Action<string> OnKicked;
         public event Action<string> OnLobbyActionFailed;
@@ -135,22 +136,22 @@ namespace MindWeaveClient.Services.Implementations
             await executeOneWayCallAsync(() => proxy.inviteGuestByEmail(invitationData));
         }
 
+        public async Task requestPieceMoveAsync(string lobbyCode, PieceMovementDto movement)
+        {
+            ensureClientIsCreated();
+            await executeTaskCallAsync(async () => await proxy.requestPieceMoveAsync(lobbyCode, movement.PieceId, movement.X, movement.Y));
+        }
+
         public async Task requestPieceDragAsync(string lobbyCode, int pieceId)
         {
             ensureClientIsCreated();
             await executeTaskCallAsync(async () => await proxy.requestPieceDragAsync(lobbyCode, pieceId));
         }
 
-        public async Task requestPieceMoveAsync(string lobbyCode, int pieceId, double newX, double newY)
+        public async Task requestPieceDropAsync(string lobbyCode, PieceMovementDto movement)
         {
             ensureClientIsCreated();
-            await executeTaskCallAsync(async () => await proxy.requestPieceMoveAsync(lobbyCode, pieceId, newX, newY));
-        }
-
-        public async Task requestPieceDropAsync(string lobbyCode, int pieceId, double newX, double newY)
-        {
-            ensureClientIsCreated();
-            await executeTaskCallAsync(async () => await proxy.requestPieceDropAsync(lobbyCode, pieceId, newX, newY));
+            await executeTaskCallAsync(async () => await proxy.requestPieceDropAsync(lobbyCode, movement.PieceId, movement.X, movement.Y));
         }
 
         public async Task leaveGameAsync(string username, string lobbyCode)
@@ -447,7 +448,15 @@ namespace MindWeaveClient.Services.Implementations
 
         private void handleMatchFound(string lobbyCode, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
         {
-            OnMatchFound?.Invoke(lobbyCode, players, settings, puzzleImagePath);
+            var matchData = new MatchFoundDto
+            {
+                LobbyCode = lobbyCode,
+                Players = players,
+                Settings = settings,
+                PuzzleImagePath = puzzleImagePath
+            };
+
+            OnMatchFound?.Invoke(matchData);
         }
 
         private void handleLobbyCreationFailed(string reason)

@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Authentication;
+using MindWeaveClient.Services.DataContracts;
 
 namespace MindWeaveClient.ViewModel.Game
 {
@@ -271,11 +272,15 @@ namespace MindWeaveClient.ViewModel.Game
 
                 if (string.IsNullOrEmpty(currentMatchService.LobbyId) && !string.IsNullOrEmpty(LobbyCode))
                 {
-                    currentMatchService.initializeMatch(
-                        LobbyCode,
-                        Players.ToList(),
-                        CurrentSettings,
-                        lobbyState?.PuzzleImagePath);
+                    var matchData = new MatchFoundDto
+                    {
+                        LobbyCode = LobbyCode,
+                        Players = Players.ToList(),
+                        Settings = CurrentSettings,
+                        PuzzleImagePath = lobbyState?.PuzzleImagePath
+                    };
+
+                    currentMatchService.initializeMatch(matchData);
                 }
                 requestSentSuccessfully = true;
                 await matchmakingService.startGameAsync(SessionService.Username, LobbyCode);
@@ -587,11 +592,15 @@ namespace MindWeaveClient.ViewModel.Game
             var currentMatchService = App.ServiceProvider.GetService<ICurrentMatchService>();
             if (currentMatchService != null)
             {
-                currentMatchService.initializeMatch(
-                    newState.LobbyId,
-                    newState.Players.ToList(),
-                    newState.CurrentSettingsDto,
-                    newState.PuzzleImagePath);
+                var matchData = new MatchFoundDto
+                {
+                    LobbyCode = newState.LobbyId,
+                    Players = newState.Players.ToList(),
+                    Settings = newState.CurrentSettingsDto,
+                    PuzzleImagePath = newState.PuzzleImagePath
+                };
+
+                currentMatchService.initializeMatch(matchData);
             }
         }
 

@@ -3,6 +3,7 @@ using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.Generic;
+using MindWeaveClient.Services.DataContracts;
 using System.Linq;
 using System.ServiceModel;
 
@@ -63,7 +64,15 @@ namespace MindWeaveClient.Services.Callbacks
 
             if (currentMatchService != null)
             {
-                currentMatchService.initializeMatch(lobbyCode, playerList, settings, puzzleImagePath);
+                var matchData = new MatchFoundDto
+                {
+                    LobbyCode = lobbyCode,
+                    Players = playerList,
+                    Settings = settings,
+                    PuzzleImagePath = puzzleImagePath
+                };
+
+                currentMatchService.initializeMatch(matchData);
             }
 
             OnMatchFoundEvent?.Invoke(lobbyCode, playerList, settings, puzzleImagePath);
@@ -115,12 +124,15 @@ namespace MindWeaveClient.Services.Callbacks
             if (currentMatchService != null && lobbyStateDto != null)
             {
                 var playerList = lobbyStateDto.Players?.ToList() ?? new List<string>();
-                currentMatchService.initializeMatch(
-                    lobbyStateDto.LobbyId,
-                    playerList,
-                    lobbyStateDto.CurrentSettingsDto,
-                    lobbyStateDto.PuzzleImagePath
-                );
+                var matchData = new MatchFoundDto
+                {
+                    LobbyCode = lobbyStateDto.LobbyId,
+                    Players = playerList,
+                    Settings = lobbyStateDto.CurrentSettingsDto,
+                    PuzzleImagePath = lobbyStateDto.PuzzleImagePath
+                };
+
+                currentMatchService.initializeMatch(matchData);
             }
 
             OnLobbyStateUpdatedEvent?.Invoke(lobbyStateDto);

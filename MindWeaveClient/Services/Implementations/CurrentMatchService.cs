@@ -1,6 +1,6 @@
-﻿using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.Services.Abstractions;
+﻿using MindWeaveClient.Services.Abstractions;
 using System;
+using MindWeaveClient.Services.DataContracts;
 using System.Collections.Generic;
 
 namespace MindWeaveClient.Services.Implementations
@@ -18,13 +18,12 @@ namespace MindWeaveClient.Services.Implementations
         public string LobbyId => lobbyId;
         public List<string> Players => players;
 
-        public void initializeMatch(string lobbyId, List<string> players, LobbySettingsDto settings, string puzzleImagePath)
+        public void initializeMatch(MatchFoundDto matchData)
         {
-            this.lobbyId = lobbyId;
-            this.players = players;
+            this.lobbyId = matchData.LobbyCode;
+            this.players = matchData.Players;
             OnMatchFound?.Invoke(this, EventArgs.Empty);
         }
-
         public PuzzleManagerService.PuzzleDefinitionDto getCurrentPuzzle()
         {
             return currentPuzzle;

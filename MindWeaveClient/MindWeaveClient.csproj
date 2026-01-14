@@ -111,6 +111,7 @@
     <Compile Include="Helpers\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\KickButtonVisibilityConverter.cs" />
     <Compile Include="Services\JoinLobbyResultDto.cs" />
+    <Compile Include="Services\PieceMovementDto.cs" />
     <Compile Include="Utilities\Implementations\MessageCodeInterpreter.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Helpers\StringEqualityToVisibilityConverterInverted.cs" />

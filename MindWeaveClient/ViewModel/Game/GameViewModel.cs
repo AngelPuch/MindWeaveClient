@@ -3,6 +3,7 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
+using MindWeaveClient.Services.DataContracts;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.ViewModel.Puzzle;
@@ -230,7 +231,14 @@ namespace MindWeaveClient.ViewModel.Game
 
             try
             {
-                await matchmakingService.requestPieceMoveAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
+                var movement = new PieceMovementDto
+                {
+                    PieceId = piece.PieceId,
+                    X = newX,
+                    Y = newY
+                };
+
+                await matchmakingService.requestPieceMoveAsync(currentMatchService.LobbyId, movement);
             }
             catch (Exception ex)
             {
@@ -257,7 +265,14 @@ namespace MindWeaveClient.ViewModel.Game
 
             try
             {
-                await matchmakingService.requestPieceDropAsync(currentMatchService.LobbyId, piece.PieceId, newX, newY);
+                var movement = new PieceMovementDto
+                {
+                    PieceId = piece.PieceId,
+                    X = newX,
+                    Y = newY
+                };
+
+                await matchmakingService.requestPieceDropAsync(currentMatchService.LobbyId, movement);
             }
             catch (Exception ex)
             {
