@@ -12,8 +12,7 @@ namespace MindWeaveClient.Validators
         private const string CREDENTIAL_POLICY_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\\$%^&*(),.?\"":{}|<>]).{8,}$";
         private const string NAME_VALIDATOR_REGEX = @"^(?=.*\p{L})[\p{L}\p{M} '\-\.]+$";
 
-        private const string SOCIAL_USERNAME_REGEX = @"^[a-zA-Z0-9._-]+$";
-        private const int MAX_SOCIAL_USERNAME_LENGTH = 100;
+ 
         private const int MAX_NAME_LENGTH = 45;
         private const int MIN_NAME_LENGTH = 3;
         private const int MAX_PASSWORD_INPUT_LENGTH = 128;
