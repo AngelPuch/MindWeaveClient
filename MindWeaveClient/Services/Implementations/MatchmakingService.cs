@@ -28,7 +28,6 @@ namespace MindWeaveClient.Services.Implementations
         public event Action<string> OnLobbyActionFailed;
         public event Action<PuzzleDefinitionDto, int> OnGameStarted;
         public event Action<string> OnLobbyDestroyed;
-        public event Action<string, string> OnAchievementUnlocked;
 
         public MatchmakingService(IMatchmakingManagerCallback callbackHandler)
         {
@@ -236,7 +235,6 @@ namespace MindWeaveClient.Services.Implementations
             handler.OnLobbyActionFailedEvent += handleLobbyActionFailed;
             handler.OnKickedEvent += handleKicked;
             handler.OnLobbyDestroyedEvent += handleLobbyDestroyedCallback;
-            handler.OnAchievementUnlockedEvent += handleAchievementCallback;
             handler.OnGameStartedNavigation += handleGameStartedCallback;
         }
 
@@ -250,7 +248,6 @@ namespace MindWeaveClient.Services.Implementations
                 handler.OnKickedEvent -= handleKicked;
                 handler.OnGameStartedNavigation -= handleGameStartedCallback;
                 handler.OnLobbyDestroyedEvent -= handleLobbyDestroyedCallback;
-                handler.OnAchievementUnlockedEvent -= handleAchievementCallback;
                 handler.OnLobbyActionFailedEvent -= handleLobbyActionFailed;
             }
         }
@@ -382,8 +379,13 @@ namespace MindWeaveClient.Services.Implementations
                 proxy?.Abort();
             }
             catch
-            {
-                // Ignore
+            { 
+                /*
+                 * Ignore: The goal is to try to release the resource.
+                 * If the proxy is already in a faulted or disconnected state,
+                 * Abort() might throw an exception that adds no value
+                 * and could interrupt the application's shutdown flow.
+               */
             }
         }
 
@@ -495,11 +497,6 @@ namespace MindWeaveClient.Services.Implementations
         private void handleLobbyDestroyedCallback(string reason)
         {
             OnLobbyDestroyed?.Invoke(reason);
-        }
-
-        private void handleAchievementCallback(string achievementName, string imagePath)
-        {
-            OnAchievementUnlocked?.Invoke(achievementName, imagePath);
         }
     }
 }

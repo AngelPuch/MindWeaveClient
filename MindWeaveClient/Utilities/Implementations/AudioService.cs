@@ -79,9 +79,13 @@ namespace MindWeaveClient.Utilities.Implementations
                     musicPlayer.Stop();
                 }
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {
-                // ignored
+                /*
+                 * Ignore: Stopping the media player is a best-effort operation.
+                 * If the player is in an invalid state, disposed, or encounters an internal error,
+                 * throwing an exception here adds no value and could interrupt logic flow.
+                 */
             }
         }
 
@@ -93,17 +97,13 @@ namespace MindWeaveClient.Utilities.Implementations
             {
                 playSound(soundFileName);
             }
-            catch (IOException)
+            catch (Exception)
             {
-                // ignored
-            }
-            catch (InvalidOperationException)
-            {
-                // ignored
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // ignored
+                /*
+                 * Ignore: Sound effects are auxiliary to the user experience.
+                 * Failures during playback (IO issues, file corruption, or concurrency limits)
+                 * should be suppressed to ensure the core gameplay loop is never interrupted.
+                 */
             }
         }
 
@@ -254,13 +254,14 @@ namespace MindWeaveClient.Utilities.Implementations
                     File.Delete(tempMusicFilePath);
                 }
             }
-            catch (IOException)
+            catch (Exception)
             {
-                // ignored
-            }
-            catch (UnauthorizedAccessException )
-            {
-                // ignored
+                /*
+                 * Ignore: This is a cleanup routine for temporary resources.
+                 * If the file is locked by another process or access is denied,
+                 * we cannot force deletion. Leaving a temp file is preferable
+                 * to crashing the application during cleanup.
+                 */
             }
             finally
             {
@@ -292,9 +293,13 @@ namespace MindWeaveClient.Utilities.Implementations
                     musicPlayer.Close();
                     sfxPlayer.Close();
                 }
-                catch (InvalidOperationException)
+                catch (Exception)
                 {
-                    // ignored
+                    /*
+                     * Ignore: Errors during Dispose (like closing an already closed player)
+                     * are suppressed to ensure the disposal chain completes without
+                     * throwing exceptions during the application shutdown process.
+                     */
                 }
                 finally
                 {

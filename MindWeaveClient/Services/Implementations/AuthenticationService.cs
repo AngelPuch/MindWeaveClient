@@ -156,7 +156,12 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch
             {
-                // Ignore
+                /*
+                 *Ignore: The goal is to try to release the resource.
+                 * If the proxy is already in a faulted or disconnected state,
+                 * Abort() might throw an exception that adds no value
+                 * and could interrupt the application's shutdown flow.
+                 */
             }
         }
     }

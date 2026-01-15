@@ -177,7 +177,12 @@ namespace MindWeaveClient.Utilities.Implementations
                     }
                     catch (Exception)
                     {
-                        //ignored
+                        /*
+                         * Ignore: Error handling during a reset sequence is a "best effort" operation.
+                         * If cleanup or window navigation fails while recovering from a critical error,
+                         * suppressing the exception prevents a crash loop and attempts to leave the
+                         * application in the most stable state possible (usually the login screen).
+                         */
                     }
                     finally
                     {

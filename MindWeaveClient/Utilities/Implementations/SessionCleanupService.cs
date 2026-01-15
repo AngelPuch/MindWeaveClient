@@ -42,25 +42,15 @@ namespace MindWeaveClient.Utilities.Implementations
                 await socialService.disconnectAsync(SessionService.Username);
                 matchmakingService.disconnect();
             }
-            catch (EndpointNotFoundException)
+            catch (Exception)
             {
-                // ignore
-            }
-            catch (CommunicationException)
-            {
-                // ignore
-            }
-            catch (TimeoutException)
-            {
-                // ignore
-            }
-            catch (SocketException)
-            {
-                // ignore
-            }
-            catch (ObjectDisposedException)
-            {
-                // ignore
+                /*
+                 * Ignore: Logout and disconnect are "best effort" operations.
+                 * If the server is unreachable, timed out, or the connection is already broken,
+                 * we suppress the exception. The priority is to execute the 'finally' block
+                 * to ensure the local client state is cleared effectively, preventing the
+                 * application from remaining in an inconsistent state.
+                 */
             }
             finally
             {
@@ -82,25 +72,14 @@ namespace MindWeaveClient.Utilities.Implementations
                     await matchmakingService.leaveGameAsync(SessionService.Username, lobbyCode);
                 }
             }
-            catch (EndpointNotFoundException)
+            catch (Exception)
             {
-                // Ignore
-            }
-            catch (CommunicationException)
-            {
-                // Ignore
-            }
-            catch (TimeoutException)
-            {
-                // Ignore
-            }
-            catch (SocketException)
-            {
-                // Ignore
-            }
-            catch (ObjectDisposedException)
-            {
-                // Ignore
+                /*
+                 * Ignore: Attempting to notify the server that the player is leaving the game.
+                 * If the network fails here, the player is effectively leaving anyway.
+                 * We catch generic exceptions to ensure the local cleanup sequence proceeds
+                 * without interruption.
+                 */
             }
             finally
             {
@@ -117,25 +96,14 @@ namespace MindWeaveClient.Utilities.Implementations
                     await matchmakingService.leaveLobbyAsync(SessionService.Username, lobbyCode);
                 }
             }
-            catch (EndpointNotFoundException)
+            catch (Exception)
             {
-                // Ignore
-            }
-            catch (CommunicationException)
-            {
-                // Ignore
-            }
-            catch (TimeoutException)
-            {
-                // Ignore
-            }
-            catch (SocketException)
-            {
-                // Ignore
-            }
-            catch (ObjectDisposedException)
-            {
-                // Ignore
+                /*
+                 * Ignore: Attempting to notify the server that the player is leaving the lobby.
+                 * Failure here (e.g., due to connection loss) implies the user is already disconnected
+                 * from the server's perspective or soon will be.
+                 * We suppress the error to prioritize local session cleanup.
+                 */
             }
             finally
             {

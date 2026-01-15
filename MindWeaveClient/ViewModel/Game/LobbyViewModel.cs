@@ -219,21 +219,14 @@ namespace MindWeaveClient.ViewModel.Game
             {
                 await cleanupAsync();
             }
-            catch (EndpointNotFoundException)
+            catch (Exception)
             {
-                // ignored
-            }
-            catch (CommunicationException)
-            {
-                // ignored
-            }
-            catch (TimeoutException)
-            {
-                // ignored
-            }
-            catch (SocketException)
-            {
-                // ignored
+                /*
+                 * Ignore: We are initiating a leave sequence.
+                 * If cleanupAsync fails (e.g., due to network disconnection),
+                 * we suppress the exception to ensure the navigation logic in 'finally'
+                 * executes, preventing the user from being stuck in the lobby view.
+                 */
             }
             finally
             {
@@ -715,13 +708,13 @@ namespace MindWeaveClient.ViewModel.Game
                 await disconnectFromChatAsync();
                 await connectToChatAsync(LobbyCode);
             }
-            catch (CommunicationException)
+            catch (Exception)
             {
-                // ignored
-            }
-            catch (TimeoutException)
-            {
-                // ignored
+                /*
+                 * Ignore: Background reconnection attempt.
+                 * If the reconnection fails, we fail silently. The user remains
+                 * in a disconnected chat state, which is valid.
+                 */
             }
         }
 
@@ -735,7 +728,10 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception)
             {
-                // ignored
+                /*
+                 * Ignore: We are forcing a lobby exit due to a fatal error.
+                 * Any errors during chat cleanup are irrelevant as the session is terminating.
+                 */
             }
 
             matchmakingService.disconnect();
@@ -770,7 +766,11 @@ namespace MindWeaveClient.ViewModel.Game
             }
             catch (Exception)
             {
-                //ignored
+                /*
+                 * Ignore: User has been kicked.
+                 * Cleanup operations are best-effort. Failure to cleanly disconnect chat
+                 * should not prevent the user from returning to the main menu.
+                 */
             }
 
             matchmakingService.disconnect();
@@ -807,17 +807,13 @@ namespace MindWeaveClient.ViewModel.Game
                 {
                     await matchmakingService.leaveLobbyAsync(SessionService.Username, LobbyCode);
                 }
-                catch (EndpointNotFoundException)
+                catch (Exception)
                 {
-                    // ignore
-                }
-                catch (CommunicationException)
-                {
-                    // ignore
-                }
-                catch (TimeoutException)
-                {
-                    // ignore
+                    /*
+                     * Ignore: Cleanup operation.
+                     * If we cannot notify the server (e.g., lost connection), we ignore the error
+                     * and proceed to clean up local resources.
+                     */
                 }
 
                 try
@@ -826,7 +822,10 @@ namespace MindWeaveClient.ViewModel.Game
                 }
                 catch (Exception)
                 {
-                    // ignore
+                    /*
+                     * Ignore: Cleanup operation.
+                     * Same as above; local cleanup takes precedence over network errors.
+                     */
                 }
             }
         }

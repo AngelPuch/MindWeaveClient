@@ -2,6 +2,15 @@
 {
     public class SocialMediaItem : BaseViewModel
     {
+        private const string PLATFORM_FACEBOOK = "facebook";
+        private const string PLATFORM_INSTAGRAM = "instagram";
+        private const string PLATFORM_YOUTUBE = "youtube";
+
+        private const string ICON_PATH_DEFAULT = "/Resources/Images/Social/default.png";
+        private const string ICON_PATH_FACEBOOK = "/Resources/Images/Social/facebook.png";
+        private const string ICON_PATH_INSTAGRAM = "/Resources/Images/Social/instagram.png";
+        private const string ICON_PATH_YOUTUBE = "/Resources/Images/Social/youtube.png";
+
         private string username;
 
         public int IdSocialMediaPlatform { get; set; }
@@ -9,7 +18,7 @@
 
         public string Username
         {
-            get { return this.username; }
+            get => this.username;
             set
             {
                 this.username = value;
@@ -23,19 +32,19 @@
             {
                 if (string.IsNullOrEmpty(PlatformName))
                 {
-                    return "/Resources/Images/Social/default.png";
+                    return ICON_PATH_DEFAULT;
                 }
 
                 switch (PlatformName.ToLower())
                 {
-                    case "facebook":
-                        return "/Resources/Images/Social/facebook.png";
-                    case "instagram":
-                        return "/Resources/Images/Social/instagram.png";
-                    case "youtube":
-                        return "/Resources/Images/Social/youtube.png";
+                    case PLATFORM_FACEBOOK:
+                        return ICON_PATH_FACEBOOK;
+                    case PLATFORM_INSTAGRAM:
+                        return ICON_PATH_INSTAGRAM;
+                    case PLATFORM_YOUTUBE:
+                        return ICON_PATH_YOUTUBE;
                     default:
-                        return "/Resources/Images/Social/default.png";
+                        return ICON_PATH_DEFAULT;
                 }
             }
         }

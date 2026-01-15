@@ -19,7 +19,6 @@ namespace MindWeaveClient.Services.Callbacks
         public event Action<string> OnLobbyActionFailedEvent;
         public event Action<string> OnKickedEvent;
         public event Action<string> OnLobbyDestroyedEvent;
-        public event Action<string, string> OnAchievementUnlockedEvent;
 
         public static event Action<string> OnPlayerLeftEvent;
         public static event Action<int, string> PieceDragStartedHandler;
@@ -170,11 +169,7 @@ namespace MindWeaveClient.Services.Callbacks
         {
             OnLobbyDestroyedEvent?.Invoke(reason);
         }
-        public void achievementUnlocked(string achievementName, string imagePath)
-        {
-            OnAchievementUnlockedEvent?.Invoke(achievementName, imagePath);
-        }
-
+       
         public void OnAchievementUnlocked(string achievementKey, string imageName) 
         {
         }

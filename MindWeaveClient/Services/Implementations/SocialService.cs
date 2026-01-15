@@ -266,7 +266,13 @@ namespace MindWeaveClient.Services.Implementations
             }
             catch
             {
-                // Ignore
+                /*
+                 * Ignore: This is a fail-safe cleanup operation.
+                 * We catch the generic Exception to suppress any error (like CommunicationException,
+                 * ObjectDisposedException, or others) that might occur if the connection
+                 * is already broken or the proxy is invalid.
+                 * The goal is to ensure the application flow is never interrupted by a cleanup failure.
+                 */
             }
         }
 
@@ -284,7 +290,13 @@ namespace MindWeaveClient.Services.Implementations
                 }
                 catch
                 {
-                    // Ignored
+                    /*
+                     * Ignore: This is a fail-safe cleanup operation.
+                     * We catch the generic Exception to suppress any error (like CommunicationException,
+                     * ObjectDisposedException, or others) that might occur if the connection
+                     * is already broken or the proxy is invalid.
+                     * The goal is to ensure the application flow is never interrupted by a cleanup failure.
+                     */
                 }
             }
 
