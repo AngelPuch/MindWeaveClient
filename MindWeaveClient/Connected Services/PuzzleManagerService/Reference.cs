@@ -232,9 +232,6 @@ namespace MindWeaveClient.PuzzleManagerService {
         DuplicateRecord = 2,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        ValidationFailed = 3,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
         NotFound = 4,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
@@ -242,18 +239,6 @@ namespace MindWeaveClient.PuzzleManagerService {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CommunicationError = 6,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        LobbyFull = 7,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        GameInProgress = 8,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        LobbyNotFound = 9,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        PlayerBanned = 10,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ValidationError = 11,

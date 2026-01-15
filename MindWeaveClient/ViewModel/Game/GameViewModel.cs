@@ -3,7 +3,6 @@ using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
-using MindWeaveClient.Services.DataContracts;
 using MindWeaveClient.Utilities.Abstractions;
 using MindWeaveClient.View.Game;
 using MindWeaveClient.ViewModel.Puzzle;

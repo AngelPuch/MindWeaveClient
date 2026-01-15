@@ -92,9 +92,9 @@
   </wsdl:binding>
   <wsdl:service name="ChatManagerService">
     <wsdl:port name="NetTcpBinding_IChatManager" binding="tns:NetTcpBinding_IChatManager">
-      <soap12:address location="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/" />
+      <soap12:address location="net.tcp://10.181.13.175:8734/MindWeaveServer/Services/ChatManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.237.134.175:8734/MindWeaveServer/Services/ChatManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://10.181.13.175:8734/MindWeaveServer/Services/ChatManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

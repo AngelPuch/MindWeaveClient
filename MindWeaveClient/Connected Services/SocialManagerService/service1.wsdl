@@ -262,9 +262,9 @@
   </wsdl:binding>
   <wsdl:service name="SocialManagerService">
     <wsdl:port name="NetTcpBinding_ISocialManager" binding="tns:NetTcpBinding_ISocialManager">
-      <soap12:address location="net.tcp://10.237.134.175:8734/MindWeaveServer/Services/SocialManagerService/" />
+      <soap12:address location="net.tcp://10.181.13.175:8734/MindWeaveServer/Services/SocialManagerService/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.237.134.175:8734/MindWeaveServer/Services/SocialManagerService/</wsa10:Address>
+        <wsa10:Address>net.tcp://10.181.13.175:8734/MindWeaveServer/Services/SocialManagerService/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

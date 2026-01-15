@@ -1,5 +1,4 @@
 ﻿using MindWeaveClient.MatchmakingService;
-using MindWeaveClient.Services.DataContracts;
 using System;
 using System.Threading.Tasks;
 

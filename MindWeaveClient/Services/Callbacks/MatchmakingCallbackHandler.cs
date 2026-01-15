@@ -3,7 +3,6 @@ using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Utilities.Abstractions;
 using System;
 using System.Collections.Generic;
-using MindWeaveClient.Services.DataContracts;
 using System.Linq;
 using System.ServiceModel;
 
@@ -44,7 +43,6 @@ namespace MindWeaveClient.Services.Callbacks
 
         public void kickedFromLobby(string reason)
         {
-            Console.WriteLine($"[MatchmakingCallbackHandler] Kicked from lobby: {reason}");
             OnKickedEvent?.Invoke(reason);
         }
 

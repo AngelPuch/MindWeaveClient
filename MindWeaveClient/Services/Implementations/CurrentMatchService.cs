@@ -1,6 +1,5 @@
 ﻿using MindWeaveClient.Services.Abstractions;
 using System;
-using MindWeaveClient.Services.DataContracts;
 using System.Collections.Generic;
 
 namespace MindWeaveClient.Services.Implementations

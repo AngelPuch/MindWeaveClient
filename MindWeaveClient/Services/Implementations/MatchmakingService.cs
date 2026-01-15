@@ -2,7 +2,6 @@
 using MindWeaveClient.Properties.Langs;
 using MindWeaveClient.Services.Abstractions;
 using MindWeaveClient.Services.Callbacks;
-using MindWeaveClient.Services.DataContracts;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;

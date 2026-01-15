@@ -23,7 +23,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MindWeaveClient.Utilities.Implementations;
 using MindWeaveClient.View.Authentication;
-using MindWeaveClient.Services.DataContracts;
 
 namespace MindWeaveClient.ViewModel.Game
 {

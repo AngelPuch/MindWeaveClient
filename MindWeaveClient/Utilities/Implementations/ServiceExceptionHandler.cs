@@ -215,15 +215,6 @@ namespace MindWeaveClient.Utilities.Implementations
                 {
                     return true;
                 }
-
-                if (message.Contains("canal") ||
-                    message.Contains("estado") ||
-                    message.Contains("comunicación") ||
-                    message.Contains("comunicacion") ||
-                    message.Contains("no se puede"))
-                {
-                    return true;
-                }
             }
 
             if (exception is ObjectDisposedException)

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MindWeaveClient.MatchmakingService; 
+using MindWeaveClient.MatchmakingService;
 
-namespace MindWeaveClient.Services.DataContracts
+namespace MindWeaveClient.Services
 {
     public class PieceMovementDto
     {
